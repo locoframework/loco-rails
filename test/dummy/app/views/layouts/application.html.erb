@@ -6,9 +6,31 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<%= content_tag :body, loco_body_data do %>
+  <%= render 'layouts/flash', name: '', msg: '' %>
+  <% flash.each do |name, msg| %>
+    <%= render 'layouts/flash', name: name, msg: msg %>
+  <% end %>
 
-<%= yield %>
+  <div id="container">
+    <% if current_admin || current_user %>
+    <div id="user_nav">
+      <p>
+      <% if current_admin %>
+        <%= link_to "Sign out", admin_session_url(id: 'current'), method: :delete,
+          data: {'admin-id' => current_admin.id} %>
+      <% end %>
 
-</body>
+      <% if current_user %>
+        Hello <%= current_user.email %>!
+        <%= link_to "sign out", user_session_url(id: 'current'), method: :delete,
+          data: {'user-id' => current_user.id}, id: 'sign_out_user' %>
+      <% end %>
+      </p>
+    </div>
+    <% end %>
+
+    <%= yield %>
+  </div>
+<% end %>
 </html>

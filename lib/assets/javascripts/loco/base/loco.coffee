@@ -1,13 +1,22 @@
 class App.Loco
   constructor: (opts={}) ->
-    @turbolinks = if opts.turbolinks? and opts.turbolinks then true else false
-    @wire = if opts.notifications? and opts.notifications then true else false
+    @initTurbolinks = if opts.turbolinks? and opts.turbolinks then true else false
+    @initWire = if opts.notifications? and opts.notifications then true else false
+    @wire = null
+    @logNotifications = if opts.logNotifications? and opts.logNotifications then true else false
+    @locale = opts.locale ? 'en'
+
+  getWire: -> @wire
+
+  getLocale: -> @locale
+  setLocale: (locale) -> @locale = locale
 
   init: ->
-    if @wire
-      wire = new App.Wire
-      wire.connect()
-    if @turbolinks
+    App.Env.loco = this
+    if @initWire
+      @wire = new App.Wire log: @logNotifications
+      @wire.connect()
+    if @initTurbolinks
       jQuery(document).on "page:change", => this.flow()
     else
       jQuery => this.flow()
@@ -35,3 +44,25 @@ class App.Loco
       App.Env.controller = new App.Controllers[controller_name]
       App.Env.controller.initialize() if App.Env.controller.initialize?
       App.Env.controller[action_name]() if App.Env.controller[action_name]?
+
+    if @wire?
+      @wire.resetSyncTime()
+      @wire._check()
+
+  getModels: ->
+    models = []
+    regExp = /^[A-Z]/
+    for func, _ of App.Models
+      continue if !regExp.exec(func) or func is "Base"
+      models.push func
+      for innerFunc, _ of App.Models[func]
+        models.push "#{func}.#{innerFunc}" if regExp.exec innerFunc
+    models
+
+  getModelForRemoteName: (remoteName) ->
+    for model in this.getModels()
+      parts = model.split "."
+      if parts.length is 1
+        return App.Models[parts[0]] if App.Models[parts[0]].getRemoteName() is remoteName
+      else if parts.length is 2
+        return App.Models[parts[0]][parts[1]] if App.Models[parts[0]][parts[1]].getRemoteName() is remoteName

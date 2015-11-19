@@ -1,0 +1,17 @@
+<h1>Sign in</h1>
+
+<%= form_tag url do %>
+  <div class="field">
+    <%= label_tag :email %><br>
+    <%= text_field_tag :email %>
+  </div>
+
+  <div class="field">
+    <%= label_tag :password %><br>
+    <%= password_field_tag :password %>
+  </div>
+
+  <div class="actions">
+    <%= submit_tag "Sign In" %> or <%= link_to "cancel", root_url %>
+  </div>
+<% end %>

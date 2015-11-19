@@ -1,0 +1,15 @@
+<h2>Edit comment</h2>
+
+<%= form_for @comment, url: user_article_comment_url(@article, @comment) do |f| %>
+  <p>
+    <%= f.label :author %> <br>
+    <%= f.text_field :author %>
+  </p>
+
+  <p>
+    <%= f.label :text %> <br>
+    <%= f.text_area :text %>
+  </p>
+
+  <p><%= f.submit %> or <%= link_to "back", edit_user_article_url(@article) %></p>
+<% end %>

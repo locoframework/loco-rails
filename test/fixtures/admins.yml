@@ -1,0 +1,7 @@
+one:
+  email: zbigniew.humeniuk@gmail.com
+  password_digest: <%= BCrypt::Password.create("supersecure123", cost: 4) %>
+
+two:
+  email: zbigniew.humeniuk@motteq.com
+  password_digest: <%= BCrypt::Password.create("ubersecure!", cost: 4) %>

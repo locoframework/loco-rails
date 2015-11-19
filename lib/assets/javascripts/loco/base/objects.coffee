@@ -3,9 +3,11 @@ window.App =
   IdentityMap: null
   Wire: null
   Env:
+    loco: null
     namespaceController: null
     controller: null
     action: null
+    scope: null
   Mix: null
   Mixins: {}
   UI: {}
@@ -13,5 +15,7 @@ window.App =
   Models: {}
   Views: {}
   Services: {}
+  Helpers: {}
   Presenters: {}
   Validators: {}
+  I18n: {}

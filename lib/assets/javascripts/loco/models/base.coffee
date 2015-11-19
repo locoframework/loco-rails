@@ -3,13 +3,9 @@ class App.Models.Base
   # class App.Models.Post extends App.Models.Base
   #   @identity = "Post"  # required for nested models e.g. App.Models.Post.Comment
   #
-  #   @resourcesUrl = "/posts"  # optional
-  #
-  #   # deprecated
-  #   @attrMapping = {created_at: "createdAt", updated_at: "updatedAt"}
-  #
-  #   # deprecated
-  #   @attrTypes = {createdAt: "Date"}
+  #   @resources =
+  #     url: "/posts"  # optional
+  #     paginate: {per: 100, param: "page"}  # param is optional
   #
   #   @attributes =
   #     validatedAt:
@@ -17,41 +13,30 @@ class App.Models.Base
   #       remoteName: "updated_at"
   #       validations:
   #         presence: true
-  #
-  #   @paginate = {per: 100, param: "page"}  # param is optional
+
+  constructor: (data = {}) ->
+    @id = null
+    @errors = null
+    @resource = data.resource
+    this.__initAttributes() if this.constructor.attributes?
+    this.__assignAttributes(data) if data?
 
   @all: (opts = {}, callback) -> @get "all", opts, callback
 
-  @page: (i, opts = {}, successCallback, countCallback, reqOpts = {}) ->
-    httpMethod = reqOpts.method || "GET"
-    url = reqOpts.url || @__getResourcesUrl(opts)
-    pageParam = if @paginate? and @paginate.param? then @paginate.param else "page"
-    data = {}
-    if reqOpts.data?
-      for key, val of reqOpts.data
-        data[key] = val
-    data["#{pageParam}"] = i
-    $.ajax({
-      dataType: "json",
-      method: httpMethod,
-      url: url,
-      data: data
-    }).done (data) =>
-      arr = []
-      for record in data.resources
-        obj = @__initSubclass record
-        App.IdentityMap.add obj
-        arr.push obj
-      successCallback arr
-      countCallback(data.count, arr) if countCallback?
-
-  @find: (id, successCallback) ->
+  @find: (idOrObj, successCallback) ->
     urlParams = {}
-    if typeof id is "object"
-      urlParams = id
-      id = id.id
+    if typeof idOrObj is "object"
+      urlParams = idOrObj
+      id = idOrObj.id
       delete urlParams.id
-    jqxhr = $.getJSON "#{@__getResourcesUrl(urlParams)}/#{id}", ->
+    else
+      id = idOrObj
+    jqxhr = $.ajax({
+      dataType: 'json',
+      method: 'GET',
+      url: "#{@__getResourcesUrl(urlParams)}/#{id}",
+      data: urlParams
+    })
     jqxhr.always ->
     jqxhr.fail ->
       successCallback null
@@ -87,20 +72,58 @@ class App.Models.Base
     params
 
   @__getResourcesUrl: (opts = {}) ->
-    return "/#{@getIdentity().toLowerCase()}s" if not @resourcesUrl?
-    match = /:(\w+)\/?/.exec @resourcesUrl
-    return @resourcesUrl if not match?
-    return @resourcesUrl if not opts[match[1]]?
-    @resourcesUrl.replace ":#{match[1]}", opts[match[1]]
+    resourcesUrl = if not @resources?
+      "/#{@getIdentity().toLowerCase()}s"
+    else if opts.resource
+      @resources[opts.resource].url
+    else if App.Env.scope? and @resources[App.Env.scope]?
+      @resources[App.Env.scope].url
+    else
+      @resources.url
+    match = /:(\w+)\/?/.exec resourcesUrl
+    return resourcesUrl if not match?
+    if opts[match[1]]?
+      resourcesUrl = resourcesUrl.replace ":#{match[1]}", opts[match[1]]
+      delete opts[match[1]]
+    else if opts.obj? and opts.obj[match[1]]?
+      resourcesUrl = resourcesUrl.replace ":#{match[1]}", opts.obj[match[1]]
+    return resourcesUrl
 
   @__initSubclass: (params = {}) ->
     parts = @getIdentity().split "."
     return new App.Models[parts[0]] params if parts.length is 1
     new App.Models[parts[0]][parts[1]] params
 
+  @__page: (i, opts = {}, successCallback, countCallback, reqOpts = {}) ->
+    httpMethod = reqOpts.method || "GET"
+    url = reqOpts.url || @__getResourcesUrl(opts)
+    data = {}
+    if reqOpts.data?
+      for key, val of reqOpts.data
+        continue if key is "resource"
+        data[key] = val
+    data[@__getPaginationParam()] = i
+    jqxhr = $.ajax({
+      dataType: "json",
+      method: httpMethod,
+      url: url,
+      data: data
+    })
+    jqxhr.done (data) =>
+      arr = []
+      for record in data.resources
+        obj = @__initSubclass record
+        obj.resource = opts.resource if opts.resource?
+        App.IdentityMap.add obj
+        arr.push obj
+      successCallback arr
+      countCallback(data.count, arr) if countCallback?
+
   @__paginate: (opts, callback, reqOpts) ->
-    perPage = if @paginate? and @paginate.per? then @paginate.per else null
-    @page 1, opts, callback, (count, records) =>
+    perPage = @__getPaginationPer()
+    pageNum = opts.page ? 1
+    @__page pageNum, opts, callback, (count, records) =>
+      return if opts.page?
       return if count <= perPage
       objs = App.IdentityMap.all @getIdentity()
       if objs? and objs.length is count
@@ -110,12 +133,29 @@ class App.Models.Base
       max = parseInt count / perPage
       max += 1 if max isnt count / perPage
       return if max is 1
-      data = @page 2, opts, callback, null, reqOpts
+      data = @__page 2, opts, callback, null, reqOpts
       return if max is 2
       for i in [3..max]
-        func = (i) => data = data.then(=> @page i, opts, callback, null, reqOpts)
+        func = (i) => data = data.then(=> @__page i, opts, callback, null, reqOpts)
         func i
     , reqOpts
+
+  @__getPaginationParam: ->
+    if @resources?.paginate?.page?
+      return @resources.paginate.page
+    if App.Env.scope? and @resources? and @resources[App.Env.scope]?
+      param = @resources[App.Env.scope]?.paginate?.param
+      return param if param?
+    if @paginate? and @paginate.param? then @paginate.param else "page"
+
+  # TODO: test it!
+  @__getPaginationPer: ->
+    if App.Env.scope? and @resources? and @resources[App.Env.scope]?
+      per = @resources[App.Env.scope]?.paginate?.per
+      return per if per?
+    if @resources?.paginate?.per?
+      return @resources.paginate.per
+    if @paginate? and @paginate.per? then @paginate.per else null
 
   @__send: (method, action, opts, callback) ->
     url = @__getResourcesUrl opts
@@ -124,21 +164,32 @@ class App.Models.Base
     reqOpts = {method: method, url: url, data: opts}
     @__paginate opts, callback, reqOpts
 
-  constructor: (data) ->
-    @id = null
-    @errors = null
-    this.__initAttributes() if this.constructor.attributes?
-    this.__assignAttributes(data) if data?
+  setResource: (name) -> @resource = name
 
   getIdentity: ->
     val = this.constructor.identity
     return val if val?
     this.constructor.name
 
+  # deprecated: use getAttrRemoteName()
   getRemoteName: (attr) ->
     return null if not this.constructor.attributes?
     return null if not this.constructor.attributes[attr]?
     this.constructor.attributes[attr].remoteName or attr
+
+  getAttrRemoteName: (attr) -> this.getRemoteName attr
+
+  getAttrName: (remoteName) ->
+    return remoteName if this.constructor.attributes[remoteName]?
+    for name, config of this.constructor.attributes
+      if config.remoteName is remoteName
+        return name
+    remoteName
+
+  getAttrType: (attrName) ->
+    return null if not this.constructor.attributes?
+    return null if not this.constructor.attributes[attrName]?
+    this.constructor.attributes[attrName].type
 
   attributes: ->
     attribs = {id: this.id}
@@ -154,13 +205,17 @@ class App.Models.Base
     for name, config of this.constructor.attributes
       continue if not config.validations?
       for validationName, validationSettings of config.validations
-        switch validationName
-          when "presence"
-            validatorValid = App.Validators.Presence.instance(this, name).validate()
-            valid = false if not validatorValid
-          else
-            console.log "Warning! \"#{validationName}\" validator is not implemented!"
+        continue if this.id? and validationSettings.on is "create"
+        continue if !this.id? and validationSettings.on is "update"
+        validator = validationName.charAt(0).toUpperCase() + validationName.slice(1)
+        if not App.Validators[validator]?
+          console.log "Warning! \"#{validator}\" validator is not implemented!"
+          continue
+        validatorValid = App.Validators[validator].instance(this, name, validationSettings).validate()
+        valid = false if not validatorValid
     return valid
+
+  isInvalid: -> !this.isValid()
 
   isEmpty: ->
     for name, val of this.attributes()
@@ -175,6 +230,7 @@ class App.Models.Base
   save: (callback) ->
     return false if not this.isValid()
     jqxhr = $.ajax({
+      dataType: 'json',
       method: if @id? then "PUT" else "POST",
       url: this.__getResourceUrl(),
       data: this.serialize()
@@ -192,12 +248,18 @@ class App.Models.Base
   serialize: ->
     return {} if not this.constructor.attributes?
     hash = {}
-    mainKey = this.getIdentity().toLowerCase()
+    mainKey = this.constructor.getRemoteName().toLowerCase()
     hash[mainKey] = {}
     for attr, _ of this.constructor.attributes
       remoteName = this.getRemoteName attr
       hash[mainKey][remoteName] = this[attr]
     hash
+
+  reload: (callback) ->
+    findParams = {id: this.id}
+    for param in this.constructor.getResourcesUrlParams()
+      findParams[param] = this[param]
+    this.constructor.find findParams, (obj) -> callback obj
 
   changes: ->
     result = {}
@@ -218,9 +280,13 @@ class App.Models.Base
   delete: (action, data, callback) -> this.__send "DELETE", action, data, callback
 
   __send: (method, action, data, callback) ->
+    url = this.__getResourceUrl()
+    if action?
+      url = "#{url}/#{action}"
     jqxhr = $.ajax({
+      dataType: 'json',
       method: method,
-      url: "#{this.__getResourceUrl()}/#{action}",
+      url: url,
       data: data
     })
     jqxhr.always ->
@@ -229,8 +295,8 @@ class App.Models.Base
 
   __assignAttributes: (data) ->
     for key, val of data
-      attrName = this.__fetchAttrName key
-      attrType = this.__fetchAttrType attrName
+      attrName = this.getAttrName key
+      attrType = this.getAttrType attrName
       if not val?
         @[attrName] = null
         continue
@@ -239,41 +305,17 @@ class App.Models.Base
         when "Int" then val = parseInt val
       @[attrName] = val
 
-  __fetchAttrName: (remoteName) ->
-    mappedName = this.constructor.attrMapping? and this.constructor.attrMapping[remoteName]
-    mappedName = null if mappedName is false
-    return mappedName if mappedName? && not this.constructor.attributes?
-    return remoteName if this.constructor.attributes[remoteName]?
-    for name, config of this.constructor.attributes
-      if config.remoteName is remoteName
-        if mappedName?
-          throw new Error "App.Models.#{this.getIdentity()}: double name declaration for remote: #{remoteName}."
-        return name
-    remoteName
-
-  __fetchAttrType: (attrName) ->
-    attrType = this.constructor.attrTypes? and this.constructor.attrTypes[attrName]
-    attrType = null if attrType is false
-    return attrType if not this.constructor.attributes?
-    return attrType if not this.constructor.attributes[attrName]?
-    anotherAttrType = this.constructor.attributes[attrName].type
-    if anotherAttrType? and attrType
-      throw new Error "App.Models.#{this.getIdentity()}: double type declaration for attribute: #{attrName}."
-    else if anotherAttrType? then anotherAttrType
-    else attrType
-
   __initAttributes: ->
     for name, config of this.constructor.attributes
       this[name] = null
 
   __assignRemoteErrorMessages: (remoteErrors) ->
     for remoteName, errors of remoteErrors
-      attr = this.__fetchAttrName remoteName
+      attr = this.getAttrName remoteName
       for error in errors
         this.addErrorMessage error, for: attr
 
   __getResourceUrl: ->
-    if @id?
-      "#{this.constructor.__getResourcesUrl()}/#{@id}"
-    else
-      this.constructor.__getResourcesUrl()
+    url = this.constructor.__getResourcesUrl resource: @resource, obj: this
+    return url if not @id?
+    "#{url}/#{@id}"

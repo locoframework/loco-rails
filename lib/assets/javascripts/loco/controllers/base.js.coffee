@@ -9,12 +9,14 @@ class App.Controllers.Base extends App.Mix App.Mixins.Connectivity
   getViews: -> @views
 
   setSubController: (cntrlr) -> @subController = cntrlr
-
   setSuperController: (cntrlr) -> @superController = cntrlr
 
   getSubController: -> @subController
-
   getSuperController: -> @superController
+
+  setResource: (name) -> this.setScope name
+  setScope: (name) -> App.Env.scope = name
+
 
   __fetchParams: ->
     params = {}
@@ -30,6 +32,6 @@ class App.Controllers.Base extends App.Mix App.Mixins.Connectivity
       key = decodeURIComponent arr[0]
       val = decodeURIComponent arr[1]
       if val?
-        val = val.replace "+", " "
+        val = val.replace /\+/g, " "
       params[key] = val
     params

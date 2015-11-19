@@ -1,0 +1,18 @@
+<p>
+  <strong>Title:</strong>
+  <span id="article_title"></span>
+</p>
+
+<p>
+  <strong>Text:</strong>
+  <span id="article_text"></span>
+</p>
+
+<p><a href="#" id="publish_article" style="display:none;">Publish</a></p>
+
+<section id="comments">
+  <h4>Comments</h4>
+</section>
+
+<%= link_to 'Edit', edit_user_article_path(id: 0), id: "edit_link" %> |
+<%= link_to 'Back', user_articles_path %>

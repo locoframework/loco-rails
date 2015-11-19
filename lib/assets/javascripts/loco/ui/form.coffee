@@ -5,26 +5,46 @@ class App.UI.Form
     @initObj = if opts.initObj? and opts.initObj then true else false
     @delegator = opts.delegator
     @callbackSuccess = opts.callbackSuccess
+    @callbackFailure = opts.callbackFailure
     @callbackActive = opts.callbackActive
     @form = this._findForm()
     @submit = @form.find ':submit'
     @submitVal = @submit.val()
-    @errorsShowHideDuration = if opts.errorsShowHideDuration? then opts.errorsShowHideDuration else 200
-    @hideErrorFunc = if opts.hideErrorFunc? then opts.hideErrorFunc else 'slideUp'
-    @showErrorFunc = if opts.showErrorFunc? then opts.showErrorFunc else 'slideDown'
-
-  render: ->
-    this._findForm()
-    this._assignAttribs() if @initObj
-    this._handle()
+    @errorsShowHideDuration = if opts.errorsShowHideDuration? then opts.errorsShowHideDuration else null  # 200
+    @hideErrorFunc = if opts.hideErrorFunc? then opts.hideErrorFunc else null  # 'slideUp'
+    @showErrorFunc = if opts.showErrorFunc? then opts.showErrorFunc else null  # 'slideDown'
 
   getObj: -> @obj
 
+  render: ->
+    if @initObj
+      this._assignAttribs()
+    else
+      this.fill()
+    this._handle()
+
+  fill: (attr = null) ->
+    return null if not @obj.constructor.attributes?
+    attributes = {}
+    if attr?
+      attributes[attr] = null
+    else
+      attributes = @obj.constructor.attributes
+    for name, _ of attributes
+      remoteName = @obj.getAttrRemoteName name
+      formEl = @form.find("[data-attr=#{remoteName}]").find "input,textarea,select"
+      if formEl.length is 1
+        formEl.val @obj[name]
+        continue
+      if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
+        continue
+      formEl.last().prop 'checked', !formEl.last().is(":checked")
+
   _findForm: ->
-    @form = $("##{@formId}") if @formId?
+    return $("##{@formId}") if @formId?
     if @obj?
       objName = @obj.getIdentity().toLowerCase()
-      @form = if @obj.id? then $("#edit_#{objName}_#{@obj.id}") else $("#new_#{objName}")
+      if @obj.id? then $("#edit_#{objName}_#{@obj.id}") else $("#new_#{objName}")
 
   _handle: ->
     @form.on 'submit', (e) =>
@@ -33,10 +53,11 @@ class App.UI.Form
       if not @obj?
         this._submitForm()
         return
-      this._hideErrors()
       this._assignAttribs()
-      if not @obj.isValid()
-        this._renderErrors()
+      this._hideErrors()
+      if @obj.isInvalid()
+        this._delayedRenderErrors()
+        @delegator[@callbackFailure]() if @callbackFailure?
         return
       this._submittingForm false
       clearForm = if @obj.id? then false else true
@@ -44,6 +65,7 @@ class App.UI.Form
         if data.success
           this._handleSuccess data, clearForm
         else
+          @delegator[@callbackFailure]() if @callbackFailure?
           this._renderErrors()
 
   _canBeSubmitted: ->
@@ -65,8 +87,10 @@ class App.UI.Form
         this._renderErrors data.errors
 
   _handleSuccess: (data, clearForm = true) ->
-    val = if data.flash? then data.flash.success else "Success"
+    val = data.flash?.success ? "Success"
     @submit.removeClass("active").addClass('success').val val
+    if data.access_token?
+      App.Env.loco.getWire().setToken data.access_token
     if @callbackSuccess?
       if data.data?
         @delegator[@callbackSuccess](data.data)
@@ -80,12 +104,20 @@ class App.UI.Form
         @form.find("input:not([type='submit'])#{selector}, textarea#{selector}").val ''
     , 5000
 
+  _delayedRenderErrors: ->
+    if @errorsShowHideDuration?
+      setTimeout =>
+        this._renderErrors()
+      , @errorsShowHideDuration
+    else
+      this._renderErrors()
+
   _renderErrors: (remoteErrors = null) ->
     return if @obj? and not @obj.errors?
     return if not @obj? and not remoteErrors?
     data = if remoteErrors? then remoteErrors else @obj.errors
     for attrib, errors of data
-      remoteName = if @obj? then @obj.getRemoteName(attrib) else attrib
+      remoteName = if @obj? then @obj.getAttrRemoteName(attrib) else attrib
       if remoteName? and attrib isnt "base"
         # be aware of invalid elements's nesting e.g. "div" inside of "p"
         @form.find("[data-attr=#{remoteName}]").find(".errors[data-for=#{remoteName}]").text errors[0]
@@ -107,21 +139,34 @@ class App.UI.Form
   _assignAttribs: ->
     return null if not @obj.constructor.attributes?
     for name, _ of @obj.constructor.attributes
-      remoteName = @obj.getRemoteName name
-      formEl = @form.find("[data-attr=#{remoteName}]").find("input,textarea,select").first()
-      continue if formEl.length isnt 1
-      @obj[name] = formEl.val()
+      remoteName = @obj.getAttrRemoteName name
+      formEl = @form.find("[data-attr=#{remoteName}]").find "input,textarea,select"
+      if formEl.length is 1
+        @obj[name] = formEl.val()
+        continue
+      if formEl.first().attr("type") isnt "hidden" and formEl.last().attr('type') isnt "checkbox"
+        continue
+      if formEl.last().is ":checked"
+        @obj[name] = formEl.last().val()
+      else
+        @obj[name] = formEl.first().val()
 
   _hideErrors: ->
     @form.find('.errors').each (index, e) =>
       if $(e).text().trim().length > 0
         $(e).text ""
-        $(e).velocity @hideErrorFunc, @errorsShowHideDuration
+        if @hideErrorFunc? and @errorsShowHideDuration?
+          $(e).velocity @hideErrorFunc, @errorsShowHideDuration
+        else
+          $(e).hide()
 
   _showErrors: ->
     @form.find('.errors').each (index, e) =>
       if $(e).text().trim().length > 0
-        $(e).velocity @showErrorFunc, @errorsShowHideDuration
+        if @showErrorFunc? and @errorsShowHideDuration?
+          $(e).velocity @showErrorFunc, @errorsShowHideDuration
+        else
+          $(e).show()
 
   _submittingForm: (hideErrors = true) ->
     @submit.removeClass('success').removeClass('failure').addClass('active').val "Sending..."

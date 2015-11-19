@@ -21,20 +21,20 @@ module Loco
       end
     end
 
-    def obj
-      return @obj if @obj
-    end
+    def obj; @obj end
 
     def recipient= val
       return nil if val.nil?
-      if val.instance_of? Class
+      return nil if val == :all
+      if val.is_a? String
+        self.recipient_token = val
+      elsif val.instance_of? Class
         self.recipient_class = val.to_s
       else
         self.recipient_class = val.class.name
         self.recipient_id = val.id
       end
     end
-
 
     private
 
@@ -47,11 +47,9 @@ module Loco
       end
 
       def set_data
-        case event
-        when "created", "updated"
-          self.data ||= {}
-          self.data.merge!(id: obj.id)
-        end
+        self.data ||= {}
+        return if obj.nil?
+        self.data.merge!(id: obj.id)
       end
   end
 end

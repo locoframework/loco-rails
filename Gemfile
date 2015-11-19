@@ -13,3 +13,7 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 
+source 'https://rails-assets.org' do
+  gem 'rails-assets-underscore', "~> 1.8.3"
+  gem 'rails-assets-velocity', '~> 1.2.2'
+end

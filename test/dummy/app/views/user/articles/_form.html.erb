@@ -1,0 +1,40 @@
+<%= form_for [:user, @article] do |f| %>
+  <% if @article.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@article.errors.count, "error") %> prohibited this article from being saved:</h2>
+
+      <ul>
+      <% @article.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field" data-attr="title">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+    <span class="errors" data-for="title"><%= f.object.errors[:title].first %></span>
+    <br>
+    <%= link_to "apply changes", '#', class: 'apply_changes none', data: {for: 'title'} %>
+  </div>
+
+  <div class="field" data-attr="text">
+    <%= f.label :text %><br>
+    <%= f.text_area :text %>
+    <span class="errors" data-for="text"><%= f.object.errors[:text].first %></span>
+    <br>
+    <%= link_to "apply changes", '#', class: 'apply_changes none', data: {for: 'text'} %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+    <span class="errors" data-for="base"><%= f.object.errors[:base].first %></span>
+  </div>
+<% end %>
+
+<% if @article.persisted? %>
+<section id="comments">
+  <h3>Comments</h3>
+</section>
+<% end %>

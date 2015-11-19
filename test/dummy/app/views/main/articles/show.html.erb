@@ -1,0 +1,34 @@
+<article>
+  <h1 id='title'></h1>
+  <p><i>
+    <span id='author'></span> wrote this on
+    <span id='pub_date'></span> /
+    <a id='comments_count' href='#comments'></a>
+  </i></p>
+  <section id='text'></section>
+</article>
+
+<h3>Comments</h3>
+
+<section id='comments' class='bottom_space'></section>
+
+<%= form_for [Article.new(id: 0), Comment.new] do |f| %>
+  <div class="field" data-attr="author">
+    <%= f.text_field :author, placeholder: "Name (required)" %>
+    <span class="errors" data-for="author"><%= f.object.errors[:author].first %></span>
+  </div>
+
+  <div class="field" data-attr="text">
+    <%= f.text_area :text, placeholder: "Type your thoughts here..." %>
+    <span class="errors" data-for="text"><%= f.object.errors[:text].first %></span>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Post this comment" %>
+    <span class="errors" data-for="base"><%= f.object.errors[:base].first %></span>
+  </div>
+<% end %>
+
+<p>
+  <%= link_to "Go back", root_url %>
+</p>
