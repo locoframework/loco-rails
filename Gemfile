@@ -16,4 +16,9 @@ gemspec
 source 'https://rails-assets.org' do
   gem 'rails-assets-underscore', "~> 1.8.3"
   gem 'rails-assets-velocity', '~> 1.2.2'
+  gem 'rails-assets-lie', '~> 3.0.1'
+end
+
+group :development, :test do
+  gem 'jasmine', '~> 2.3'  # rake needs it here
 end

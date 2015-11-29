@@ -21,9 +21,9 @@ class App.Models.Base
     this.__initAttributes() if this.constructor.attributes?
     this.__assignAttributes(data) if data?
 
-  @all: (opts = {}, callback) -> @get "all", opts, callback
+  @all: (opts = {}) -> @get "all", opts
 
-  @find: (idOrObj, successCallback) ->
+  @find: (idOrObj) ->
     urlParams = {}
     if typeof idOrObj is "object"
       urlParams = idOrObj
@@ -37,20 +37,17 @@ class App.Models.Base
       url: "#{@__getResourcesUrl(urlParams)}/#{id}",
       data: urlParams
     })
-    jqxhr.always ->
-    jqxhr.fail ->
-      successCallback null
-      return false
-    jqxhr.done (record) =>
-      obj = @__initSubclass record
-      App.IdentityMap.add obj
-      successCallback obj
-      return true
+    return new Promise (resolve, reject) =>
+      jqxhr.fail (xhr) -> reject xhr
+      jqxhr.done (record) =>
+        obj = @__initSubclass record
+        App.IdentityMap.add obj
+        resolve obj
 
-  @get: (action, opts, callback) -> @__send "GET", action, opts, callback
-  @post: (action, opts, callback) -> @__send "POST", action, opts, callback
-  @put: (action, opts, callback) -> @__send "PUT", action, opts, callback
-  @delete: (action, opts, callback) -> @__send "DELETE", action, opts, callback
+  @get: (action, opts = {}) -> @__send "GET", action, opts
+  @post: (action, opts = {}) -> @__send "POST", action, opts
+  @put: (action, opts = {}) -> @__send "PUT", action, opts
+  @delete: (action, opts = {}) -> @__send "DELETE", action, opts
 
   @getIdentity: -> if @identity? then @identity else @name
 
@@ -94,7 +91,7 @@ class App.Models.Base
     return new App.Models[parts[0]] params if parts.length is 1
     new App.Models[parts[0]][parts[1]] params
 
-  @__page: (i, opts = {}, successCallback, countCallback, reqOpts = {}) ->
+  @__page: (i, opts = {}, reqOpts = {}, arr = [], onlyObjs = false) ->
     httpMethod = reqOpts.method || "GET"
     url = reqOpts.url || @__getResourcesUrl(opts)
     data = {}
@@ -103,42 +100,42 @@ class App.Models.Base
         continue if key is "resource"
         data[key] = val
     data[@__getPaginationParam()] = i
-    jqxhr = $.ajax({
+    jqxhr = $.ajax
       dataType: "json",
       method: httpMethod,
       url: url,
       data: data
-    })
-    jqxhr.done (data) =>
-      arr = []
-      for record in data.resources
-        obj = @__initSubclass record
-        obj.resource = opts.resource if opts.resource?
-        App.IdentityMap.add obj
-        arr.push obj
-      successCallback arr
-      countCallback(data.count, arr) if countCallback?
+    return new Promise (resolve, reject) =>
+      jqxhr.fail (xhr) -> reject xhr
+      jqxhr.done (data) =>
+        for record in data.resources
+          obj = @__initSubclass record
+          obj.resource = opts.resource if opts.resource?
+          App.IdentityMap.add obj
+          arr.push obj
+        if onlyObjs
+          resolve arr
+        else
+          resolve {objs: arr, count: data.count}
 
-  @__paginate: (opts, callback, reqOpts) ->
+  @__paginate: (opts, reqOpts) ->
     perPage = @__getPaginationPer()
     pageNum = opts.page ? 1
-    @__page pageNum, opts, callback, (count, records) =>
-      return if opts.page?
-      return if count <= perPage
-      objs = App.IdentityMap.all @getIdentity()
-      if objs? and objs.length is count
-        ids = _.map records, (record) -> record.id
-        callback objs.filter (obj) -> ids.indexOf(obj.id) is -1
-        return
+    @__page(pageNum, opts, reqOpts).then (data) =>
+      arr = data.objs
+      count = data.count
+      return Promise.resolve(arr) if opts.page?
+      return Promise.resolve(arr) if count <= perPage
       max = parseInt count / perPage
       max += 1 if max isnt count / perPage
-      return if max is 1
-      data = @__page 2, opts, callback, null, reqOpts
-      return if max is 2
-      for i in [3..max]
-        func = (i) => data = data.then(=> @__page i, opts, callback, null, reqOpts)
+      return Promise.resolve(arr) if max is 1
+      promise = Promise.resolve(arr)
+      for i in [2..max]
+        func = (i) =>
+          promise = promise.then (arr) =>
+            return @__page i, opts, reqOpts, arr, true
         func i
-    , reqOpts
+      return promise
 
   @__getPaginationParam: ->
     if @resources?.paginate?.page?
@@ -157,12 +154,12 @@ class App.Models.Base
       return @resources.paginate.per
     if @paginate? and @paginate.per? then @paginate.per else null
 
-  @__send: (method, action, opts, callback) ->
+  @__send: (method, action, opts) ->
     url = @__getResourcesUrl opts
     if action isnt "all"
       url = "#{url}/#{action}"
     reqOpts = {method: method, url: url, data: opts}
-    @__paginate opts, callback, reqOpts
+    @__paginate opts, reqOpts
 
   setResource: (name) -> @resource = name
 
@@ -180,6 +177,7 @@ class App.Models.Base
   getAttrRemoteName: (attr) -> this.getRemoteName attr
 
   getAttrName: (remoteName) ->
+    return remoteName if not this.constructor.attributes?
     return remoteName if this.constructor.attributes[remoteName]?
     for name, config of this.constructor.attributes
       if config.remoteName is remoteName
@@ -200,7 +198,6 @@ class App.Models.Base
 
   isValid: ->
     return true if not this.constructor.attributes?
-    valid = true
     @errors = null
     for name, config of this.constructor.attributes
       continue if not config.validations?
@@ -211,9 +208,10 @@ class App.Models.Base
         if not App.Validators[validator]?
           console.log "Warning! \"#{validator}\" validator is not implemented!"
           continue
-        validatorValid = App.Validators[validator].instance(this, name, validationSettings).validate()
-        valid = false if not validatorValid
-    return valid
+        App.Validators[validator].instance(this, name, validationSettings).validate()
+    if this.constructor.validate?
+      this[meth]() for meth in this.constructor.validate
+    if this.errors? then false else true
 
   isInvalid: -> !this.isValid()
 
@@ -227,23 +225,22 @@ class App.Models.Base
     @errors[opts.for] = [] if not @errors[opts.for]?
     @errors[opts.for].push message
 
-  save: (callback) ->
+  save: ->
     return false if not this.isValid()
-    jqxhr = $.ajax({
+    jqxhr = $.ajax
       dataType: 'json',
       method: if @id? then "PUT" else "POST",
       url: this.__getResourceUrl(),
       data: this.serialize()
-    })
-    jqxhr.always ->
-    jqxhr.fail ->
-    jqxhr.done (data) =>
-      if data.success
-        callback data
-        return true
-      this.__assignRemoteErrorMessages(data.errors) if data.errors?
-      callback data
-      return false
+    return new Promise (resolve, reject) =>
+      jqxhr.fail (xhr) -> reject xhr
+      jqxhr.done (data) =>
+        if data.success
+          resolve data
+          return true
+        this.__assignRemoteErrorMessages(data.errors) if data.errors?
+        resolve data
+        return false
 
   serialize: ->
     return {} if not this.constructor.attributes?
@@ -255,11 +252,11 @@ class App.Models.Base
       hash[mainKey][remoteName] = this[attr]
     hash
 
-  reload: (callback) ->
+  reload: ->
     findParams = {id: this.id}
     for param in this.constructor.getResourcesUrlParams()
       findParams[param] = this[param]
-    this.constructor.find findParams, (obj) -> callback obj
+    this.constructor.find findParams
 
   changes: ->
     result = {}
@@ -274,24 +271,23 @@ class App.Models.Base
 
   toKey: -> "#{this.getIdentity().toLowerCase()}_#{this.id}"
 
-  get: (action, data, callback) -> this.__send "GET", action, data, callback
-  post: (action, data, callback) -> this.__send "POST", action, data, callback
-  put: (action, data, callback) -> this.__send "PUT", action, data, callback
-  delete: (action, data, callback) -> this.__send "DELETE", action, data, callback
+  get: (action, data = {}) -> this.__send "GET", action, data
+  post: (action, data = {}) -> this.__send "POST", action, data
+  put: (action, data = {}) -> this.__send "PUT", action, data
+  delete: (action, data = {}) -> this.__send "DELETE", action, data
 
-  __send: (method, action, data, callback) ->
+  __send: (method, action, data) ->
     url = this.__getResourceUrl()
     if action?
       url = "#{url}/#{action}"
-    jqxhr = $.ajax({
+    jqxhr = $.ajax
       dataType: 'json',
       method: method,
       url: url,
       data: data
-    })
-    jqxhr.always ->
-    jqxhr.fail ->
-    jqxhr.done (data) => callback data
+    return new Promise (resolve, reject) ->
+      jqxhr.fail (xhr) -> reject xhr
+      jqxhr.done (data) -> resolve data
 
   __assignAttributes: (data) ->
     for key, val of data

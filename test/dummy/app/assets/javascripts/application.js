@@ -1,3 +1,4 @@
+//= require lie/lie.polyfill
 //= require jquery
 //= require jquery_ujs
 //= require underscore

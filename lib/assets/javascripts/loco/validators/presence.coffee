@@ -4,11 +4,10 @@ class App.Validators.Presence extends App.Validators.Base
   validate: ->
     switch typeof @val
       when 'string'
-        return true if @val? and @val.length > 0
+        return if @val? and @val.length > 0
       else
-        return true if @val?
+        return if @val?
     this._addErrorMessage()
-    false
 
   _addErrorMessage: ->
     message = App.I18n[App.Env.loco.getLocale()].errors.messages.blank

@@ -15,7 +15,7 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
 
   updateArticle: (articleId) ->
     return if $("#article_#{articleId}").length is 0
-    App.Models.Article.find {id: articleId, abbr: true}, (article) ->
+    App.Models.Article.find(id: articleId, abbr: true).then (article) ->
       template = JST["templates/main/articles/article_for_list"] {article: article}
       $("#article_#{article.id}").replaceWith template
 
@@ -30,7 +30,7 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
     $('#load_more').click (e) =>
       e.preventDefault()
       @page += 1
-      App.Models.Article.get 'all', {page: @page}, (articles) =>
+      App.Models.Article.get('all', page: @page).then (articles) =>
         if articles.length > 0
           this.renderArticles articles
         else

@@ -28,7 +28,7 @@ class App.Views.User.Articles.List extends App.Views.Base
     $("tr#article_#{article.id} a.delete_article").click (e) =>
       e.preventDefault()
       return if not confirm "Are you sure?"
-      article.delete null, {}, (data) =>
+      article.delete(null).then (data) =>
         flash = new App.Views.Shared.Flash
         if data.success
           this.deleteArticle data.id

@@ -27,7 +27,7 @@ class App.Views.User.Articles.Show extends App.Views.Base
   articleReceivedSignal: (signal, data) ->
     switch signal
       when "updated"
-        @article.reload =>
+        @article.reload().then =>
           @article.applyChanges()
           this.renderArticle()
       when "destroyed"
@@ -36,7 +36,7 @@ class App.Views.User.Articles.Show extends App.Views.Base
   commentReceivedSignal: (signal, data) ->
     switch signal
       when "updated"
-        App.Models.Article.Comment.find {id: data.id, articleId: data.article_id}, (comment) ->
+        App.Models.Article.Comment.find(id: data.id, articleId: data.article_id).then (comment) ->
           template = JST["templates/user/comments/comment"] {comment: comment, isAdmin: false}
           $("#comment_#{comment.id}").replaceWith template
       when "destroyed"
@@ -46,7 +46,13 @@ class App.Views.User.Articles.Show extends App.Views.Base
     $("a#publish_article").click (e) =>
       e.preventDefault()
       $(e.target).text "Publishing..."
-      @article.put "publish", {}, (res) -> $("a#publish_article").replaceWith "<span>Published!</span>"
+      @article.put("publish")
+      .then (res) ->
+        $("a#publish_article").replaceWith "<span>Published!</span>"
+      .catch (err) ->
+        $(e.target).text "Publish"
+        flash = new App.Views.Shared.Flash alert: "Connection error!"
+        flash.render()
 
   _updateEditLink: ->
     href = $("#edit_link").attr "href"

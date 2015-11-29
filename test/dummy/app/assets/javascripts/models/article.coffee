@@ -29,9 +29,12 @@ class App.Models.Article extends App.Models.Base
 
   @receivedSignal: (signal, data) ->
 
-  # TODO
-  # @validate = ["vulgarityLevel"]
+  @validate = ["vulgarityLevel"]
 
   constructor: (data) -> super data
 
   receivedSignal: (signal, data) ->
+
+  vulgarityLevel: ->
+    if (this.title? and /fuck/i.exec(this.title)) or (this.content? and /fuck/i.exec(this.content))
+      this.addErrorMessage "Article contains strong language.", for: 'base'

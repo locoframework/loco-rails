@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'jbuilder', '~> 2.0'
   s.add_development_dependency 'eco', '~> 1.0'
 
-  s.add_development_dependency 'jasmine', '~> 2.3'
   s.add_development_dependency 'minitest-reporters', '~> 1.1'
 
   s.add_development_dependency "sqlite3"

@@ -11,6 +11,7 @@ class App.Views.Shared.Flash extends App.Views.Base
 
   render: ->
     node = $('.flash')
+    node.removeClass('notice').removeClass('alert').removeClass('warning')
     if @notice?
       node.addClass 'notice'
       node.find('p').text @notice

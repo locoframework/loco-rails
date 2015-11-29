@@ -24,6 +24,7 @@ class App.UI.Form
     this._handle()
 
   fill: (attr = null) ->
+    return null if not @obj?
     return null if not @obj.constructor.attributes?
     attributes = {}
     if attr?
@@ -61,12 +62,14 @@ class App.UI.Form
         return
       this._submittingForm false
       clearForm = if @obj.id? then false else true
-      @obj.save (data) =>
+      @obj.save()
+      .then (data) =>
         if data.success
           this._handleSuccess data, clearForm
         else
           @delegator[@callbackFailure]() if @callbackFailure?
           this._renderErrors()
+      .catch (err) => this._connectionError()
 
   _canBeSubmitted: ->
     return false if @submit.hasClass 'active'
@@ -79,7 +82,7 @@ class App.UI.Form
     url = @form.attr('action') + '.json'
     jqxhr = $.post url, @form.serialize()
     jqxhr.always => @submit.removeClass('active').blur()
-    jqxhr.fail => @submit.val @submitVal
+    jqxhr.fail => this._connectionError()
     jqxhr.done (data) =>
       if data.success
         this._handleSuccess data, @form.attr("method") is "POST"
@@ -172,3 +175,9 @@ class App.UI.Form
     @submit.removeClass('success').removeClass('failure').addClass('active').val "Sending..."
     @delegator[@callbackActive]() if @callbackActive?
     this._hideErrors() if hideErrors
+
+  _connectionError: ->
+    @submit.removeClass('active').addClass('failure').val 'Connection Error'
+    setTimeout =>
+      @submit.removeClass('failure').val @submitVal
+    , 3000

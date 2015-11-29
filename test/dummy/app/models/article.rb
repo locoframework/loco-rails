@@ -29,7 +29,7 @@ class Article < ActiveRecord::Base
     def vulgarity_level
       vulgar_word = "fuck"
       if (title.present? && title =~ /#{vulgar_word}/i) || (text.present? && text =~ /#{vulgar_word}/i)
-        errors.add :base, "Post contains strong language."
+        errors.add :base, "Article contains strong language."
       end
     end
 end

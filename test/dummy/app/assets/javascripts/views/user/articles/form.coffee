@@ -27,7 +27,7 @@ class App.Views.User.Articles.Form extends App.Views.Base
           flash = new App.Views.Shared.Flash warning: 'Uuups someone else started editing this article.'
           flash.render()
       when "updated"
-        @article.reload =>
+        @article.reload().then =>
           @changes = @article.changes()
           this._displayChanges()
       when "destroyed"
@@ -38,10 +38,10 @@ class App.Views.User.Articles.Form extends App.Views.Base
     return if data.article_id? and data.article_id isnt @article.id
     switch signal
       when 'Article.Comment created'
-        App.Models.Article.Comment.find {articleId: data.article_id, id: data.id}, (comment) =>
+        App.Models.Article.Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
           this.renderComments [comment]
       when 'Article.Comment updated'
-        App.Models.Article.Comment.find {articleId: data.article_id, id: data.id}, (comment) =>
+        App.Models.Article.Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
           this._renderComment comment
       when 'Article.Comment destroyed'
         $("#comment_#{data.id}").remove()
