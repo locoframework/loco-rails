@@ -8,14 +8,14 @@ class App.Controllers.User.Articles extends App.Controllers.Base
       flash.render()
     @listView = new App.Views.User.Articles.List articles: []
     this.connectWith [App.Models.Article, App.Models.Article.Comment]
-    App.Models.Article.get("all").then (articles) => @listView.renderArticles articles
+    App.Models.Article.get("all").then (resp) => @listView.renderArticles resp.resources
 
   show: ->
     @showView = new App.Views.User.Articles.Show
     this.connectWith [App.Models.Article.Comment]
     App.Models.Article.find(@params.id).then (article) => @showView.renderArticle article
-    App.Models.Article.Comment.all(articleId: @params.id).then (comments) =>
-      @showView.renderComments comments
+    App.Models.Article.Comment.all(articleId: @params.id).then (resp) =>
+      @showView.renderComments resp.resources
 
   new: ->
     view = new App.Views.User.Articles.Form
@@ -24,7 +24,8 @@ class App.Controllers.User.Articles extends App.Controllers.Base
   edit: ->
     view = new App.Views.User.Articles.Form
     App.Models.Article.find(@params.id).then (article) -> view.render article
-    App.Models.Article.Comment.all(articleId: @params.id).then (comments) -> view.renderComments comments
+    App.Models.Article.Comment.all(articleId: @params.id).then (resp) ->
+      view.renderComments resp.resources
 
   receivedSignal: (signal, data) ->
     switch signal

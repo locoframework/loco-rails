@@ -2,7 +2,7 @@ class App.Controllers.Admin.Users extends App.Controllers.Base
   index: ->
     @view = new App.Views.Admin.Users.List users: []
     this.connectWith [App.Models.User]
-    App.Models.User.get("all").then (users) => @view.renderUsers users
+    App.Models.User.get("all").then (resp) => @view.renderUsers resp.resources
 
   show: ->
     view = new App.Views.Admin.Users.Show

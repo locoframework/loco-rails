@@ -3,7 +3,7 @@ class App.Controllers.Main.Pages extends App.Controllers.Base
     @view = new App.Views.Main.Pages.ArticleList
     @view.render()
     this.connectWith [App.Models.Article, App.Models.Article.Comment]
-    App.Models.Article.get('all', page: 1).then (articles) => @view.renderArticles articles
+    App.Models.Article.get('all', page: 1).then (resp) => @view.renderArticles resp.resources
 
   receivedSignal: (signal, data) ->
     switch signal

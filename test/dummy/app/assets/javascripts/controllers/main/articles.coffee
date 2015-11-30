@@ -4,7 +4,8 @@ class App.Controllers.Main.Articles extends App.Controllers.Base
     @view.render()
     this.connectWith [App.Models.Article.Comment]
     App.Models.Article.find(@params.id).then (article) => @view.renderArticle article
-    App.Models.Article.Comment.all(articleId: @params.id).then (comments) => @view.renderComments comments
+    App.Models.Article.Comment.all(articleId: @params.id).then (resp) =>
+      @view.renderComments resp.resources
 
   receivedSignal: (signal, data) ->
     switch signal

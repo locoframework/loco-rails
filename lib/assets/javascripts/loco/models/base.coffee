@@ -91,7 +91,7 @@ class App.Models.Base
     return new App.Models[parts[0]] params if parts.length is 1
     new App.Models[parts[0]][parts[1]] params
 
-  @__page: (i, opts = {}, reqOpts = {}, arr = [], onlyObjs = false) ->
+  @__page: (i, opts = {}, reqOpts = {}, resp = {resources: [], count: 0}) ->
     httpMethod = reqOpts.method || "GET"
     url = reqOpts.url || @__getResourcesUrl(opts)
     data = {}
@@ -112,28 +112,24 @@ class App.Models.Base
           obj = @__initSubclass record
           obj.resource = opts.resource if opts.resource?
           App.IdentityMap.add obj
-          arr.push obj
-        if onlyObjs
-          resolve arr
-        else
-          resolve {objs: arr, count: data.count}
+          resp.resources.push obj
+          resp.count = data.count
+        resolve resp
 
   @__paginate: (opts, reqOpts) ->
     perPage = @__getPaginationPer()
     pageNum = opts.page ? 1
     @__page(pageNum, opts, reqOpts).then (data) =>
-      arr = data.objs
-      count = data.count
-      return Promise.resolve(arr) if opts.page?
-      return Promise.resolve(arr) if count <= perPage
-      max = parseInt count / perPage
-      max += 1 if max isnt count / perPage
-      return Promise.resolve(arr) if max is 1
-      promise = Promise.resolve(arr)
+      return Promise.resolve(data) if opts.page?
+      return Promise.resolve(data) if data.count <= perPage
+      max = parseInt data.count / perPage
+      max += 1 if max isnt data.count / perPage
+      promise = Promise.resolve(data)
+      return promise if max is 1
       for i in [2..max]
         func = (i) =>
           promise = promise.then (arr) =>
-            return @__page i, opts, reqOpts, arr, true
+            return @__page i, opts, reqOpts, data
         func i
       return promise
 
