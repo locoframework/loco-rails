@@ -12,6 +12,7 @@ class App.Wire
 
   setToken: (token) -> @token = token
 
+  getSyncTime: -> @syncTime
   resetSyncTime: -> @syncTime = null
 
   disableNotifications: -> window.clearInterval @pollingInterval
