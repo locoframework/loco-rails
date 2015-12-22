@@ -18,3 +18,5 @@ class App.Services.Date
     str = str.replace '%b', (x) => skope.date.abbr_month_names[@date.getMonth()]
     str = str.replace '%B', (x) => skope.date.month_names[@date.getMonth()]
     str = str.replace '%d', (x) => if @date.getDate() >= 10 then @date.getDate() else "0#{@date.getDate()}"
+    str = str.replace '%H', (x) => @date.getHours()
+    str = str.replace '%M', (x) => @date.getMinutes()

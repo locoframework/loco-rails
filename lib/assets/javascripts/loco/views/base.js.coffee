@@ -12,6 +12,7 @@ class App.Views.Base extends App.Mix App.Mixins.Connectivity
   getController: -> @controller
 
   setView: (key, view) -> @views[key] = view
+  getView: (key) -> @views[key]
   getViews: -> @views
 
   setDelegator: (delegator) -> @delegator = delegator
