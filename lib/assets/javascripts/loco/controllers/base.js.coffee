@@ -6,17 +6,18 @@ class App.Controllers.Base extends App.Mix App.Mixins.Connectivity
     @superController = null
     @params = this.__fetchParams()
 
+  setView: (key, view) -> @views[key] = view
+  getView: (key) -> @views[key]
   getViews: -> @views
 
   setSubController: (cntrlr) -> @subController = cntrlr
-  setSuperController: (cntrlr) -> @superController = cntrlr
-
   getSubController: -> @subController
+
+  setSuperController: (cntrlr) -> @superController = cntrlr
   getSuperController: -> @superController
 
   setResource: (name) -> this.setScope name
   setScope: (name) -> App.Env.scope = name
-
 
   __fetchParams: ->
     params = {}
