@@ -1,0 +1,1 @@
+Loco::Config.configure silence_logger: false
