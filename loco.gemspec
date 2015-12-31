@@ -20,16 +20,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '~> 4.2'
   s.add_dependency 'coffee-rails', '~> 4.1'
 
-  s.add_development_dependency 'jquery-rails', '~> 4.0'
-  s.add_development_dependency 'turbolinks', '~> 2.5'
-  s.add_development_dependency 'jbuilder', '~> 2.0'
-  s.add_development_dependency 'eco', '~> 1.0'
-
   s.add_development_dependency 'minitest-reporters', '~> 1.1'
 
-  s.add_development_dependency "sqlite3"
+  s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'bcrypt', '~> 3.1'
-  s.add_development_dependency 'will_paginate', '~> 3.0'
   s.add_development_dependency 'hirb', '~> 0.7'
   s.add_development_dependency 'sass-rails', '~> 5.0'
+  s.add_development_dependency 'capybara', '~> 2.5.0'
+  s.add_development_dependency 'launchy', '~> 2.4.3'
 end

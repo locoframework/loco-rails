@@ -4,14 +4,23 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
 ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
 ActiveRecord::Migrator.migrations_paths << File.expand_path('../../db/migrate', __FILE__)
-require "rails/test_help"
+require 'rails/test_help'
+require 'minitest/spec'
+require 'minitest/reporters'
+require 'capybara/rails'
 
-require "minitest/reporters"
+class IT < ActionDispatch::IntegrationTest
+  extend MiniTest::Spec::DSL
+  include Capybara::DSL
+end
+
+Capybara.javascript_driver = :webkit
+Capybara.current_driver = Capybara.javascript_driver
+Capybara.default_max_wait_time = 5
 
 Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(color: true)]
 
-# Filter out Minitest backtrace while allowing backtrace from other libraries
-# to be shown.
+# Filter out Minitest backtrace while allowing backtrace from other libraries to be shown.
 Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
 # Load support files

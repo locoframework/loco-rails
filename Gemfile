@@ -21,4 +21,14 @@ end
 
 group :development, :test do
   gem 'jasmine', '~> 2.3'  # rake needs it here
+
+  # integration tests need below gems in test group
+  gem 'jquery-rails', '~> 4.0'
+  gem 'turbolinks', '~> 2.5'
+  gem 'jbuilder', '~> 2.0'
+  gem 'eco', '~> 1.0'
+  gem 'will_paginate', '~> 3.0'
+
+  gem 'capybara-webkit', '~> 1.7.1'
+  gem 'capybara_minitest_spec', '~> 1.0.5'
 end

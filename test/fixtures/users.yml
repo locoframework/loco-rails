@@ -1,0 +1,5 @@
+user_zbig:
+  username: zbig
+  email: zbigniew.humeniuk@example.com
+  password_digest: <%= BCrypt::Password.create("secret", cost: 4) %>
+  confirmed_at: <%= 7.days.ago %>

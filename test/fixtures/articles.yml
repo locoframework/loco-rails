@@ -1,3 +1,5 @@
 one:
   title: A Guide to Testing Rails Applications
   text: "Testing support was woven into the Rails fabric from the beginning. It wasn't an \"oh! let's bolt on support for running tests because they're new and cool\" epiphany. Just about every Rails application interacts heavily with a database and, as a result, your tests will need a database to interact with as well. To write efficient tests, you'll need to understand how to set up this database and populate it with sample data."
+  user: user_zbig
+  published_at: <%= 1.day.ago %>
