@@ -13,6 +13,7 @@ class App.Models.Article.Comment extends App.Models.Base
     text:
       validations:
         presence: true
+        vulgarity: true
     articleId:
       type: "Int"
       validations:
