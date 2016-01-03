@@ -108,12 +108,14 @@ class App.Models.Base
     return new Promise (resolve, reject) =>
       jqxhr.fail (xhr) -> reject xhr
       jqxhr.done (data) =>
+        resp.count = data.count
+        for key, val of data
+          resp[key] = val if ['resources', 'count'].indexOf(key) is -1
         for record in data.resources
           obj = @__initSubclass record
           obj.resource = opts.resource if opts.resource?
           App.IdentityMap.add obj
           resp.resources.push obj
-          resp.count = data.count
         resolve resp
 
   @__paginate: (opts, reqOpts) ->
