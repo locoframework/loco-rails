@@ -13,6 +13,7 @@ class App.Models.Base
   #       remoteName: "updated_at"
   #       validations:
   #         presence: true
+  @identity = "Base"
 
   constructor: (data = {}) ->
     @id = null
