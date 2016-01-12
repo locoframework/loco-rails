@@ -13,7 +13,6 @@ class App.Models.Base
   #       remoteName: "updated_at"
   #       validations:
   #         presence: true
-  @identity = "Base"
 
   constructor: (data = {}) ->
     @id = null
@@ -50,9 +49,9 @@ class App.Models.Base
   @put: (action, opts = {}) -> @__send "PUT", action, opts
   @delete: (action, opts = {}) -> @__send "DELETE", action, opts
 
-  @getIdentity: -> if @identity? then @identity else @name
+  @getIdentity: -> if @identity? then @identity else throw("Specify Model's @identity!")
 
-  @getRemoteName: -> if @remoteName? then @remoteName else @name
+  @getRemoteName: -> if @remoteName? then @remoteName else @getIdentity()
 
   @getAttribRemoteName: (attrib) ->
     return null if not this.attributes?
