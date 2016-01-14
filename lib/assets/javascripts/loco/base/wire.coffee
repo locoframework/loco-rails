@@ -27,6 +27,7 @@ class App.Wire
       notifications = data[0]
       return if notifications.length is 0
       this._processNotification notification for notification in notifications
+      this._check() if notifications.length is 100
 
   _processNotification: (notification) ->
     console.log notification if @log

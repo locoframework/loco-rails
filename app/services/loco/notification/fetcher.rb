@@ -5,7 +5,7 @@ module Loco
       @permissions = permissions
       @recipient_token = recipient_token
       @notifications = nil
-      @max_size = 10
+      @max_size = 100
     end
 
     def formatted_notifications
