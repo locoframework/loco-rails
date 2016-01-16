@@ -1,7 +1,7 @@
 class App.Models.Base
   # Ex.
   # class App.Models.Post extends App.Models.Base
-  #   @identity = "Post"  # required for nested models e.g. App.Models.Post.Comment
+  #   @identity = "Post"  # required
   #
   #   @resources =
   #     url: "/posts"  # optional

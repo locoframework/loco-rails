@@ -8,7 +8,7 @@ class App.Wire
   connect: ->
     @pollingInterval = setInterval =>
       this._check()
-    , 10000
+    , 3000
 
   setToken: (token) -> @token = token
 

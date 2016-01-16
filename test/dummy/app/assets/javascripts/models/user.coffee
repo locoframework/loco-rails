@@ -1,4 +1,5 @@
 class App.Models.User extends App.Models.Base
+  @identity = "User"
   @resources =
     url: "/users"
     admin:

@@ -1,4 +1,5 @@
 class App.Models.Article extends App.Models.Base
+  @identity = "Article"
   @resources =
     url: '/user/articles', paginate: {per: 5}
     main:
