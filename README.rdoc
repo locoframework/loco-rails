@@ -1,3 +1,11 @@
-= Loco
+# README
+Loco is ...
 
-This project rocks and uses MIT-LICENSE.
+### Ruby version
+2.2.4
+
+### How to run the test suite
+```sh
+$ bundle exec rake
+$ bundle exec rake app:jasmine:ci
+```

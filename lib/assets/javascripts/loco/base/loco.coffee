@@ -1,10 +1,12 @@
 class App.Loco
   constructor: (opts={}) ->
+    @wire = null
+    @locale = null
     @initTurbolinks = if opts.turbolinks? and opts.turbolinks then true else false
     @initWire = if opts.notifications? and opts.notifications then true else false
-    @wire = null
     @logNotifications = if opts.logNotifications? and opts.logNotifications then true else false
-    @locale = opts.locale ? 'en'
+    @pollingTime = opts.pollingTime ? 3000
+    this.setLocale opts.locale ? 'en'
 
   getWire: -> @wire
 
@@ -14,7 +16,7 @@ class App.Loco
   init: ->
     App.Env.loco = this
     if @initWire
-      @wire = new App.Wire log: @logNotifications
+      @wire = new App.Wire log: @logNotifications, pollingTime: @pollingTime
       @wire.connect()
     if @initTurbolinks
       jQuery(document).on "page:change", => this.flow()

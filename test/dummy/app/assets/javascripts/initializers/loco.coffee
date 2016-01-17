@@ -9,5 +9,11 @@ App.Views.Admin =
 App.Views.Layouts = {}
 App.Views.Shared = {}
 
-loco = new App.Loco turbolinks: true, notifications: true, logNotifications: true, locale: 'en'
+loco = new App.Loco
+  turbolinks: true
+  notifications: true
+  pollingTime: 3000
+  logNotifications: true
+  locale: 'en'
+
 loco.init()

@@ -3,17 +3,26 @@ class App.Wire
     @syncTime = null
     @token = null
     @pollingInterval = null
+    @pollingTime = opts.pollingTime
     @log = opts.log
-
-  connect: ->
-    @pollingInterval = setInterval =>
-      this._check()
-    , 3000
 
   setToken: (token) -> @token = token
 
   getSyncTime: -> @syncTime
   resetSyncTime: -> @syncTime = null
+
+  getPollingTime: -> @pollingTime
+  setPollingTime: (val) ->
+    @pollingTime = val
+    this.disableNotifications()
+    this.connect()
+
+  getPollingInterval: -> @pollingInterval
+
+  connect: ->
+    @pollingInterval = setInterval =>
+      this._check()
+    , @pollingTime
 
   disableNotifications: -> window.clearInterval @pollingInterval
 
