@@ -5,13 +5,13 @@ require "loco/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = "loco"
+  s.name        = "loco-rails"
   s.version     = Loco::VERSION
-  s.authors     = ["himn1"]
+  s.authors     = ["Zbigniew Humeniuk"]
   s.email       = ["zbigniew.humeniuk@gmail.com"]
-  s.homepage    = ""
-  s.summary     = "Summary of Loco."
-  s.description = "Description of Loco."
+  s.homepage    = "http://loco-rails.org"
+  s.summary     = "Framework on top of Rails."
+  s.description = "Rails is awesome, but modern web needs LOCO-motive."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
@@ -22,10 +22,10 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'minitest-reporters', '~> 1.1'
 
-  s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'sqlite3', '~> 1.3'
   s.add_development_dependency 'bcrypt', '~> 3.1'
   s.add_development_dependency 'hirb', '~> 0.7'
   s.add_development_dependency 'sass-rails', '~> 5.0'
-  s.add_development_dependency 'capybara', '~> 2.5.0'
-  s.add_development_dependency 'launchy', '~> 2.4.3'
+  s.add_development_dependency 'capybara', '~> 2.5'
+  s.add_development_dependency 'launchy', '~> 2.4'
 end

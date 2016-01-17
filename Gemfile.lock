@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    loco (0.0.1)
+    loco-rails (0.0.1)
       coffee-rails (~> 4.1)
       rails (~> 4.2)
 
@@ -184,7 +184,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails (~> 4.0)
   launchy (~> 2.4.3)
-  loco!
+  loco-rails!
   minitest-reporters (~> 1.1)
   rails-assets-lie (~> 3.0.1)!
   rails-assets-underscore (~> 1.8.3)!

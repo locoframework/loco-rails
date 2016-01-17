@@ -7,3 +7,4 @@ test/dummy/log/*.log
 test/dummy/tmp/
 test/dummy/.sass-cache
 .DS_Store
+loco-rails-*.gem
