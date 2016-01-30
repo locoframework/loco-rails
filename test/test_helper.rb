@@ -10,11 +10,10 @@ require 'minitest/reporters'
 require 'capybara/rails'
 
 class IT < ActionDispatch::IntegrationTest
-  extend MiniTest::Spec::DSL
   include Capybara::DSL
 end
 
-Capybara.javascript_driver = :webkit
+Capybara.javascript_driver = ENV['CAPYBARA_DRIVER'] ? ENV['CAPYBARA_DRIVER'].to_sym : :selenium
 Capybara.current_driver = Capybara.javascript_driver
 Capybara.default_max_wait_time = 5
 
