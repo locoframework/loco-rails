@@ -27,8 +27,7 @@ class Admin::UsersController < AdminController
 
   def update
     if @user.update user_params
-      if @user.confirmed?
-        connection = Connection.for_obj(@user).last
+      if @user.confirmed? && connection = Connection.for_obj(@user).last
         emit @user, :confirmed, for: connection.token
         connection.destroy
       end

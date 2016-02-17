@@ -3,6 +3,9 @@ class App.Views.Admin.Users.List extends App.Views.Base
     super opts
     @users = opts.users
 
+  render: ->
+    $("table tbody").empty()
+
   renderUsers: (users, order = 'append') ->
     for user in users
       if order is 'append'

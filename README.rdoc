@@ -2,10 +2,10 @@
 Loco is ...
 
 ### Ruby version
-2.2.4
+Specified in .ruby-version file
 
 ### How to run the test suite
 ```sh
-$ CAPYBARA_DRIVER=selenium bundle exec rake
+$ bundle exec rake
 $ bundle exec rake app:jasmine:ci
 ```

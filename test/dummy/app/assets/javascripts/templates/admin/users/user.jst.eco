@@ -1,7 +1,7 @@
 <tr id="user_<%= @user.id %>">
   <td><%= @user.email %></td>
   <td><%= @user.username %></td>
-  <td><%= if @user.confirmed then "Yes" else "No" %></td>
+  <td class='confirmed'><%= if @user.confirmed then "Yes" else "No" %></td>
   <td>
     <a href="/admin/users/<%= @user.id %>">Show</a> |
     <a href="/admin/users/<%= @user.id %>/edit">Edit</a> |

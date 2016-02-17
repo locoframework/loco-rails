@@ -3,3 +3,8 @@ user_zbig:
   email: zbigniew.humeniuk@example.com
   password_digest: <%= BCrypt::Password.create("secret", cost: 4) %>
   confirmed_at: <%= 7.days.ago %>
+
+user_jane:
+  username: jane
+  email: jane@example.com
+  password_digest: <%= BCrypt::Password.create("secret", cost: 4) %>

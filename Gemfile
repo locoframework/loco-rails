@@ -10,9 +10,6 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-# To use a debugger
-# gem 'byebug', group: [:development, :test]
-
 source 'https://rails-assets.org' do
   gem 'rails-assets-underscore', "~> 1.8.3"
   gem 'rails-assets-velocity', '~> 1.2.2'
@@ -28,6 +25,4 @@ group :development, :test do
   gem 'jbuilder', '~> 2.0'
   gem 'eco', '~> 1.0'
   gem 'will_paginate', '~> 3.0'
-
-  gem 'capybara-webkit', '~> 1.8.0'
 end

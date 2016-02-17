@@ -1,9 +1,7 @@
 $:.push File.expand_path("../lib", __FILE__)
 
-# Maintain your gem's version:
 require "loco/version"
 
-# Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = "loco-rails"
   s.version     = Loco::VERSION
@@ -21,7 +19,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'coffee-rails', '~> 4.1'
 
   s.add_development_dependency 'minitest-reporters', '~> 1.1'
-
   s.add_development_dependency 'sqlite3', '~> 1.3'
   s.add_development_dependency 'bcrypt', '~> 3.1'
   s.add_development_dependency 'hirb', '~> 0.7'
