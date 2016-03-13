@@ -26,4 +26,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'capybara', '~> 2.6.2'
   s.add_development_dependency 'launchy', '~> 2.4'
   s.add_development_dependency 'selenium-webdriver', '~> 2.50.0'
+  s.add_development_dependency 'database_cleaner', '~> 1.5.1'
 end

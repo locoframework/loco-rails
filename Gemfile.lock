@@ -65,6 +65,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
+    database_cleaner (1.5.1)
     eco (1.0.0)
       coffee-script
       eco-source
@@ -181,6 +182,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt (~> 3.1)
   capybara (~> 2.6.2)
+  database_cleaner (~> 1.5.1)
   eco (~> 1.0)
   hirb (~> 0.7)
   jasmine (~> 2.3)

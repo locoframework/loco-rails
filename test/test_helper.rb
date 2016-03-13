@@ -5,6 +5,7 @@ ActiveRecord::Migrator.migrations_paths << File.expand_path('../../db/migrate', 
 require 'rails/test_help'
 require 'minitest/reporters'
 require 'capybara/rails'
+require 'database_cleaner'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
@@ -23,10 +24,19 @@ Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(color: true)]
 # Filter out Minitest backtrace while allowing backtrace from other libraries to be shown.
 Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
-# Make all database transactions use the same thread
-ActiveRecord::ConnectionAdapters::ConnectionPool.class_eval do
-  def current_connection_id
-    Thread.main.object_id
+DatabaseCleaner.strategy = :truncation
+
+class ActiveSupport::TestCase
+  self.use_transactional_fixtures = false
+
+  fixtures :all
+
+  def setup
+    DatabaseCleaner.start
+  end
+
+  def teardown
+    DatabaseCleaner.clean
   end
 end
 

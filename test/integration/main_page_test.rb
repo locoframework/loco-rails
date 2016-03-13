@@ -1,7 +1,8 @@
 require 'test_helper'
 
 class MainPageTest < IT
-  setup do
+  def setup
+    super
     visit '/'
   end
 

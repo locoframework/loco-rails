@@ -2,6 +2,7 @@ require 'test_helper'
 
 class AdminPanelTest < IT
   def setup
+    super
     sign_in
   end
 
