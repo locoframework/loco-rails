@@ -26,6 +26,25 @@ class User::ArticlesTest < IT
     assert page.has_content? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
   end
 
+  test "should publish article" do
+    article = create_article_for :user_jane
+    within "#article_#{article.id}" do
+      click_link 'Show'
+    end
+    click_link 'Publish'
+    assert page.has_content? 'Published!'
+  end
+
+  test "should update published on articles list" do
+    article = create_article_for :user_jane
+    visit '/user/articles'
+    article.publish
+    emit article, :updated, for: [users(:user_jane)]
+    within "#article_#{article.id} td.published" do
+      assert page.has_content? "yes"
+    end
+  end
+
   private
 
     def try_add_invalid_article
@@ -45,5 +64,6 @@ class User::ArticlesTest < IT
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
       }).tap{ |a| a.save! }
       emit article, :created, for: [users(user_name)]
+      article
     end
 end
