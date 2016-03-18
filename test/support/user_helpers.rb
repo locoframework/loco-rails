@@ -11,4 +11,13 @@ module UserHelpers
     fill_in 'Password', with: pass
     click_button 'Sign In'
   end
+
+  def update_article name
+    articles(name).tap do |a|
+      a.title = 'WiAR'
+      a.text = 'Lorem Ipsum II'
+      a.save!
+    end
+    emit articles(name), :updated, for: [users(:user_zbig)]
+  end
 end

@@ -17,7 +17,7 @@ class App.Views.User.Articles.Form extends App.Views.Base
     if comments.length is 0
       $("#comments").append '<p id="no_comments">No comments.</p>'
       return
-    $('no_comments').remove()
+    $('#no_comments').remove()
     this._renderComment comment for comment in comments
 
   receivedSignal: (signal, data) ->

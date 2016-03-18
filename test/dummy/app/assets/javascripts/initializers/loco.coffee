@@ -15,5 +15,8 @@ loco = new App.Loco
   pollingTime: 3000
   logNotifications: true
   locale: 'en'
+  postInit: ->
+    time = if $('body').data('rails-env') is 'test' then 1000 else 3000
+    App.Env.loco.getWire().setPollingTime time
 
 loco.init()

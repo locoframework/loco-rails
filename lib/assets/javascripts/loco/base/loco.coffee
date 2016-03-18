@@ -6,6 +6,7 @@ class App.Loco
     @initWire = if opts.notifications? and opts.notifications then true else false
     @logNotifications = if opts.logNotifications? and opts.logNotifications then true else false
     @pollingTime = opts.pollingTime ? 3000
+    @postInit = opts.postInit
     this.setLocale opts.locale ? 'en'
 
   getWire: -> @wire
@@ -19,9 +20,13 @@ class App.Loco
       @wire = new App.Wire log: @logNotifications, pollingTime: @pollingTime
       @wire.connect()
     if @initTurbolinks
-      jQuery(document).on "page:change", => this.flow()
+      jQuery(document).on "page:change", =>
+        this.flow()
+        @postInit() if @postInit?
     else
-      jQuery => this.flow()
+      jQuery =>
+        this.flow()
+        @postInit() if @postInit?
 
   flow: ->
     App.IdentityMap.clear()
