@@ -13,7 +13,7 @@ class User::ArticleEditPageTest < IT
 
   test "should show info about editing" do
     sleep 0.5
-    emit articles(:two), :updating, for: [users(:user_zbig)], data: {mark: Time.current.to_f.to_s}
+    emit articles(:two), :updating, data: {mark: Time.current.to_f.to_s}, for: [users(:user_zbig)]
     assert page.has_content? 'Uuups someone else started editing this article.'
   end
 

@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class Main::ArticlePageTest < IT
+  include Loco::Emitter
+
   def setup
     super
     visit '/'
@@ -22,6 +24,12 @@ class Main::ArticlePageTest < IT
     assert page.has_selector? "input[type=submit][value='#{txt}']"
     assert page.has_content? '1 comment'
     assert page.has_content? 'Nice article man!'
+  end
+
+  test "should show info about editing" do
+    sleep 0.5
+    emit articles(:one), :updating, data: {mark: Time.current.to_f.to_s}
+    assert page.has_content? 'Author is currently editing article. Be aware of possible changes.'
   end
 
   private

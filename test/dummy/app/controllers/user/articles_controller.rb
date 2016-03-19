@@ -28,7 +28,7 @@ class User::ArticlesController < UserController
 
   def edit
     @mark = Time.current.to_f.to_s
-    emit @article, :updating, for: [current_user], data: {mark: @mark}
+    emit @article, :updating, data: {mark: @mark}, for: [@article.published? ? :all : current_user]
   end
 
   def create
