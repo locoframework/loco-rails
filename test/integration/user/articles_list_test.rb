@@ -10,7 +10,7 @@ class User::ArticlesListTest < IT
     sign_in_user 'zbigniew.humeniuk@example.com', 'secret'
   end
 
-  test "should update the list to include a new article" do
+  test "should auto update the list to include a recently added article" do
     create_article_for :user_zbig
     assert page.has_content? 'Article #1'
     assert page.has_content? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
@@ -35,6 +35,24 @@ class User::ArticlesListTest < IT
     title = articles(:one).title
     destroy_article :one
     assert_not page.has_content? title
+  end
+
+  test "should update number of comments if one was added" do
+    create_comment_for_article :one
+    within "#article_#{articles(:one).id} td.comments_quantity" do
+      assert page.has_content? '1'
+    end
+  end
+
+  test "should update number of comments if one was deleted" do
+    comment = create_comment_for_article :one
+    within "#article_#{articles(:one).id} td.comments_quantity" do
+      assert page.has_content? '1'
+    end
+    destroy_comment comment
+    within "#article_#{articles(:one).id} td.comments_quantity" do
+      assert page.has_content? '0'
+    end
   end
 
   private

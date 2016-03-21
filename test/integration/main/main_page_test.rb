@@ -2,6 +2,7 @@ require 'test_helper'
 
 class Main::MainPageTest < IT
   include Loco::Emitter
+  include CommonHelpers
 
   def setup
     super
@@ -59,14 +60,6 @@ class Main::MainPageTest < IT
     def publish_article name
       articles(name).publish
       emit articles(name), :published, data: {id: articles(name).id}
-    end
-
-    def create_comment_for_article name, opts = {}
-      author = opts[:author] || 'Ryan'
-      text = opts[:text] || 'Some nice thoughts dude'
-      comment = articles(name).comments.create! author: author, text: text
-      emit comment, :created, data: {article_id: comment.article_id}
-      comment
     end
 
     def destroy_comment comment

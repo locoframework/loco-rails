@@ -40,7 +40,7 @@ class App.Views.Main.Articles.Show extends App.Views.Base
         flash = new App.Views.Shared.Flash warning: txt
         flash.render()
       when 'updated'
-        @article.reload (newVer) =>
+        @article.reload().then =>
           @article.applyChanges()
           this.renderArticle()
       else

@@ -38,7 +38,7 @@ class App.Controllers.User.Articles extends App.Controllers.Base
       when "Article destroyed"
         @listView.deleteArticle data.id
       when "Article.Comment created"
-        return if data.article_id? and data.article_id isnt @params.id
+        return if @params.id? and data.article_id? and data.article_id isnt @params.id
         if @listView?
           @listView.commentsQuantityChangedForArticle data.article_id, 1
         else if @showView?
