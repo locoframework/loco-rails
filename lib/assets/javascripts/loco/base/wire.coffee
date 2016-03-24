@@ -5,6 +5,7 @@ class App.Wire
     @pollingInterval = null
     @pollingTime = opts.pollingTime
     @log = opts.log
+    @ssl = opts.ssl
 
   setToken: (token) -> @token = token
 
@@ -19,6 +20,9 @@ class App.Wire
 
   getPollingInterval: -> @pollingInterval
 
+  getSSL: -> @ssl
+  setSSL: (val) -> @ssl = val
+
   connect: ->
     @pollingInterval = setInterval =>
       this._check()
@@ -28,7 +32,7 @@ class App.Wire
 
   _check: ->
     return if Object.keys(App.IdentityMap.imap).length is 0 and not @token? and @syncTime?
-    jqxhr = $.ajax method: "GET", url: "/notification-center", data: this._requestParams()
+    jqxhr = $.ajax method: "GET", url: this._getURL(), data: this._requestParams()
     jqxhr.always ->
     jqxhr.fail ->
     jqxhr.done (data) =>
@@ -75,3 +79,9 @@ class App.Wire
     params = {synced_at: @syncTime}
     if @token? then params["token"] = @token
     params
+
+  _getURL: ->
+    [protocol, _, host] = window.location.href.split '/'
+    if @ssl?
+      protocol = if @ssl then 'https:' else "http:"
+    "#{protocol}//#{host}/notification-center"
