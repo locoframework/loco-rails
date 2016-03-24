@@ -20,4 +20,9 @@ module UserHelpers
     end
     emit articles(name), :updated, for: [users(:user_zbig)]
   end
+
+  def destroy_article name
+    articles(name)
+    emit articles(name), :destroyed, for: [articles(name).user]
+  end
 end

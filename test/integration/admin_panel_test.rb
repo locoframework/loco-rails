@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class AdminPanelTest < IT
+  include Loco::Emitter
+
   def setup
     super
     sign_in
@@ -19,6 +21,13 @@ class AdminPanelTest < IT
     assert page.has_selector?("input[type=submit][value='User updated!']")
     click_on 'Back'
     assert_equal 'Yes', find("#user_#{users(:user_jane).id}").find('td.confirmed').text
+  end
+
+  test "should auto load recently added user" do
+    user = User.create! email: 'david@example.com', username: 'david',
+      password: 'secret', password_confirmation: 'secret'
+    emit user, :created, for: Admin
+    assert page.has_content? 'david@example.com'
   end
 
   private

@@ -23,7 +23,7 @@ class User::ArticleEditPageTest < IT
     assert page.has_selector? "input[type=submit][value='Article updated!']"
   end
 
-  test "should allow to update the data of currently updated article on edit page" do
+  test "should allow to update fields in order to have updated values" do
     sleep 0.5
     update_article :two
     within "div[data-attr='title']" do
@@ -36,5 +36,38 @@ class User::ArticleEditPageTest < IT
       update_value_attr_for '#article_text'
       assert page.has_selector? "textarea[value='Lorem Ipsum II']"
     end
+  end
+
+  test "should auto load new comments" do
+    create_comment_for_article :two
+    within "#comments" do
+      assert page.has_content? 'Some nice thoughts dude'
+    end
+  end
+
+  test "should auto update comment" do
+    comment = create_comment_for_article :two
+    update_comment comment
+    within "#comments" do
+      assert page.has_content? 'Some nice thoughts dude (edited)'
+    end
+  end
+
+  test "should auto remove comment if was destroyed" do
+    comment = create_comment_for_article :two
+    within "#comments" do
+      assert page.has_content? 'Some nice thoughts dude'
+    end
+    destroy_comment comment
+    sleep 1
+    within "#comments" do
+      assert_not page.has_content? 'Some nice thoughts dude'
+    end
+  end
+
+  test "should auto redirect to list of articles if article has been deleted" do
+    sleep 0.5
+    destroy_article :two
+    assert page.has_content? 'Article has been deleted.'
   end
 end
