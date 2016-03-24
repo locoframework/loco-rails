@@ -3,9 +3,10 @@ class App.Wire
     @syncTime = null
     @token = null
     @pollingInterval = null
-    @pollingTime = opts.pollingTime
-    @log = opts.log
+    @pollingTime = opts.pollingTime ? 3000
+    @log = if opts.log? and opts.log then true else false
     @ssl = opts.ssl
+    @location = opts.location ? 'notification-center'
 
   setToken: (token) -> @token = token
 
@@ -22,6 +23,9 @@ class App.Wire
 
   getSSL: -> @ssl
   setSSL: (val) -> @ssl = val
+
+  getLocation: -> @location
+  setLocation: (val) -> @location = val
 
   connect: ->
     @pollingInterval = setInterval =>
@@ -84,4 +88,4 @@ class App.Wire
     [protocol, _, host] = window.location.href.split '/'
     if @ssl?
       protocol = if @ssl then 'https:' else "http:"
-    "#{protocol}//#{host}/notification-center"
+    "#{protocol}//#{host}/#{@location}"

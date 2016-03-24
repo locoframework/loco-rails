@@ -24,3 +24,8 @@ describe "App.Wire", ->
       @wire.setSSL true
       [protocol] = @wire._getURL().split '/'
       expect(protocol).toEqual 'https:'
+
+    it "return correct notifications's location", ->
+      @wire.setLocation 'nc'
+      [_, _, _, location] = @wire._getURL().split '/'
+      expect(location).toEqual 'nc'

@@ -4,9 +4,10 @@ class App.Loco
     @locale = null
     @initTurbolinks = if opts.turbolinks? and opts.turbolinks then true else false
     @initWire = if opts.notifications? and opts.notifications then true else false
-    @logNotifications = if opts.logNotifications? and opts.logNotifications then true else false
-    @pollingTime = opts.pollingTime ? 3000
+    @logNotifications = opts.logNotifications
+    @pollingTime = opts.pollingTime
     @notificationsSSL = opts.notificationsSSL
+    @notificationsLocation = opts.notificationsLocation
     @postInit = opts.postInit
     this.setLocale opts.locale ? 'en'
 
@@ -18,7 +19,11 @@ class App.Loco
   init: ->
     App.Env.loco = this
     if @initWire
-      @wire = new App.Wire log: @logNotifications, pollingTime: @pollingTime, ssl: @notificationsSSL
+      @wire = new App.Wire
+        log: @logNotifications
+        pollingTime: @pollingTime
+        ssl: @notificationsSSL
+        location: @notificationsLocation
       @wire.connect()
     if @initTurbolinks
       jQuery(document).on "page:change", =>
