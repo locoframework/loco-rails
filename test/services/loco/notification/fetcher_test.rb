@@ -6,6 +6,16 @@ module Loco
       @emitter = Class.new{ include Loco::Emitter }.new
     end
 
+    test "should set max_size via Loco::Config" do
+      Loco::Config.configure notifications_size: 1000
+      assert_equal 1000, Notification::Fetcher.new(synced_at: 3.seconds.ago.iso8601(6)).max_size
+    end
+
+    test "should set max_size on initialization" do
+      opts = {synced_at: 3.seconds.ago.iso8601(6), max_size: 101}
+      assert_equal 101, Notification::Fetcher.new(opts).max_size
+    end
+
     test "should not return addressed notifications without passing correct permissions" do
       fetcher = Notification::Fetcher.new synced_at: 3.seconds.ago.iso8601(6)
       @emitter.emit articles(:one), :published, for: admins(:one)

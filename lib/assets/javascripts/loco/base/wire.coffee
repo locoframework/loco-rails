@@ -7,6 +7,7 @@ class App.Wire
     @log = if opts.log? and opts.log then true else false
     @ssl = opts.ssl
     @location = opts.location ? 'notification-center'
+    @size = opts.size ? 100
 
   setToken: (token) -> @token = token
 
@@ -27,6 +28,9 @@ class App.Wire
   getLocation: -> @location
   setLocation: (val) -> @location = val
 
+  getSize: -> @size
+  setSize: (val) -> @size = val
+
   connect: ->
     @pollingInterval = setInterval =>
       this._check()
@@ -44,7 +48,7 @@ class App.Wire
       notifications = data[0]
       return if notifications.length is 0
       this._processNotification notification for notification in notifications
-      this._check() if notifications.length is 100
+      this._check() if notifications.length is @size
 
   _processNotification: (notification) ->
     console.log notification if @log

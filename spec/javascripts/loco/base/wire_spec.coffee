@@ -29,3 +29,8 @@ describe "App.Wire", ->
       @wire.setLocation 'nc'
       [_, _, _, location] = @wire._getURL().split '/'
       expect(location).toEqual 'nc'
+
+  describe "#setSize", ->
+    it "can set max size of notifications", ->
+      @wire.setSize 10
+      expect(@wire.getSize()).toEqual 10

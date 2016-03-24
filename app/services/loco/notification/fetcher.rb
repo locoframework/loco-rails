@@ -1,11 +1,13 @@
 module Loco
   class Notification::Fetcher
-    def initialize synced_at:, permissions: [], recipient_token: nil
+    attr_accessor :max_size
+
+    def initialize synced_at:, permissions: [], recipient_token: nil, max_size: nil
       @synced_at = synced_at
       @permissions = permissions
       @recipient_token = recipient_token
       @notifications = nil
-      @max_size = 100
+      @max_size = max_size || Loco::Config.notifications_size
     end
 
     def formatted_notifications
@@ -17,8 +19,6 @@ module Loco
     end
 
     private
-
-      def max_size; @max_size end
 
       def sync_time
         @synced_at.present? ? Time.zone.parse(@synced_at) : Time.current
