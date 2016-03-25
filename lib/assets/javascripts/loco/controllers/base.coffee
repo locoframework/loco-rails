@@ -27,8 +27,8 @@ class App.Controllers.Base extends App.Mix App.Mixins.Connectivity
     splitUrl = window.location.href.split '?'
     if splitUrl.length is 1
       return params
-    paramsString = _.last splitUrl
-    paramsArray = _.map paramsString.split('&'), (s) -> s.split '='
+    paramsString = splitUrl[splitUrl.length - 1]
+    paramsArray = App.Utils.Array.map paramsString.split('&'), (s) -> s.split '='
     for arr in paramsArray
       key = decodeURIComponent arr[0]
       val = decodeURIComponent arr[1]

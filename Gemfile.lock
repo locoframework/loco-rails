@@ -126,7 +126,6 @@ GEM
       sprockets-rails
     rails-assets-jquery (2.1.4)
     rails-assets-lie (3.0.1)
-    rails-assets-underscore (1.8.3)
     rails-assets-velocity (1.2.3)
       rails-assets-jquery
     rails-deprecated_sanitizer (1.0.3)
@@ -192,7 +191,6 @@ DEPENDENCIES
   loco-rails!
   minitest-reporters (~> 1.1)
   rails-assets-lie (~> 3.0.1)!
-  rails-assets-underscore (~> 1.8.3)!
   rails-assets-velocity (~> 1.2.2)!
   sass-rails (~> 5.0)
   selenium-webdriver (~> 2.50.0)

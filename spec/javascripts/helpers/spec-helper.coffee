@@ -4,7 +4,7 @@ beforeEach ->
   this.paramsStrToHash = (str) ->
     params = {}
     paramsArray = str.split('&')
-    paramsArray = _.map paramsArray, (s) -> s.split '='
+    paramsArray = App.Utils.Array.map paramsArray, (s) -> s.split '='
     for arr in paramsArray
       key = decodeURIComponent arr[0]
       val = decodeURIComponent arr[1]

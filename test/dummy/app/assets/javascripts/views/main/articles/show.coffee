@@ -49,12 +49,12 @@ class App.Views.Main.Articles.Show extends App.Views.Base
   _commentReceivedSignal: (signal, data) ->
     switch signal
       when 'updated'
-        comment = _.find @comments, (c) -> c.id is data.id
+        comment = App.Utils.Collection.find @comments, (c) -> c.id is data.id
         comment.reload =>
           comment.applyChanges()
           $("#comment_#{comment.id}").replaceWith JST["templates/main/comments/comment"] {comment: comment}
       when 'destroyed'
-        comment = _.find @comments, (c) -> c.id is data.id
+        comment = App.Utils.Collection.find @comments, (c) -> c.id is data.id
         @comments.splice @comments.indexOf(comment), 1
         $("#comment_#{comment.id}").remove()
         this._updateCommentsQuantity()

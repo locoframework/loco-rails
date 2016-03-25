@@ -35,7 +35,7 @@ class App.IdentityMap
       @imap[identity] = {}
     if not @imap[identity]["collection"]?
       @imap[identity]["collection"] = []
-    return if _.indexOf(@imap[identity]["collection"], opts.to) isnt -1
+    return if @imap[identity]["collection"].indexOf(opts.to) isnt -1
     @imap[identity]["collection"].push opts.to
 
   @all: (identity) ->

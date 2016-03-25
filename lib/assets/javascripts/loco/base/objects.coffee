@@ -19,3 +19,4 @@ window.App =
   Presenters: {}
   Validators: {}
   I18n: {}
+  Utils: {}

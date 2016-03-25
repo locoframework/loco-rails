@@ -2,7 +2,7 @@ class App.Mixins.Connectivity
   connectWith: (data, opts = {}) ->
     return null if not data?
     if data.constructor.name is "Array"
-      for identity in _.uniq _.map(data, (obj) -> obj.getIdentity())
+      for identity in App.Utils.Array.uniq App.Utils.Array.map(data, (obj) -> obj.getIdentity())
         App.IdentityMap.addCollection identity, to: this
         @receivers[identity] = opts.receiver if opts.receiver?
       return
