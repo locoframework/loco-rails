@@ -11,7 +11,6 @@ gemspec
 # your gem to rubygems.org.
 
 source 'https://rails-assets.org' do
-  gem 'rails-assets-velocity', '~> 1.2.2'
   gem 'rails-assets-lie', '~> 3.0.1'
 end
 

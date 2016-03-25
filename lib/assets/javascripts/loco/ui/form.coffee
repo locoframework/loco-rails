@@ -10,9 +10,6 @@ class App.UI.Form
     @form = this._findForm()
     @submit = @form.find ':submit'
     @submitVal = @submit.val()
-    @errorsShowHideDuration = if opts.errorsShowHideDuration? then opts.errorsShowHideDuration else null  # 200
-    @hideErrorFunc = if opts.hideErrorFunc? then opts.hideErrorFunc else null  # 'slideUp'
-    @showErrorFunc = if opts.showErrorFunc? then opts.showErrorFunc else null  # 'slideDown'
 
   getObj: -> @obj
 
@@ -57,7 +54,7 @@ class App.UI.Form
       this._assignAttribs()
       this._hideErrors()
       if @obj.isInvalid()
-        this._delayedRenderErrors()
+        this._renderErrors()
         @delegator[@callbackFailure]() if @callbackFailure?
         return
       this._submittingForm false
@@ -107,14 +104,6 @@ class App.UI.Form
         @form.find("input:not([type='submit'])#{selector}, textarea#{selector}").val ''
     , 5000
 
-  _delayedRenderErrors: ->
-    if @errorsShowHideDuration?
-      setTimeout =>
-        this._renderErrors()
-      , @errorsShowHideDuration
-    else
-      this._renderErrors()
-
   _renderErrors: (remoteErrors = null) ->
     return if @obj? and not @obj.errors?
     return if not @obj? and not remoteErrors?
@@ -158,18 +147,12 @@ class App.UI.Form
     @form.find('.errors').each (index, e) =>
       if $(e).text().trim().length > 0
         $(e).text ""
-        if @hideErrorFunc? and @errorsShowHideDuration?
-          $(e).velocity @hideErrorFunc, @errorsShowHideDuration
-        else
-          $(e).hide()
+        $(e).hide()
 
   _showErrors: ->
     @form.find('.errors').each (index, e) =>
       if $(e).text().trim().length > 0
-        if @showErrorFunc? and @errorsShowHideDuration?
-          $(e).velocity @showErrorFunc, @errorsShowHideDuration
-        else
-          $(e).show()
+        $(e).show()
 
   _submittingForm: (hideErrors = true) ->
     @submit.removeClass('success').removeClass('failure').addClass('active').val "Sending..."

@@ -1,7 +1,8 @@
 class App.UI.Tabs
-  constructor: (node, delegator) ->
+  constructor: (node, delegator, opts = {}) ->
     @sel = $(node)
     @delegator = delegator
+    @animFunc = opts.animFunc ? 'animate'
     this.handle()
 
   handle: ->
@@ -17,5 +18,5 @@ class App.UI.Tabs
       left = width / elementsSize * index
       @sel.find('a.active').removeClass 'active'
       $(e.target).addClass 'active'
-      @sel.find('div.background').velocity {left: left}, 200
+      @sel.find('div.background')[@animFunc] {left: left}, 200
       @delegator[$(e.target).data("action")]()
