@@ -9,11 +9,11 @@ class App.Models.Article extends App.Models.Base
     title:
       validations:
         presence: true
-        length: {minimum: 3, maximum: 255}
+        length: {within: [3, 255]}
     content:
       validations:
         presence: true
-        length: {min: 100}
+        length: {minimum: 100}
       remoteName: "text"
     createdAt:
       type: "Date"

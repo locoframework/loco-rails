@@ -1,5 +1,8 @@
 # TODO: remove unnecessary
 App.I18n.en =
+  variants: {}
+  models: {}
+  attributes: {}
   date:
     formats:
       # Use the strftime parameters for formats.

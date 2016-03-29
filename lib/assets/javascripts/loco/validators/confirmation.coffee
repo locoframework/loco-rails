@@ -2,15 +2,16 @@ class App.Validators.Confirmation extends App.Validators.Base
   constructor: -> super
 
   validate: ->
-    @properAttr = "#{@attr}Confirmation"
-    properVal = @obj[@properAttr]
+    properVal = @obj[this._properAttr()]
     return true if @val? and properVal? and @val is properVal
     this._addErrorMessage()
-    false
 
   _addErrorMessage: ->
-    console.log "TODO: implement I18n"
-    # TODO: extend underscore with mixin
-    attrName = @attr.charAt(0).toUpperCase() + @attr.slice(1)
-    message = "doesn't match #{attrName}"
-    @obj.addErrorMessage message, for: @properAttr
+    defaultAttrName = @attr.charAt(0).toUpperCase() + @attr.slice(1)
+    attrNames = App.I18n[App.Env.loco.getLocale()].attributes[@obj.getIdentity()]
+    attrName = (attrNames and attrNames[@attr]) || defaultAttrName
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.confirmation
+    message = message.replace '%{attribute}', attrName
+    @obj.addErrorMessage message, for: this._properAttr()
+
+  _properAttr: -> "#{@attr}Confirmation"

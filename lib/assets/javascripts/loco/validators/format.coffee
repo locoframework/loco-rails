@@ -5,8 +5,7 @@ class App.Validators.Format extends App.Validators.Base
     match = @opts.with.exec @val
     return true if match?
     this._addErrorMessage()
-    false
 
   _addErrorMessage: ->
-    message = "is invalid"
+    message = App.I18n[App.Env.loco.getLocale()].errors.messages.invalid
     @obj.addErrorMessage message, for: @attr

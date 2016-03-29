@@ -3,7 +3,9 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require loco/manifest
-//= require_tree ./locales
+//= require_tree ./locales/base
+//= require_tree ./locales/models
+//= require_tree ./locales/validators
 //= require_tree ./initializers
 //= require_tree ./controllers
 //= require_tree ./models
