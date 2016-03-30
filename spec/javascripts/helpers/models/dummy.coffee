@@ -5,6 +5,18 @@ class App.Models.Dummy extends App.Models.Base
     title:
       validations:
         length: {minimum: 1, maximum: 255}
+    letter:
+      validations:
+        length: {is: 1}
+    lang:
+      validations:
+        length: {is: 2}
+    shortDesc:
+      validations:
+        length: {minimum: 10, maximum: 50}
+    author:
+      validations:
+        exclusion: {in: ['admin', 'superadmin']}
     dumbAttrib:
       validations:
         length: {within: [0, 1]}
@@ -17,17 +29,8 @@ class App.Models.Dummy extends App.Models.Base
     dumbAttrib4:
       validations:
         length: {is: 100}
-    letter:
-      validations:
-        length: {is: 1}
-    lang:
-      validations:
-        length: {is: 2}
-    shortDesc:
-      validations:
-        length: {minimum: 10, maximum: 50}
     blankAttrib:
       validations:
-        absence: {}
+        absence: true
 
   constructor: (data) -> super data

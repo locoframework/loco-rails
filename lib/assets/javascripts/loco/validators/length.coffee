@@ -2,8 +2,7 @@ class App.Validators.Length extends App.Validators.Base
   constructor: -> super
 
   validate: ->
-    if not @val?
-      return true
+    return if not @val?
     message = if this._range()[0]? and this._range()[1]? and this._range()[0] is this._range()[1] and @val.length isnt this._range()[0]
       this._selectErrorMessage 'wrong_length', this._range()[0]
     else if this._range()[0]? and @val.length < this._range()[0]
@@ -12,7 +11,7 @@ class App.Validators.Length extends App.Validators.Base
       this._selectErrorMessage 'too_long', this._range()[1]
     else
       null
-    return true if message is null
+    return if message is null
     @obj.addErrorMessage message, for: @attr
 
   _range: ->

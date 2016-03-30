@@ -4,9 +4,9 @@ class App.Validators.Absence extends App.Validators.Base
   validate: ->
     switch typeof @val
       when 'string'
-        return true if @val? and @val.length is 0
+        return if @val? and @val.length is 0
       else
-        return true if not @val?
+        return if not @val?
     this._addErrorMessage()
 
   _addErrorMessage: ->

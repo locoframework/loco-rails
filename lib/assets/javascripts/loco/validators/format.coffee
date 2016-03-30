@@ -3,7 +3,7 @@ class App.Validators.Format extends App.Validators.Base
 
   validate: ->
     match = @opts.with.exec @val
-    return true if match?
+    return if match?
     this._addErrorMessage()
 
   _addErrorMessage: ->

@@ -3,7 +3,7 @@ class App.Validators.Confirmation extends App.Validators.Base
 
   validate: ->
     properVal = @obj[this._properAttr()]
-    return true if @val? and properVal? and @val is properVal
+    return if @val? and properVal? and @val is properVal
     this._addErrorMessage()
 
   _addErrorMessage: ->
