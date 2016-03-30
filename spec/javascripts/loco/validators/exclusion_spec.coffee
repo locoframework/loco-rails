@@ -10,7 +10,8 @@ describe 'App.Validators.Exclusion', ->
 
   it 'is valid if value is not in an array', ->
     @dummy.author = 'David'
-    expect(@dummy.isValid()).toBe true
+    @dummy.isValid()
+    expect(@dummy.errors.author).toBe undefined
 
   it 'supports i18n', ->
     App.Env.loco.setLocale 'pl'

@@ -10,7 +10,8 @@ describe 'App.Validators.Absence', ->
 
     it 'is valid if is blank', ->
       dummy = new App.Models.Dummy blankAttrib: ''
-      expect(dummy.isValid()).toBe true
+      dummy.isValid()
+      expect(dummy.errors.blankAttrib).toBe undefined
 
   it 'supports i18n', ->
     App.Env.loco.setLocale 'pl'

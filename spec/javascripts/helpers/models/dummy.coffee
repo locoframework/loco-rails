@@ -17,6 +17,9 @@ class App.Models.Dummy extends App.Models.Base
     author:
       validations:
         exclusion: {in: ['admin', 'superadmin']}
+    rate:
+      validations:
+        inclusion: {within: ['bad', 'good', 'excellent']}
     dumbAttrib:
       validations:
         length: {within: [0, 1]}
