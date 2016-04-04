@@ -206,7 +206,8 @@ class App.Models.Base
         if not App.Validators[validator]?
           console.log "Warning! \"#{validator}\" validator is not implemented!"
           continue
-        App.Validators[validator].instance(this, name, validationSettings).validate()
+        pvs = this.__processedValidationSettings validationSettings
+        App.Validators[validator].instance(this, name, pvs).validate()
     if this.constructor.validate?
       this[meth]() for meth in this.constructor.validate
     if this.errors? then false else true
@@ -313,3 +314,12 @@ class App.Models.Base
     url = this.constructor.__getResourcesUrl resource: @resource, obj: this
     return url if not @id?
     "#{url}/#{@id}"
+
+  __processedValidationSettings: (validationSettings) ->
+    res = {}
+    for confName, confVal of validationSettings
+      if typeof confVal is 'function'
+        res[confName] = confVal this
+      else
+        res[confName] = confVal
+    res

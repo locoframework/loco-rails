@@ -10,7 +10,8 @@ describe 'App.Validators.Inclusion', ->
 
   it 'is valid if value is available in an array', ->
     @dummy.rate = 'good'
-    expect(@dummy.isValid()).toBe true
+    @dummy.isValid()
+    expect(@dummy.errors.rate).toBe undefined
 
   it 'supports i18n', ->
     App.Env.loco.setLocale 'pl'
