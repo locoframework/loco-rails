@@ -202,6 +202,7 @@ class App.Models.Base
       for validationName, validationSettings of config.validations
         continue if this.id? and validationSettings.on is "create"
         continue if !this.id? and validationSettings.on is "update"
+        continue if validationSettings.if? and !validationSettings.if(this)
         validator = validationName.charAt(0).toUpperCase() + validationName.slice(1)
         if not App.Validators[validator]?
           console.log "Warning! \"#{validator}\" validator is not implemented!"

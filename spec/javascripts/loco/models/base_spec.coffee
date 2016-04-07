@@ -9,11 +9,19 @@ describe 'App.Models.Base', ->
     App.Models.Article.Comment.all {articleId: 1}, (comments) ->
     expect(jasmine.Ajax.requests.mostRecent().url).toBe '/user/articles/1/comments?page=1'
 
-  describe '@validate', ->
+  describe 'validation', ->
     it 'allows custom validations', ->
       article = new App.Models.Article content: 'Some words.. and fUCk!'
       expect(article.isInvalid()).toBe true
       expect(article.errors.base[0]).toEqual 'Article contains strong language.'
+
+    it 'supports conditional validation', ->
+      dummy = new App.Models.Dummy dumbAttrib5: 'KRAKOW'
+      dummy.isValid()
+      expect(dummy.errors.dumbAttrib5[0]).toEqual 'is invalid'
+      dummy.dumbAttrib5 = 'KRK'
+      dummy.isValid()
+      expect(dummy.errors.dumbAttrib5).toBe undefined
 
   describe '#save', ->
     it 'properly builds URL for nested models', ->

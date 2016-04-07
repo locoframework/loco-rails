@@ -51,6 +51,9 @@ class App.Models.Dummy extends App.Models.Base
     dumbAttrib5:
       validations:
         size: {minimum: 1}
+        format:
+          with: /^[a-z0-9]{5,}$/
+          if: (o) -> o.dumbAttrib5? and o.dumbAttrib5.length >= 5
     blankAttrib:
       validations:
         absence: true

@@ -23,7 +23,7 @@ class App.Models.DummyCustomMsg extends App.Models.Base
         inclusion: {within: ['bad', 'good', 'excellent'], message: 'value is not good'}
     countryCode:
       validations:
-        format: {with: /^[A-Z]{2}$/i, message: 'invalid country code'}
+        format: {with: /^[A-Z]{2}$/, message: 'invalid country code'}
     year:
       validations:
         numericality:
