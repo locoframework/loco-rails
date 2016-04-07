@@ -138,3 +138,21 @@ describe 'App.Validators.Length', ->
         @dummy = new App.Models.Dummy dumbAttrib4: 'a'
         @dummy.isValid()
         expect(@dummy.errors.dumbAttrib4[0]).toEqual "ma nieprawidłową długość (powinna wynosić 100 znaków)"
+
+  describe 'custom message support', ->
+
+    beforeEach ->
+      @dummy = new App.Models.DummyCustomMsg shortDesc: 'foo bar', lang: 'PLN'
+
+    it 'has the same custom message for "minimum" violation', ->
+      @dummy.isValid()
+      expect(@dummy.errors.shortDesc[0]).toEqual 'length is bloody wrong'
+
+    it 'has the same custom message for "maximum" violation', ->
+      @dummy.shortDesc = @tooLongTitle
+      @dummy.isValid()
+      expect(@dummy.errors.shortDesc[0]).toEqual 'length is bloody wrong'
+
+    it 'has the same custom message for "is" violation', ->
+      @dummy.isValid()
+      expect(@dummy.errors.lang[0]).toEqual 'length is not what I expect'

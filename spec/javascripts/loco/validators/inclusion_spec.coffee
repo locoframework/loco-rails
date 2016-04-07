@@ -17,3 +17,8 @@ describe 'App.Validators.Inclusion', ->
     App.Env.loco.setLocale 'pl'
     @dummy.isValid()
     expect(@dummy.errors.rate[0]).toEqual "nie znajduje się na liście dopuszczalnych wartości"
+
+  it 'supports custom message', ->
+    dcm = new App.Models.DummyCustomMsg rate: 'decent'
+    dcm.isValid()
+    expect(dcm.errors.rate[0]).toEqual 'value is not good'

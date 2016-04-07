@@ -10,5 +10,8 @@ class App.Validators.Presence extends App.Validators.Base
     this._addErrorMessage()
 
   _addErrorMessage: ->
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.blank
+    message = if @opts.message?
+      @opts.message
+    else
+      App.I18n[App.Env.loco.getLocale()].errors.messages.blank
     @obj.addErrorMessage message, for: @attr

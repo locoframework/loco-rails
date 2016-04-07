@@ -12,3 +12,8 @@ describe 'App.Validators.Presence', ->
     App.Env.loco.setLocale 'pl'
     @article.isValid()
     expect(@article.errors.title[0]).toEqual "nie może być puste"
+
+  it 'supports custom message', ->
+    dcm = new App.Models.DummyCustomMsg title: null
+    dcm.isValid()
+    expect(dcm.errors.title[0]).toEqual 'presence is required'

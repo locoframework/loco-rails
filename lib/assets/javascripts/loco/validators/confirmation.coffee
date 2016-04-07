@@ -10,7 +10,10 @@ class App.Validators.Confirmation extends App.Validators.Base
     defaultAttrName = @attr.charAt(0).toUpperCase() + @attr.slice(1)
     attrNames = App.I18n[App.Env.loco.getLocale()].attributes[@obj.getIdentity()]
     attrName = (attrNames and attrNames[@attr]) || defaultAttrName
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.confirmation
+    message = if @opts.message?
+      @opts.message
+    else
+      App.I18n[App.Env.loco.getLocale()].errors.messages.confirmation
     message = message.replace '%{attribute}', attrName
     @obj.addErrorMessage message, for: this._properAttr()
 

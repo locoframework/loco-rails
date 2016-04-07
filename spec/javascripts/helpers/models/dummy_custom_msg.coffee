@@ -1,31 +1,36 @@
-class App.Models.Dummy extends App.Models.Base
-  @identity = "Dummy"
+class App.Models.DummyCustomMsg extends App.Models.Base
+  @identity = "DummyCustomMsg"
 
   @attributes =
     title:
       validations:
+        presence: {message: 'presence is required'}
         length: {minimum: 1, maximum: 255}
     letter:
       validations:
         length: {is: 1}
     lang:
       validations:
-        length: {is: 2}
+        length: {is: 2, message: 'length is not what I expect'}
     shortDesc:
       validations:
-        length: {minimum: 10, maximum: 50}
+        length: {minimum: 10, maximum: 50, message: 'length is bloody wrong'}
     author:
       validations:
-        exclusion: {in: ['admin', 'superadmin']}
+        exclusion: {in: ['admin', 'superadmin'], message: 'being an admin is not for u'}
     rate:
       validations:
-        inclusion: {within: ['bad', 'good', 'excellent']}
+        inclusion: {within: ['bad', 'good', 'excellent'], message: 'value is not good'}
+    countryCode:
+      validations:
+        format: {with: /^[A-Z]{2}$/i, message: 'invalid country code'}
     year:
       validations:
         numericality:
           only_integer: true
           greater_than: 1887
           less_than_or_equal_to: (o) -> o.releaseYear
+          message: 'your number is not acceptable'
     releaseYear:
       validations:
         numericality:
@@ -33,6 +38,9 @@ class App.Models.Dummy extends App.Models.Base
           greater_than_or_equal_to: new Date().getFullYear()
           less_than: 2100
           other_than: 2098
+    accessPassword:
+      validations:
+        confirmation: {message: 'different than confirmation'}
     dumbAttrib:
       validations:
         length: {within: [0, 1]}
@@ -53,6 +61,6 @@ class App.Models.Dummy extends App.Models.Base
         size: {minimum: 1}
     blankAttrib:
       validations:
-        absence: true
+        absence: {message: 'only blank dude'}
 
   constructor: (data) -> super data

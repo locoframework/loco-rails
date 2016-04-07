@@ -29,6 +29,8 @@ class App.Validators.Length extends App.Validators.Base
         break
     if not message?
       message = App.I18n[App.Env.loco.getLocale()].errors.messages[msg].other
+    if @opts.message?
+      message = @opts.message
     if /%{count}/.exec message
       message = message.replace '%{count}', val
     message

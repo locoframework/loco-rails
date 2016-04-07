@@ -7,5 +7,8 @@ class App.Validators.Format extends App.Validators.Base
     this._addErrorMessage()
 
   _addErrorMessage: ->
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.invalid
+    message = if @opts.message?
+      @opts.message
+    else
+      App.I18n[App.Env.loco.getLocale()].errors.messages.invalid
     @obj.addErrorMessage message, for: @attr

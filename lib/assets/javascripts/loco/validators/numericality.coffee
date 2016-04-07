@@ -24,7 +24,10 @@ class App.Validators.Numericality extends App.Validators.Base
       this._addEvenErrorMessage()
 
   _addNaNErrorMessage: ->
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.not_a_number
+    message = if @opts.message?
+      @opts.message
+    else
+      App.I18n[App.Env.loco.getLocale()].errors.messages.not_a_number
     @obj.addErrorMessage message, for: @attr
 
   _addIntErrorMessage: ->

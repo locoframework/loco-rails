@@ -7,5 +7,8 @@ class App.Validators.Inclusion extends App.Validators.Base
     this._addErrorMessage()
 
   _addErrorMessage: ->
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.inclusion
+    message = if @opts.message?
+      @opts.message
+    else
+      App.I18n[App.Env.loco.getLocale()].errors.messages.inclusion
     @obj.addErrorMessage message, for: @attr

@@ -1,6 +1,7 @@
 describe 'App.Validators.Numericality', ->
   beforeEach ->
     @dummy = new App.Models.Dummy year: 'foo'
+    @dcm = new App.Models.DummyCustomMsg year: 'foo'
     @currentYear = new Date().getFullYear()
 
   afterEach -> App.Env.loco.setLocale 'en'
@@ -9,6 +10,10 @@ describe 'App.Validators.Numericality', ->
     @dummy.year = '1900'
     @dummy.isValid()
     expect(@dummy.errors.year).toBe undefined
+
+  it 'supports custom message', ->
+    @dcm.isValid()
+    expect(@dcm.errors.year[0]).toEqual 'your number is not acceptable'
 
   describe 'i18n support (en)', ->
 
