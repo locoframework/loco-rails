@@ -143,7 +143,6 @@ class App.Models.Base
       return param if param?
     if @paginate? and @paginate.param? then @paginate.param else "page"
 
-  # TODO: test it!
   @__getPaginationPer: ->
     if App.Env.scope? and @resources? and @resources[App.Env.scope]?
       per = @resources[App.Env.scope]?.paginate?.per

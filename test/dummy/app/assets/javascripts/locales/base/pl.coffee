@@ -1,4 +1,3 @@
-# TODO: remove unnecessary
 App.I18n.pl =
   variants:
     few: (i) ->
@@ -16,15 +15,13 @@ App.I18n.pl =
   date:
     formats:
       default: "%d-%m-%Y"
-      long: "%B %d, %Y"
       short: "%d %b"
-    abbr_day_names: ["nie", "pon", "wto", "śro", "czw", "pią", "sob"]
-    abbr_month_names: ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"]
+      long: "%B %d, %Y"
     day_names: ["niedziela", "poniedziałek", "wtorek", "środa", "czwartek", "piątek", "sobota"]
+    abbr_day_names: ["nie", "pon", "wto", "śro", "czw", "pią", "sob"]
     month_names: ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"]
-    order: ["day", "month", "year"]
+    abbr_month_names: ["sty", "lut", "mar", "kwi", "maj", "cze", "lip", "sie", "wrz", "paź", "lis", "gru"]
   errors:
-    #format: "%{attribute} %{message}"
     messages:
       accepted: "musi zostać zaakceptowane"
       blank: "nie może być puste"
@@ -43,7 +40,6 @@ App.I18n.pl =
       not_an_integer: "musi być liczbą całkowitą"
       odd: "musi być nieparzyste"
       present: "musi być puste"
-      taken: "zostało już zajęte"
       too_long:
         few: "jest za długie (maksymalnie %{count} znaki)"
         many: "jest za długie (maksymalnie %{count} znaków)"
