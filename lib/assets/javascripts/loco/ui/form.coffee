@@ -10,6 +10,7 @@ class App.UI.Form
     @form = this._findForm()
     @submit = @form.find ':submit'
     @submitVal = @submit.val()
+    @locale = App.Env.loco.getLocale()
 
   getObj: -> @obj
 
@@ -87,7 +88,7 @@ class App.UI.Form
         this._renderErrors data.errors
 
   _handleSuccess: (data, clearForm = true) ->
-    val = data.flash?.success ? "Success"
+    val = data.flash?.success ? App.I18n[@locale].ui.form.success
     @submit.removeClass("active").addClass('success').val val
     if data.access_token?
       App.Env.loco.getWire().setToken data.access_token
@@ -119,8 +120,8 @@ class App.UI.Form
           $(".errors[data-for='base']").text errors[0]
         else
           @submit.val errors[0]
-    if @submit.val() is @submitVal or @submit.val() is "Sending..."
-      @submit.val "Invalid data"
+    if @submit.val() is @submitVal or @submit.val() is App.I18n[@locale].ui.form.sending
+      @submit.val App.I18n[@locale].ui.form.errors.invalid_data
     @submit.removeClass("active").addClass 'failure'
     this._showErrors()
     setTimeout =>
@@ -155,12 +156,12 @@ class App.UI.Form
         $(e).show()
 
   _submittingForm: (hideErrors = true) ->
-    @submit.removeClass('success').removeClass('failure').addClass('active').val "Sending..."
+    @submit.removeClass('success').removeClass('failure').addClass('active').val App.I18n[@locale].ui.form.sending
     @delegator[@callbackActive]() if @callbackActive?
     this._hideErrors() if hideErrors
 
   _connectionError: ->
-    @submit.removeClass('active').addClass('failure').val 'Connection Error'
+    @submit.removeClass('active').addClass('failure').val App.I18n[@locale].ui.form.errors.connection
     setTimeout =>
       @submit.removeClass('failure').val @submitVal
     , 3000

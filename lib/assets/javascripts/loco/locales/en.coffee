@@ -3,6 +3,13 @@ App.I18n.en =
   variants: {}
   models: {}
   attributes: {}
+  ui:
+    form:
+      sending: "Sending..."
+      success: "Success"
+      errors:
+        connection: "Connection Error"
+        invalid_data: "Invalid data"
   date:
     formats:
       # Use the strftime parameters for formats.
