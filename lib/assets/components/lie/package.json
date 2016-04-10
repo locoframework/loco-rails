@@ -1,0 +1,57 @@
+{
+  "name": "lie",
+  "version": "3.0.2",
+  "description": "A basic but performant promise implementation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calvinmetcalf/lie.git"
+  },
+  "bugs": {
+    "url": "https://github.com/calvinmetcalf/lie/issues"
+  },
+  "keywords": [
+    "lie",
+    "promise",
+    "async",
+    "aplus"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jshint lib/*.js && mocha -R nyan ./test/cover.js",
+    "build-js": "browserify -s Promise ./lib/index.js | derequire > ./dist/lie.js",
+    "build-min": "uglifyjs ./dist/lie.js -mc > ./dist/lie.min.js",
+    "build-poly-js": "browserify ./polyfill.js | derequire > ./dist/lie.polyfill.js",
+    "build-poly-min": "uglifyjs ./dist/lie.polyfill.js -mc > ./dist/lie.polyfill.min.js",
+    "build-poly": "npm run build-poly-js && npm run build-poly-min",
+    "build": "npm run build-js && npm run build-min && npm run build-poly",
+    "cover": "istanbul cover _mocha ./test/cover.js -- -R spec && istanbul check-coverage --lines 100 --function 100 --statements 100 --branches 100",
+    "jshint": "jshint lib/*.js",
+    "node": "mocha -R spec ./test/cover.js",
+    "browser": "browserify test/cover.js > test/browser.js && mocha-phantomjs test/test.html"
+  },
+  "devDependencies": {
+    "browserify": "^11.0.0",
+    "derequire": "^1.2.0",
+    "istanbul": "^0.2.6",
+    "jshint": "^2.4.4",
+    "mocha": "^1.18.0",
+    "mocha-phantomjs": "~3.5.0",
+    "phantomjs": "^1.9.9",
+    "promises-aplus-tests": "calvinmetcalf/promises-tests#phantom",
+    "uglify-js": "^2.4.13"
+  },
+  "dependencies": {
+    "es3ify": "^0.1.3",
+    "immediate": "~3.0.5",
+    "inline-process-browser": "^1.0.0",
+    "unreachable-branch-transform": "^0.3.0"
+  },
+  "browserify": {
+    "transform": [
+      "inline-process-browser",
+      "unreachable-branch-transform",
+      "es3ify"
+    ]
+  }
+}

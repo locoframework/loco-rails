@@ -1,4 +1,4 @@
-//= require lie/lie.polyfill
+//= require lie/dist/lie.polyfill
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks

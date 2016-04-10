@@ -10,10 +10,6 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-source 'https://rails-assets.org' do
-  gem 'rails-assets-lie', '~> 3.0.1'
-end
-
 group :development, :test do
   gem 'jasmine', '~> 2.3'  # rake needs it here
 

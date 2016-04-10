@@ -1,0 +1,22 @@
+{
+  "name": "loco-rails",
+  "authors": [
+    "himn1 <zbigniew.humeniuk@gmail.com>"
+  ],
+  "description": "Rails is awesome, but modern web needs LOCO-motive.",
+  "main": "",
+  "license": "MIT",
+  "homepage": "http://loco-rails.org",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib/assets/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lie": "~3.0.1"
+  }
+}
