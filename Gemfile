@@ -14,7 +14,6 @@ group :development, :test do
   gem 'jasmine', '~> 2.3'  # rake needs it here
 
   # integration tests need following gems in test group
-  gem 'jquery-rails', '~> 4.0'
   gem 'turbolinks', '~> 2.5'
   gem 'jbuilder', '~> 2.0'
   gem 'eco', '~> 1.0'

@@ -1,22 +1,23 @@
 {
-  "name": "loco-rails",
+  "name": "loco-rails-dummy",
   "authors": [
     "himn1 <zbigniew.humeniuk@gmail.com>"
   ],
-  "description": "Rails is awesome, but modern web needs LOCO-motive.",
+  "description": "Dummy app.",
   "main": "",
   "license": "MIT",
-  "homepage": "http://loco-rails.org",
+  "homepage": "",
   "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "lib/assets/components",
     "test",
     "tests"
   ],
   "dependencies": {
-    "lie": "~3.0.1"
+    "lie": "~3.0.1",
+    "jquery": "~1.12.3",
+    "jquery-ujs": "~1.2.1"
   }
 }

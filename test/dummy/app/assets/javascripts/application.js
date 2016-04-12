@@ -1,6 +1,6 @@
 //= require lie/dist/lie.polyfill
 //= require jquery
-//= require jquery_ujs
+//= require jquery-ujs
 //= require turbolinks
 //= require loco/manifest
 //= require_tree ./locales/base
