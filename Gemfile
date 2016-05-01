@@ -11,8 +11,6 @@ gemspec
 # your gem to rubygems.org.
 
 group :development, :test do
-  gem 'jasmine', '~> 2.3'  # rake needs it here
-
   # integration tests need following gems in test group
   gem 'turbolinks', '~> 2.5'
   gem 'jbuilder', '~> 2.0'

@@ -7,5 +7,4 @@ Specified in .ruby-version file
 ### How to run the test suite
 ```sh
 $ bundle exec rake
-$ bundle exec rake app:jasmine:ci
 ```

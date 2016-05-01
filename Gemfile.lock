@@ -77,12 +77,6 @@ GEM
       activesupport (>= 4.1.0)
     hirb (0.7.3)
     i18n (0.7.0)
-    jasmine (2.3.1)
-      jasmine-core (~> 2.3)
-      phantomjs
-      rack (>= 1.2.1)
-      rake
-    jasmine-core (2.3.4)
     jbuilder (2.3.1)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
@@ -104,7 +98,6 @@ GEM
     multi_json (1.11.2)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
-    phantomjs (1.9.8.0)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -175,7 +168,6 @@ DEPENDENCIES
   database_cleaner (~> 1.5.1)
   eco (~> 1.0)
   hirb (~> 0.7)
-  jasmine (~> 2.3)
   jbuilder (~> 2.0)
   launchy (~> 2.4)
   loco-rails!
