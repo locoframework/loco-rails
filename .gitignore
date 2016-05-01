@@ -8,3 +8,4 @@ test/dummy/tmp/
 test/dummy/.sass-cache
 .DS_Store
 loco-rails-*.gem
+lib/assets/javascripts/loco.js
