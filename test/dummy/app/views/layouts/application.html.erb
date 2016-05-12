@@ -13,20 +13,25 @@
   <% end %>
 
   <div id="container">
-    <% if current_admin || current_user %>
+    <% if admin_panel? || user_panel? %>
     <div id="user_nav">
-      <p>
-      <% if current_admin %>
-        <%= link_to "Sign out", admin_session_url(id: 'current'), method: :delete,
-          data: {'admin-id' => current_admin.id} %>
+      <% if admin_panel? && current_admin %>
+        <p><%= link_to "Sign out", admin_session_url(id: 'current'), method: :delete,
+                data: {'admin-id' => current_admin.id} %>
+        </p>
+        <p class="text_right">
+          <%= link_to "Users", admin_users_url, class: "#{'bold' if controller_name == 'users'}" %>
+          |
+          <%= link_to "Articles", published_admin_articles_url, class: "#{'bold' if controller_name == 'articles'}" %>
+        </p>
       <% end %>
 
-      <% if current_user %>
-        Hello <%= current_user.email %>!
-        <%= link_to "sign out", user_session_url(id: 'current'), method: :delete,
-          data: {'user-id' => current_user.id}, id: 'sign_out_user' %>
+      <% if user_panel? && current_user %>
+        <p>Hello <%= current_user.email %>!
+          <%= link_to "sign out", user_session_url(id: 'current'), method: :delete,
+                data: {'user-id' => current_user.id}, id: 'sign_out_user' %>
+        </p>
       <% end %>
-      </p>
     </div>
     <% end %>
 

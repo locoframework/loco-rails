@@ -1,7 +1,8 @@
 require 'test_helper'
 
-class AdminPanelTest < IT
+class Admin::UsersSectionTest < IT
   include Loco::Emitter
+  include AdminHelpers
 
   def setup
     super
@@ -29,13 +30,4 @@ class AdminPanelTest < IT
     emit user, :created, for: Admin
     assert page.has_content? 'david@example.com'
   end
-
-  private
-
-    def sign_in
-      visit '/admin/sessions/new'
-      fill_in 'Email', with: 'zbigniew.humeniuk@motteq.com'
-      fill_in 'Password', with: 'ubersecure!'
-      click_button 'Sign In'
-    end
 end

@@ -22,6 +22,11 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users
     resources :sessions, only: [:new, :create, :destroy]
+    resources :articles, only: [:show, :edit, :update] do
+      collection do
+        get :published
+      end
+    end
     root "users#index"
   end
 

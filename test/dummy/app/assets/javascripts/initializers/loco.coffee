@@ -6,6 +6,7 @@ App.Views.User =
   Articles: {}
 App.Views.Admin =
   Users: {}
+  Articles: {}
 App.Views.Layouts = {}
 App.Views.Shared = {}
 

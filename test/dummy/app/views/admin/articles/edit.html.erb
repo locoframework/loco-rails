@@ -1,0 +1,60 @@
+<h1>Review Article</h1>
+
+<p>
+  <strong>Author:</strong>
+  <span id="article_author"></span>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <span id="article_title"></span>
+</p>
+
+<p>
+  <strong>Text:</strong>
+  <span id="article_text"></span>
+</p>
+
+<section id="comments">
+  <h4>Comments</h4>
+  <p>TODO: here!</p>
+</section>
+
+<%= form_for Article.new, url: '#', html: {id: 'edit_article_form', class: 'edit_article_form'} do |f| %>
+  <div class="field" data-attr="published">
+    <%= f.check_box :published %> <%= f.label :published %>
+  </div>
+
+  <div class="field" data-attr="admin_review">
+    <%= f.label :admin_review, 'Short review' %><br>
+    <%= f.text_area :admin_review %>
+    <br>
+    <span class="errors" data-for="published"><%= f.object.errors[:admin_review].first %></span>
+  </div>
+
+  <div class="field" data-attr="admin_rate">
+    <%= f.radio_button :admin_rate, 1 %> <%= f.label :admin_rate_1, 'Awful', class: 'margin-right-tiny' %>
+    <%= f.radio_button :admin_rate, 2 %> <%= f.label :admin_rate_2, 'Bad', class: 'margin-right-tiny' %>
+    <%= f.radio_button :admin_rate, 3 %> <%= f.label :admin_rate_3, 'Decent', class: 'margin-right-tiny' %>
+    <%= f.radio_button :admin_rate, 4 %> <%= f.label :admin_rate_4, 'Good', class: 'margin-right-tiny' %>
+    <%= f.radio_button :admin_rate, 5 %> <%= f.label :admin_rate_5, 'Amazing', class: 'margin-right-tiny' %>
+    <%= f.radio_button :admin_rate, 6 %> <%= f.label :admin_rate_6, 'Pulitzer', class: 'margin-right-tiny' %>
+  </div>
+
+  <div class="field" data-attr="category_id">
+    <%= f.label :category_id, 'Category' %>
+    <%= f.select :category_id,
+      ::Article::CATEGORIES.map{ |cat| [cat, ::Article::CATEGORIES.index(cat) + 1] } %>
+  </div>
+
+  <div class="field" data-attr="admin_review_started_at">
+    <%= f.hidden_field :admin_review_started_at %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit 'Update Article' %>
+    <span class="errors" data-for="base"><%= f.object.errors[:base].first %></span>
+  </div>
+<% end %>
+
+<%= link_to 'Back', published_admin_articles_path %>

@@ -4,6 +4,8 @@ class App.Models.Article extends App.Models.Base
     url: '/user/articles', paginate: {per: 5}
     main:
       url: '/articles', paginate: {per: 3}
+    admin:
+      url: '/admin/articles', paginate: {per: 4}
 
   @attributes =
     title:
@@ -27,15 +29,33 @@ class App.Models.Article extends App.Models.Base
     publishedAt:
       type: "Date"
       remoteName: "published_at"
+    published: {}
+    adminReview:
+      remoteName: "admin_review"
+    adminRate:
+      type: "Int"
+      remoteName: "admin_rate"
+    categoryId:
+      type: "Int"
+      remoteName: "category_id"
+    adminReviewStartedAt:
+      remoteName: "admin_review_started_at"
 
   @receivedSignal: (signal, data) ->
 
   @validate = ["vulgarityLevel"]
 
-  constructor: (data) -> super data
+  constructor: (data) ->
+    super data
+    @published = if @publishedAt? then true else false
 
   receivedSignal: (signal, data) ->
 
   vulgarityLevel: ->
     if (this.title? and /fuck/i.exec(this.title)) or (this.content? and /fuck/i.exec(this.content))
       this.addErrorMessage "Article contains strong language.", for: 'base'
+
+  setDefaultValuesForAdminReview: ->
+    @adminRate ?= 3
+    @categoryId ?= 6
+    @adminReviewStartedAt = Date.now()

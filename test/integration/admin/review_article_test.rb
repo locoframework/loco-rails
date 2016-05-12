@@ -1,0 +1,32 @@
+require 'test_helper'
+
+class Admin::ReviewArticleTest < IT
+  include AdminHelpers
+
+  def setup
+    super
+    sign_in
+    click_on "Articles"
+    click_on "Review"
+  end
+
+  test "should update an article" do
+    submit_review
+    visit "admin/articles/#{articles(:one).id}/edit"
+    assert_not page.evaluate_script("$('#article_published').is(':checked')")
+    assert_equal 'Damn good article', find(:css, 'textarea').value
+    assert_equal '5', page.evaluate_script(%{$('input[name="article[admin_rate]"]:checked').val()})
+    assert_equal 'Health', page.evaluate_script(%{$('select option:selected').text()})
+    assert articles(:one).admin_review_time > 0
+  end
+
+  private
+
+    def submit_review
+      uncheck "Published"
+      fill_in 'Short review', with: 'Damn good article'
+      choose "Amazing"
+      select 'Health', from: 'Category'
+      click_button 'Update Article'
+    end
+end
