@@ -50,7 +50,7 @@ class App.Views.Main.Articles.Show extends App.Views.Base
     switch signal
       when 'updated'
         comment = App.Utils.Collection.find @comments, (c) -> c.id is data.id
-        comment.reload =>
+        comment.reload().then =>
           comment.applyChanges()
           $("#comment_#{comment.id}").replaceWith JST["templates/main/comments/comment"] {comment: comment}
       when 'destroyed'

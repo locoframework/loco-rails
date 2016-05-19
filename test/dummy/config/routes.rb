@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       collection do
         get :published
       end
+      resources :comments, only: [:index, :show, :edit, :update]
     end
     root "users#index"
   end

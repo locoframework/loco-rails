@@ -34,6 +34,9 @@ class Main::ArticlePageTest < IT
   end
 
   test "should update number of comments if one was added" do
+    within "#comments_count" do
+      assert page.has_content? '0 comments'
+    end
     create_comment_for_article :one
     within "#comments_count" do
       assert page.has_content? '1 comment'
@@ -41,6 +44,9 @@ class Main::ArticlePageTest < IT
   end
 
   test "should update number of comments if one was deleted" do
+    within "#comments_count" do
+      assert page.has_content? '0 comments'
+    end
     comment = create_comment_for_article :one
     within "#comments_count" do
       assert page.has_content? '1 comment'
@@ -60,7 +66,12 @@ class Main::ArticlePageTest < IT
 
   test "should auto update recently updated comment by user" do
     comment = create_comment_for_article :one
+    visit "/articles/#{articles(:one).id}"
+    within "section#comments" do
+      assert_not page.has_content? 'Some nice thoughts dude (edited)'
+    end
     update_comment comment
+    sleep 1
     within "section#comments" do
       assert page.has_content? 'Some nice thoughts dude (edited)'
     end
@@ -79,6 +90,9 @@ class Main::ArticlePageTest < IT
   end
 
   test "should auto update article's title and content" do
+    within "#title" do
+      assert_not page.has_content? '(edited)'
+    end
     update_article :one
     within "#title" do
       assert page.has_content? '(edited)'

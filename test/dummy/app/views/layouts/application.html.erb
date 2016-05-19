@@ -23,6 +23,9 @@
           <%= link_to "Users", admin_users_url, class: "#{'bold' if controller_name == 'users'}" %>
           |
           <%= link_to "Articles", published_admin_articles_url, class: "#{'bold' if controller_name == 'articles'}" %>
+          <% if controller_name == 'comments' %>
+          | <span class='bold'>Comments</span>
+          <% end %>
         </p>
       <% end %>
 

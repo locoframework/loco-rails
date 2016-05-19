@@ -1,0 +1,34 @@
+<h2>Edit comment</h2>
+
+<%= form_for @comment, url: admin_article_comment_url(@article, @comment) do |f| %>
+  <p data-attr="author">
+    <%= f.label :author %> <br>
+    <%= f.text_field :author %>
+  </p>
+
+  <p data-attr="text">
+    <%= f.label :text %> <br>
+    <%= f.text_area :text %>
+  </p>
+
+  <div data-attr="article_id">
+    <%= f.hidden_field :article_id %>
+  </div>
+
+  <div class="field" data-attr="pinned">
+    <%= f.check_box :pinned %> <%= f.label :pinned %>
+  </div>
+
+  <div class="field" data-attr="admin_rate">
+    <%= f.label :admin_rate, 'Rate' %>
+    <%= f.select :admin_rate, [['Awful', 1], ['Bad', 2], ['Decent', 3], ['Good', 4], ['Amazing', 5]] %>
+  </div>
+
+  <div data-attr="emotion">
+    <%= f.radio_button :emotion, -1 %> <%= f.label 'emotion_-1', 'Negative', class: 'margin-right-tiny' %>
+    <%= f.radio_button :emotion, 0 %> <%= f.label 'emotion_0', 'Neutral', class: 'margin-right-tiny' %>
+    <%= f.radio_button :emotion, 1 %> <%= f.label 'emotion_1', 'Positive', class: 'margin-right-tiny' %>
+  </div>
+
+  <p><%= f.submit %> or <%= link_to "back", edit_admin_article_url(@article) %></p>
+<% end %>

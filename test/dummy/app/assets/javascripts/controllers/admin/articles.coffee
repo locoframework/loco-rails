@@ -6,9 +6,13 @@ class App.Controllers.Admin.Articles extends App.Controllers.Base
       @view.render articles: resp.resources
 
   edit: ->
+    editView = new App.Views.Admin.Articles.Edit
     App.Models.Article.find(@params.id).then (article) ->
-      view = new App.Views.Admin.Articles.Form
-      view.render article
+      editView.render article
+      formView = new App.Views.Admin.Articles.Form
+      formView.render article
+    App.Models.Article.Comment.all(articleId: @params.id).then (resp) ->
+      editView.renderComments resp.resources
 
   receivedSignal: (signal, data) ->
     switch signal

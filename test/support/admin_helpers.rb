@@ -5,4 +5,16 @@ module AdminHelpers
     fill_in 'Password', with: 'ubersecure!'
     click_button 'Sign In'
   end
+
+  def update_article article
+    article.title = 'AGtTRA'
+    article.text = 'TESTING_SUPPORT...'
+    article.save!
+    emit article, :updated, for: [:all]
+  end
+
+  def publish_article article
+    article.publish
+    emit article, :published, data: {id: article.id}
+  end
 end

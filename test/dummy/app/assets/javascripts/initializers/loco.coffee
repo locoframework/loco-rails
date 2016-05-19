@@ -7,6 +7,7 @@ App.Views.User =
 App.Views.Admin =
   Users: {}
   Articles: {}
+  Comments: {}
 App.Views.Layouts = {}
 App.Views.Shared = {}
 

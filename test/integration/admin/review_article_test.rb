@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class Admin::ReviewArticleTest < IT
+  include Loco::Emitter
   include AdminHelpers
 
   def setup
@@ -8,6 +9,12 @@ class Admin::ReviewArticleTest < IT
     sign_in
     click_on "Articles"
     click_on "Review"
+  end
+
+  test "should auto update an article" do
+    update_article articles(:one)
+    assert page.has_content? "AGtTRA"
+    assert page.has_content? "TESTING_SUPPORT..."
   end
 
   test "should update an article" do

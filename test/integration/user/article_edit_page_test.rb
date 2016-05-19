@@ -39,6 +39,9 @@ class User::ArticleEditPageTest < IT
   end
 
   test "should auto load new comments" do
+    within "#comments" do
+      assert_not page.has_content? 'Some nice thoughts dude'
+    end
     create_comment_for_article :two
     within "#comments" do
       assert page.has_content? 'Some nice thoughts dude'
@@ -47,6 +50,10 @@ class User::ArticleEditPageTest < IT
 
   test "should auto update comment" do
     comment = create_comment_for_article :two
+    visit "/user/articles/#{articles(:two).id}/edit"
+    within "#comments" do
+      assert_not page.has_content? 'Some nice thoughts dude (edited)'
+    end
     update_comment comment
     within "#comments" do
       assert page.has_content? 'Some nice thoughts dude (edited)'
