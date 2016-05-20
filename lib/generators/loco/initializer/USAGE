@@ -1,0 +1,8 @@
+Description:
+    Creates Loco's initializer.
+
+Example:
+    rails generate loco:initializer
+
+    This will create:
+        config/initializers/loco.rb
