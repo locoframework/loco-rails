@@ -1,0 +1,10 @@
+Description:
+    Runs Loco's inialization generators
+
+Example:
+    rails generate loco:install
+
+    This will run generators:
+        loco:initializer
+        loco:js_assets_structure
+        loco:file_injector
