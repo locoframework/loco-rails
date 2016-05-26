@@ -2,8 +2,9 @@ Description:
     Stubs out a new controller. Pass the controller name under_scored
     and a list of methods as arguments.
 
-    To create a controller within a module, specify the controller name as a
-    path like 'parent_module/controller_name'.
+    To create a controller within a namespace, specify the controller name as
+    a path like 'namespace/controller_name'. It will also generate a namespace
+    controller.
 
     This generates a controller class in app/assets/javascripts/controllers.
 

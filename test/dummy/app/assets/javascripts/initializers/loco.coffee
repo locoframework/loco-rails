@@ -1,13 +1,16 @@
-App.Views.Main =
-  Users: {}
-  Pages: {}
-  Articles: {}
-App.Views.User =
-  Articles: {}
-App.Views.Admin =
-  Users: {}
-  Articles: {}
-  Comments: {}
+App.Views.Main = {}
+App.Views.Main.Users = {}
+App.Views.Main.Pages = {}
+App.Views.Main.Articles = {}
+
+App.Views.User = {}
+App.Views.User.Articles = {}
+
+App.Views.Admin = {}
+App.Views.Admin.Users = {}
+App.Views.Admin.Articles = {}
+App.Views.Admin.Comments = {}
+
 App.Views.Layouts = {}
 App.Views.Shared = {}
 
