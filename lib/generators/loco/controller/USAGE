@@ -1,0 +1,15 @@
+Description:
+    Stubs out a new controller. Pass the controller name under_scored
+    and a list of methods as arguments.
+
+    To create a controller within a module, specify the controller name as a
+    path like 'parent_module/controller_name'.
+
+    This generates a controller class in app/assets/javascripts/controllers.
+
+Example:
+    rails generate loco:controller admin/articles index show destroy
+
+    This will create:
+        app/assets/javascripts/controllers/admin.coffee
+        app/assets/javascripts/controllers/admin/articles.coffee
