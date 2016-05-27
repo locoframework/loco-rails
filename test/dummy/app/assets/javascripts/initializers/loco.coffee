@@ -23,6 +23,7 @@ loco = new App.Loco
     ssl: false                       # your current protocol by default
     location: 'notification-center'  # 'notification-center' by default
     size: 10                         # 100 by default
+    allowedDisconnectionTime: 10     # 10 by default [sec]
   locale: 'en'                       # 'en' by default
   postInit: ->
     time = if $('body').data('rails-env') is 'test' then 1000 else 3000

@@ -34,6 +34,10 @@ loco = new App.Loco
     # must be the same as notifications_size defined in initializers/loco.rb
     # next batch of notifications will be fetched immediately after max size is reached
     #size: 100                        # 100 by default
+
+    # after this time your current namespace controller / controller instance method
+    # disconnectedForTooLong: will be called with the 'time since disconnection' passed as an argument
+    #allowedDisconnectionTime: 10     # 10 by default [sec]
   #locale: 'en'                       # 'en' by default
 
   # this method is called at the end, after given controller methods has been called

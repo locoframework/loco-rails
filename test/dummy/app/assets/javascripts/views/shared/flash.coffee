@@ -4,6 +4,7 @@ class App.Views.Shared.Flash extends App.Views.Base
     @notice = opts.notice ? null
     @alert = opts.alert ? null
     @warning = opts.warning ? null
+    @hide = opts.hide ? true
 
   setNotice: (text) -> @notice = text
   setAlert: (text) -> @alert = text
@@ -22,7 +23,7 @@ class App.Views.Shared.Flash extends App.Views.Base
       node.addClass 'warning'
       node.find('p').text @warning
     node.slideDown 'normal'
-    this.hide()
+    this.hide() if @hide
 
   hide: (time = 4000) ->
     setTimeout ->

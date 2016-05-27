@@ -7,6 +7,7 @@
 //= require_tree ./locales/models
 //= require_tree ./locales/validators
 //= require_tree ./initializers
+//= require_tree ./controllers/concerns
 //= require_tree ./controllers
 //= require_tree ./models
 //= require_tree ./views
