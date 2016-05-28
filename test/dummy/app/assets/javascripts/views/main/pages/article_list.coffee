@@ -30,8 +30,10 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
     $('#load_more').click (e) =>
       e.preventDefault()
       @page += 1
-      App.Models.Article.get('all', page: @page).then (resp) =>
+      App.Models.Article.get 'all', page: @page
+      .then (resp) =>
         if resp.resources.length > 0
           this.renderArticles resp.resources
         else
           $('#load_more').replaceWith('<p>No more posts.</p>')
+      .catch (err) -> alert "Invalid URL"

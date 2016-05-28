@@ -40,6 +40,9 @@ loco = new App.Loco
     #allowedDisconnectionTime: 10     # 10 by default [sec]
   #locale: 'en'                       # 'en' by default
 
+  # if provided - loco will be using absolute path instead of site-root-relative path in all xhr requests
+  #protocolWithHost: 'https://example.com'
+
   # this method is called at the end, after given controller methods has been called
   # at this time Loco's instance is initialized and you can use it to change behaviour of your browser app
   # e.g. polling interval -> App.Env.loco.getWire().setPollingTime <time>
