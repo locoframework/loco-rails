@@ -2,26 +2,11 @@ class Loco::ViewGenerator < Rails::Generators::NamedBase
   source_root File.expand_path('../templates', __FILE__)
 
   def create_view
-    file_path = File.join Rails.root, 'app', 'assets', 'javascripts', 'views',
-      *class_path, "#{file_name}.coffee"
     class_name = (class_path + [file_name]).map(&:camelcase).join('.')
     data = File.read find_in_source_paths('view.coffee')
     data.sub! '#{name}', class_name
+    data.sub! '#{methods_def}', methods_def.join('')
     create_file file_path, data
-  end
-
-  def create_methods
-    file_path = File.join Rails.root, 'app', 'assets', 'javascripts', 'views',
-      *class_path, "#{file_name}.coffee"
-    args.each.with_index do |meth_name, index|
-      prev_meth_def = if index == 0
-        "render: ->\n"
-      else
-        "\n  #{args[index - 1]}: ->\n"
-      end
-      meth_def = "\n  #{meth_name}: ->\n"
-      inject_into_file file_path, meth_def, after: prev_meth_def
-    end
   end
 
   def create_namespaces_inside_intializer
@@ -42,4 +27,17 @@ class Loco::ViewGenerator < Rails::Generators::NamedBase
       end
     end
   end
+
+  private
+
+    def methods_def
+      args.map.with_index do |name, index|
+        "\n  #{name}: ->\n"
+      end
+    end
+
+    def file_path
+      File.join Rails.root, 'app', 'assets', 'javascripts', 'views',
+        *class_path, "#{file_name}.coffee"
+    end
 end

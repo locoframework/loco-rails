@@ -1,6 +1,6 @@
 Description:
     Stubs out a new controller. Pass the controller name under_scored
-    and a list of methods as arguments.
+    (as you would like to name the file) and an optional list of methods as arguments.
 
     To create a controller within a namespace, specify the controller name as
     a path like 'namespace/controller_name'. It will also generate a namespace

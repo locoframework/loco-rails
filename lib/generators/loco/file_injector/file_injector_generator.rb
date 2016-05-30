@@ -26,4 +26,11 @@ class Loco::FileInjectorGenerator < Rails::Generators::Base
     gsub_file file_path, '<body>', '<%= content_tag :body, loco_body_data do %>'
     gsub_file file_path, '</body>', '<% end %>'
   end
+
+  def application_controller
+    file_path = File.join Rails.root, 'app', 'controllers', 'application_controller.rb'
+    data = File.read find_in_source_paths('application_controller.rb')
+    after_line = "class ApplicationController < ActionController::Base\n"
+    inject_into_file file_path, data, after: after_line
+  end
 end

@@ -3,3 +3,4 @@ class App.Views.#{name} extends App.Views.Base
     super opts
 
   render: ->
+#{methods_def}

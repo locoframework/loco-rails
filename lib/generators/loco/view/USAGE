@@ -1,5 +1,6 @@
 Description:
-    Stubs out a new view. Pass the view name under_scored and a list of methods as arguments.
+    Stubs out a new view. Pass the view name under_scored
+    (as you would like to name the file) and an optional list of methods as arguments.
 
     To create a view within a namespace, specify the view name as a path
     like 'outer_namespace/inner_namespace/view_name'. It will also define necessary namespaces

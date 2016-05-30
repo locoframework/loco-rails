@@ -3,7 +3,7 @@ PATH
   specs:
     loco-rails (0.0.1)
       coffee-rails (~> 4.1)
-      rails (~> 4.2)
+      rails (>= 4.2)
 
 GEM
   remote: https://rubygems.org/
@@ -85,8 +85,8 @@ GEM
       addressable (~> 2.3)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    mail (2.6.3)
-      mime-types (>= 1.16, < 3)
+    mail (2.6.4)
+      mime-types (>= 1.16, < 4)
     mime-types (2.6.2)
     mini_portile (0.6.2)
     minitest (5.8.1)
