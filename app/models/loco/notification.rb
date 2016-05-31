@@ -5,7 +5,7 @@ module Loco
     validates :obj_class, presence: true
     validates :event, presence: true
 
-    before_validation :set_event, :set_data
+    before_validation :prepare
 
     class << self
       def table_name_prefix; 'loco_' end
@@ -34,6 +34,15 @@ module Loco
         self.recipient_class = val.class.name
         self.recipient_id = val.id
       end
+    end
+
+    def prepare
+      set_event
+      set_data
+    end
+
+    def compact
+      [obj_class, obj_id, event, data]
     end
 
     private
