@@ -8,7 +8,7 @@ module AdminHelpers
 
   def update_article article
     article.title = 'AGtTRA'
-    article.text = 'TESTING_SUPPORT...'
+    article.text = 'TESTING_SUPPORT...' * 6
     article.save!
     emit article, :updated, for: [:all]
   end

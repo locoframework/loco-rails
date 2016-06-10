@@ -11,8 +11,8 @@ class Article < ActiveRecord::Base
   attr_reader :published
   attr_accessor :admin_review_started_at
 
-  validates :title, presence: true
-  validates :text, presence: true
+  validates :title, presence: true, length: {minimum: 3, maximum: 255}
+  validates :text, presence: true, length: {minimum: 100}
 
   validate :vulgarity_level
   before_update :calculate_admin_review_time

@@ -24,7 +24,7 @@ class User::ArticleShowPageTest < IT
       assert page.has_content? 'WiAR'
     end
     within "#article_text" do
-      assert page.has_content? 'Lorem Ipsum II'
+      assert page.has_content?('Lorem Ipsum II' * 8)
     end
   end
 
@@ -63,6 +63,7 @@ class User::ArticleShowPageTest < IT
   end
 
   test "should auto redirect to list of articles if article has been deleted" do
+    sleep 1
     destroy_article :two
     assert page.has_content? 'Article has been deleted.'
   end

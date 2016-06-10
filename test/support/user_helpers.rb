@@ -15,14 +15,15 @@ module UserHelpers
   def update_article name
     articles(name).tap do |a|
       a.title = 'WiAR'
-      a.text = 'Lorem Ipsum II'
+      a.text = 'Lorem Ipsum II' * 8
       a.save!
     end
     emit articles(name), :updated, for: [users(:user_zbig)]
   end
 
   def destroy_article name
-    articles(name)
-    emit articles(name), :destroyed, for: [articles(name).user]
+    article = articles name
+    article.destroy
+    emit article, :destroyed, for: [article.user]
   end
 end

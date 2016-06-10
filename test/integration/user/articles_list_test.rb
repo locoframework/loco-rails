@@ -60,7 +60,7 @@ class User::ArticlesListTest < IT
     def create_article_for user_name
       article = users(user_name).articles.new({
         title: 'Article #1',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' * 2
       }).tap{ |a| a.save! }
       emit article, :created, for: [users(user_name)]
       article

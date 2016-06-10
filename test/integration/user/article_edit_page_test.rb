@@ -34,7 +34,8 @@ class User::ArticleEditPageTest < IT
     within "div[data-attr='text']" do
       click_link 'apply changes'
       update_value_attr_for '#article_text'
-      assert page.has_selector? "textarea[value='Lorem Ipsum II']"
+      val = 'Lorem Ipsum II' * 8
+      assert page.has_selector? "textarea[value='#{val}']"
     end
   end
 

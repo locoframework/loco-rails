@@ -9,15 +9,15 @@ Gem::Specification.new do |s|
   s.email       = ["zbigniew.humeniuk@gmail.com"]
   s.homepage    = "http://loco-rails.org"
   s.summary     = "Framework on top of Rails."
-  s.description = "Rails is awesome, but modern web needs LOCO-motive."
+  s.description = "Rails is awesome, but modern web needs Loco-motive."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency 'rails', '>= 4.2'
-  s.add_dependency 'coffee-rails', '~> 4.1'
 
+  s.add_development_dependency 'coffee-rails', '~> 4.1'
   s.add_development_dependency 'minitest-reporters', '~> 1.1'
   s.add_development_dependency 'sqlite3', '~> 1.3'
   s.add_development_dependency 'bcrypt', '~> 3.1'

@@ -1,8 +1,7 @@
 PATH
   remote: .
   specs:
-    loco-rails (0.0.1)
-      coffee-rails (~> 4.1)
+    loco-rails (1.0.0)
       rails (>= 4.2)
 
 GEM
@@ -165,6 +164,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt (~> 3.1)
   capybara (~> 2.6.2)
+  coffee-rails (~> 4.1)
   database_cleaner (~> 1.5.1)
   eco (~> 1.0)
   hirb (~> 0.7)

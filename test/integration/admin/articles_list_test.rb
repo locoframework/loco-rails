@@ -16,7 +16,7 @@ class Admin::ArticlesListTest < IT
     assert page.has_content? "Rails fabric from the beginning"
     update_article articles(:one)
     assert page.has_content? "AGtTRA"
-    assert page.has_content? "TESTING_SUPPORT..."
+    assert page.has_content? "TESTING_SUPPORT..." * 6
   end
 
   test "should auto load newly published articles" do

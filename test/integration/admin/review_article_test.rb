@@ -14,7 +14,7 @@ class Admin::ReviewArticleTest < IT
   test "should auto update an article" do
     update_article articles(:one)
     assert page.has_content? "AGtTRA"
-    assert page.has_content? "TESTING_SUPPORT..."
+    assert page.has_content? "TESTING_SUPPORT..." * 6
   end
 
   test "should update an article" do
