@@ -55,7 +55,7 @@ class App.Views.User.Articles.Form extends App.Views.Base
 
   _displayChanges: ->
     for attrib, changes of @changes
-      sel = $("a.apply_changes[data-for=#{@article.getRemoteName(attrib)}]")
+      sel = $("a.apply_changes[data-for=#{@article.getAttrRemoteName(attrib)}]")
       continue if sel.length is 0
       sel.removeClass 'none'
 
