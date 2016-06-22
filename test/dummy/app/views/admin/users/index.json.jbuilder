@@ -1,4 +1,4 @@
-json.set! :resources do
+json.resources do
   json.array! @users, partial: 'admin/users/user', as: :user
 end
-json.set! :count, @count
+json.count @count
