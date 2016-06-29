@@ -2,31 +2,41 @@
 
 > Rails is cool. But modern web needs Loco-motive.
 
-Loco is.. for a lack of better word - a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts: front-end and back-end. I will be calling them **Loco-JS** and **Loco-Rails**, respectively, in the following sections of this README. So let's describe them shortly and their main responsibilities.
+**Loco** is.. for a lack of better word - a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts: front-end and back-end. I will be calling them **Loco-JS** and **Loco-Rails**, respectively. Both parts cooperate with each other. Let's describe them shortly and their main responsibilities.
 
-**Loco-JS** (front-end part) is a MVC+\* framework that provides structure for javascript assets. It supplies base classes for models, controllers and views. It's main responsibility it to call given controller's method based on Rails controller's method that handle current request. So it allows you to easily find Javascript logic that runs current page. 
+## Loco-JS
 
-Second the most important function is to periodically check for notifications. It is done under the hood and via ajax polling currently. Once the notification is received - object related to this notification and all connected objects (e.g. views, controllers) are notified. By *notified* - I mean that a given method is called (_receivedSignal_ by default).
+**Loco-JS** (front-end part) is a *MVC+\** framework that provides structure for javascript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page. 
+
+Second, the most important function is to periodically check for notifications. It is done internally via ajax polling (currently). Once the notification is received - object related to this notification and all connected objects (e.g. views, controllers) are notified. By *notified* - I mean that a given method is called (`receivedSignal` by default).
+
+Following example presents a view class, whose instance is connected with an instance of a certain model. It's done via calling `connectWith` method. Of course `render` method has to be called first. Then, if notification, related to this model's instance, is received - `receivedSignal` method is called automatically.
 
 ```coffeescript
 class App.Views.User.Articles.Form extends App.Views.Base
   constructor: (opts = {}) -> 
-  	super opts
-  	@article = null
+    super opts
+    @article = null
 
   render: (@article) -> 
     this.connectWith @article  # this method is pure magic ;)
     this._renderArticle()
 
-  receivedSignal: (signal, data) ->  # this method is auto called 
+  receivedSignal: (signal, data) -> 
     switch signal
       when "updated"
         @article.reload().then => this._displayChanges @article.changes()
 ```
 
-Loco-JS has build-in support for i18n. It is maintained in separate [repository](http://github.com/aoc-co/loco-js).
+Loco-JS has build-in support for I18n and is maintained in separate [repository](http://github.com/locoframework/loco-js). There you can read about futher details.
 
-**Loco-Rails** (back-end part) is a Rails Engine. It allows you to simply send notifications, from any part of a system, directy to related JavaScript object and all connected objects.
+\* *MVC+* - don't restrict yourself to only 3 layers. Good software is layered software. So, Loco-JS provides other layers also, such as: templates, validators, services, helpers. Create your own if you need.
+
+## Loco-Rails
+
+**Loco-Rails** (back-end part) is a Rails Engine. It allows you to simply send notifications from any part of a system, directy to associated JavaScript object and all connected objects.
+
+Following example presents a simple ActiveJob class that can `emit` *notifications / signals* directy to *associated* JavaScript objects. By *associated objects*, I mean - first and foremost - the JavaScript equivalent of given ActiveRecord object. It's an instance of a class that inherits from `App.Models.Base` and has the same name as given *ActiveRecord* class (in the most basic but recommended situation). I like to call them: **big brother and little brother** (better described in a section below). Also, all instances of JavaScript controllers and views, that have called `connectWith` method, will automatically receive emitted *signal / notification* for a given instance of ActiveRecord model.
 
 ```ruby
 class ArticleJob < ActiveJob::Base
@@ -41,19 +51,45 @@ class ArticleJob < ActiveJob::Base
 end
 ```
 
-So only one line is enough (**emit** method), in the code above, to magically send notification to all connected JavaScript objects in the browser. What's more - only user...
+So, only one line of code is enough (`emit` method) to *magically* send notifications to all connected JavaScript objects in the browser. What's more - only author of this article will receive notification. But, you can also pass an array of objects. Those objects can be instances of ActiveRecord classes or the classes themselves (example below).
 
-\* MVC+ - don't restrict yourself to only 3 layers. Good software is layered software. So Loco provides other layers out of the box also such as: templates, validators, services, helpers. Create your own if you need.
+```ruby
+emit article, :created, for: [Admin, article.user]
+```
+
+In the example above - both author of the article and all signed in admins will receive signal. Is it available out of the box? Yes, almost.. Just put this method into the `ApplicationController`:
+
+```ruby
+def loco_permissions
+  # specify an array of method names which you use to determine
+  # if given resource is signed-in
+  # e.g.
+  # [current_user, current_admin]
+  [current_user, current_admin]
+end
+```
+
+`loco:install` generator will take care of this automatically.
 
 ## Doubts
 
-### Argument: ajax polling is oldschool. "Live" functionality should be accomplished through WebSockets. 
+### Argument: AJAX polling is oldschool. "Live" functionality should be accomplished through WebSockets. 
 
-Answer: ...
+**Answer:** Well, guess what - Loco works perfectly fine along with **ActionCable**. So if you need an instant functionality somewhere in your app, you can use ActionCable. But, in the other parts of an app, where ~1-3 second of latency doesn't matter, Loco works just fine. What's more, Loco provides structure for JS assets. So, you can structure you ActionCable code even better imo (see *examples* section below). It also allows you to do client-side rendering with ActionCable, easly. 
 
-### Argument: front-end part is developed in CoffeeScript. It should be in ES6.
+Personally, I find that sending over and over the same fat chunks of HTML (server-side rendering) is a waste of transfer (on cellular network especially) . Don't you think, that sending a template once and pure data subsequently (JSON API) is much better solution? For your wallet, for sure ;) Of course, Loco doesn't force anything. 
 
-Answer: That's true. But you know what - it's is developed in CoffeScript, then compiled to JavaScript and than ...
+From here, we can go smoothly to another argument - when transfering another 30kB (jQuery) once and only, becomes pain.
+
+### Argument: Loco-JS depends on jQuery, but we don't need jQuery, anymore.
+
+**Answer:** Look at this [site](http://youmightnotneedjquery.com), for example. Almost always, you need to write more code to accomplish the same goal. And what we do, as developers, to write less code? We create private methods. We write another specialized classes. And we use 3rd party libraries. So, until no-jQuery approach will require to write longer code, I'll be with jQuery. But, I agree, that be dependent on sth is not good and *less dependencies* is better.
+
+### Argument: Loco-JS is developed in CoffeeScript, but current standard is ES6.
+
+**Answer:** Yeah, it's CoffeeScript. But you know what - it's developed in CoffeScript. Then, compiled to JavaScript. Then, concatenated to one file. And then, I inherit from those plain JavaScript objects (base *"classes"*) in my app written in CoffeeScript. How cool is that? You should be able to do sth similiar with ES6. But I haven't tried that. 
+
+I just *fcukin* hate parentheses and semicolons. And CoffeeScript is even better than Ruby in avoiding parentheses.
 
 Parafrasing Giorgio Moroder from Daft Punk's track titled "Giorgio by Moroder":
 
@@ -61,15 +97,15 @@ Parafrasing Giorgio Moroder from Daft Punk's track titled "Giorgio by Moroder":
 
 ## Main features
 
-In terms of the whole system, not separate front-end and back-end parts (front-end part can run separatelly with limited functionality):  
+In terms of the whole system, the most important ones are following: 
 
-### 1) Privides structure for Javascript assets
+### 1. Provides structure for Javascript assets
 
-...
+I've said about that enough in the previous sections. Structure is just good and desirable.
 
-### 2) Big brother and little brother
+### 2. Big brother and little brother
 
-Big brother
+Here is a big brother:
 
 ```ruby
 class Article < ActiveRecord::Base
@@ -87,7 +123,7 @@ class Article < ActiveRecord::Base
     end
 end
 ```
-Little brother
+And a little brother is right there:
 
 ```coffeescript
 class App.Models.Article extends App.Models.Base
@@ -117,19 +153,160 @@ class App.Models.Article extends App.Models.Base
       this.addErrorMessage "Article contains strong language.", for: 'base'
 ```
 
-### 3) Aktualny stan wszędzie
+Look at those two. Aren't they similiar? This is how both models are look like. You should be pretty familiar with the big one. But the little brother shouldn't provide you difficulties to unravel him, also. Front-end model is described in a more detailed way at the proper [place](http://github.com/locoframework/loco-js). Let's get right to the magic. You can place a line like that somewhere in a JS controller, for example:
+
+```coffeescript
+App.Models.Article.get('all', resource: 'main').then (resp) -> resp.resources
+```
+
+So what this line actually do? Let's suppose that we have 104 records in the `articles` table on the server. This code makes 11 requests to `/articles.json`. Then, initializes 104 instances of `App.Models.Article`, based on JSON responses. Finally, it returns an object with 2 properties: **resources** and **count**. **resources** is an array of `App.Models.Article` instances and **count** is a total number of articles in a database. As you can see, Loco-JS' API is based on [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+
+Rails controller is rather plain:
+
+```ruby
+class Main::ArticlesController < MainController
+  def index
+    @articles = Article.order("created_at DESC").paginate page: params[:page], per_page: 10
+    @count = Article.count
+  end
+end
+```
+
+View is a standard Jbuilder template (*index.json.jbuilder*):
+
+```ruby
+json.resources @articles do |article|
+  json.id article.id
+  json.title article.title
+  json.text article.text
+end
+json.count @count
+```
+
+That's all what you need to create a communication between little and big brother. And you should know that there is much more to communicate.
+
+### 3. Current state everywhere
+
+Let's assume, that we have 2 browsers open on the page with a list of articles.
 
 |  Browser A | Browser B |
 |---|---|
-| a | b |
-| c | d |
-| e | f |
+| edit article 1 | ----- |
+| new version of article 1 is visible | old version of article 1 is visible |
+| ----- | refresh page |
+| new version of article 1 is visible | new version of article 1 is visible |
 
-### 4) Dashboard problem
+So, you need to constantly refresh page to get an actual list of articles. Or you need to provide, as developer, some *"live"* functionality through AJAX or WebSockets. This requires a lot of unnecessary work/code for an every each element like that. It should be much easier. And by easier, I mean ~1 significant line of code on the server and front-end side. With Loco you can solve this problem like this:
 
-### 5) Less actions and routes
+```ruby
+# user/articles_controller.rb
+class User::ArticlesController < UserController
+  def update
+    if @article.update article_params
+      emit @article, :updated  # 1 line on server side
+      # ...
+    end
+  end
+end
+```
 
-### 6) Offline ready / progressive web app
+```coffeescript
+# main/pages/article_list.coffee
+class App.Views.Main.Pages.ArticleList extends App.Views.Base
+  # ...
+  
+  receivedSignal: (signal, data) ->
+    switch signal
+      when 'Article updated'
+        App.Models.Article.find(id: data.id).then (article) =>
+          this._renderArticle article  # you could write this 3 lines as 1 longer ;)
+```
+
+### 4. Dashboard problem
+
+A lot of applications have dashboard, which presents informations about many resources. It would be good, if presented information was up to date. 
+
+In the *"standard"* approach - controller action renders full page. If your dashboard has some dynamic elements, like charts for example - you need to hide raw data in **data attributes** or do some *spaghetti code*. It's  ingredients are Ruby and JavaScript. It's not recommended, but I think that everyone has prepared at least one dish like this ;-) Then, you need to ask front-end guys to process data and generate required dynamic views. They'll put JavaScript code in a place known only them, inside JavaScipt module or something... Then, they'll write (somewhere) code that fetches new data for every resource. You have to write API endpoints. 
+
+It's also worth considering to write a single API endpoint for all resources and bundle all data inside a custom structure. Of course, this approach will require time to consider, implement, document or explain to front-end fellas. 
+
+One dashboard - many problems. That's not all, though. Here is another one - let's check how the controller action, that renders a dashboard, could look like in the *"standard"* approach:
+
+```ruby
+def dashboard
+  @users_data = User.data_for_dashoard
+  @articles_data = Article.data_for_dashoard
+  @comments_data = Comment.data_for_dashboard
+  # ...
+end
+```
+
+It's an approximation of course, but it tells us: more data on dashboard page - probably longer response time. You cound experiment with Redis, but it's just another layer of complexity. Following animation shows, how rendering page this way is look like:
+
+![standard rendering](https://dl.dropboxusercontent.com/u/1493174/loco-rails/1.gif)
+
+You can see that it affects UX significantly.
+
+Another approach is to render static page or very light and fast page (with placeholders for example). Then, transfer logic responsible for fetching and presenting data to proper abstract JavaScript views. How you'll organize code is up to you. You can have main view with subviews or just few equivalent views. Simpler is better. How to notify front-end about new events? Do you remember `emit` method? So just `emit` signal on server-side and receive it by all *connected* JavaScript objects. And you already know, where the JavaScript logic is located. Here is how rendering page this way is look like:
+
+![async rendering](https://dl.dropboxusercontent.com/u/1493174/loco-rails/2.gif)
+
+Intresting fact is that you can cover loading time with animations. When user see changes, he doesn't feel waiting. It should be really fast, though, cause we've split long action into a few fast ones. So it has server-side benefits, also.
+
+Of course, we are not exempt from implementing API endpoints. But if you just need to return models, you can achieve this really easily. For the purpose of this example, let's assume that we want to show the most popular 10 comments in the comments view/widget. From the front-end perspective, we can fetch popular comments with just 1 line:
+
+```coffescript
+App.Models.Comment.get('popular', page: 1).then (resp) -> resp.resources
+```
+
+This line makes GET request to `/comments/popular` (let's simplify that), so we need to implement `popular` method in the `CommentsController`. 
+
+```ruby
+class CommentsController < ApplicationController
+  def popular
+    @comments = Comment.order("likes DESC").paginate({
+      page: params[:page],
+      per_page: 10
+    })
+    @count = Comment.count
+  end
+end
+```
+
+And the view (*comments/popular.jbuilder.json*) could look like this:
+
+```ruby
+json.resources @comments do |comment|
+  json.id comment.id
+  json.author comment.author
+  json.text comment.text
+  json.article_id comment.article_id
+  json.created_at comment.created_at
+  json.updated_at comment.updated_at
+end
+json.count @count
+```
+
+Loco-JS requires from you to return a JSON response with this structure - **resources** and **count** keys are mandatory.
+
+### 5. Less actions, routes and JavaScript code
+
+Let's analyze uploading images from Rails app. You probably need following actions:
+
+1. action to display form (e.g. `new`)
+2. action for form processing which passes all jobs related to an image (cropping, creating different sizes, uploading to S3) to a *background task* (e.g. `create`)
+3. action to which user is redirected after submitting form (e.g. `processing`)
+4. action which returns results of background task (e.g. `results`). It is requested via AJAX call.
+
+When you use Loco, you don't need 4th action, bacause you can just `emit` signal from background job directly to your JavaScript objects. So you don't need also route and JavaScript code that is responsible for polling. Just imagine how many features like that, your Rails apps have got. And how many lines of code you can get rid of.
+
+### 6. Offline ready
+
+Loco doesn't force you to structure your web app in a particular way. It's up to you whether you use Loco only on a few pages, split an app on a few panels (with different JS *manifest* files) and use Loco only on some or just make a single-page app. It's also a very good choice for a [shell architecture](https://developers.google.com/web/updates/2015/11/app-shell?hl=en). You can then use [Service Workers](http://www.html5rocks.com/en/tutorials/service-worker/introduction/) for offline caching and performance wins, in the form of instant loading for repeat visits. You can build a [Progressive Web App](https://developers.google.com/web/fundamentals/getting-started/your-first-progressive-web-app/?hl=en#what-is-a-progressive-web-app) that way.
+
+### 7. Client-side form validation for free
+
+If you'll define validations in JavaScript model and you'll use instance of `App.UI.Form` class for handling form, then you'll get form validation, instantly. By the way, front-end validations are very similiar to the back-end ones. You can define them nearly by *copy-paste*.
 
 ## Requirements
 
@@ -142,6 +319,7 @@ Specified in .ruby-version file
 ## Architecture
 
 image here
+feature: connection lost
 
 ### Garbage collecting
 
@@ -181,6 +359,16 @@ $ rails generate loco:model
 
 ```console
 $ rails rake generate loco:view
+```
+
+When dealing with non-ActiveRecord objects (e.g. uploaded files), you don't have to create unnecessary models on the back-end side.
+
+```ruby
+emit article, :confirmed, for: '<token>'
+```
+
+```coffeescript
+App.Env.loco.getWire().setToken '<token>'
 ```
 
 ## Development
