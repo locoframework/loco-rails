@@ -15,7 +15,7 @@ App.Views.Layouts = {}
 App.Views.Shared = {}
 
 loco = new App.Loco
-  turbolinks: true                            # false by default
+  turbolinks: 2                               # false by default
   notifications:
     enable: true                              # false by default
     pollingTime: 3000                         # 3000 ms by default

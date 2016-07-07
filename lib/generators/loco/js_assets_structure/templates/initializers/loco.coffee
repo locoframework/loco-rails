@@ -14,10 +14,10 @@
 # now you can define classes such as App.Views.Main.Articles.Show or App.Views.Admin.Users.List
 
 loco = new App.Loco
-  # set to true if you if have enabled turbolinks
-  turbolinks: true                    # false by default
+  # set to your Turbolinks version if you have enabled Turbolinks
+  turbolinks: 5                       # false by default
 
-  # your browser's app will periodically be checking for new notifications via ajax polling
+  # your browser's app will be checking for new notifications periodically via ajax polling
   notifications:
     enable: true                      # false by default
     #pollingTime: 3000                # 3000 ms by default
