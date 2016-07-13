@@ -23,9 +23,9 @@ class App.Views.Shared.Flash extends App.Views.Base
       node.addClass 'warning'
       node.find('p').text @warning
     node.slideDown 'normal'
-    this.hide() if @hide
+    this.hideAfterTime() if @hide
 
-  hide: (time = 4000) ->
+  hideAfterTime: (time = 4000) ->
     setTimeout ->
       $('.flash').slideUp 'normal'
     , time
