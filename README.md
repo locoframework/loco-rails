@@ -6,11 +6,11 @@
 
 ## Loco-JS
 
-**Loco-JS** (front-end part) is a *MVC+\** framework that provides structure for javascript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page. 
+**Loco-JS** (front-end part) is a *MVC+\** framework that provides structure for JavaScript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page. 
 
-Second, the most important function is to periodically check for notifications. It is done internally via ajax polling (currently). Once the notification is received - object related to this notification and all connected objects (e.g. views, controllers) are notified. By *notified* - I mean that a given method is called (`receivedSignal` by default).
+Second, the most important function is to periodically check for notifications. It is done internally via ajax polling (currently). Once the notification is received - object related to this notification and all connected objects (e.g. views, controllers) are notified. By *notified*, I mean that a given method is called (`receivedSignal` by default).
 
-Following example presents a view class, whose instance is connected with an instance of a certain model. It's done via calling `connectWith` method. Of course `render` method has to be called first. Then, if notification, related to this model's instance, is received - `receivedSignal` method is called automatically.
+Following example presents a view class. It's instance is connected with an instance of a certain model. It's done via calling `connectWith` method. Of course `render` method has to be called first. Then, if notification related to this model's instance is received - `receivedSignal` method is called automatically.
 
 ```coffeescript
 class App.Views.User.Articles.Form extends App.Views.Base
@@ -51,13 +51,13 @@ class ArticleJob < ActiveJob::Base
 end
 ```
 
-So, only one line of code is enough (`emit` method) to *magically* send notifications to all connected JavaScript objects in the browser. What's more - only author of this article will receive notification. But, you can also pass an array of objects. Those objects can be instances of ActiveRecord classes or the classes themselves (example below).
+So, only one line of code is enough (`emit` method) to *magically* send notifications to all connected JavaScript objects in the browser. What's more - only author of this article will receive notification. But, you can also pass an array of objects as receiverts of this signal. Those objects can be instances of ActiveRecord classes or the classes themselves (example below).
 
 ```ruby
 emit article, :created, for: [Admin, article.user]
 ```
 
-In the example above - both author of the article and all signed in admins will receive signal. Is it available out of the box? Yes, almost.. Just put this method into the `ApplicationController`:
+In the example above - both: author of the article and all signed in admins will receive signal. Is it available out of the box? Yes, almost.. Just put this method into the `ApplicationController`:
 
 ```ruby
 def loco_permissions
@@ -308,84 +308,176 @@ Loco doesn't force you to structure your web app in a particular way. It's up to
 
 If you'll define validations in JavaScript model and you'll use instance of `App.UI.Form` class for handling form, then you'll get form validation, instantly. By the way, front-end validations are very similiar to the back-end ones. You can define them nearly by *copy-paste*.
 
-## Requirements
+## Dependencies
 
-...
+### Strict dependencies
 
-### Ruby version
+Dependencies that are required for Loco to work:
 
-Specified in .ruby-version file
+**Loco-JS**
+
+* jQuery 2.2.4 or higher
+
+**Loco-Rails**
+
+* modern Ruby (tested on >= 2.3.0)
+* Rails >= 4.2
+
+### Soft dependencies
+
+Recommended dependencies that facilitate development of web app and are not required for Loco to work:
+
+**Loco-JS**
+
+* [lie](https://github.com/calvinmetcalf/lie) - promise library implementing the Promises/A+ spec Version 1.1. Because Loco-JS is based on promises and promises are supported natively only in [some browsers](http://caniuse.com/#feat=promises)
+
+**Loco-Rails**
+
+* [eco](https://github.com/sstephenson/eco) - lets you embed CoffeeScript logic in your markup. Useful when using JST templates. Look at `test/dummy`'s front-end code for examples.
 
 ## Architecture
 
-image here
-feature: connection lost
+When you `emit` signal (~ notification), this signal is actually a record in the **loco_notifications** table in database. Client front-end apps constantly check whether there are new notifications for them. They do this by sending **synced_at** param which they get back with each response. One of the advantages of this solution is - when client lose connection with the server and restore it after some time - he will get all not received notifications. Unless you delete them before, of course. It leads to the next issue...
 
-### Garbage collecting
+### Garbage collection
 
-## Dependencies
-
-### Back-end part
-
-Loco works with Rails 4.2 onwards. You can add it to your Gemfile with:
+When you emit a lot of notifications, you obviously create a lot of records in the database. This way, your *loco_notifications* table may by very big soon. You need to get rid of old records, periodically. You may do this, like I present in the following code. It's quite a naive approach but it works for me for months.
 
 ```ruby
-gem loco-rails
+class GarbageCollectorJob < ActiveJob::Base
+  queue_as :default
+
+  after_perform do |job|
+    GarbageCollectorJob.set(wait_until: 1.hour.from_now).perform_later
+  end
+
+  def perform
+    Loco::Notification.where("created_at < ?", 1.hour.ago).
+      find_in_batches do |batch|
+        batch.each{ |notification| notification.destroy }
+      end
+  end
+end
 ```
 
 ## Getting Started
 
-1) Install Loco at the command prompt if you haven't yet:
+Loco works with Rails 4.2 onwards. You can add it to your Gemfile with:
 
-```console
-$ gem install loco-rails
+```ruby
+gem 'loco-rails'
 ```
 
-2) At the command prompt, 
+At the command prompt run:
 
 ```console
-$ rails generate loco:install
+$ bundle install
+$ bin/rails generate loco:install
+$ bin/rails db:migrate
 ```
+
+Loco-JS is bundled inside Loco-Rails and named `loco-rails.js` Since it is a JavaScript library, I recommend to resolve JavaScript dependencies using native package managers. So I encourage you to install Loco-JS and all JavaScript libraries using Bower:
+
+```console
+$ bower install loco-js --save
+```
+
+Then, you have to replace one line in your JavaScript manifest file:
+
+```javascript
+//= require loco-rails
+```
+
+to
+
+```javascript
+//= require loco-js
+```
+
+Look inside `test/dummy/` to see how Bower is configured.
 
 ## Usage
 
-```console
-$ rails generate loco:controller
-```
+### Development
+
+Along with Loco-Rails come generators, that speed up front-end development. Run *help* for more details.
 
 ```console
-$ rails generate loco:model
+$ bin/rails generate loco:controller
+$ bin/rails generate loco:model
+$ bin/rails generate loco:view
 ```
-
-```console
-$ rails rake generate loco:view
-```
-
-When dealing with non-ActiveRecord objects (e.g. uploaded files), you don't have to create unnecessary models on the back-end side.
-
-```ruby
-emit article, :confirmed, for: '<token>'
-```
-
-```coffeescript
-App.Env.loco.getWire().setToken '<token>'
-```
-
-## Development
 
 ### How to run the test suite
 
 ```console
-$ rake
+$ bin/rake
 ```
 
-## History
+### Emitting signals
 
-...
+1. include `Loco::Emitter` inside a class and then use `emit` instance method
+2. initialize `Loco::Broadcaster` object and call `emit` method on it 
+
+`Loco::Emitter` module uses `Loco::Broadcaster` object inside `emit` method.
+
+#### Anatomy of Loco::Broadcaster
+
+`emit` method of `Loco::Emitter` module and constructor of `Loco::Broadcaster` take the same arguments:
+
+1. an object whose the notification concerns
+2. a name of an event that occured (Symbol / String). Default values are:
+	* **:created** - when created\_at == updated\_at
+	* **:updated** - when updated\_at > created\_at
+3. a hash with relevant keys:
+	* **:for** - receiver of the signal. It can be a single object or an array of objects. Instances of models, their class names and strings are acceptable. If receiver is a name of class, then given signal is addressed to all instances of this class. If receiver is a string (token), then clients who have subscribed to this token on the fron-end side, will receive notifications: `App.Env.loco.getWire().setToken '<token>'`
+	* **:data** - additional data that will be transmitted along with notification. This data are serialized to JSON in database.
+
+Example:
+
+```ruby
+receivers = [article.user, Admin, 'a54e1ef01cb9']
+data = {foo: 'bar'}
+
+emit article, :confirmed, for: receivers, data: data
+# is equivalent to
+Loco::Broadcaster.new(article, :confirmed, for: receivers, data: data).emit
+```
+
+### Emitting signals for non-ActiveRecord objects
+
+When dealing with non-ActiveRecord objects (e.g. uploaded files), you don't have to create unnecessary models on the back-end side to communicate something. Plain ruby classes are just enough:
+
+```ruby
+class DirectMessage
+  def id; 0 end
+end
+
+emit DirectMessage.new, :csv_processed, data: {}, for: event.user
+```
+
+```coffeescript
+class App.Models.DirectMessage extends App.Models.Base
+  @identity = 'DirectMessage'
+  
+class App.Controllers.User.Events extends App.Controllers.Base
+  show: ->
+    @view = new App.Views.User.Events.Show
+    this.connectWith [App.Models.DirectMessage]
+    
+  receivedSignal: (signal, data) ->
+    switch signal
+      when 'DirectMessage csv_processed' then @view.renderResuls data
+```
 
 ## Examples
 
-...
+* examine `test/dummy` app for real-life use cases of almost all Loco's features in various scenarios
+* [Loco + ActionCable example app](http://github.com/locoframework/example-action-cable)
 
 ## License
-Ruby on Rails is released under the [MIT License](https://opensource.org/licenses/MIT).
+Loco-Rails is released under the [MIT License](https://opensource.org/licenses/MIT).
+
+## Author
+
+Zbigniew Humeniuk
