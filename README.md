@@ -6,7 +6,7 @@
 
 ## Loco-JS
 
-**Loco-JS** (front-end part) is a *MVC+\** framework that provides structure for JavaScript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page. 
+**Loco-JS** (front-end part) is a MVC+\* framework that provides structure for JavaScript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page. 
 
 Second, the most important function is to periodically check for notifications. It is done internally via ajax polling (currently). Once the notification is received - object related to this notification and all connected objects (e.g. views, controllers) are notified. By *notified*, I mean that a given method is called (`receivedSignal` by default).
 
@@ -413,6 +413,8 @@ $ bin/rails generate loco:view
 ```bash
 $ bin/rake
 ```
+
+Integration tests are powered by Capybara. Capybara is cool but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately.
 
 ### Emitting signals
 
