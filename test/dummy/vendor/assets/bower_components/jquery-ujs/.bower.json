@@ -27,6 +27,6 @@
     "commit": "72ca4f1a4ea205f94cf6c42c1bf7f0b90c429858"
   },
   "_source": "https://github.com/rails/jquery-ujs.git",
-  "_target": "~1.2.1",
+  "_target": "^1.2.1",
   "_originalSource": "jquery-ujs"
 }

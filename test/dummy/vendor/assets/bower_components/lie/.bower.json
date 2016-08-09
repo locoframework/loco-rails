@@ -1,14 +1,14 @@
 {
   "name": "lie",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "homepage": "https://github.com/calvinmetcalf/lie",
-  "_release": "3.0.2",
+  "_release": "3.1.0",
   "_resolution": {
     "type": "version",
-    "tag": "v3.0.2",
-    "commit": "b834761180c2c49e04ccd25f9acb22ea757a20f9"
+    "tag": "v3.1.0",
+    "commit": "a286d4a8d02b3ba72d6b1a7240467d4f209aaa93"
   },
   "_source": "https://github.com/calvinmetcalf/lie.git",
-  "_target": "~3.0.1",
+  "_target": "^3.0.1",
   "_originalSource": "lie"
 }
