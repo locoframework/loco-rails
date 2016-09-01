@@ -1,3 +1,5 @@
+![logo](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/loco_logo_trans_sqr-300px.png)
+
 # Welcome to Loco-Rails
 
 > Rails is cool. But modern web needs Loco-motive.
@@ -243,13 +245,13 @@ end
 
 It's an approximation of course, but it tells us: more data on dashboard page - probably longer response time. You cound experiment with Redis, but it's just another layer of complexity. Following animation shows, how rendering page this way is look like:
 
-![standard rendering](https://dl.dropboxusercontent.com/u/1493174/loco-rails/1.gif)
+![standard rendering](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/1.gif)
 
 You can see that it affects UX significantly.
 
 Another approach is to render static page or very light and fast page (with placeholders for example). Then, transfer logic responsible for fetching and presenting data to proper abstract JavaScript views. How you'll organize code is up to you. You can have main view with subviews or just few equivalent views. Simpler is better. How to notify front-end code about new events? Do you remember `emit` method? So just `emit` signal on server-side and receive it by all *connected* JavaScript objects. And you already know, where the JavaScript logic is located. Here is how rendering page this way is look like:
 
-![async rendering](https://dl.dropboxusercontent.com/u/1493174/loco-rails/2.gif)
+![async rendering](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/2.gif)
 
 Intresting fact is that you can cover loading time with animations. When user see changes, he doesn't feel waiting. It should be really fast, though, cause we've split long action into a few fast ones. So it has server-side benefits, also.
 
@@ -484,4 +486,4 @@ Loco-Rails is released under the [MIT License](https://opensource.org/licenses/M
 
 ## Author
 
-Zbigniew Humeniuk
+Zbigniew Humeniuk from [Art of Code](http://artofcode.co)

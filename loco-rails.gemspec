@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name        = "loco-rails"
   s.version     = Loco::VERSION
   s.authors     = ["Zbigniew Humeniuk"]
-  s.email       = ["zbigniew.humeniuk@gmail.com"]
-  s.homepage    = "https://github.com/locoframework/loco-rails"
+  s.email       = ["hello@artofcode.co"]
+  s.homepage    = "http://locoframework.org"
   s.summary     = "Framework on top of Rails."
   s.description = "Rails is awesome, but modern web needs Loco-motive."
   s.license     = "MIT"
