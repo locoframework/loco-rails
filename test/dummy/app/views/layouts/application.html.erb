@@ -6,7 +6,7 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
-<%= content_tag :body, loco_body_data do %>
+<%= content_tag :body, loco_body_data.merge(style: body_styles) do %>
   <%= render 'layouts/flash', name: '', msg: '' %>
   <% flash.each do |name, msg| %>
     <%= render 'layouts/flash', name: name, msg: msg %>

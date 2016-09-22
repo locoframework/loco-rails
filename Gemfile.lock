@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    loco-rails (1.0.0)
+    loco-rails (1.0.2)
       rails (>= 4.2)
 
 GEM
@@ -72,7 +72,7 @@ GEM
     erubis (2.7.0)
     execjs (2.6.0)
     ffi (1.9.10)
-    globalid (0.3.6)
+    globalid (0.3.7)
       activesupport (>= 4.1.0)
     hirb (0.7.3)
     i18n (0.7.0)
