@@ -6,6 +6,10 @@
 
 **Loco** is.. for a lack of better word - a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts: front-end and back-end. I will be calling them **Loco-JS** and **Loco-Rails**, respectively. Both parts cooperate with each other. Let's describe them shortly and their main responsibilities.
 
+## Demo
+
+[![Loco: demo](http://img.youtube.com/vi/05iJNyIKZZU/0.jpg)](http://www.youtube.com/watch?v=05iJNyIKZZU)
+
 ## Loco-JS
 
 **Loco-JS** (front-end part) is a MVC+\* framework that provides structure for JavaScript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page. 
