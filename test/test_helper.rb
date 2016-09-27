@@ -27,7 +27,11 @@ Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 DatabaseCleaner.strategy = :truncation
 
 class ActiveSupport::TestCase
-  self.use_transactional_fixtures = false
+  if Rails.version.to_f >= 5
+    self.use_transactional_tests = false
+  else
+    self.use_transactional_fixtures = false
+  end
 
   fixtures :all
 

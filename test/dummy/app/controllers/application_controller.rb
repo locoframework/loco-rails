@@ -9,14 +9,12 @@ class ApplicationController < ActionController::Base
 
     def current_admin
       return nil if session[:admin_id].nil?
-      return @current_admin if @current_admin
-      @current_admin = Admin.find session[:admin_id]
+      @current_admin ||= Admin.find_by id: session[:admin_id]
     end
 
     def current_user
       return nil if session[:user_id].nil?
-      return @current_user if @current_user
-      @current_user = User.find session[:user_id]
+      @current_user ||= User.find_by id: session[:user_id]
     end
 
     def loco_permissions

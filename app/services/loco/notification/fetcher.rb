@@ -11,7 +11,7 @@ module Loco
     end
 
     def formatted_notifications
-      notifications.map &:compact
+      notifications.map(&:compact)
     end
 
     def next_sync_time
