@@ -5,6 +5,7 @@
 # Read the Rails 5.0 release notes for more info on each option.
 
 # Enable per-form CSRF tokens. Previous versions had false.
+if Rails.version.to_f >= 5
 Rails.application.config.action_controller.per_form_csrf_tokens = true
 
 # Enable origin-checking CSRF mitigation. Previous versions had false.
@@ -22,3 +23,4 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 
 # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
+end
