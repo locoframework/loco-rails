@@ -3,6 +3,7 @@
 //= require jquery-ujs
 //= require turbolinks
 //= require loco-rails
+//= require cable
 //= require_tree ./locales/base
 //= require_tree ./locales/models
 //= require_tree ./locales/validators
@@ -13,3 +14,4 @@
 //= require_tree ./views
 //= require_tree ./templates
 //= require_tree ./validators
+//= require_tree ./services

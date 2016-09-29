@@ -18,6 +18,7 @@ end
 Capybara.javascript_driver = ENV['CAPYBARA_DRIVER'] ? ENV['CAPYBARA_DRIVER'].to_sym : :selenium
 Capybara.current_driver = Capybara.javascript_driver
 Capybara.default_max_wait_time = 5
+Capybara.server = :puma
 
 Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new(color: true)]
 

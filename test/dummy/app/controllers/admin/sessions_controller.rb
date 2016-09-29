@@ -7,12 +7,12 @@ class Admin::SessionsController < ApplicationController
     admin = Admin.find_by email: params[:email]
     auth_failed && return if admin.nil?
     auth_failed && return if not admin.authenticate params[:password]
-    session[:admin_id] = admin.id
+    cookies.signed[:admin_id] = admin.id
     redirect_to admin_root_url, notice: 'Successfully signed in.'
   end
 
   def destroy
-    session[:admin_id] = nil
+    cookies.signed[:admin_id] = nil
     redirect_to new_admin_session_url, notice: 'Successfully signed out.'
   end
 

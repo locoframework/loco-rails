@@ -8,13 +8,13 @@ class ApplicationController < ActionController::Base
   private
 
     def current_admin
-      return nil if session[:admin_id].nil?
-      @current_admin ||= Admin.find_by id: session[:admin_id]
+      return nil if cookies.signed[:admin_id].nil?
+      @current_admin ||= Admin.find_by id: cookies.signed[:admin_id]
     end
 
     def current_user
-      return nil if session[:user_id].nil?
-      @current_user ||= User.find_by id: session[:user_id]
+      return nil if cookies.signed[:user_id].nil?
+      @current_user ||= User.find_by id: cookies.signed[:user_id]
     end
 
     def loco_permissions

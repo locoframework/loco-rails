@@ -11,12 +11,12 @@ class User::SessionsController < ApplicationController
     auth_failed && return if user.nil?
     auth_failed('Your account is waiting for confirmation.') && return if not user.confirmed?
     auth_failed && return if not user.authenticate params[:password]
-    session[:user_id] = user.id
+    cookies.signed[:user_id] = user.id
     redirect_to user_root_url, notice: 'Successfully signed in.'
   end
 
   def destroy
-    session[:user_id] = nil
+    cookies.signed[:user_id] = nil
     redirect_to new_user_session_url, notice: 'Successfully signed out.'
   end
 

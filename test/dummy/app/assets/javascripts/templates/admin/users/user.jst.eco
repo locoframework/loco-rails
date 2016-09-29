@@ -1,10 +1,11 @@
-<tr id="user_<%= @user.id %>">
+<tr id="user_<%= @user.id %>" data-id="<%= @user.id %>">
   <td><%= @user.email %></td>
   <td><%= @user.username %></td>
   <td class='confirmed'><%= if @user.confirmed then "Yes" else "No" %></td>
   <td>
     <a href="/admin/users/<%= @user.id %>">Show</a> |
     <a href="/admin/users/<%= @user.id %>/edit">Edit</a> |
-    <a href="/admin/users/<%= @user.id %>" data-method="delete" data-confirm="Are you sure?">Delete</a>
+    <a href="/admin/users/<%= @user.id %>" data-method="delete" data-confirm="Are you sure?">Delete</a> |
+    <a href='#' class='ping'>Ping</a>
   </td>
 </tr>
