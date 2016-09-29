@@ -2,6 +2,7 @@ require "loco/engine"
 require "loco/helpers"
 require "loco/config"
 require "loco/broadcaster"
+require "loco/sender"
 require "loco/emitter"
 
 module Loco

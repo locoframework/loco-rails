@@ -5,12 +5,7 @@ module Loco
     end
 
     def emit_to recipient, data
-      serialized_recipient = if recipient.is_a?(String)
-        recipient
-      else
-        "#{recipient.class.name.downcase}:#{recipient.id}"
-      end
-      NotificationCenterChannel.broadcast_to serialized_recipient, data
+      Sender.new(recipient, data).emit
     end
   end
 end
