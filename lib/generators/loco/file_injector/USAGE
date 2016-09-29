@@ -9,3 +9,4 @@ Example:
         config/routes.rb
         app/helpers/application_helper.rb
         app/views/layouts/application.html.erb
+        app/channels/application_cable/connection.rb

@@ -5,8 +5,15 @@ class Loco::FileInjectorGenerator < Rails::Generators::Base
     file_path = File.join Rails.root, 'app', 'assets', 'javascripts', 'application.js'
     gsub_file file_path, /^\/\/= require_tree .$/, ''
     gsub_file file_path, /^\n$/, ''
+    if Rails.version.to_f >= 5
+      gsub_file file_path, "//= require cable\n", ''
+      gsub_file file_path, "//= require cable", ''
+    end
     data = File.read find_in_source_paths('application.js')
     append_file file_path, data
+    if Rails.version.to_f >= 5
+      inject_into_file file_path, "//= require cable\n", after: "//= require loco-rails\n"
+    end
   end
 
   def routes
@@ -32,5 +39,12 @@ class Loco::FileInjectorGenerator < Rails::Generators::Base
     data = File.read find_in_source_paths('application_controller.rb')
     after_line = "class ApplicationController < ActionController::Base\n"
     inject_into_file file_path, data, after: after_line
+  end
+
+  def connection
+    return if Rails.version.to_f < 5
+    file_path = File.join Rails.root, 'app', 'channels', 'application_cable', 'connection.rb'
+    data = File.read find_in_source_paths('connection.rb')
+    inject_into_class file_path, 'Connection', data
   end
 end
