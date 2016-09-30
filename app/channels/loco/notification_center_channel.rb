@@ -13,7 +13,7 @@ module Loco
 
     def receive data
       permissions = loco_permissions.compact.map{ |o| [o.class.name.downcase.to_sym, o] }.to_h
-      NotificationCenter.new.perform permissions, data
+      NotificationCenter.new.received_signal permissions, data
     end
   end
 end

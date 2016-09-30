@@ -1,4 +1,4 @@
-class App.Services.Plug
+class App.Services.NotificationCenter
   receivedSignal: (data) ->
     switch data.action
       when 'ping'

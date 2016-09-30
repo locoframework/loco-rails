@@ -2,7 +2,7 @@ module Loco
   class NotificationCenter
     include Emitter
 
-    def perform permissions, data
+    def received_signal permissions, data
       case data['todo']
       when 'ping'
         return if permissions[:admin].nil?
