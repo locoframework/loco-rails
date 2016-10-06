@@ -23,6 +23,10 @@ module Loco
       init_notifications if notifications.empty?
       notifications.each do |notification|
         notification.save!
+        if notification.recipient_id # TODO: here!
+          recipient = notification.recipient_class.constantize.new id: notification.recipient_id
+          SenderJob.perform_later recipient, loco: {notification: notification.compact}
+        end
       end
     end
 

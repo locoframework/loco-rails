@@ -4,6 +4,7 @@ require "loco/config"
 require "loco/broadcaster"
 require "loco/sender"
 require "loco/emitter"
+require "loco/ws_connection_manager"
 
 module Loco
   if Rails.version.to_f < 5

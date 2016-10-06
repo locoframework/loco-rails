@@ -23,20 +23,14 @@ module Loco
       def permissions
         return [] if not defined? loco_permissions
         return loco_permissions if params[:uuid].blank?
-        ws_permissions = []
-        loco_permissions.each do |permission|
-          arr = Redis.current.get identifier_for_permission(permission)
-          next if arr.blank?
-          if arr.include? params[:uuid]
-            ws_permissions << permission
-          end
+        resources_to_del = []
+        resources_to_add = []
+        loco_permissions.each do |resource|
+          next if not WsConnectionManager.new(resource).connected?(params[:uuid])
+          resources_to_del << resource
+          resources_to_add << resource.class
         end
-        loco_permissions - ws_permissions
-      end
-
-      # TODO: duplication
-      def identifier_for_permission permission
-        "#{permission.class.name.downcase}:#{permission.id}"
+        loco_permissions - resources_to_del + resources_to_add.uniq
       end
   end
 end
