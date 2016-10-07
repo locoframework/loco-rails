@@ -7,17 +7,8 @@ module Loco
 
     def emit
       @recipients.each do |recipient|
-        NotificationCenterChannel.broadcast_to serialize_recipient(recipient), @data
+        NotificationCenterChannel.broadcast_to WsConnectionManager.new(recipient).identifier, @data
       end
     end
-
-    protected
-
-      def serialize_recipient recipient
-        if recipient.is_a?(String)
-          return recipient
-        end
-        "#{recipient.class.name.downcase}:#{recipient.id}"
-      end
   end
 end
