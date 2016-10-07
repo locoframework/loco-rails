@@ -32,13 +32,13 @@ module Loco
     end
 
     def destroy
-      Redis.current.del identifier
+      WsConnectionStorage.current.del identifier
     end
 
     protected
 
       def data
-        serialized_uuids = Redis.current.get identifier
+        serialized_uuids = WsConnectionStorage.current.get identifier
         return {} if serialized_uuids.blank?
         JSON.parse serialized_uuids
       end
@@ -48,7 +48,7 @@ module Loco
       end
 
       def save hash
-        Redis.current.set identifier, hash.to_json
+        WsConnectionStorage.current.set identifier, hash.to_json
       end
 
       def check_connections
