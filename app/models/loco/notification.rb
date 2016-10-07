@@ -36,6 +36,15 @@ module Loco
       end
     end
 
+    def recipient opts = {}
+      return recipient_token if recipient_token
+      return recipient_class.constantize if recipient_id.nil?
+      if opts[:shallow]
+        return recipient_class.constantize.new id: recipient_id
+      end
+      recipient_class.constantize.find recipient_id
+    end
+
     def prepare
       set_event
       set_data

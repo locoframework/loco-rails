@@ -13,6 +13,10 @@ module Loco
       connected_uuids.include? uuid
     end
 
+    def connected_uuids
+      data.find_all{ |k,v| v.is_a? String }.to_h.keys
+    end
+
     def add uuid
       update uuid
       check_connections
@@ -41,10 +45,6 @@ module Loco
 
       def uuids
         data.keys
-      end
-
-      def connected_uuids
-        data.find_all{ |k,v| v.is_a? String }.to_h.keys
       end
 
       def save hash

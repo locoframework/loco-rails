@@ -23,10 +23,9 @@ module Loco
       init_notifications if notifications.empty?
       notifications.each do |notification|
         notification.save!
-        if notification.recipient_id # TODO: here!
-          recipient = notification.recipient_class.constantize.new id: notification.recipient_id
-          SenderJob.perform_later recipient, loco: {notification: notification.compact}
-        end
+        next if notification.recipient_id.nil?
+        next if WsConnectionManager.new(notification.recipient(shallow: true)).connected_uuids.empty?
+        send_via_ws notification
       end
     end
 
@@ -41,6 +40,11 @@ module Loco
             data: data
           })
         end
+      end
+
+      def send_via_ws notification
+        data = {loco: {notification: notification.compact}}
+        SenderJob.perform_later notification.recipient(shallow: true), data
       end
   end
 end
