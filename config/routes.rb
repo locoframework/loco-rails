@@ -1,4 +1,4 @@
 Loco::Engine.routes.draw do
-  get "notification-center" => "notification_center#index"
+  get "sync-time" => "notification_center#sync_time"
   root "notification_center#index"
 end

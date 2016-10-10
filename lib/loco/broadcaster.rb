@@ -3,9 +3,10 @@ module Loco
     attr_reader :obj, :event, :recipients, :data, :notifications
 
     def initialize obj, event = nil, opts = {}
+      recipient_key = opts[:for] ? :for : :to
       @obj = obj
       @event = event
-      @recipients = opts[:for] ? [*opts[:for]] : [nil]
+      @recipients = opts[recipient_key] ? [*opts[recipient_key]] : [nil]
       @data = opts[:data]
       @notifications = []
       @sent_via_ws = 0
@@ -22,8 +23,11 @@ module Loco
     def emit
       init_notifications if notifications.empty?
       send_notifications
-      return if not notify_about_xhr_notifications?
-      notify_about_xhr_notifications
+      if notify_about_xhr_notifications?
+        notify_about_xhr_notifications
+      else
+        set_sync_time_via_ws
+      end
     end
 
     private
@@ -55,7 +59,7 @@ module Loco
       end
 
       def send_via_ws notification
-        recipient = notification.recipient(shallow: true)
+        recipient = notification.recipient shallow: true
         data = {loco: {notification: notification.compact}}
         SenderJob.perform_later recipient, data
         @sent_via_ws += 1
@@ -66,8 +70,17 @@ module Loco
       end
 
       def notify_about_xhr_notifications
+        # TODO:
         Loco::WsConnectedResourcesManager.identifiers.each do |identifier|
           SenderJob.perform_later identifier, loco: {xhr_notifications: true}
+        end
+      end
+
+      def set_sync_time_via_ws
+        sync_time = notifications.last.created_at.iso8601(6)
+        notifications.each do |notification|
+          recipient = notification.recipient shallow: true
+          SenderJob.perform_later recipient, loco: {sync_time: sync_time}
         end
       end
   end

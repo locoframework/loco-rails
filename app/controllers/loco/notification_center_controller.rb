@@ -8,6 +8,10 @@ module Loco
       end
     end
 
+    def sync_time
+      render json: {sync_time: Time.current.iso8601(6)}
+    end
+
     private
 
       def fetch_notifications
