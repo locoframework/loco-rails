@@ -21,7 +21,7 @@ module Loco
     private
 
       def sync_time
-        @synced_at.present? ? Time.zone.parse(@synced_at) : Time.current
+        Time.zone.parse @synced_at
       end
 
       def default_scope

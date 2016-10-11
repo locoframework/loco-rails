@@ -28,7 +28,7 @@ loco = new App.Loco
   #protocolWithHost: 'http://localhost:3000'  # if provided - loco will be using absolute path
                                               # instead of site-root-relative in all xhr requests
   postInit: ->
-    time = if $('body').data('rails-env') is 'test' then 1000 else 3000
-    App.Env.loco.getWire().setPollingTime time
+    return if $('body').data('rails-env') isnt 'test'
+    App.Env.loco.getWire().setPollingTime 1000
 
 loco.init()

@@ -28,7 +28,7 @@ class Main::ArticlePageTest < IT
   end
 
   test "should show info about editing" do
-    sleep 0.5
+    sleep 0.1
     emit articles(:one), :updating, data: {mark: Time.current.to_f.to_s}
     assert page.has_content? 'Author is currently editing article. Be aware of possible changes.'
   end
@@ -71,7 +71,7 @@ class Main::ArticlePageTest < IT
       assert_not page.has_content? 'Some nice thoughts dude (edited)'
     end
     update_comment comment
-    sleep 1
+    sleep 0.1
     within "section#comments" do
       assert page.has_content? 'Some nice thoughts dude (edited)'
     end

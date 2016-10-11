@@ -63,7 +63,7 @@ class User::ArticleShowPageTest < IT
   end
 
   test "should auto redirect to list of articles if article has been deleted" do
-    sleep 1
+    sleep 0.1
     destroy_article :two
     assert page.has_content? 'Article has been deleted.'
   end

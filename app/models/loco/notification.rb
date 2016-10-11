@@ -38,6 +38,7 @@ module Loco
 
     def recipient opts = {}
       return recipient_token if recipient_token
+      return nil if recipient_class.nil? && recipient_id.nil?
       return recipient_class.constantize if recipient_id.nil?
       if opts[:shallow]
         return recipient_class.constantize.new id: recipient_id

@@ -45,6 +45,7 @@ class User::ArticlesListTest < IT
   end
 
   test "should update number of comments if one was deleted" do
+    sleep 0.1
     comment = create_comment_for_article :one
     within "#article_#{articles(:one).id} td.comments_quantity" do
       assert page.has_content? '1'

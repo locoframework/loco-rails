@@ -70,9 +70,20 @@ module Loco
       end
 
       def notify_about_xhr_notifications
-        # TODO:
-        Loco::WsConnectedResourcesManager.identifiers.each do |identifier|
-          SenderJob.perform_later identifier, loco: {xhr_notifications: true}
+        uuids, recipients = [], notifications_recipients
+        uniq_recipients = recipients.compact.uniq
+        Loco::WsConnectedResourcesManager.identifiers.find_all do |str|
+          if recipients.include? nil
+            true
+          else
+            uniq_recipients.include? str.split(':').first
+          end
+        end.each do |identifier|
+          Loco::WsConnectionManager.new(identifier).connected_uuids.each do |uuid|
+            next if uuids.include? uuid
+            uuids << uuid
+            SenderJob.perform_later uuid, loco: {xhr_notifications: true}
+          end
         end
       end
 
@@ -81,6 +92,12 @@ module Loco
         notifications.each do |notification|
           recipient = notification.recipient shallow: true
           SenderJob.perform_later recipient, loco: {sync_time: sync_time}
+        end
+      end
+
+      def notifications_recipients
+        notifications.map{ |n| n.recipient shallow: true }.map do |o|
+          o.instance_of?(Class) ? o.to_s.downcase : nil
         end
       end
   end

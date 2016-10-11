@@ -4,27 +4,38 @@ module Loco
 
     class << self
       def current
-        if defined? Redis
-          return Redis.current
-        end
         instance
       end
     end
 
     def initialize
-      @storage = {}
+      @storage = defined?(Redis) ? nil : {}
     end
 
     def get key
-      @storage[key]
+      storage[proper_key(key)]
     end
 
     def set key, val
-      @storage[key] = val
+      storage[proper_key(key)] = val
     end
 
     def del key
-      @storage.delete key
+      if storage.is_a? Hash
+        storage.delete proper_key(key)
+      else
+        storage.del proper_key(key)
+      end
     end
+
+    protected
+
+      def storage
+        @storage || Redis.current
+      end
+
+      def proper_key key
+        "#{Config.app_name}:#{key}"
+      end
   end
 end

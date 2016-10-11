@@ -6,9 +6,21 @@ module Loco
     end
 
     def emit
-      @recipients.each do |recipient|
-        NotificationCenterChannel.broadcast_to WsConnectionManager.new(recipient).identifier, @data
+      uuids.each do |uuid|
+        NotificationCenterChannel.broadcast_to uuid, @data
       end
     end
+
+    private
+
+      def uuids
+        @recipients.map do |r|
+          if r.is_a? Hub
+            r.members.map{ |m| WsConnectionManager.new(m).connected_uuids }.flatten.uniq
+          else
+            WsConnectionManager.new(r).connected_uuids
+          end
+        end.flatten.uniq
+      end
   end
 end

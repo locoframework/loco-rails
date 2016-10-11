@@ -15,6 +15,10 @@ module Loco
     private
 
       def fetch_notifications
+        if params[:synced_at].blank?
+          render json: [[], Time.current.iso8601(6)]
+          return
+        end
         opts = {
           synced_at: params[:synced_at],
           permissions: permissions,
@@ -30,6 +34,7 @@ module Loco
         resources_to_del = []
         resources_to_add = []
         loco_permissions.each do |resource|
+          next if resource.nil?
           next if not WsConnectionManager.new(resource).connected?(params[:uuid])
           resources_to_del << resource
           resources_to_add << resource.class

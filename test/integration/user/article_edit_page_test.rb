@@ -12,7 +12,7 @@ class User::ArticleEditPageTest < IT
   end
 
   test "should show info about editing" do
-    sleep 0.5
+    sleep 0.1
     emit articles(:two), :updating, data: {mark: Time.current.to_f.to_s}, for: [users(:user_zbig)]
     assert page.has_content? 'Uuups someone else started editing this article.'
   end
@@ -24,7 +24,7 @@ class User::ArticleEditPageTest < IT
   end
 
   test "should allow to update fields in order to have updated values" do
-    sleep 0.5
+    sleep 0.1
     update_article :two
     within "div[data-attr='title']" do
       click_link 'apply changes'
@@ -74,7 +74,7 @@ class User::ArticleEditPageTest < IT
   end
 
   test "should auto redirect to list of articles if article has been deleted" do
-    sleep 0.5
+    sleep 0.1
     destroy_article :two
     assert page.has_content? 'Article has been deleted.'
   end
