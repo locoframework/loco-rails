@@ -15,7 +15,9 @@ module Loco
 
       def uuids
         @recipients.map do |r|
-          if r.is_a? Hub
+          if r.is_a? String
+            r
+          elsif r.is_a? Hub
             r.members.map{ |m| WsConnectionManager.new(m).connected_uuids }.flatten.uniq
           else
             WsConnectionManager.new(r).connected_uuids

@@ -2,8 +2,7 @@ module Loco
   class NotificationCenterChannel < ApplicationCable::Channel
     def subscribed
       return if not loco_permissions.is_a?(Array)
-      loco_permissions.each do |resource|
-        next if resource.nil?
+      loco_permissions.compact.each do |resource|
         if resource.is_a? String
           @uuid = resource
           stream_for_resource resource
@@ -13,6 +12,8 @@ module Loco
           stream_for_resource resource
         end
       end
+      return if loco_permissions.compact.size > 1
+      SenderJob.perform_later @uuid, loco: {start_ajax_polling: true}
     end
 
     def unsubscribed

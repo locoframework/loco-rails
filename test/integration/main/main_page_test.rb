@@ -14,11 +14,13 @@ class Main::MainPageTest < IT
   end
 
   test "should auto load published article" do
+    sleep 0.5
     publish_article :two
     assert page.has_content? 'What is Active Record?'
   end
 
   test "should update title of recently updated article" do
+    sleep 0.5
     articles(:one).tap do |a|
       a.title = 'AGtTRA'
       a.save!
@@ -28,6 +30,7 @@ class Main::MainPageTest < IT
   end
 
   test "should update number of comments if one was added" do
+    sleep 0.5
     create_comment_for_article :one
     within "article#article_#{articles(:one).id}" do
       assert page.has_content? '1 comment'

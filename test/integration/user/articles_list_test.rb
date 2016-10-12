@@ -11,6 +11,7 @@ class User::ArticlesListTest < IT
   end
 
   test "should auto update the list to include a recently added article" do
+    sleep 0.5
     create_article_for :user_zbig
     assert page.has_content? 'Article #1'
     assert page.has_content? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
@@ -18,6 +19,7 @@ class User::ArticlesListTest < IT
 
   test "should update published on the list" do
     visit '/user/articles'
+    sleep 0.5
     articles(:two).publish
     emit articles(:two), :updated, for: [users(:user_zbig)]
     within "#article_#{articles(:two).id} td.published" do
@@ -27,6 +29,7 @@ class User::ArticlesListTest < IT
 
   test "should update title of updated article on the list" do
     visit '/user/articles'
+    sleep 0.5
     update_article :two
     assert page.has_content? 'WiAR'
   end
@@ -38,6 +41,7 @@ class User::ArticlesListTest < IT
   end
 
   test "should update number of comments if one was added" do
+    sleep 0.5
     create_comment_for_article :one
     within "#article_#{articles(:one).id} td.comments_quantity" do
       assert page.has_content? '1'
