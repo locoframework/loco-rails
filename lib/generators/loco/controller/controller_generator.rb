@@ -8,6 +8,7 @@ class Loco::ControllerGenerator < Rails::Generators::NamedBase
       current_file_path = File.join(file_path, *class_path[0, index+1]) + '.coffee'
       data = File.read find_in_source_paths('controller.coffee')
       data.sub! '#{name}', class_name
+      data.sub! '#{methods_def}', ''
       create_file current_file_path, data
     end
   end

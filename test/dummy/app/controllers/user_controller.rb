@@ -1,6 +1,8 @@
 class UserController < ApplicationController
   before_action :authenticate
 
+  layout 'user'
+
   private
 
     def authenticate

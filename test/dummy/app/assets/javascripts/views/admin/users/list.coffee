@@ -15,4 +15,4 @@ class App.Views.Admin.Users.List extends App.Views.Base
     $('table a.ping').click (e) ->
       e.preventDefault()
       userId = $(e.target).parents('tr').data 'id'
-      App.Env.loco.emit todo: 'ping', user_id: userId
+      App.Env.loco.emit signal: 'ping', user_id: userId

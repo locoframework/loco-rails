@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Dummy</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
+<%= render 'layouts/head' %>
 <%= content_tag :body, loco_body_data.merge(style: body_styles) do %>
   <%= render 'layouts/flash', name: '', msg: '' %>
   <% flash.each do |name, msg| %>
@@ -13,31 +8,6 @@
   <% end %>
 
   <div id="container">
-    <% if admin_panel? || user_panel? %>
-    <div id="user_nav">
-      <% if admin_panel? && current_admin %>
-        <p><%= link_to "Sign out", admin_session_url(id: 'current'), method: :delete,
-                data: {'admin-id' => current_admin.id} %>
-        </p>
-        <p class="text_right">
-          <%= link_to "Users", admin_users_url, class: "#{'bold' if controller_name == 'users'}" %>
-          |
-          <%= link_to "Articles", published_admin_articles_url, class: "#{'bold' if controller_name == 'articles'}" %>
-          <% if controller_name == 'comments' %>
-          | <span class='bold'>Comments</span>
-          <% end %>
-        </p>
-      <% end %>
-
-      <% if user_panel? && current_user %>
-        <p>Hello <%= current_user.email %>!
-          <%= link_to "sign out", user_session_url(id: 'current'), method: :delete,
-                data: {'user-id' => current_user.id}, id: 'sign_out_user' %>
-        </p>
-      <% end %>
-    </div>
-    <% end %>
-
     <%= yield %>
   </div>
 <% end %>

@@ -23,16 +23,16 @@ module Loco
 
     def add_member member
       serialized = serialize member
-      return @members if @members.include? serialized
-      @members << serialized
+      return members if members.include? serialized
+      members << serialized
       save
-      @members
+      members
     end
 
     def del_member member
       serialized = serialize member
-      return nil if not @members.include? serialized
-      @members.delete serialized
+      return nil if not members.include? serialized
+      members.delete serialized
       save
       serialized
     end
@@ -43,8 +43,12 @@ module Loco
     end
 
     def save
-      WsConnectionStorage.current.set @name, @members.to_json
+      WsConnectionStorage.current.set @name, members.to_json
       self
+    end
+
+    def include? resource
+      members.include? serialize(resource)
     end
 
     private

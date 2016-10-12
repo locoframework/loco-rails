@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<%= render 'layouts/head' %>
+<%= content_tag :body, loco_body_data.merge(style: body_styles) do %>
+  <%= render 'layouts/flash', name: '', msg: '' %>
+  <% flash.each do |name, msg| %>
+    <%= render 'layouts/flash', name: name, msg: msg %>
+  <% end %>
+
+  <div id="container">
+    <div id="user_nav">
+      <p>Hello <%= current_user.email %>!
+        <%= link_to "sign out", user_session_url(id: 'current'), method: :delete,
+              data: {'user-id' => current_user.id}, id: 'sign_out_user' %>
+      </p>
+      <p class="text_right">
+        <%= link_to "RealSnapChat rooms", user_rooms_url,
+          class: "#{'bold' if controller_name == 'rooms'}" %>
+      </p>
+    </div>
+
+    <%= yield %>
+  </div>
+<% end %>
+</html>

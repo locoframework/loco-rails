@@ -1,0 +1,12 @@
+<%= form_for [:user, @room] do |f| %>
+  <div class="field" data-attr="title">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+    <span class="errors" data-for="title"><%= f.object.errors[:name].first %></span>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+    <span class="errors" data-for="base"><%= f.object.errors[:base].first %></span>
+  </div>
+<% end %>

@@ -9,6 +9,11 @@ Rails.application.routes.draw do
       end
       resources :comments, except: [:new, :create]
     end
+    resources :rooms, only: [:index, :new, :create, :show, :destroy] do
+      member do
+        patch :join, :leave
+      end
+    end
     root "articles#index"
   end
 

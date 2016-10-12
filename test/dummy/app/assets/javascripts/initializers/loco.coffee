@@ -4,6 +4,7 @@ App.Views.Main.Pages = {}
 App.Views.Main.Articles = {}
 
 App.Views.User = {}
+App.Views.User.Rooms = {}
 App.Views.User.Articles = {}
 
 App.Views.Admin = {}

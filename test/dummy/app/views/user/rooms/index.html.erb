@@ -1,0 +1,34 @@
+<h1>RealSnapChat rooms</h1>
+
+<% if @rooms.any? %>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Members</th>
+      <th></th>
+    </tr>
+  </thead>
+    <% @rooms_with_hub.each do |os| %>
+    <tr>
+      <td><%= os.room.name %></td>
+      <td><%= os.hub.members.size %></td>
+      <td>
+        <% if os.hub.include? current_user %>
+          <%= link_to 'Leave', leave_user_room_path(os.room), method: :patch %>
+        <% else %>
+          <%= link_to 'Join', join_user_room_path(os.room), method: :patch %>
+        <% end %>
+      </td>
+    </tr>
+    <% end %>
+  <tbody>
+  </tbody>
+</table>
+<% end %>
+
+<%= will_paginate @rooms %>
+
+<br>
+
+<%= link_to 'New Room', new_user_room_path %>
