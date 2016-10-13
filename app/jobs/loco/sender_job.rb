@@ -1,6 +1,6 @@
 module Loco
   class SenderJob < ActiveJob::Base
-    queue_as :default
+    queue_as :loco
 
     def perform recipient, data
       Sender.new(recipient, data).emit

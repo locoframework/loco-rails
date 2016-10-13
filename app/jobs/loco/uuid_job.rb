@@ -1,6 +1,6 @@
 module Loco
   class UuidJob < ActiveJob::Base
-    queue_as :default
+    queue_as :loco
 
     def perform resource, uuid, action
       ws_conn_manager = WsConnectionManager.new resource
