@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  namespace :user do
+    get 'members/index'
+  end
+
   mount Loco::Engine => "/notification-center"
 
   namespace :user do
@@ -13,6 +17,7 @@ Rails.application.routes.draw do
       member do
         patch :join, :leave
       end
+      resources :members, only: [:index]
     end
     root "articles#index"
   end

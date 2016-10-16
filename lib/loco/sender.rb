@@ -18,7 +18,7 @@ module Loco
           if r.is_a? String
             r
           elsif r.is_a? Hub
-            r.members.map{ |m| WsConnectionManager.new(m).connected_uuids }.flatten.uniq
+            r.raw_members.map{ |m| WsConnectionManager.new(m).connected_uuids }.flatten.uniq
           else
             WsConnectionManager.new(r).connected_uuids
           end

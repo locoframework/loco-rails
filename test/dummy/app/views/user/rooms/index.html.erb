@@ -10,15 +10,17 @@
     </tr>
   </thead>
     <% @rooms_with_hub.each do |os| %>
-    <tr>
+    <tr id='room_<%= os.room.id %>'>
       <td><%= os.room.name %></td>
-      <td><%= os.hub.members.size %></td>
+      <td class='members'><%= os.hub.raw_members.size %></td>
       <td>
         <% if os.hub.include? current_user %>
           <%= link_to 'Leave', leave_user_room_path(os.room), method: :patch %>
         <% else %>
           <%= link_to 'Join', join_user_room_path(os.room), method: :patch %>
-        <% end %>
+        <% end %> |
+        <%= link_to 'Destroy', user_room_path(os.room), method: :delete,
+          data: {confirm: "R U sure?"} %>
       </td>
     </tr>
     <% end %>

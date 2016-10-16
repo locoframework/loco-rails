@@ -3,17 +3,34 @@ module Loco
     include Emitter
 
     def received_signal permissions, data
+      return if not res = validate_signal(data['signal'], permissions, data)
       case data['signal']
       when 'ping'
-        return if permissions[:admin].nil?
-        user = User.new id: data['user_id']
-        emit_to user, signal: 'ping'
+        emit_to res[:user], signal: 'ping'
       when 'message'
-        return if permissions[:user].nil?
-        hub = Hub.get "room_#{data['room_id']}"
-        return if hub.nil?
-        emit_to hub, signal: 'message', message: data['txt'], author: permissions[:user].username
+        emit_to res[:hub], signal: 'message', message: data['txt'], author: permissions[:user].username
       end
     end
+
+    protected
+
+      def validate_signal name, permissions, data = {}
+        case name
+        when 'ping'
+          return false if permissions[:admin].nil?
+          user = User.new id: data['user_id']
+          {user: user}
+        when 'message'
+          return false if permissions[:user].nil?
+          return false if not hub = find_room(data['room_id'])
+          {hub: hub}
+        else
+          false
+        end
+      end
+
+      def find_room id
+        Hub.get "room_#{id}"
+      end
   end
 end
