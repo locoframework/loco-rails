@@ -9,7 +9,7 @@ module Loco
     end
 
     def initialize
-      @storage = defined?(Redis) ? nil : {}
+      @storage = Config.ws_connection_storage == 'redis' ? nil : {}
     end
 
     def get key
