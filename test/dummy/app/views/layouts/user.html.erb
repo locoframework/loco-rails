@@ -9,7 +9,7 @@
 
   <div id="container">
     <div id="user_nav">
-      <p>Hello <%= current_user.email %>!
+      <p>Hello <%= current_user.username %>!
         <%= link_to "sign out", user_session_url(id: 'current'), method: :delete,
               data: {'user-id' => current_user.id}, id: 'sign_out_user' %>
       </p>

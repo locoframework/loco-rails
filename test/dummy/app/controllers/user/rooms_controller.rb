@@ -16,6 +16,7 @@ class User::RoomsController < UserController
   def create
     @room = Room.new params_room
     if @room.save
+      emit @room, :created, data: {room: {id: @room.id, name: @room.name}}
       redirect_to user_rooms_path, notice: "Room has been created"
     else
       render :new
@@ -54,6 +55,7 @@ class User::RoomsController < UserController
     end
     del_hub @hub
     @room.destroy
+    emit @room, :destroyed, data: {room_id: @room.id}
     redirect_to user_rooms_path, notice: 'Room has been deleted'
   end
 

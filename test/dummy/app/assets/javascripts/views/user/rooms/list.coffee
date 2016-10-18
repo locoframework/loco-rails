@@ -11,6 +11,10 @@ class App.Views.User.Rooms.List extends App.Views.Base
         this._memberJoined data.room_id
       when "Room member_left"
         this._memberLeft data.room_id
+      when "Room created"
+        $("#rooms_list").append JST["templates/user/rooms/room_for_list"] room: data.room
+      when "Room destroyed"
+        $("#room_#{data.room_id}").remove()
 
   _memberJoined: (roomId) ->
     node = this._membersNode roomId
