@@ -3,6 +3,7 @@ require 'test_helper'
 class User::RealSnapChatTest < IT
   include Loco::Emitter
   include UserHelpers
+  include CapybaraOffline
 
   def setup
     super
@@ -19,13 +20,16 @@ class User::RealSnapChatTest < IT
   end
 
   test "should show room's members" do
-    join_room users(:user_jane)
+    join_room users(:user_jane), @room
     assert page.has_content? 'zbig'
     assert page.has_content? 'jane'
   end
 
   test "should send messages" do
-    join_room users(:user_jane)
+    if Rails.version.to_i == 4
+      skip "Rails4 does not support web sockets."
+    end
+    join_room users(:user_jane), @room
     fill_in 'message', with: 'Hello Jane!'
     find('#message').native.send_keys :return
     assert page.has_content? 'zbig: Hello Jane!'
@@ -33,16 +37,10 @@ class User::RealSnapChatTest < IT
     assert page.has_content? 'jane: Hi zbig!'
   end
 
-  private
-
-    def join_room user, room = @room
-      HubFinder.new(room).find.add_member user
-      emit room, :member_joined, data: {
-      room_id: room.id,
-        member: {
-          id: user.id,
-          username: user.username,
-        }
-      }
-    end
+  test "should show info about joining room after returning from disconnection" do
+    go_disconnected
+    join_room users(:user_jane), @room
+    go_connected
+    assert page.has_content? 'jane'
+  end
 end

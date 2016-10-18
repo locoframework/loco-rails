@@ -10,6 +10,9 @@ class User::DirectCommunicationTest < IT
   end
 
   test "should show an alert" do
+    if Rails.version.to_i == 4
+      skip "Rails4 does not support web sockets."
+    end
     sleep 0.1
     emit_to users(:user_zbig), signal: 'ping'
     assert_equal 'Ping!', page.driver.browser.switch_to.alert.text

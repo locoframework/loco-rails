@@ -1,4 +1,6 @@
 module UserHelpers
+  include Loco::Emitter
+
   def confirm_user name
     users(name).confirmed = true
     users(name).save!
@@ -25,5 +27,16 @@ module UserHelpers
     article = articles name
     article.destroy
     emit article, :destroyed, for: [article.user]
+  end
+
+  def join_room user, room
+    HubFinder.new(room).find.add_member user
+    emit room, :member_joined, data: {
+    room_id: room.id,
+      member: {
+        id: user.id,
+        username: user.username,
+      }
+    }
   end
 end
