@@ -79,13 +79,13 @@ end
 
 ## Doubts
 
-### Argument: AJAX polling is oldschool. "Live" functionality should be accomplished through WebSockets. 
+### Argument: ~~AJAX polling is oldschool. "Live" functionality should be accomplished through WebSockets.~~
 
-**Answer:** Well, guess what - Loco works perfectly fine along with **ActionCable**. So if you need an instant functionality somewhere in your app, you can use ActionCable. But, in the other parts of an app, where ~1-3 second of latency doesn't matter, Loco works just fine. What's more, Loco provides structure for JS assets. So, you can structure your ActionCable code even better imo (see *examples* section below). It also allows you to do client-side rendering with ActionCable - easly. 
+**Answer:** ~~Well, guess what - Loco works perfectly fine along with **ActionCable**. So if you need an instant functionality somewhere in your app, you can use ActionCable. But, in the other parts of an app, where ~1-3 second of latency doesn't matter, Loco works just fine. What's more, Loco provides structure for JS assets. So, you can structure your ActionCable code even better imo (see *examples* section below). It also allows you to do client-side rendering with ActionCable - easly.~~
 
-Personally, I find that sending over and over the same fat chunks of HTML (server-side rendering) is a waste of transfer (on cellular network especially) . Don't you think, that sending a template once and pure data only, subsequently (JSON API), is much better solution? For your wallet, for sure ;) Of course, Loco doesn't force anything. 
+~~Personally, I find that sending over and over the same fat chunks of HTML (server-side rendering) is a waste of transfer (on cellular network especially) . Don't you think, that sending a template once and pure data only, subsequently (JSON API), is much better solution? For your wallet, for sure ;) Of course, Loco doesn't force anything.~~
 
-From here, we can go smoothly to another argument - when transfering another 30kB (jQuery) once and only, becomes pain.
+~~From here, we can go smoothly to another argument - when transfering another 30kB (jQuery) once and only, becomes pain.~~
 
 ### Argument: Loco-JS depends on jQuery, but we don't need jQuery, anymore.
 
