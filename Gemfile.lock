@@ -158,15 +158,16 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.5)
-    turbolinks (2.5.3)
-      coffee-rails
+    turbolinks (5.0.1)
+      turbolinks-source (~> 5)
+    turbolinks-source (5.0.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     websocket (1.2.3)
     websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    will_paginate (3.0.10)
+    will_paginate (3.1.3)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -189,8 +190,8 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   selenium-webdriver (~> 2.53.4)
   sqlite3 (~> 1.3)
-  turbolinks (~> 2.5)
-  will_paginate (~> 3.0.7)
+  turbolinks (~> 5)
+  will_paginate (~> 3.1.0)
 
 BUNDLED WITH
    1.12.5

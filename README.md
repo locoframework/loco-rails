@@ -12,11 +12,11 @@
 
 ## Loco-JS
 
-**Loco-JS** (front-end part) is a MVC+\* framework that provides structure for JavaScript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page. 
+**Loco-JS** (front-end part) is a MVC+\* framework that provides structure for JavaScript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page.
 
-Second, the most important function is to periodically check for notifications. It is done internally via ajax polling (currently). Once the notification is received - object related to this notification and all connected objects (e.g. views, controllers) are notified. By *notified*, I mean that a given method is called (`receivedSignal` by default).
+Second - the most important function is receiving notifications from the server. It is done internally through WebSockets (primary) or Ajax polling (auto switching in case of unavailability). Once the notification is received - object related to this notification and all connected objects (e.g. views, controllers) are notified. By *notified*, I mean that a given method is called (`receivedSignal` by default).
 
-Following example presents a view class. It's instance is connected with an instance of a certain model. It's done via calling `connectWith` method. Of course `render` method has to be called first. Then, if notification related to this model's instance is received - `receivedSignal` method is called automatically.
+Following example presents a view class. It's instance is connected with an instance of an `Article` model. It's done via calling `connectWith` method. Of course `render` method has to be called first. Then - always when a notification (related to this instance of `Article` model) is received internally by Loco-JS - `receivedSignal` method of this view is called automatically.
 
 ```coffeescript
 class App.Views.User.Articles.Form extends App.Views.Base
@@ -34,15 +34,17 @@ class App.Views.User.Articles.Form extends App.Views.Base
         @article.reload().then => this._displayChanges @article.changes()
 ```
 
-Loco-JS has build-in support for I18n and is maintained in separate [repository](http://github.com/locoframework/loco-js). There you can read about futher details.
+Loco-JS has build-in support for I18n and is maintained in a separate [repository](http://github.com/locoframework/loco-js). There you can read about futher details.
 
-\* *MVC+* - don't restrict yourself to only 3 layers. Good software is layered software. So, Loco-JS provides other layers also, such as: templates, validators, services, helpers. Create your own if you need.
+\* *MVC+* - don't restrict yourself to only 3 layers. Good software is layered software. So, Loco-JS provides other layers such as: templates, validators, services, helpers, also. Create your own if you need.
 
 ## Loco-Rails
 
-**Loco-Rails** (back-end part) is a Rails Engine. It allows you to simply send notifications from any part of a system, directy to associated JavaScript object and all connected objects.
+**Loco-Rails** (back-end part) is a Rails Engine. It allows you to simply send notifications from any part of a system, directy to associated JavaScript objects.
 
-Following example presents a simple ActiveJob class that can `emit` *notifications / signals* directy to *associated* JavaScript objects. By *associated objects*, I mean - first and foremost - the JavaScript equivalent of given ActiveRecord object. It's an instance of a class that inherits from `App.Models.Base` and has the same name as given *ActiveRecord* class (in the most basic but recommended situation). I like to call them: **big brother and little brother** (better described in a section below). Also, all instances of JavaScript controllers and views, that have called `connectWith` method, will automatically receive emitted *signal / notification* for a given instance of ActiveRecord model.
+Following example presents a simple ActiveJob class that `emit`s *notifications / signals* directy to *associated* JavaScript objects. 
+
+By *associated objects*, I mean - first and foremost - the JavaScript equivalent of a given ActiveRecord class. It inherits from `App.Models.Base` and has the same name as given *ActiveRecord* class (in the most basic but recommended situation). I like to call them: **big brother and little brother** (better described in a section below). Each instance of *little brother JS class* is also auto connected with the corresponding instance of ActiveRecord class (based on ID). Also - all instances of JavaScript controllers and views, that have called `connectWith` method, will automatically receive emitted *signal / notification* for all objects they have connected with.
 
 ```ruby
 class ArticleJob < ActiveJob::Base
@@ -57,13 +59,13 @@ class ArticleJob < ActiveJob::Base
 end
 ```
 
-So, only one line of code is enough (`emit` method) to *magically* send notifications to all connected JavaScript objects in the browser. What's more - only author of this article will receive notification. But, you can also pass an array of objects as receiverts of this signal. Those objects can be instances of ActiveRecord classes or the classes themselves (example below).
+So, only one line of code is enough (`emit` method) to *magically* send notifications to all connected JavaScript objects in the browser. What's more - only author of this article will receive notification. You can pass an array of objects as receivers, also. Those objects can be instances of ActiveRecord classes or the classes themselves (example below).
 
 ```ruby
 emit article, :created, for: [Admin, article.user]
 ```
 
-In the example above - both: author of the article and all signed in admins will receive signal. Is it available out of the box? Yes, almost.. Just put this method into the `ApplicationController`:
+In this example - both: an author of the article and all signed in admins will receive signal. Is it available out of the box? Yes, almost.. Just put this method into the `ApplicationController`:
 
 ```ruby
 def loco_permissions
@@ -78,14 +80,6 @@ end
 `loco:install` generator will take care of this automatically.
 
 ## Doubts
-
-### Argument: ~~AJAX polling is oldschool. "Live" functionality should be accomplished through WebSockets.~~
-
-**Answer:** ~~Well, guess what - Loco works perfectly fine along with **ActionCable**. So if you need an instant functionality somewhere in your app, you can use ActionCable. But, in the other parts of an app, where ~1-3 second of latency doesn't matter, Loco works just fine. What's more, Loco provides structure for JS assets. So, you can structure your ActionCable code even better imo (see *examples* section below). It also allows you to do client-side rendering with ActionCable - easly.~~
-
-~~Personally, I find that sending over and over the same fat chunks of HTML (server-side rendering) is a waste of transfer (on cellular network especially) . Don't you think, that sending a template once and pure data only, subsequently (JSON API), is much better solution? For your wallet, for sure ;) Of course, Loco doesn't force anything.~~
-
-~~From here, we can go smoothly to another argument - when transfering another 30kB (jQuery) once and only, becomes pain.~~
 
 ### Argument: Loco-JS depends on jQuery, but we don't need jQuery, anymore.
 

@@ -12,8 +12,8 @@ gemspec
 
 group :development, :test do
   # integration tests need following gems in test group
-  gem 'turbolinks', '~> 2.5'
+  gem 'turbolinks', '~> 5'
   gem 'jbuilder', '~> 2.0'
   gem 'eco', '~> 1.0'
-  gem 'will_paginate', '~> 3.0.7'
+  gem 'will_paginate', '~> 3.1.0'
 end
