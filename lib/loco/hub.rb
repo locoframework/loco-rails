@@ -4,9 +4,9 @@ module Loco
 
     attr_reader :raw_members
 
-    def initialize name, raw_members = []
+    def initialize name, members = []
       @name = "#{PREFIX}#{name}"
-      @raw_members = raw_members.map{ |m| serialize m }
+      @raw_members = members.map{ |m| serialize m }
     end
 
     class << self
