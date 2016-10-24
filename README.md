@@ -83,9 +83,9 @@ end
 
 ### Argument: Loco-JS depends on jQuery, but we don't need jQuery, anymore.
 
-**Answer:** Look at this [site](http://youmightnotneedjquery.com), for example. Almost always, you need to write more code to accomplish the same goal. And what we do, as developers, to write less code? We create private methods. We write another specialized classes. And we use 3rd party libraries. So, until no-jQuery approach will require to write longer code, I'll be with jQuery. But, I agree, that be dependent on sth is not good and *less dependencies* is better.
+**Answer:** Look at this [site](http://youmightnotneedjquery.com), for example. Almost always, you need to write more code to accomplish the same goal. And what we do, as developers, to write less code? We create private methods. We write another specialized classes. And we use 3rd party libraries. So, until no-jQuery approach will require you to write longer code, I'll stick with jQuery. But, I agree, that be dependent on sth is not good and *less dependencies* is better.
 
-### Argument: Loco-JS is developed in CoffeeScript, but current standard is ES6.
+### Argument: Loco-JS is developed in CoffeeScript, but some say that the current standard is ES6.
 
 **Answer:** Yeah, it's CoffeeScript. But you know what - it's developed in CoffeScript... Then, compiled to JavaScript... Then, concatenated to one file... And then, I inherit from those plain JavaScript objects (base *"classes"*) in my app written in CoffeeScript. How cool is that? You should be able to do sth similiar with ES6. But, I haven't tried that. 
 
@@ -101,7 +101,7 @@ In terms of the whole system, the most important ones are the following:
 
 ### 1. Provides structure for Javascript assets
 
-I've said about that enough in the previous sections. Structure is just good and desirable.
+I've said about that in the previous sections. Structure is just good and desirable + everyone knows where is located JavaScript code, that runs current page.
 
 ### 2. Big brother and little brother
 
@@ -123,7 +123,7 @@ class Article < ActiveRecord::Base
     end
 end
 ```
-And a little brother is right there:
+And a little brother is right here:
 
 ```coffeescript
 class App.Models.Article extends App.Models.Base
@@ -159,7 +159,7 @@ Look at those two. Aren't they similiar? This is how both models are look like. 
 App.Models.Article.get('all', resource: 'main').then (resp) -> resp.resources
 ```
 
-So what this line actually do? Let's suppose that we have 104 records in the `articles` table on the server. This code makes 11 requests to `/articles.json`. Then, initializes 104 instances of `App.Models.Article`, based on JSON responses. Finally, it returns an object with 2 properties: **resources** and **count**. **resources** is an array of `App.Models.Article` instances and **count** is a total number of articles in a database. As you can see - Loco-JS' API is based on [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise).
+So what this line actually do? Let's suppose that we have 104 records in the `articles` table on the server. This code makes 11 requests to `/articles.json`. Then, initializes 104 instances of `App.Models.Article`, based on JSON responses. Finally, it returns an object with 2 properties: **resources** and **count**. **resources** is an array of `App.Models.Article` instances and **count** is a total number of articles in the database. As you can see - Loco-JS' API is based on [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise).
 
 Rails controller is rather plain:
 
@@ -196,7 +196,7 @@ Let's assume, that we have 2 browsers open on the page with a list of articles.
 | ----- | refresh page |
 | new version of article 1 is visible | new version of article 1 is visible |
 
-So, you need to constantly refresh page to get an actual list of articles. Or you need to provide, as developer, some *"live"* functionality through AJAX or WebSockets. This requires a lot of unnecessary work/code for an every each element like that. It should be much easier. And by easier, I mean ~1 significant line of code on the server and front-end side. With Loco you can solve this problem like this:
+So, you need to constantly refresh page to get an actual list of articles. Or you need to provide, as developer, some *"live"* functionality through AJAX or WebSockets. This requires a lot of unnecessary work/code for an every each element of your app like that. It should be much easier. And by easier, I mean ~1 significant line of code on the server and front-end side. With Loco you can solve this problem like the following code presents:
 
 ```ruby
 # app/controllers/user/articles_controller.rb
@@ -226,7 +226,7 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
 
 A lot of applications have dashboard, which presents informations about many resources. It would be good, if presented information was up to date. 
 
-In the *"standard"* approach - controller's action renders full page. If your dashboard has some dynamic elements, like charts for example - you need to hide raw data in **data attributes** or do some *spaghetti code*. It's  ingredients are Ruby and JavaScript. It's not recommended, but I think that everyone has prepared at least one dish like this ;-) Then, you need to ask front-end guys to process data and generate required dynamic views. They'll put JavaScript code in a place known only them, inside JavaScipt module or something... Then, they'll write (somewhere) code that fetches fresh data for every resource. You have to write API endpoints. 
+In the *"standard"* approach - controller's action renders full page. If your dashboard has some dynamic elements, like charts for example - you need to hide raw data in **data attributes** or do some *spaghetti code*. It's  ingredients are Ruby and JavaScript. It's not recommended, but I think that everyone has prepared at least one dish like this ;-) Then, you need to ask front-end guys to process data and generate required dynamic views. They'll put JavaScript code in a place known only to them, inside JavaScipt module or something... Then, they'll write (somewhere) code that fetches fresh data for every resource. You have to write API endpoints. 
 
 It's also worth considering to write a single API endpoint for all resources and bundle all data inside a custom structure. Of course, this approach will require time to consider, implement and document or explain to front-end fellas.
 
@@ -247,7 +247,7 @@ It's an approximation of course, but it tells us: more data on dashboard page - 
 
 You can see that it affects UX significantly.
 
-Another approach is to render static page or very light and fast page (with placeholders for example). Then, transfer logic responsible for fetching and presenting data to proper abstract JavaScript views. How you'll organize code is up to you. You can have main view with subviews or just few equivalent views. Simpler is better. How to notify front-end code about new events? Do you remember `emit` method? So just `emit` signal on server-side and receive it by all *connected* JavaScript objects. And you already know, where the JavaScript logic is located. Here is how rendering page this way is look like:
+Another approach is to render static page or very light and fast page (with placeholders for example). Then, transfer logic responsible for fetching and presenting data to proper abstract JavaScript views. How you'll organize code is up to you. You can have main view with subviews or just few equivalent views. Simpler is better. How to notify front-end code about new events? Do you remember `emit` method? So just `emit` signal on the server-side and receive it by all *connected* JavaScript objects. And you already know, where the JavaScript logic is located. Here is how rendering page this way is look like:
 
 ![async rendering](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/2.gif)
 
@@ -273,7 +273,7 @@ class CommentsController < ApplicationController
 end
 ```
 
-And the view (*comments/popular.jbuilder.json*) could look like this:
+And the view (*comments/popular.json.jbuilder*) could look like this:
 
 ```ruby
 json.resources @comments do |comment|
@@ -287,11 +287,11 @@ end
 json.count @count
 ```
 
-Loco-JS requires from you to return a JSON response with this structure - **resources** and **count** keys are mandatory.
+Loco-JS requires from you to return a JSON response with a structure like this (*up*) - **resources** and **count** keys are mandatory.
 
 ### 5. Less actions, routes and JavaScript code
 
-Let's analyze uploading images from Rails app. You probably need following actions:
+Let's analyze uploading images in a Rails app. You probably need following actions:
 
 1. action to display form (e.g. `new`)
 2. action for form processing which passes all jobs related to the image (cropping, creating different sizes, uploading to S3) to a *background task* (e.g. `create`)
@@ -312,7 +312,7 @@ If you define validations in JavaScript model and use instance of `App.UI.Form` 
 
 ### Strict dependencies
 
-Dependencies that are required for Loco to work:
+Dependencies required for Loco to work:
 
 **Loco-JS**
 
@@ -321,7 +321,7 @@ Dependencies that are required for Loco to work:
 **Loco-Rails**
 
 * modern Ruby (tested on >= 2.3.0)
-* Rails >= 4.2
+* Rails >= 4.2 (part of features that run over WebSockets require Rails 5)
 
 ### Soft dependencies
 
@@ -335,9 +335,15 @@ Recommended dependencies that facilitate development of web app and are not requ
 
 * [eco](https://github.com/sstephenson/eco) - lets you embed CoffeeScript logic in your markup. Useful when using JST templates. Look at `test/dummy`'s front-end code for examples.
 
+* [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - since version 1.3 Loco-Rails stores informations about WebSocket connections in Redis. It is not required if you are on Rails 4, you don't want to use ActionCable or you use Rails in development environment. In the last case - Loco-Rails uses in-process data store. Internally - if `Redis.current` is available, it uses `Redis.current` as a store.
+
 ## Architecture
 
-When you `emit` signal (~ notification), this signal is actually a record in the **loco_notifications** table in database. Client front-end apps constantly check whether there are new notifications for them. They do this by sending **synced_at** param which they get back with each response. One of the advantages of this solution is - when client lose connection with the server and restore it after some time - he will get all not received notifications. Unless you delete them before, of course. It leads to the next issue...
+When you `emit` signal (~ notification), this signal is actually a record in the **loco_notifications** table in a database. Signal is then  delivered to Loco-JS over the WebSocket connection or through AJAX polling. WebSockets are the primary communication channel. But Loco-JS can automatically switch between WebSockets and AJAX polling in both ways. For example, when you lost or don't have WebSocket connection. 
+
+One of the advantages of saving signals / notifications in DB is - when client loses connection with the server and restores it after some time - he will get all not received notifications. Unless you delete them before, of course.
+
+There is also `emit_to` command which sends data directly to recipients without persisting in DB. It can operate only over WebSocket connection with no degradation to AJAX polling. It is available since version **1.3**.
 
 ### Garbage collection
 
@@ -376,7 +382,7 @@ $ bin/rails generate loco:install
 $ bin/rails db:migrate
 ```
 
-Loco-JS is bundled inside Loco-Rails and named `loco-rails.js` Since it is a JavaScript library, I recommend to resolve JavaScript dependencies using native package managers. So I encourage you to install Loco-JS and all JavaScript libraries using Bower:
+Loco-JS is bundled inside Loco-Rails and named `loco-rails.js` Since it is a JavaScript library, I recommend to resolve JavaScript dependencies using native package managers. So I encourage you to install Loco-JS and all JavaScript libraries using Bower (or npm):
 
 ```bash
 $ bower install loco-js --save
@@ -394,7 +400,9 @@ to
 //= require loco-js
 ```
 
-Look inside `test/dummy/` to see how Bower is configured.
+Look inside `test/dummy/` to see how to configure Bower with Rails.
+
+It is required to keep the same major and minor version numbers between Loco-Rails and Loco-JS (Semantic versioning: MAJOR.MINOR.PATCH).
 
 ## Usage
 
@@ -418,14 +426,19 @@ Integration tests are powered by Capybara. Capybara is cool but sometimes random
 
 ### Emitting signals
 
-1. include `Loco::Emitter` inside a class and then use `emit` instance method
-2. initialize `Loco::Broadcaster` object and call `emit` method on it 
+To emit signals just include `Loco::Emitter` module inside any class and use `emit` or `emit_to` methods that this module provides. If you want to use `low-level` interface without including module, just look inside the source code of `Loco::Emitter`.
 
-`Loco::Emitter` module uses `Loco::Broadcaster` object inside `emit` method.
+You can emit 2 kind of signals. The first one informs recipients about an event that occured on some resource e.g. post was *updated*, ticket was *validated*... You can emit this kind of signal using `emit` method. If it is possible - the signal is sent via WebSocket connection. If not - via AJAX polling. Switching is done internally.  
 
-#### Anatomy of Loco::Broadcaster
+Second type of signal is a direct message to recipients. You can send this kind by using `emit_to` method. In contrast to the first one - direct messages are sent only via WebSocket connection and are not persisted in DB. `emit_to` is available since version 1.3
 
-`emit` method of `Loco::Emitter` module and constructor of `Loco::Broadcaster` take the same arguments:
+There is also entity called **Communication Hub**. It is something like a virtual room. If you want to send a message to a group of recipients, then you can create communication hub, add members and `emit_to` data directly to this hub. It works over WebSockets only. Methods for managing hubs such as `add_hub`, `get_hub`, `del_hub` are also included in `Loco::Emitter` module.
+
+#### `emit`
+
+Use this method to emit signals related to certain resource (informing about an event that has occured on that resource).
+
+Arguments:
 
 1. an object whose the notification concerns
 2. a name of an event that occured (Symbol / String). Default values are:
@@ -433,7 +446,7 @@ Integration tests are powered by Capybara. Capybara is cool but sometimes random
 	* **:updated** - when updated\_at > created\_at
 3. a hash with relevant keys:
 	* **:for** - receiver of the signal. It can be a single object or an array of objects. Instances of models, their classes and strings are acceptable. If receiver is a class, then given signal is addressed to all instances of this class. If receiver is a string (token), then clients who have subscribed to this token on the front-end side, will receive notifications. They can do this by invoking this code: `App.Env.loco.getWire().setToken '<token>'`
-	* **:data** - additional data that will be transmitted along with notification. This data are serialized to JSON in database.
+	* **:data** - additional data that will be transmitted along with notification. Data are serialized to JSON.
 
 Example:
 
@@ -444,9 +457,61 @@ receivers = [article.user, Admin, 'a54e1ef01cb9']
 data = {foo: 'bar'}
 
 emit article, :confirmed, for: receivers, data: data
-# is equivalent to
-Loco::Broadcaster.new(article, :confirmed, for: receivers, data: data).emit
 ```
+
+#### `emit_to` (since ver 1.3)
+
+Use this method if you want to send data over WebSocket Connection with no degradation to AJAX polling.
+
+Arguments:
+
+1. recipients - single object or an array of objects. ActiveRecord instances and Communication Hubs are allowed.
+2. data - a hash serialized to JSON during sending.
+
+Example:
+
+```ruby
+include Loco::Emitter
+
+hub1 = get_hub 'room_1'
+admin = Admin.find 1
+
+data = {signal: 'message', message: 'Hi all!', author: 'system'}
+
+emit_to [hub1, admin], data
+```
+
+### Communication Hub (since ver 1.3)
+
+Use Communication Hub if you want to send an instant message over WebSocket connenction to a group of recipients. `Loco::Emitter` module delivers following methods for working with `Loco::Hub`:
+
+* `add_hub(name, members = [])` - creates and then returns an instance of `Loco::Hub` with given name and members passed as 2nd argument. In a typical use case - members should be an array with ActiveRecord instances.
+
+* `get_hub(name)` - returns an instance of `Loco::Hub` with given name, created before. If hub does not exist - returns `nil`.
+
+* `del_hub(name)` - destroys an instance of `Loco::Hub` with given name if exists.
+
+`Loco::Hub` important instance methods:
+
+* `name`
+* `members` - returns hub's members. Members are stored in an informative, shortened form inside Redis / in-process storage, so be aware that this method performs calls on DB to fetch all members.
+* `raw_members` - returns hub's members in the shortened form as they are stored: `"{class}:{id}"`
+* `add_member(member)`
+* `del_member(member)`
+* `include?(member)`
+* `destroy`
+
+### Notification Center (since ver 1.3)
+
+You can send messages over WebSocket connection from the browser to the server using `App.Env.loco.emit({})`. Messages can be received on the back-end side by `Loco::NotificationCenter` class localized in *app/services/loco/notification_center.rb*
+
+`received_signal` instance method of this class is auto called for each message send by front-end clients. 2 arguments are passed along:
+
+1. a hash with allowed resources that can sign-in to your application. You define them as `loco_permissions` inside `ApplicationCable::Connection` class. The keys of this hash are lowercased class names of signed-in resources and the values are actual instances.
+
+2. hash with sent data
+
+Everything you need is set up by `loco:install` generator.
 
 ### Emitting signals for non-ActiveRecord objects
 
@@ -474,10 +539,11 @@ class App.Controllers.User.Events extends App.Controllers.Base
       when 'DirectMessage csv_processed' then @view.renderResuls data
 ```
 
+This was useful before version 1.3. Now you can send direct message using `emit_to` method.
+
 ## Examples
 
 * examine `test/dummy` app for real-life use cases of almost all Loco's features in various scenarios
-* [Loco + ActionCable example app](http://github.com/locoframework/example-action-cable)
 
 ## License
 Loco-Rails is released under the [MIT License](https://opensource.org/licenses/MIT).
