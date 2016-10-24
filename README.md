@@ -10,6 +10,18 @@
 
 [![Loco: demo](http://img.youtube.com/vi/05iJNyIKZZU/0.jpg)](http://www.youtube.com/watch?v=05iJNyIKZZU)
 
+## Major releases
+
+Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
+
+### 1.3
+
+* `emit_to` - send messages to chosen recipients over WebSocket connection (abstraction on top of `ActionCable`)
+
+* Communication Hubs - create *virtual rooms*, add members and `emit_to` these hubs messages using WebSockets. All in 2 lines of code!
+
+* `emit` now by default uses WebSocket connection, if available. But it can automatically switch to AJAX polling, in case of unavailability. And all signals will be delivered! If you use `ActionCable` only and you lost connection to the server, then all messages sent in the meantime are gone.
+
 ## Loco-JS
 
 **Loco-JS** (front-end part) is a MVC+\* framework that provides structure for JavaScript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page.
