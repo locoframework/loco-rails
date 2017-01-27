@@ -2,6 +2,8 @@ module Loco
   class WsConnectionStorage
     include Singleton
 
+    attr_reader :storage
+
     class << self
       def current
         instance
@@ -9,7 +11,7 @@ module Loco
     end
 
     def initialize
-      @storage = Config.ws_connection_storage == 'redis' ? nil : {}
+      @storage = Config.redis_instance || {}
     end
 
     def get key
@@ -29,10 +31,6 @@ module Loco
     end
 
     protected
-
-      def storage
-        @storage || Redis.current
-      end
 
       def proper_key key
         "#{Config.app_name}:#{key}"
