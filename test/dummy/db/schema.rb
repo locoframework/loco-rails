@@ -15,15 +15,15 @@ ActiveRecord::Schema.define(version: 20161011211821) do
   create_table "admins", force: :cascade do |t|
     t.string   "email"
     t.string   "password_digest"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",      precision: 6, null: false
+    t.datetime "updated_at",      precision: 6, null: false
   end
 
   create_table "articles", force: :cascade do |t|
     t.string   "title"
     t.text     "text"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",        precision: 6, null: false
+    t.datetime "updated_at",        precision: 6, null: false
     t.datetime "published_at"
     t.integer  "user_id"
     t.integer  "admin_rate"
@@ -36,8 +36,8 @@ ActiveRecord::Schema.define(version: 20161011211821) do
     t.string   "author"
     t.text     "text"
     t.integer  "article_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.integer  "emotion"
     t.boolean  "pinned"
     t.integer  "admin_rate"
@@ -47,8 +47,8 @@ ActiveRecord::Schema.define(version: 20161011211821) do
     t.string   "obj_class"
     t.integer  "obj_id"
     t.string   "token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "loco_notifications", force: :cascade do |t|
@@ -59,22 +59,22 @@ ActiveRecord::Schema.define(version: 20161011211821) do
     t.string   "recipient_class"
     t.integer  "recipient_id"
     t.string   "recipient_token"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",      precision: 6, null: false
+    t.datetime "updated_at",      precision: 6, null: false
   end
 
   create_table "rooms", force: :cascade do |t|
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", force: :cascade do |t|
     t.string   "username"
     t.string   "email"
     t.string   "password_digest"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",      precision: 6, null: false
+    t.datetime "updated_at",      precision: 6, null: false
     t.datetime "confirmed_at"
   end
 

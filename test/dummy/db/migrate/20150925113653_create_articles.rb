@@ -4,7 +4,7 @@ class CreateArticles < ActiveRecord::Migration
       t.string :title
       t.text :text
 
-      t.timestamps null: false
+      t.timestamps null: false, limit: 6
     end
   end
 end

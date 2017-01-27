@@ -3,7 +3,7 @@ class CreateRooms < ActiveRecord::Migration[5.0]
     create_table :rooms do |t|
       t.string :name
 
-      t.timestamps
+      t.timestamps limit: 6
     end
   end
 end

@@ -1,4 +1,6 @@
 class App.Validators.Vulgarity extends App.Validators.Base
+  @identity = 'Vulgarity'
+
   constructor: -> super
 
   validate: ->

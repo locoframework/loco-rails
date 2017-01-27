@@ -9,7 +9,7 @@ class CreateLocoNotifications < ActiveRecord::Migration
       t.integer :recipient_id
       t.string :recipient_token
 
-      t.timestamps null: false
+      t.timestamps null: false, limit: 6
     end
   end
 end

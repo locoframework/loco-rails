@@ -5,7 +5,7 @@ class CreateConnections < ActiveRecord::Migration
       t.integer :obj_id
       t.string :token
 
-      t.timestamps null: false
+      t.timestamps null: false, limit: 6
     end
   end
 end

@@ -4,7 +4,7 @@ class CreateAdmins < ActiveRecord::Migration
       t.string :email
       t.string :password_digest
 
-      t.timestamps null: false
+      t.timestamps null: false, limit: 6
     end
   end
 end
