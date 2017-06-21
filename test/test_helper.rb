@@ -15,7 +15,11 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixtures :all
 end
 
-Capybara.javascript_driver = ENV['CAPYBARA_DRIVER'] ? ENV['CAPYBARA_DRIVER'].to_sym : :selenium
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new app, browser: :chrome
+end
+
+Capybara.javascript_driver = :chrome
 Capybara.current_driver = Capybara.javascript_driver
 Capybara.default_max_wait_time = 5
 Capybara.server = :puma

@@ -23,7 +23,7 @@ class Admin::ReviewArticleTest < IT
     assert_not page.evaluate_script("$('#article_published').is(':checked')")
     assert_equal 'Damn good article', find(:css, 'textarea').value
     assert_equal '5', page.evaluate_script(%{$('input[name="article[admin_rate]"]:checked').val()})
-    assert_equal 'Health', page.evaluate_script(%{$('select option:selected').text()})
+    assert_equal 'Health', page.evaluate_script(%{$('select option:selected').text()})    
     assert articles(:one).admin_review_time > 0
   end
 
