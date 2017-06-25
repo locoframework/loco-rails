@@ -2,7 +2,7 @@ one:
   title: A Guide to Testing Rails Applications
   text: "Testing support was woven into the Rails fabric from the beginning. Just about every Rails application interacts heavily with a database and, as a result, your tests will need a database to interact with as well. To write efficient tests, you'll need to understand how to set up this database and populate it with sample data."
   user: user_zbig
-  published_at: <%= 1.day.ago %>
+  published_at: <%= 1.day.ago.strftime('%F %T') %>
 
 two:
   title: What is Active Record?

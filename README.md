@@ -32,15 +32,15 @@ Following example presents a view class. It's instance is connected with an inst
 
 ```coffeescript
 class App.Views.User.Articles.Form extends App.Views.Base
-  constructor: (opts = {}) -> 
+  constructor: (opts = {}) ->
     super opts
     @article = null
 
-  render: (@article) -> 
+  render: (@article) ->
     this.connectWith @article  # this method is pure magic ;)
     this._renderArticle()
 
-  receivedSignal: (signal, data) -> 
+  receivedSignal: (signal, data) ->
     switch signal
       when "updated"
         @article.reload().then => this._displayChanges @article.changes()
@@ -54,7 +54,7 @@ Loco-JS has build-in support for I18n and is maintained in a separate [repositor
 
 **Loco-Rails** (back-end part) is a Rails Engine. It allows you to simply send notifications from any part of a system, directy to associated JavaScript objects.
 
-Following example presents a simple ActiveJob class that `emit`s *notifications / signals* directy to *associated* JavaScript objects. 
+Following example presents a simple ActiveJob class that `emit`s *notifications / signals* directy to *associated* JavaScript objects.
 
 By *associated objects*, I mean - first and foremost - the JavaScript equivalent of a given ActiveRecord class. It inherits from `App.Models.Base` and has the same name as given *ActiveRecord* class (in the most basic but recommended situation). I like to call them: **big brother and little brother** (better described in a section below). Each instance of *little brother JS class* is also auto connected with the corresponding instance of ActiveRecord class (based on ID). Also - all instances of JavaScript controllers and views, that have called `connectWith` method, will automatically receive emitted *signal / notification* for all objects they have connected with.
 
@@ -99,7 +99,7 @@ end
 
 ### Argument: Loco-JS is developed in CoffeeScript, but some say that the current standard is ES6.
 
-**Answer:** Yeah, it's CoffeeScript. But you know what - it's developed in CoffeScript... Then, compiled to JavaScript... Then, concatenated to one file... And then, I inherit from those plain JavaScript objects (base *"classes"*) in my app written in CoffeeScript. How cool is that? You should be able to do sth similiar with ES6. But, I haven't tried that. 
+**Answer:** Yeah, it's CoffeeScript. But you know what - it's developed in CoffeScript... Then, compiled to JavaScript... Then, concatenated to one file... And then, I inherit from those plain JavaScript objects (base *"classes"*) in my app written in CoffeeScript. How cool is that? You should be able to do sth similiar with ES6. But, I haven't tried that.
 
 I just *fcukin* hate parentheses and semicolons. And CoffeeScript is even better than Ruby in avoiding parentheses.
 
@@ -109,7 +109,7 @@ Parafrasing Giorgio Moroder from Daft Punk's track titled "Giorgio by Moroder":
 
 ## Main features
 
-In terms of the whole system, the most important ones are the following: 
+In terms of the whole system, the most important ones are the following:
 
 ### 1. Provides structure for Javascript assets
 
@@ -226,7 +226,7 @@ end
 # app/assets/javascripts/views/main/pages/article_list.coffee
 class App.Views.Main.Pages.ArticleList extends App.Views.Base
   # ...
-  
+
   receivedSignal: (signal, data) ->
     switch signal
       when 'Article updated'
@@ -236,9 +236,9 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
 
 ### 4. Dashboard problem
 
-A lot of applications have dashboard, which presents informations about many resources. It would be good, if presented information was up to date. 
+A lot of applications have dashboard, which presents informations about many resources. It would be good, if presented information was up to date.
 
-In the *"standard"* approach - controller's action renders full page. If your dashboard has some dynamic elements, like charts for example - you need to hide raw data in **data attributes** or do some *spaghetti code*. It's  ingredients are Ruby and JavaScript. It's not recommended, but I think that everyone has prepared at least one dish like this ;-) Then, you need to ask front-end guys to process data and generate required dynamic views. They'll put JavaScript code in a place known only to them, inside JavaScipt module or something... Then, they'll write (somewhere) code that fetches fresh data for every resource. You have to write API endpoints. 
+In the *"standard"* approach - controller's action renders full page. If your dashboard has some dynamic elements, like charts for example - you need to hide raw data in **data attributes** or do some *spaghetti code*. It's  ingredients are Ruby and JavaScript. It's not recommended, but I think that everyone has prepared at least one dish like this ;-) Then, you need to ask front-end guys to process data and generate required dynamic views. They'll put JavaScript code in a place known only to them, inside JavaScipt module or something... Then, they'll write (somewhere) code that fetches fresh data for every resource. You have to write API endpoints.
 
 It's also worth considering to write a single API endpoint for all resources and bundle all data inside a custom structure. Of course, this approach will require time to consider, implement and document or explain to front-end fellas.
 
@@ -271,7 +271,7 @@ Of course, we are not exempt from implementing API endpoints. But if you just ne
 App.Models.Comment.get('popular', page: 1).then (resp) -> resp.resources
 ```
 
-This line makes GET request to `/comments/popular` (let's simplify that), so we need to implement `popular` method in the `CommentsController`. 
+This line makes GET request to `/comments/popular` (let's simplify that), so we need to implement `popular` method in the `CommentsController`.
 
 ```ruby
 class CommentsController < ApplicationController
@@ -351,7 +351,7 @@ Recommended dependencies that facilitate development of web app and are not requ
 
 ## Architecture
 
-When you `emit` signal (~ notification), this signal is actually a record in the **loco_notifications** table in a database. Signal is then  delivered to Loco-JS over the WebSocket connection or through AJAX polling. WebSockets are the primary communication channel. But Loco-JS can automatically switch between WebSockets and AJAX polling in both ways. For example, when you lost or don't have WebSocket connection. 
+When you `emit` signal (~ notification), this signal is actually a record in the **loco_notifications** table in a database. Signal is then  delivered to Loco-JS over the WebSocket connection or through AJAX polling. WebSockets are the primary communication channel. But Loco-JS can automatically switch between WebSockets and AJAX polling in both ways. For example, when you lost or don't have WebSocket connection.
 
 One of the advantages of saving signals / notifications in DB is - when client loses connection with the server and restores it after some time - he will get all not received notifications. Unless you delete them before, of course.
 
@@ -414,7 +414,7 @@ to
 
 Look inside `test/dummy/` to see how to configure Bower with Rails.
 
-It is required to keep the same major and minor version numbers between Loco-Rails and Loco-JS (Semantic versioning: MAJOR.MINOR.PATCH).
+It is required to keep the latest version numbers between Loco-Rails and Loco-JS allowed by Semantic versioning (MAJOR.MINOR.PATCH).
 
 ## Usage
 
@@ -431,10 +431,10 @@ $ bin/rails generate loco:view
 ### How to run the test suite
 
 ```bash
-$ bin/rake
+$ bin/rails test
 ```
 
-Integration tests are powered by Capybara. Capybara is cool but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately.
+Integration tests are powered by Capybara. Capybara is cool but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately. It definitely helps to have focus on the browser's window that runs integration tests on macOS.
 
 ### Emitting signals
 
@@ -540,12 +540,12 @@ emit DirectMessage.new, :csv_processed, data: {foo: 'bar'}, for: event.user
 ```coffeescript
 class App.Models.DirectMessage extends App.Models.Base
   @identity = 'DirectMessage'
-  
+
 class App.Controllers.User.Events extends App.Controllers.Base
   show: ->
     @view = new App.Views.User.Events.Show
     this.connectWith [App.Models.DirectMessage]
-    
+
   receivedSignal: (signal, data) ->
     switch signal
       when 'DirectMessage csv_processed' then @view.renderResuls data
