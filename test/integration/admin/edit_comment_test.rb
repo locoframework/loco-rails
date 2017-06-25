@@ -17,6 +17,7 @@ class Admin::EditCommentTest < IT
   end
 
   test "should init js Comment's object based on form" do
+    sleep 0.1
     assert_equal 'Ryan', page.evaluate_script(%{App.Env.test['commentFormObj']['author']})
     assert_equal 'Some nice thoughts dude', page.evaluate_script(%{App.Env.test['commentFormObj']['text']})
     assert_equal false, page.evaluate_script(%{App.Env.test['commentFormObj']['pinned']})

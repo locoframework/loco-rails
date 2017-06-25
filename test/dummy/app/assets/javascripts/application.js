@@ -1,6 +1,6 @@
 //= require lie/dist/lie.polyfill
 //= require jquery
-//= require jquery-ujs
+//= require rails-ujs
 //= require turbolinks
 //= require loco-rails
 //= require cable

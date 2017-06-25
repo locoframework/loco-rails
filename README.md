@@ -394,10 +394,10 @@ $ bin/rails generate loco:install
 $ bin/rails db:migrate
 ```
 
-Loco-JS is bundled inside Loco-Rails and named `loco-rails.js` Since it is a JavaScript library, I recommend to resolve JavaScript dependencies using native package managers. So I encourage you to install Loco-JS and all JavaScript libraries using Bower (or npm):
+Loco-JS is bundled inside Loco-Rails and named `loco-rails.js` Since it is a JavaScript library, I recommend to resolve JavaScript dependencies using native package managers. So I encourage you to install Loco-JS and all JavaScript libraries using npm:
 
 ```bash
-$ bower install loco-js --save
+$ npm install loco-js --save
 ```
 
 Then, you have to replace one line in your JavaScript manifest file:
@@ -412,7 +412,7 @@ to
 //= require loco-js
 ```
 
-Look inside `test/dummy/` to see how to configure Bower with Rails.
+Look inside `test/dummy/` to see how to configure npm with Rails.
 
 It is required to keep the latest version numbers between Loco-Rails and Loco-JS allowed by Semantic versioning (MAJOR.MINOR.PATCH).
 
