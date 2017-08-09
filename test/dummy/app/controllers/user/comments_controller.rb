@@ -19,7 +19,10 @@ class User::CommentsController < UserController
   def update
     if @comment.update_attributes comment_params
       emit @comment, :updated, data: {article_id: @article.id}
-      redirect_to edit_user_article_url(@article), notice: "Comment has been updated."
+      respond_to do |f|
+        f.json{ render json: {ok: true, id: @comment.id} }
+        f.html{ redirect_to edit_user_article_url(@article), notice: "Comment has been updated." }
+      end
     else
       render :edit
     end
@@ -34,7 +37,11 @@ class User::CommentsController < UserController
   private
 
     def comment_params
-      params.require(:comment).permit :author, :text
+      permitted_params = [:author, :text]
+      if current_admin
+        permitted_params << :approved
+      end
+      params.require(:comment).permit *permitted_params
     end
 
     def set_article

@@ -2,6 +2,7 @@ class App.Views.User.Articles.Form extends App.Views.Base
   constructor: (opts = {}) ->
     super opts
     @article = null
+    @comments = null
     @form = null
     @changes = null
 
@@ -14,11 +15,13 @@ class App.Views.User.Articles.Form extends App.Views.Base
     @form.render()
 
   renderComments: (comments) ->
+    @comments = comments
     if comments.length is 0
       $("#comments").append '<p id="no_comments">No comments.</p>'
       return
     $('#no_comments').remove()
     this._renderComment comment for comment in comments
+    this._handleApprovingComment()
 
   receivedSignal: (signal, data) ->
     switch signal
@@ -66,3 +69,18 @@ class App.Views.User.Articles.Form extends App.Views.Base
       @article[attrName] = @changes[attrName].is
       @form.fill attrName
       $(e.target).addClass 'none'
+
+  _handleApprovingComment: ->
+    for el in document.querySelectorAll('a.approve')
+      el.addEventListener 'click', (e) =>
+        e.preventDefault()
+        commentId = parseInt e.target.parentNode.getAttribute('data-id')
+        commentToApprove = null
+        for comment in @comments
+          continue if comment.id isnt commentId
+          commentToApprove = comment
+          break
+        commentToApprove.approved = true
+        commentToApprove.updateAttribute 'approved'
+        .then (res) ->
+          document.getElementById("comment_#{res.id}").querySelector('a.approve').outerHTML = '<span>approved</span>'

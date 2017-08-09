@@ -8,7 +8,11 @@ class Admin::SessionsController < ApplicationController
     auth_failed && return if admin.nil?
     auth_failed && return if not admin.authenticate params[:password]
     cookies.signed[:admin_id] = admin.id
-    redirect_to admin_root_url, notice: 'Successfully signed in.'
+    flash[:notice] = 'Successfully signed in.'
+    respond_to do |f|
+      f.json{ render json: {success: true} }
+      f.html{ redirect_to admin_root_url }
+    end
   end
 
   def destroy
@@ -19,6 +23,9 @@ class Admin::SessionsController < ApplicationController
   private
 
     def auth_failed
-      redirect_to new_admin_session_url, alert: 'Invalid email or password.'
+      respond_to do |f|
+        f.json{ render json: {errors: {base: ['Invalid email or password.']}} }
+        f.html{ redirect_to new_admin_session_url, alert: 'Invalid email or password.' }
+      end
     end
 end

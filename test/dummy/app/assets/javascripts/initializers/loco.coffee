@@ -8,6 +8,7 @@ App.Views.User.Rooms = {}
 App.Views.User.Articles = {}
 
 App.Views.Admin = {}
+App.Views.Admin.Sessions = {}
 App.Views.Admin.Users = {}
 App.Views.Admin.Articles = {}
 App.Views.Admin.Comments = {}

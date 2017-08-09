@@ -34,6 +34,8 @@ class App.Models.Article.Comment extends App.Models.Base
     adminRate:
       type: "Int"
       remoteName: "admin_rate"
+    approved:
+      type: "Boolean"
 
   constructor: (data) -> super data
 

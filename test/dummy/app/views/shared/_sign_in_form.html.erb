@@ -1,6 +1,8 @@
 <h1>Sign in</h1>
 
-<%= form_tag url do %>
+<%= form_tag url, defined?(opts) ? opts : {} do %>
+  <p class='errors' data-for='base'></p>
+
   <div class="field">
     <%= label_tag :email %><br>
     <%= text_field_tag :email %>
