@@ -3,6 +3,7 @@ require 'test_helper'
 class User::ArticleEditPageTest < IT
   include Loco::Emitter
   include CommonHelpers
+  include AdminHelpers
   include UserHelpers
 
   def setup
@@ -77,5 +78,18 @@ class User::ArticleEditPageTest < IT
     sleep 0.1
     destroy_article :two
     assert page.has_content? 'Article has been deleted.'
+  end
+
+  test "should approve comment" do
+    create_comment_for_article :two
+    sign_in
+    sleep 0.1
+    visit '/user'
+    within("#article_#{articles(:two).id}"){ click_link 'Edit' }
+    within "#comments" do
+      click_link 'approve'
+      sleep 0.1
+      assert_not page.has_content? 'approve'
+    end
   end
 end
