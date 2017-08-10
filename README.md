@@ -14,6 +14,14 @@
 
 Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
 
+### 1.5
+
+* Loco-JS dropped the dependency on jQuery. So it officially has no dependencies 🎉
+
+### 1.4
+
+* Ability to specify Redis instance through configuration
+
 ### 1.3
 
 * `emit_to` - send messages to chosen recipients over WebSocket connection (abstraction on top of `ActionCable`)
@@ -92,10 +100,6 @@ end
 `loco:install` generator will take care of this automatically.
 
 ## Doubts
-
-### Argument: Loco-JS depends on jQuery, but we don't need jQuery, anymore.
-
-**Answer:** Look at this [site](http://youmightnotneedjquery.com), for example. Almost always, you need to write more code to accomplish the same goal. And what we do, as developers, to write less code? We create private methods. We write another specialized classes. And we use 3rd party libraries. So, until no-jQuery approach will require you to write longer code, I'll stick with jQuery. But, I agree, that be dependent on sth is not good and *less dependencies* is better.
 
 ### Argument: Loco-JS is developed in CoffeeScript, but some say that the current standard is ES6.
 
@@ -328,7 +332,7 @@ Dependencies required for Loco to work:
 
 **Loco-JS**
 
-* jQuery 2.2.4 or higher
+* no dependencies
 
 **Loco-Rails**
 
@@ -394,7 +398,7 @@ $ bin/rails generate loco:install
 $ bin/rails db:migrate
 ```
 
-Loco-JS is bundled inside Loco-Rails and named `loco-rails.js` Since it is a JavaScript library, I recommend to resolve JavaScript dependencies using native package managers. So I encourage you to install Loco-JS and all JavaScript libraries using npm:
+Loco-JS is bundled inside Loco-Rails and named `loco-rails.js` Since it is a JavaScript library, I recommend to install it using native package managers like npm:
 
 ```bash
 $ npm install loco-js --save
