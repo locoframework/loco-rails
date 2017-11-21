@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'bcrypt', '~> 3.1'
   s.add_development_dependency 'hirb', '~> 0.7'
   s.add_development_dependency 'sass-rails', '~> 5.0'
-  s.add_development_dependency 'capybara', '~> 2.14.3'
+  s.add_development_dependency 'capybara', '~> 2.16.1'
   s.add_development_dependency 'chromedriver-helper'
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'database_cleaner', '~> 1.6.1'
