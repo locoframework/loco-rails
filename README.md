@@ -1,4 +1,4 @@
-![logo](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/loco_logo_trans_sqr-300px.png)
+![logo](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/assets/ext/loco_logo_trans_sqr-300px.png)
 
 # Welcome to Loco-Rails
 
@@ -259,13 +259,13 @@ end
 
 It's an approximation of course, but it tells us: more data on dashboard page - probably longer response time. You cound experiment with Redis, but it's just another layer of complexity. Following animation shows, how rendering page this way is look like:
 
-![standard rendering](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/1.gif)
+![standard rendering](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/assets/ext/1.gif)
 
 You can see that it affects UX significantly.
 
 Another approach is to render static page or very light and fast page (with placeholders for example). Then, transfer logic responsible for fetching and presenting data to proper abstract JavaScript views. How you'll organize code is up to you. You can have main view with subviews or just few equivalent views. Simpler is better. How to notify front-end code about new events? Do you remember `emit` method? So just `emit` signal on the server-side and receive it by all *connected* JavaScript objects. And you already know, where the JavaScript logic is located. Here is how rendering page this way is look like:
 
-![async rendering](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/images/ext/2.gif)
+![async rendering](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/assets/ext/2.gif)
 
 Intresting fact is that you can cover loading time with animations. When user see changes, he doesn't feel waiting. It should be really fast, though, cause we've split long action into a few fast ones. So it has server-side benefits, also.
 
@@ -444,7 +444,7 @@ Integration tests are powered by Capybara. Capybara is cool but sometimes random
 
 To emit signals just include `Loco::Emitter` module inside any class and use `emit` or `emit_to` methods that this module provides. If you want to use `low-level` interface without including module, just look inside the source code of `Loco::Emitter`.
 
-You can emit 2 kind of signals. The first one informs recipients about an event that occured on some resource e.g. post was *updated*, ticket was *validated*... You can emit this kind of signal using `emit` method. If it is possible - the signal is sent via WebSocket connection. If not - via AJAX polling. Switching is done internally.  
+You can emit 2 kind of signals. The first one informs recipients about an event that occured on some resource e.g. post was *updated*, ticket was *validated*... You can emit this kind of signal using `emit` method. If it is possible - the signal is sent via WebSocket connection. If not - via AJAX polling. Switching is done internally.
 
 Second type of signal is a direct message to recipients. You can send this kind by using `emit_to` method. In contrast to the first one - direct messages are sent only via WebSocket connection and are not persisted in DB. `emit_to` is available since version 1.3
 
