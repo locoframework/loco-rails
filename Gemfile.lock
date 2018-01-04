@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    loco-rails (2.1.0)
+    loco-rails (2.2.0)
       rails (>= 5.0, <= 5.2)
 
 GEM
@@ -105,7 +105,7 @@ GEM
     minitest (5.10.3)
     multi_json (1.12.2)
     mysql2 (0.4.10)
-    nio4r (2.1.0)
+    nio4r (2.2.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
     public_suffix (3.0.1)
