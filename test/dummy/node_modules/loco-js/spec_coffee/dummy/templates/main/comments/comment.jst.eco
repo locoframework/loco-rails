@@ -1,0 +1,5 @@
+<p id="comment_<%= @comment.id %>">
+  <b><%= @comment.author %></b> on
+  <i><%= (new App.Services.Date @comment.createdAt).strftime '%d %b %y' %></i> wrote:<br>
+  <%= @comment.text %>
+</p>

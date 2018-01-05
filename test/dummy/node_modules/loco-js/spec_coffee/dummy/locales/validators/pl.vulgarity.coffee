@@ -1,0 +1,1 @@
+App.I18n.pl.errors.messages.vulgarity = 'zawiera mocny język.'
