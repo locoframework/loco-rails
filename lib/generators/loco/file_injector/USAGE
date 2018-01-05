@@ -5,7 +5,6 @@ Example:
     rails generate loco:file_injector
 
     This will modify:
-        app/assets/javascripts/application.js
         config/routes.rb
         app/helpers/application_helper.rb
         app/views/layouts/application.html.erb

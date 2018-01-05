@@ -1,21 +1,6 @@
 class Loco::FileInjectorGenerator < Rails::Generators::Base
   source_root File.expand_path('../templates', __FILE__)
 
-  def js_manifest
-    file_path = File.join Rails.root, 'app', 'assets', 'javascripts', 'application.js'
-    gsub_file file_path, /^\/\/= require_tree .$/, ''
-    gsub_file file_path, /^\n$/, ''
-    if Rails.version.to_f >= 5
-      gsub_file file_path, "//= require cable\n", ''
-      gsub_file file_path, "//= require cable", ''
-    end
-    data = File.read find_in_source_paths('application.js')
-    append_file file_path, data
-    if Rails.version.to_f >= 5
-      inject_into_file file_path, "//= require cable\n", after: "//= require loco-rails\n"
-    end
-  end
-
   def routes
     file_path = File.join Rails.root, 'config', 'routes.rb'
     line = %Q{  mount Loco::Engine => '/notification-center'\n\n}
