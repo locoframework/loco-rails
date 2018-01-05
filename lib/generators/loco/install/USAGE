@@ -6,5 +6,5 @@ Example:
 
     This will run generators:
         loco:initializer
-        loco:js_assets_structure
         loco:file_injector
+        loco:notification_center

@@ -2,7 +2,8 @@
 //= require jquery
 //= require rails-ujs
 //= require turbolinks
-//= require loco-rails
+//= require loco-js-model/dist/loco-model.js
+//= require loco-js/dist/loco.js
 //= require cable
 //= require_tree ./locales/base
 //= require_tree ./locales/models

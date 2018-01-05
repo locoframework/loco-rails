@@ -3,7 +3,6 @@ class Loco::InstallGenerator < Rails::Generators::Base
 
   def install
     generate 'loco:initializer'
-    generate 'loco:js_assets_structure'
     generate 'loco:file_injector'
     generate 'loco:notification_center'
     rake 'loco:install:migrations'
