@@ -417,7 +417,7 @@ Line = function () {
     value: function connect() {
       var _this = this;
 
-      return _channels2.default.Loco.NotificationCenter = (_deps.Deps.cable || App.cable).subscriptions.create({
+      return _channels2.default.Loco.NotificationCenter = _deps.Deps.cable.subscriptions.create({
         channel: "Loco::NotificationCenterChannel"
       }, {
         connected: function connected() {
@@ -515,9 +515,11 @@ Line = function () {
   }, {
     key: '_sendNotification',
     value: function _sendNotification(data) {
-      var notificationCenter;
-      notificationCenter = _deps.Deps.NotificationCenter != null ? new _deps.Deps.NotificationCenter() : new App.Services.NotificationCenter();
-      return notificationCenter.receivedSignal(data);
+      if (_deps.Deps.NotificationCenter['receivedSignal'] != null) {
+        return _deps.Deps.NotificationCenter.receivedSignal(data);
+      } else {
+        return new _deps.Deps.NotificationCenter().receivedSignal(data);
+      }
     }
   }]);
 
@@ -1512,7 +1514,7 @@ Loco = function () {
   }, {
     key: 'initLine',
     value: function initLine() {
-      if (!(_deps.Deps.cable != null || (typeof App !== "undefined" && App !== null ? App.cable : void 0) != null)) {
+      if (_deps.Deps.cable == null) {
         return;
       }
       this.line = new _line2.default();

@@ -7,7 +7,7 @@ class Line
     @connected = false
 
   connect: ->
-    Channels.Loco.NotificationCenter = (Deps.cable || App.cable).subscriptions.create
+    Channels.Loco.NotificationCenter = Deps.cable.subscriptions.create
       channel: "Loco::NotificationCenterChannel"
     ,
       connected: =>
@@ -60,10 +60,9 @@ class Line
       wire.fetchSyncTime after: 'connect'
 
   _sendNotification: (data) ->
-    notificationCenter = if Deps.NotificationCenter?
-      new Deps.NotificationCenter
+    if Deps.NotificationCenter['receivedSignal']?
+      Deps.NotificationCenter.receivedSignal data
     else
-      new App.Services.NotificationCenter
-    notificationCenter.receivedSignal data
+      (new Deps.NotificationCenter).receivedSignal data
 
 export default Line

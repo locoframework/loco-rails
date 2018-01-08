@@ -12,6 +12,6 @@
   "dependencies": {
     "jquery": "^3.2.1",
     "lie": "^3.1.1",
-    "loco-js": "^2.2.2"
+    "loco-js": "~3.0.0"
   }
 }

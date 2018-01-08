@@ -54,7 +54,7 @@ class Loco
     @wire.fetchSyncTime after: 'connect'
 
   initLine: ->
-    return unless Deps.cable? || App?.cable?
+    return unless Deps.cable?
     @line = new Line
     @line.connect()
 

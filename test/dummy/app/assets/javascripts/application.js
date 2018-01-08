@@ -8,6 +8,7 @@
 //= require_tree ./locales/base
 //= require_tree ./locales/models
 //= require_tree ./locales/validators
+//= require_tree ./services
 //= require_tree ./initializers
 //= require_tree ./controllers/concerns
 //= require_tree ./controllers
@@ -15,4 +16,3 @@
 //= require_tree ./views
 //= require_tree ./templates
 //= require_tree ./validators
-//= require_tree ./services

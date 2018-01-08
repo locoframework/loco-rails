@@ -16,6 +16,9 @@ App.Views.Admin.Comments = {}
 App.Views.Layouts = {}
 App.Views.Shared = {}
 
+App.Deps.cable = App.cable
+App.Deps.NotificationCenter = App.Services.NotificationCenter
+
 loco = new App.Loco
   # set to your Turbolinks version if you have enabled Turbolinks
   turbolinks: 5                       # false by default
