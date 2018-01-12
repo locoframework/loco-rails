@@ -1,19 +1,12 @@
+# frozen_string_literal: true
+
 module Loco
   class NotificationCenterChannel < ApplicationCable::Channel
     def subscribed
-      return if not loco_permissions.is_a?(Array)
-      loco_permissions.compact.each do |resource|
-        if resource.is_a? String
-          @uuid = resource
-          stream_for_resource resource
-          SenderJob.perform_later @uuid, loco: {uuid: @uuid}
-        else
-          UuidJob.perform_later resource, @uuid, 'add'
-          stream_for_resource resource
-        end
-      end
+      return unless loco_permissions.is_a?(Array)
+      stream_for_resources
       return if loco_permissions.compact.size > 1
-      SenderJob.perform_later @uuid, loco: {start_ajax_polling: true}
+      SenderJob.perform_later @uuid, loco: { start_ajax_polling: true }
     end
 
     def unsubscribed
@@ -24,15 +17,24 @@ module Loco
     end
 
     def receive data
-      if data['loco']
-        if data['loco']['connection_check']
-          update_connections
-        end
-      end
+      update_connections if data['loco'] && data['loco']['connection_check']
       NotificationCenter.new.received_signal permissions, data
     end
 
     protected
+
+      def stream_for_resources
+        loco_permissions.compact.each do |resource|
+          if resource.is_a? String
+            @uuid = resource
+            stream_for_resource resource
+            SenderJob.perform_later @uuid, loco: { uuid: @uuid }
+          else
+            UuidJob.perform_later resource, @uuid, 'add'
+            stream_for_resource resource
+          end
+        end
+      end
 
       def stream_for_resource resource
         identifier = WsConnectionManager.new(resource).identifier
@@ -40,7 +42,9 @@ module Loco
       end
 
       def permissions
-        loco_permissions.compact.map{ |o| [o.class.name.downcase.to_sym, o] }.to_h
+        loco_permissions.compact.map do |o|
+          [o.class.name.downcase.to_sym, o]
+        end.to_h
       end
 
       def update_connections

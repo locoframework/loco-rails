@@ -1,0 +1,15 @@
+AllCops:
+  TargetRubyVersion: 2.4
+
+Rails:
+  Enabled: true
+
+Style/MethodDefParentheses:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Layout/IndentationConsistency:
+  Enabled: true
+  EnforcedStyle: rails
