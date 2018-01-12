@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Loco
   class SenderJob < ActiveJob::Base
     queue_as :loco
