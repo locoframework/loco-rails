@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Loco
   module Helpers
     def loco_body_data
@@ -8,7 +10,6 @@ module Loco
         'data-user-agent' => request.user_agent
       }
     end
-
 
     private
 

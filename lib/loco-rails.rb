@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "loco/engine"
 require "loco/helpers"
 require "loco/config"

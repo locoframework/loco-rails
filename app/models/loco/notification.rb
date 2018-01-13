@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Loco
-  class Notification < ActiveRecord::Base
+  class Notification < ApplicationRecord
     attr_reader :obj
 
     serialize :data, JSON

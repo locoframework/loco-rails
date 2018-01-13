@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Loco
   class Broadcaster
     attr_reader :obj, :event, :recipients, :data, :notifications

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Loco
   class Config
     cattr_accessor(:silence_logger){ false }

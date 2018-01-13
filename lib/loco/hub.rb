@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Loco
   class Hub
     PREFIX = 'loco:hub:'

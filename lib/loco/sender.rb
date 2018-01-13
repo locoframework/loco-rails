@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Loco
   class Sender
     def initialize recipient, data = {}
