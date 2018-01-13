@@ -13,3 +13,8 @@ Style/Documentation:
 Layout/IndentationConsistency:
   Enabled: true
   EnforcedStyle: rails
+
+Rails/ApplicationJob:
+  Enabled: true
+  Exclude:
+    - app/jobs/loco/*
