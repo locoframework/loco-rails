@@ -18,3 +18,8 @@ Rails/ApplicationJob:
   Enabled: true
   Exclude:
     - app/jobs/loco/*
+
+Rails/ApplicationRecord:
+  Enabled: true
+  Exclude:
+    - app/models/loco/notification.rb

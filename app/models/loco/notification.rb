@@ -2,6 +2,8 @@
 
 module Loco
   class Notification < ActiveRecord::Base
+    attr_reader :obj
+
     serialize :data, JSON
 
     validates :obj_class, presence: true
@@ -10,7 +12,9 @@ module Loco
     before_validation :prepare
 
     class << self
-      def table_name_prefix; 'loco_' end
+      def table_name_prefix
+        'loco_'
+      end
     end
 
     def obj= val
@@ -23,11 +27,9 @@ module Loco
       end
     end
 
-    def obj; @obj end
-
     def recipient= val
-      return nil if val.nil?
-      return nil if val == :all
+      return if val.nil?
+      return if val == :all
       if val.is_a? String
         self.recipient_token = val
       elsif val.instance_of? Class
@@ -40,12 +42,9 @@ module Loco
 
     def recipient opts = {}
       return recipient_token if recipient_token
-      return nil if recipient_class.nil? && recipient_id.nil?
-      return recipient_class.constantize if recipient_id.nil?
-      if opts[:shallow]
-        return recipient_class.constantize.new id: recipient_id
-      end
-      recipient_class.constantize.find recipient_id
+      return unless regular_recipient?
+      return class_recipient unless recipient_id
+      obj_recipient opts[:shallow]
     end
 
     def prepare
@@ -59,12 +58,34 @@ module Loco
 
     private
 
+      def regular_recipient?
+        recipient_class && recipient_id
+      end
+
+      def class_recipient
+        recipient_class.constantize
+      end
+
+      def obj_recipient shallow = false
+        if shallow
+          recipient_class.constantize.new id: recipient_id
+        else
+          recipient_class.constantize.find recipient_id
+        end
+      end
+
       def set_event
         return if event.present?
         return if obj.instance_of? Class
-        self.event = "creating" if obj.new_record?
-        self.event = "created" if obj.created_at.present? && obj.created_at == obj.updated_at
-        self.event = "updated" if obj.created_at.present? && obj.created_at != obj.updated_at
+        if obj.new_record?
+          self.event = 'creating'
+        else
+          set_event_for_persisted_obj
+        end
+      end
+
+      def set_event_for_persisted_obj
+        self.event = obj.created_at == obj.updated_at ? 'created' : 'updated'
       end
 
       def set_data
