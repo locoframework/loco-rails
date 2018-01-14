@@ -33,7 +33,7 @@ module Loco
 
     def del_member member
       serialized = serialize member
-      return nil if not raw_members.include? serialized
+      return nil unless raw_members.include? serialized
       raw_members.delete serialized
       save
       serialized

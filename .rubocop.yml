@@ -13,10 +13,18 @@ Layout/InitialIndentation:
     - lib/generators/loco/file_injector/templates/application_controller.rb
     - lib/generators/loco/file_injector/templates/connection.rb
 
+Layout/SpaceBeforeBlockBraces:
+  Enabled: false
+
 Layout/TrailingBlankLines:
   Enabled: true
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
+
+Naming/FileName:
+  Enabled: true
+  Exclude:
+    - lib/loco-rails.rb
 
 Rails:
   Enabled: true

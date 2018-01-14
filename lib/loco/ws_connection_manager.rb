@@ -16,7 +16,7 @@ module Loco
     end
 
     def connected_uuids
-      data.find_all{ |k,v| v.is_a? String }.to_h.keys
+      data.find_all{ |_, v| v.is_a? String }.to_h.keys
     end
 
     def add uuid
@@ -25,12 +25,12 @@ module Loco
     end
 
     def del uuid
-      save data.tap{ |h| h.delete uuid }
+      save(data.tap{ |h| h.delete uuid })
       check_connections
     end
 
     def update uuid
-      save data.tap{ |h| h[uuid] = current_time }
+      save(data.tap{ |h| h[uuid] = current_time })
     end
 
     def destroy
@@ -55,21 +55,31 @@ module Loco
 
       def check_connections
         hash = data.to_a.map do |arr|
-          uuid, val = arr.first, arr.last
-          case val
-          when String
-            if Time.zone.parse(val) < 3.minutes.ago
-              SenderJob.perform_later uuid, loco: {connection_check: true}
-              val = {"check" => current_time}
-            end
-          when Hash
-            if Time.zone.parse(val["check"]) < 5.seconds.ago
-              uuid, val = nil, nil
-            end
-          end
+          uuid, val = check_connection arr.first, arr.last
           [uuid, val]
         end.to_h.compact
         save hash
+      end
+
+      def check_connection uuid, val
+        case val
+        when String
+          val = check_connection_str uuid, val
+        when Hash
+          uuid, val = check_connection_hash uuid, val
+        end
+        [uuid, val]
+      end
+
+      def check_connection_str uuid, val
+        return val if Time.zone.parse(val) >= 3.minutes.ago
+        SenderJob.perform_later uuid, loco: { connection_check: true }
+        { 'check' => current_time }
+      end
+
+      def check_connection_hash uuid, val
+        return [uuid, val] if Time.zone.parse(val['check']) >= 5.seconds.ago
+        [nil, nil]
       end
 
       def current_time

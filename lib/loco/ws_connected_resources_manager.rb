@@ -23,12 +23,14 @@ module Loco
 
       def del identifier
         ids = identifiers
-        return if not ids.include? identifier
+        return unless ids.include? identifier
         ids.delete identifier
         WsConnectionStorage.current.set key, ids.to_json
       end
 
-      def key; "loco:conn_ids" end
+      def key
+        'loco:conn_ids'
+      end
     end
 
     def connected_resources
@@ -41,8 +43,8 @@ module Loco
     end
 
     def connected? resource
-      connected_resources.map do |resource|
-        WsConnectionManager.new(resource).identifier
+      connected_resources.map do |res|
+        WsConnectionManager.new(res).identifier
       end.include? WsConnectionManager.new(resource).identifier
     end
 

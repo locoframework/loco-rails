@@ -20,10 +20,16 @@ module Loco
           if r.is_a? String
             r
           elsif r.is_a? Hub
-            r.raw_members.map{ |m| WsConnectionManager.new(m).connected_uuids }.flatten.uniq
+            recipients_from_hub r
           else
             WsConnectionManager.new(r).connected_uuids
           end
+        end.flatten.uniq
+      end
+
+      def recipients_from_hub hub
+        hub.raw_members.map do |m|
+          WsConnectionManager.new(m).connected_uuids
         end.flatten.uniq
       end
   end
