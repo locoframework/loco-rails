@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 # Declare your gem's dependencies in loco.gemspec.
@@ -12,8 +14,8 @@ gemspec
 
 group :development, :test do
   # integration tests need following gems in test group
-  gem 'turbolinks', '~> 5'
-  gem 'jbuilder', '~> 2.5'
   gem 'eco', '~> 1.0'
+  gem 'jbuilder', '~> 2.5'
+  gem 'turbolinks', '~> 5'
   gem 'will_paginate', '~> 3.1.0'
 end

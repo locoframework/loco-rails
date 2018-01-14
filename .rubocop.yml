@@ -1,5 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.4
+  Exclude:
+    - test/**/*
 
 Layout/IndentationConsistency:
   Enabled: true
@@ -20,6 +22,11 @@ Layout/TrailingBlankLines:
   Enabled: true
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
+
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - loco-rails.gemspec
 
 Naming/FileName:
   Enabled: true
