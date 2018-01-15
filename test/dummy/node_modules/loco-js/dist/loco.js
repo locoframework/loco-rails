@@ -1534,14 +1534,23 @@ Loco = function () {
         if (_controllers2.default[namespace_name][controller_name] != null) {
           _env2.default.controller = new _controllers2.default[namespace_name][controller_name]();
         }
+        if (_env2.default.namespaceController.constructor.initialize != null) {
+          _env2.default.namespaceController.constructor.initialize();
+        }
         if (_env2.default.namespaceController.initialize != null) {
           _env2.default.namespaceController.initialize();
         }
         if (_env2.default.controller != null) {
           _env2.default.namespaceController.setSubController(_env2.default.controller);
           _env2.default.controller.setSuperController(_env2.default.namespaceController);
+          if (_env2.default.controller.constructor.initialize != null) {
+            _env2.default.controller.constructor.initialize();
+          }
           if (_env2.default.controller.initialize != null) {
             _env2.default.controller.initialize();
+          }
+          if (_env2.default.controller.constructor[action_name] != null) {
+            _env2.default.controller.constructor[action_name]();
           }
           if (_env2.default.controller[action_name] != null) {
             _env2.default.controller[action_name]();
@@ -1549,8 +1558,14 @@ Loco = function () {
         }
       } else if (_controllers2.default[controller_name]) {
         _env2.default.controller = new _controllers2.default[controller_name]();
+        if (_env2.default.controller.constructor.initialize != null) {
+          _env2.default.controller.constructor.initialize();
+        }
         if (_env2.default.controller.initialize != null) {
           _env2.default.controller.initialize();
+        }
+        if (_env2.default.controller.constructor[action_name] != null) {
+          _env2.default.controller.constructor[action_name]();
         }
         if (_env2.default.controller[action_name] != null) {
           _env2.default.controller[action_name]();

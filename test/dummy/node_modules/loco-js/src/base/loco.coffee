@@ -71,15 +71,20 @@ class Loco
       Env.namespaceController = new Controllers[namespace_name]
       if Controllers[namespace_name][controller_name]?
         Env.controller = new Controllers[namespace_name][controller_name]
+      Env.namespaceController.constructor.initialize() if Env.namespaceController.constructor.initialize?
       Env.namespaceController.initialize() if Env.namespaceController.initialize?
       if Env.controller?
         Env.namespaceController.setSubController Env.controller
         Env.controller.setSuperController Env.namespaceController
+        Env.controller.constructor.initialize() if Env.controller.constructor.initialize?
         Env.controller.initialize() if Env.controller.initialize?
+        Env.controller.constructor[action_name]() if Env.controller.constructor[action_name]?
         Env.controller[action_name]() if Env.controller[action_name]?
     else if Controllers[controller_name]
       Env.controller = new Controllers[controller_name]
+      Env.controller.constructor.initialize() if Env.controller.constructor.initialize?
       Env.controller.initialize() if Env.controller.initialize?
+      Env.controller.constructor[action_name]() if Env.controller.constructor[action_name]?
       Env.controller[action_name]() if Env.controller[action_name]?
 
     if @wire?

@@ -1,4 +1,3 @@
-//= require lie/dist/lie.polyfill
 //= require jquery
 //= require rails-ujs
 //= require turbolinks
