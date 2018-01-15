@@ -1,0 +1,59 @@
+AllCops:
+  TargetRubyVersion: 2.4
+  Exclude:
+    - test/**/*
+
+Layout/IndentationConsistency:
+  Enabled: true
+  EnforcedStyle: rails
+  Exclude:
+    - lib/generators/loco/file_injector/templates/connection.rb
+
+Layout/InitialIndentation:
+  Enabled: true
+  Exclude:
+    - lib/generators/loco/file_injector/templates/application_controller.rb
+    - lib/generators/loco/file_injector/templates/connection.rb
+
+Layout/SpaceBeforeBlockBraces:
+  Enabled: false
+
+Layout/TrailingBlankLines:
+  Enabled: true
+  Exclude:
+    - lib/generators/loco/file_injector/templates/application_controller.rb
+
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - loco-rails.gemspec
+
+Naming/FileName:
+  Enabled: true
+  Exclude:
+    - lib/loco-rails.rb
+
+Rails:
+  Enabled: true
+
+Rails/ApplicationJob:
+  Enabled: true
+  Exclude:
+    - app/jobs/loco/*
+
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - lib/generators/loco/file_injector/templates/application_controller.rb
+    - lib/generators/loco/file_injector/templates/connection.rb
+
+Style/MethodDefParentheses:
+  Enabled: false
+
+Style/MixinUsage:
+  Enabled: true
+  Exclude:
+    - lib/generators/loco/file_injector/templates/application_controller.rb

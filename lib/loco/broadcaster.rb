@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Loco
   class Broadcaster
     attr_reader :obj, :event, :recipients, :data, :notifications
@@ -10,10 +12,12 @@ module Loco
       @data = opts[:data]
       @notifications = []
       @sent_via_ws = 0
-      @connected_resources_manager = WsConnectedResourcesManager.new @recipients.compact
+      @conn_res_manager = WsConnectedResourcesManager.new @recipients.compact
     end
 
-    def signals; notifications end
+    def signals
+      notifications
+    end
 
     def prepare
       init_notifications if notifications.empty?
@@ -34,55 +38,47 @@ module Loco
 
       def init_notifications
         recipients.each do |recipient|
-          @notifications << Notification.new({
+          @notifications << Notification.new(
             obj: obj,
             event: event,
             recipient: recipient,
             data: data
-          })
+          )
         end
       end
 
       def prepare_notifications
-        notifications.each do |notification|
-          notification.prepare
-        end
+        notifications.each(&:prepare)
       end
 
       def send_notifications
         notifications.each do |notification|
           notification.save!
           next if notification.recipient_id.nil?
-          next if not @connected_resources_manager.connected? notification.recipient(shallow: true)
+          shallow_recipient = notification.recipient shallow: true
+          next unless @conn_res_manager.connected? shallow_recipient
           send_via_ws notification
         end
       end
 
       def send_via_ws notification
         recipient = notification.recipient shallow: true
-        data = {loco: {notification: notification.compact}}
+        data = { loco: { notification: notification.compact } }
         SenderJob.perform_later recipient, data
         @sent_via_ws += 1
       end
 
       def notify_about_xhr_notifications?
-        @sent_via_ws < notifications.size ? true : false
+        @sent_via_ws < notifications.size
       end
 
       def notify_about_xhr_notifications
-        uuids, recipients = [], notifications_recipients
-        uniq_recipients = recipients.compact.uniq
-        Loco::WsConnectedResourcesManager.identifiers.find_all do |str|
-          if recipients.include? nil
-            true
-          else
-            uniq_recipients.include? str.split(':').first
-          end
-        end.each do |identifier|
-          Loco::WsConnectionManager.new(identifier).connected_uuids.each do |uuid|
+        uuids = []
+        fetch_identifiers.each do |ident|
+          Loco::WsConnectionManager.new(ident).connected_uuids.each do |uuid|
             next if uuids.include? uuid
             uuids << uuid
-            SenderJob.perform_later uuid, loco: {xhr_notifications: true}
+            SenderJob.perform_later uuid, loco: { xhr_notifications: true }
           end
         end
       end
@@ -91,13 +87,25 @@ module Loco
         sync_time = notifications.last.created_at.iso8601(6)
         notifications.each do |notification|
           recipient = notification.recipient shallow: true
-          SenderJob.perform_later recipient, loco: {sync_time: sync_time}
+          SenderJob.perform_later recipient, loco: { sync_time: sync_time }
         end
       end
 
       def notifications_recipients
         notifications.map{ |n| n.recipient shallow: true }.map do |o|
           o.instance_of?(Class) ? o.to_s.downcase : nil
+        end
+      end
+
+      def fetch_identifiers
+        recipients = notifications_recipients
+        uniq_recipients = recipients.compact.uniq
+        Loco::WsConnectedResourcesManager.identifiers.find_all do |str|
+          if recipients.include? nil
+            true
+          else
+            uniq_recipients.include? str.split(':').first
+          end
         end
       end
   end
