@@ -4,7 +4,7 @@ class App.Models.Article.Comment extends App.Models.Base
   @resources =
     url: '/user/articles/:articleId/comments', paginate: {per: 10}
     main:
-      url: '/articles/:articleId/comments', paginate: {per: 5}
+      url: '/articles/:articleId/comments', paginate: {per: 5, param: "page-num"}
     admin:
       url: '/admin/articles/:articleId/comments', paginate: {per: 5}
 

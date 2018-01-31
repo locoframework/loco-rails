@@ -1,5 +1,5 @@
-import {I18n} from './deps';
-import en from './locales/en.coffee';
+import { I18n } from "./deps";
+import en from "./locales/en.coffee";
 
 I18n.en = en;
 

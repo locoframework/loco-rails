@@ -1,4 +1,4 @@
-import Base from './views/base.coffee';
+import Base from "./views/base.coffee";
 
 const Views = {
   Base

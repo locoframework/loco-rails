@@ -92,7 +92,7 @@ module Loco
       end
 
       def notifications_recipients
-        notifications.map{ |n| n.recipient shallow: true }.map do |o|
+        notifications.map { |n| n.recipient shallow: true }.map do |o|
           o.instance_of?(Class) ? o.to_s.downcase : nil
         end
       end

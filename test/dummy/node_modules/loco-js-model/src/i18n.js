@@ -1,4 +1,4 @@
-import en from './locales/en.coffee';
+import en from "./locales/en.coffee";
 
 const I18n = {
   en

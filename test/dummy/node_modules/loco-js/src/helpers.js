@@ -1,4 +1,4 @@
-import Text from './helpers/text.coffee';
+import Text from "./helpers/text.coffee";
 
 const Helpers = {
   Text

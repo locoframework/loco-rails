@@ -1,16 +1,18 @@
-var path = require('path');
+var path = require("path");
 
 module.exports = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   module: {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
-      { test: /\.coffee$/,
+      {
+        test: /\.coffee$/,
         use: [
-          { loader: 'coffee-loader',
+          {
+            loader: "coffee-loader",
             options: {
               transpile: {
-                presets: ['env']
+                presets: ["env"]
               }
             }
           }
@@ -19,17 +21,17 @@ module.exports = {
     ]
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'loco.js',
-    library: 'App',
-    libraryTarget: 'umd'
+    path: path.resolve(__dirname, "dist"),
+    filename: "loco.js",
+    library: "App",
+    libraryTarget: "umd"
   },
   externals: {
-    'loco-js-model': {
-      commonjs: 'loco-js-model',
-      commonjs2: 'loco-js-model',
-      amd: 'loco-js-model',
-      root: 'LocoModel'
+    "loco-js-model": {
+      commonjs: "loco-js-model",
+      commonjs2: "loco-js-model",
+      amd: "loco-js-model",
+      root: "LocoModel"
     }
   }
 };

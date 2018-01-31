@@ -8,7 +8,7 @@ module Loco
 
     def initialize name, members = []
       @name = "#{PREFIX}#{name}"
-      @raw_members = members.map{ |m| serialize m }
+      @raw_members = members.map { |m| serialize m }
     end
 
     class << self

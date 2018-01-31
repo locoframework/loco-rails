@@ -1,5 +1,7 @@
 ![logo](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/assets/ext/loco_logo_trans_sqr-300px.png)
 
+# 🚧 This documentation is under construction. Come back soon! 🚧
+
 # Welcome to Loco-JS
 
 **Loco** is a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts:
@@ -16,48 +18,6 @@ Informations about all releases are published on [Twitter](https://twitter.com/a
 ### 1.5
 
 * Loco-JS dropped the dependency on jQuery. So it officially has no dependencies 🎉
-
-## CoffeeScript naming convention
-
-Loco-JS uses the following naming convention. It's worth to notice that "**@**" sign is used only to define and call class variables and class methods. Although **this** and **@** are equivalent, this convention improves readability of code imo.
-
-```coffeescript
-class Example
-  @classVar = 50
-
-  @classMethod: ->
-    "@classVar is #{@classVar}." + "\n" + @_privateClassMethod true
-
-  @_privateClassMethod: (sayName = false) ->
-    if sayName
-      "Class name is #{@name}"
-    else
-      "I'm private class method only by convention."
-
-  constructor: (opts = {}) ->
-    @iVarA = opts.a ? 0
-    @iVarB = opts.b ? 'foo'
-
-  instanceMethod: (c) ->
-    classVarVal = this.constructor.classVar
-    str = "@iVarA is #{@iVarA}, @iVarB is #{@iVarB}, c is #{c} and @classVar is #{classVarVal}."
-    str + '\n' + this._privateInstanceMethod false
-
-  _privateInstanceMethod: (explain = true) ->
-    str = if explain then ' only by convention.' else '.'
-    "I'm private instance method#{str}"
-
-
-Example.classVar                   # 50
-Example.classMethod()              # "@classVar is 50.
-                                   # Class name is Example"
-Example._privateClassMethod()      # "I'm private class method only by convention."
-instance = new Example b: 'bar'
-instance.instanceMethod()          # "@iVarA is 0, @iVarB is bar, c is undefined and @classVar is 50.
-                                   # I'm private instance method."
-instance._privateInstanceMethod()  # "I'm private instance method only by convention."
-```
-Other data structures in CoffeeScript are pretty good explained on the [official page](http://coffeescript.org) and in [CoffeeScript Cookbook](https://coffeescript-cookbook.github.io).
 
 ## Dependencies
 
@@ -216,73 +176,10 @@ Let's describe each object / function briefly. I'll be using CoffeeScript nomenc
 
 ## Models
 
-Following example presents how simple model could look like:
-
-```coffeescript
-class App.Models.Article extends App.Models.Base
-  @identity = "Article"
-  @resources =
-    url: '/user/articles', paginate: {per: 100, param: "current-page"}
-    main:
-      url: '/articles', paginate: {per: 10}
-    admin:
-      url: '/admin/articles', paginate: {per: 100}
-
-  @attributes =
-    title:
-      validations:
-        presence: true
-        length: {within: [3, 255]}
-    content:
-      validations:
-        presence: true
-        length: {minimum: 100}
-      remoteName: "text"
-      type: "String"
-
-  @receivedSignal: (signal, data) ->
-
-  @validate = ["vulgarityLevel"]
-
-  constructor: (data) -> super data
-
-  receivedSignal: (signal, data) ->
-
-  vulgarityLevel: ->
-    if this._isVulgar()  # not implemented
-      this.addErrorMessage "Article contains strong language.", for: 'base'
-```
-
-Let's describe it's *elements*:
-
-* **@identity** *(required)* - value of this class variable should be the same as the name of a class (last component). It's required because of minification - all class names will be converted to ~ one character. But, Loco relies on naming.
-
-* **@resources** - this class variable stores information about scopes in your app. You can fetch resources from different sources (API endpoints). So here is a place, where you can define them. Then, you can fetch resources in 2 ways:
-	* by specifing scope in method calls e.g. `App.Models.Article.get 'all', resource: 'main'`
-	* by specifing scope globally. You can do this by calling `setScope '<scope name>'` instance method in a namespace controller, usually
-
-* **@attributes** - this class variable stores information about model's attributes. For each attribute you can define:
-	* **validators** - `Absence`, `Confirmation`, `Exclusion`, `Format`, `Inclusion`, `Length`, `Numericality`, `Presence`, `Size` are available
-	* **remoteName** - the name of model's attribute and name returned by API endpoint may vary. So here you can define a *binding*.
-	* **type** - when assigning values from API endpoint, Loco may convert them to certain types. Available types: `Date`, `Integer`, `Float`, `Boolean`, `Number`, `String`
-
-* **@receivedSignal** - this class method is called when signal, related to any instance of this class, is received
-
-* **@validate** - this class variable contains names of custom validation methods
-
-* **receivedSignal** - this method is automatically called by an instance of model, when signal related to that object is received
-
 ### Fetching a collection of resources (pagination)
 
-Loco-JS requires response from the server in a proper JSON format (with **resources** and **count** keys). It's described on the [Loco-Rails page](http://github.com/locoframework/loco-rails). Here are some examples:
 
 ```coffeescript
-App.Models.Article.get('all').then (resp) ->
-# GET "/user/articles?current-page=1"
-# GET "/user/articles?current-page=2"
-# GET "/user/articles?current-page=3"
-# ...
-
 App.Models.Article.get('all', resource: 'main').then (resp) ->
 # GET "/articles?page=1"
 # GET "/articles?page=2"

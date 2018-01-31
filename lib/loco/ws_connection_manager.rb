@@ -16,7 +16,7 @@ module Loco
     end
 
     def connected_uuids
-      data.find_all{ |_, v| v.is_a? String }.to_h.keys
+      data.find_all { |_, v| v.is_a? String }.to_h.keys
     end
 
     def add uuid
@@ -25,12 +25,12 @@ module Loco
     end
 
     def del uuid
-      save(data.tap{ |h| h.delete uuid })
+      save(data.tap { |h| h.delete uuid })
       check_connections
     end
 
     def update uuid
-      save(data.tap{ |h| h[uuid] = current_time })
+      save(data.tap { |h| h[uuid] = current_time })
     end
 
     def destroy

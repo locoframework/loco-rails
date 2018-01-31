@@ -1,4 +1,4 @@
-import Date from './services/date.coffee';
+import Date from "./services/date.coffee";
 
 const Services = {
   Date

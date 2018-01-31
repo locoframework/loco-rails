@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "eslint-config-airbnb-base",
+    "prettier"
+  ],
+
+  "plugins": [
+    "prettier",
+    "jest"
+  ],
+
+  "env": {
+    "browser": true,
+    "jest/globals": true
+  },
+
+  "rules": {
+    "prettier/prettier": "error"
+  },
+
+  "parser": "babel-eslint"
+}

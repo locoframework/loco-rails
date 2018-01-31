@@ -13,10 +13,14 @@ class App.Views.Main.Articles.Show extends App.Views.Base
     if not @article?
       @article = article
       this.connectWith @article, receiver: "_articleReceivedSignal"
-    $('#title').text @article.title
-    $('#author').text @article.author
-    $('#pub_date').text (new App.Services.Date @article.publishedAt).toString 'short'
-    $('#text').empty().append (new App.Helpers.Text).simpleFormat @article.content
+    document.getElementById("title").textContent = @article.title
+    document.getElementById("author").textContent = @article.author
+    dateService = new App.Services.Date @article.publishedAt
+    document.getElementById("pub_date").textContent = dateService.toString 'short'
+    textEl = document.getElementById "text"
+    textEl.innerHTML = ""
+    text = (new App.Helpers.Text).simpleFormat @article.content
+    textEl.insertAdjacentHTML "beforeend", text
 
   renderComments: (comments) ->
     if comments.length is 0

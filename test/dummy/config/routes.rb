@@ -25,7 +25,11 @@ Rails.application.routes.draw do
   scope module: 'main' do
     resources :users, only: [:new, :create]
     resources :articles, only: [:index, :show] do
-      resources :comments, only: [:index, :create, :show]
+      resources :comments, only: %i[index create show] do
+        collection do
+          get :count
+        end
+      end
     end
   end
 

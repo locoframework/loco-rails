@@ -1,11 +1,15 @@
 class App.Controllers.Main.Articles extends App.Controllers.Base
   show: ->
-    @view = new App.Views.Main.Articles.Show comment: new App.Models.Article.Comment articleId: @params.id
+    newComment = new App.Models.Article.Comment articleId: @params.id
+    @view = new App.Views.Main.Articles.Show comment: newComment
     @view.render()
     this.connectWith [App.Models.Article.Comment]
-    App.Models.Article.find(@params.id).then (article) => @view.renderArticle article
-    App.Models.Article.Comment.all(articleId: @params.id).then (resp) =>
-      @view.renderComments resp.resources
+    App.Models.Article.find(@params.id).then (article) =>
+      @view.renderArticle article
+    App.Models.Article.Comment.get("count", articleId: @params.id).then (res) =>
+      App.Models.Article.Comment
+        .all(articleId: @params.id, total: res.total)
+        .then (comments) => @view.renderComments comments
 
   receivedSignal: (signal, data) ->
     switch signal

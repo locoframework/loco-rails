@@ -1,5 +1,5 @@
-import Base from './controllers/base.coffee';
+import Base from "./controllers/base.coffee";
 
-const Controllers = {Base};
+const Controllers = { Base };
 
 export default Controllers;

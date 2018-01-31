@@ -1,8 +1,13 @@
 class Main::CommentsController < MainController
+  def count
+    render json: {total: skope.count}
+  end
+
   def index
-    skope = Comment.where(article_id: params[:article_id])
-    @comments = skope.order("created_at ASC").paginate page: params[:page], per_page: 5
-    @count = skope.count
+    @comments = skope.paginate(
+      page: params['page-num'],
+      per_page: 5
+    )
   end
 
   def create
@@ -27,5 +32,10 @@ class Main::CommentsController < MainController
 
     def comment_params
       params.require(:comment).permit :author, :text, :article_id
+    end
+
+    def skope
+      Comment.where(article_id: params[:article_id])
+             .order('created_at ASC')
     end
 end
