@@ -11,6 +11,6 @@
   "license": "MIT",
   "dependencies": {
     "jquery": "^3.2.1",
-    "loco-js": "~3.2.0"
+    "loco-js": "~3.2.1"
   }
 }

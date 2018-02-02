@@ -1,9 +1,8 @@
 import Validators from './validators'
 import Config from './config'
-import Utils from './utils'
 import IdentityMap from './identity_map.coffee'
 import Models from './models'
-import { filterParams, sendReq } from './helpers/connectivity';
+import { sendReq } from './helpers/connectivity';
 
 class Base
   @getIdentity: -> if @identity? then @identity else throw("Specify Model's @identity!")
@@ -80,8 +79,6 @@ class Base
   @__page: (i, pageData, resp) ->
     url = pageData.url
     pageData.params[pageData.pageParam] = i
-    if pageData.method is 'GET'
-      url = url + '?' + Utils.Obj.toURIParams(pageData.params)
     req = sendReq pageData.method, url, pageData.params
     return new Promise (resolve, reject) =>
       req.onerror = (e) -> reject e
@@ -153,7 +150,7 @@ class Base
     data = {
       method: method,
       url: url,
-      params: filterParams(opts),
+      params: opts,
       resource: opts.resource,
       perPage: @__getPaginationPer(opts.resource),
       pageNum: opts.page,

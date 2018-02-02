@@ -176,20 +176,6 @@ Let's describe each object / function briefly. I'll be using CoffeeScript nomenc
 
 ## Models
 
-### Fetching a collection of resources (pagination)
-
-
-```coffeescript
-App.Models.Article.get('all', resource: 'main').then (resp) ->
-# GET "/articles?page=1"
-# GET "/articles?page=2"
-# GET "/articles?page=3"
-# ...
-
-App.Models.Article.get('published', resource: 'admin', page: 2).then (resp) ->
-# GET "/admin/articles/published?page=2"
-```
-
 Loco-JS supports nested resources. Only single nesting is allowed. Example:
 
 ```coffeescript
@@ -201,18 +187,6 @@ class App.Models.Article.Comment extends App.Models.Base
 
 App.Models.Article.Comment.all(articleId: 321, page: 2).then (resp) ->
 # GET "/user/articles/321/comments?page=2"
-```
-
-You can also pass additional parameters. Example:
-
-```coffeescript
-App.Models.Article.Comment.all({
-  articleId: 21,
-  page: 2,
-  title: 'foo',
-  content: 'bar'
-}).then (resp) ->
-# GET "/user/articles/21/comments?page=2&title=foo&content=bar"
 ```
 
 ### Fetching a single resource
