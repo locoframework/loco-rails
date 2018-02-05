@@ -4,8 +4,9 @@ module Loco
   class UuidJob < ActiveJob::Base
     queue_as :loco
 
-    def perform resource, uuid, action
-      ws_conn_manager = WsConnectionManager.new resource
+    def perform serialized_resource, uuid, action
+      ws_conn_manager = init_ws_conn_manager serialized_resource
+      return unless ws_conn_manager
       case action
       when 'add'
         add ws_conn_manager, uuid
@@ -32,6 +33,16 @@ module Loco
       def update ws_conn_manager, uuid
         ws_conn_manager.update uuid
         WsConnectedResourcesManager.add ws_conn_manager.identifier
+      end
+
+      def deserialize_resource hash
+        hash['class'].constantize.find_by id: hash['id']
+      end
+
+      def init_ws_conn_manager serialized_resource
+        resource = deserialize_resource serialized_resource
+        return unless resource
+        WsConnectionManager.new resource
       end
   end
 end

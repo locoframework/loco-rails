@@ -12,7 +12,7 @@ module Loco
     def unsubscribed
       loco_permissions.each do |resource|
         next if resource.nil? || resource.is_a?(String)
-        UuidJob.perform_later resource, @uuid, 'del'
+        UuidJob.perform_later serialize_resource(resource), @uuid, 'del'
       end
     end
 
@@ -30,7 +30,7 @@ module Loco
             stream_for_resource resource
             SenderJob.perform_later @uuid, loco: { uuid: @uuid }
           else
-            UuidJob.perform_later resource, @uuid, 'add'
+            UuidJob.perform_later serialize_resource(resource), @uuid, 'add'
             stream_for_resource resource
           end
         end
@@ -50,8 +50,12 @@ module Loco
       def update_connections
         permissions.each do |key, val|
           next if key == :string
-          UuidJob.perform_later val, @uuid, 'update'
+          UuidJob.perform_later serialize_resource(val), @uuid, 'update'
         end
+      end
+
+      def serialize_resource resource
+        { 'class' => resource.class.name, 'id' => resource.id }
       end
   end
 end
