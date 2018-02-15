@@ -27,6 +27,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'database_cleaner', '~> 1.6.1'
   s.add_development_dependency 'puma', '~> 3.7'
-  s.add_development_dependency 'redis', '~> 3.3.1'
+  s.add_development_dependency 'redis', '~> 4.0.1'
   s.add_development_dependency 'listen', '>= 3.0.5', '< 3.2'
 end

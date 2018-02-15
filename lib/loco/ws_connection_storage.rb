@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Loco
   class WsConnectionStorage
     include Singleton
@@ -15,15 +17,26 @@ module Loco
     end
 
     def get key
-      storage[proper_key(key)]
+      case @storage
+      when Hash
+        storage[proper_key(key)]
+      else
+        storage.get proper_key(key)
+      end
     end
 
     def set key, val
-      storage[proper_key(key)] = val
+      case @storage
+      when Hash
+        storage[proper_key(key)] = val
+      else
+        storage.set proper_key(key), val
+      end
     end
 
     def del key
-      if storage.is_a? Hash
+      case @storage
+      when Hash
         storage.delete proper_key(key)
       else
         storage.del proper_key(key)
