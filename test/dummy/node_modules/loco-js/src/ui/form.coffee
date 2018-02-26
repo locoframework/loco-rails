@@ -177,7 +177,7 @@ class Form
       if @submit?
         @submit.disabled = false
         Utils.Dom.removeClass @submit, 'failure'
-        @submit.val = @submitVal
+        @submit.value = @submitVal
       for node in @form.querySelectorAll('input.invalid, textarea.invalid, select.invalid')
         Utils.Dom.removeClass node, 'invalid'
     , 1000
@@ -230,11 +230,11 @@ class Form
     return unless @submit?
     Utils.Dom.removeClass @submit, 'active'
     Utils.Dom.addClass @submit, 'failure'
-    @submit.val = I18n[@locale].ui.form.errors.connection
+    @submit.value = I18n[@locale].ui.form.errors.connection
     setTimeout =>
       @submit.disabled = false
       Utils.Dom.removeClass @submit, 'failure'
-      @submit.val = @submitVal
+      @submit.value = @submitVal
     , 3000
 
   _alwaysAfterRequest: ->

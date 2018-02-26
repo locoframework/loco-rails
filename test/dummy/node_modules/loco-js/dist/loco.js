@@ -1063,7 +1063,7 @@ var _utils = __webpack_require__(11);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _views = __webpack_require__(28);
+var _views = __webpack_require__(27);
 
 var _views2 = _interopRequireDefault(_views);
 
@@ -1806,15 +1806,10 @@ var _form = __webpack_require__(23);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _tabs = __webpack_require__(27);
-
-var _tabs2 = _interopRequireDefault(_tabs);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var UI = {
-  Form: _form2.default,
-  Tabs: _tabs2.default
+  Form: _form2.default
 };
 
 exports.default = UI;
@@ -2155,7 +2150,7 @@ Form = function () {
         if (_this5.submit != null) {
           _this5.submit.disabled = false;
           _utils2.default.Dom.removeClass(_this5.submit, 'failure');
-          _this5.submit.val = _this5.submitVal;
+          _this5.submit.value = _this5.submitVal;
         }
         ref = _this5.form.querySelectorAll('input.invalid, textarea.invalid, select.invalid');
         results = [];
@@ -2274,11 +2269,11 @@ Form = function () {
       }
       _utils2.default.Dom.removeClass(this.submit, 'active');
       _utils2.default.Dom.addClass(this.submit, 'failure');
-      this.submit.val = _i18n2.default[this.locale].ui.form.errors.connection;
+      this.submit.value = _i18n2.default[this.locale].ui.form.errors.connection;
       return setTimeout(function () {
         _this6.submit.disabled = false;
         _utils2.default.Dom.removeClass(_this6.submit, 'failure');
-        return _this6.submit.val = _this6.submitVal;
+        return _this6.submit.value = _this6.submitVal;
       }, 3000);
     }
   }, {
@@ -2437,76 +2432,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Tabs;
-
-Tabs = function () {
-  function Tabs(node, delegator) {
-    var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-    _classCallCheck(this, Tabs);
-
-    var ref;
-    this.sel = $(node);
-    this.delegator = delegator;
-    this.animFunc = (ref = opts.animFunc) != null ? ref : 'animate';
-    this.handle();
-  }
-
-  _createClass(Tabs, [{
-    key: 'handle',
-    value: function handle() {
-      var _this = this;
-
-      var elementsSize;
-      elementsSize = this.sel.find('a').size();
-      return this.sel.find('a').click(function (e) {
-        var child, i, index, left, len, ref, width;
-        e.preventDefault();
-        if ($(e.target).hasClass("active")) {
-          return;
-        }
-        index = 0;
-        ref = $(e.target).parent().children('a');
-        for (i = 0, len = ref.length; i < len; i++) {
-          child = ref[i];
-          if ($(child).text() === $(e.target).text()) {
-            break;
-          }
-          index += 1;
-        }
-        width = parseInt(_this.sel.css('width'));
-        left = width / elementsSize * index;
-        _this.sel.find('a.active').removeClass('active');
-        $(e.target).addClass('active');
-        _this.sel.find('div.background')[_this.animFunc]({
-          left: left
-        }, 200);
-        return _this.delegator[$(e.target).data("action")]();
-      });
-    }
-  }]);
-
-  return Tabs;
-}();
-
-exports.default = Tabs;
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _base = __webpack_require__(29);
+var _base = __webpack_require__(28);
 
 var _base2 = _interopRequireDefault(_base);
 
@@ -2519,7 +2445,7 @@ var Views = {
 exports.default = Views;
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
