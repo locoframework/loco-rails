@@ -1,34 +1,58 @@
 ![logo](https://raw.githubusercontent.com/artofcodelabs/artofcodelabs.github.io/master/assets/ext/loco_logo_trans_sqr-300px.png)
 
-# Welcome to Loco-Rails
+# 🚧 This documentation is under construction. Come back soon! 🚧
 
 > Rails is cool. But modern web needs Loco-motive.
 
-**Loco** is.. for a lack of better word - a framework that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts: front-end and back-end. I will be calling them **Loco-JS** and **Loco-Rails**, respectively. Both parts cooperate with each other. Let's describe them shortly and their main responsibilities.
+# 🧐 What is Loco-Rails?
+
+**Loco-Rails** is a [Rails engine](http://guides.rubyonrails.org/engines.html) from the technical point of view. Conceptually, it is a framework that works on a top of [Rails](http://rubyonrails.org) and consists of 2 parts: front-end and back-end. They are called [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, respectively. Both parts cooperate with each other.
+
+This is how it can be visualized:
+
+```
+Loco Framework
+|
+|--- Loco-Rails (back-end part)
+|
+|--- Loco-JS (front-end part / can be used separately)
+        |
+        |--- Loco-JS-Model (model part / can be used separately)
+        |
+        |--- other parts of Loco-JS
+```
+
+Following sections contain more detailed description of its internals and API.
+
+# ⛑ But how is Loco supposed to help?
+
+* by providing logical structure for a JavaScript code. You exactly know where to start, when looking for a JavaScript code that runs current page ([**Loco-JS**](https://github.com/locoframework/loco-js))
+* you have models that protect from sending invalid data to the API endpoints. They also facilitate fetching objects of given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
+* you can easily assign a model to a form what will enrich it with fields' validation ([**Loco-JS**](https://github.com/locoframework/loco-js))
+* you can connect models with controllers and views on the front-end. And they will be notified about every change made to a connected model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
+* it allows you to send messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
+* respects permissions (you can send messages only to specified, signed in on the server models _e.g. given admin or user_) (**Loco**)
+* solves other common problems
+
+# 🦕 Origins
+
+**Loco** framework was created back in 2016. The main reason for it was a need to make my life easier as a full-stack developer.
+I was using [Coffeescript](http://coffeescript.org) on the front-end back then and [Ruby on Rails](http://rubyonrails.org) on the back-end.
+
+I still use **Rails** but my front-end toolbox has changed a lot. Now, I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and **Loco-JS** obviously :)
+
+**Loco-Rails** enriches Ruby on Rails. It's a functionality layer that works on top of Rails to simplify communication between front-end na back-end code. It is a concept that utilizes good parts of Rails to make this communication straightforward.
+
+But **Loco-JS** can be used as a standalone library to structure a JavaScript code, for example.  
+[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
+
+# ⬇️ Previous doc
+
+Let's describe them shortly and their main responsibilities.
 
 ## Demo (ver. 1.0)
 
 [![Loco: demo](http://img.youtube.com/vi/05iJNyIKZZU/0.jpg)](http://www.youtube.com/watch?v=05iJNyIKZZU)
-
-## Major releases
-
-Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
-
-### 1.5
-
-* Loco-JS dropped the dependency on jQuery. So it officially has no dependencies 🎉
-
-### 1.4
-
-* Ability to specify Redis instance through configuration
-
-### 1.3
-
-* `emit_to` - send messages to chosen recipients over WebSocket connection (abstraction on top of `ActionCable`)
-
-* Communication Hubs - create *virtual rooms*, add members and `emit_to` these hubs messages using WebSockets. All in 2 lines of code!
-
-* `emit` now by default uses WebSocket connection, if available. But it can automatically switch to AJAX polling, in case of unavailability. And all signals will be delivered! If you use `ActionCable` only and you lost connection to the server, then all messages sent in the meantime are gone.
 
 ## Loco-JS
 
@@ -557,13 +581,53 @@ class App.Controllers.User.Events extends App.Controllers.Base
 
 This was useful before version 1.3. Now you can send direct message using `emit_to` method.
 
-## Examples
+# 👩🏽‍🔬 Tests
 
-* examine `test/dummy` app for real-life use cases of almost all Loco's features in various scenarios
+```bash
+bin/rails test
+```
 
-## License
+# 📈 Changelog
+
+## Major releases 🎙
+
+### 3.0
+
+* Loco-JS and Loco-JS-Model are no longer distributed with Loco-Rails and have to be installed using `npm`
+* all generators, generating legacy `CoffeeScript` code, have been removed
+
+### 2.2
+
+* Loco-JS and Loco-JS-Model have been updated
+
+### 2.0
+
+* changes in the front-end architecture - Loco-JS-Model has been extracted from Loco-JS
+
+### 1.5
+
+* Loco-JS dropped the dependency on jQuery. So it officially has no dependencies 🎉
+
+### 1.4
+
+* Ability to specify Redis instance through configuration
+
+### 1.3
+
+* `emit_to` - send messages to chosen recipients over WebSocket connection (an abstraction on the top of `ActionCable`)
+
+* Communication Hubs - create *virtual rooms*, add members and `emit_to` these hubs messages using WebSockets. All in 2 lines of code!
+
+* now `emit` uses WebSocket connection by default (if available). But it can automatically switch to AJAX polling in case of unavailability. And all the signals will be delivered, even those that were sent during this lack of connection. 👏 If you use `ActionCable` solely and you lost connection to the server, then all the messages that were sent in the meantime are gone 😭.
+
+🔥 Only version 3 is under support and development.
+
+Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
+
+# License 📜
+
 Loco-Rails is released under the [MIT License](https://opensource.org/licenses/MIT).
 
-## Author
+# Author 👨‍🏭
 
 Zbigniew Humeniuk from [Art of Code](http://artofcode.co)
