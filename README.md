@@ -26,10 +26,10 @@ Following sections contain more detailed description of its internals and API.
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing logical structure for a JavaScript code. You exactly know where to start, when looking for a JavaScript code that runs current page ([**Loco-JS**](https://github.com/locoframework/loco-js))
+* by providing logical structure for a JavaScript code (along with base classes for models, controllers and views). You exactly know where to start, when looking for a JavaScript code that runs current page ([**Loco-JS**](https://github.com/locoframework/loco-js))
 * you have models that protect from sending invalid data to the API endpoints. They also facilitate fetching objects of given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
 * you can easily assign a model to a form what will enrich it with fields' validation ([**Loco-JS**](https://github.com/locoframework/loco-js))
-* you can connect models with controllers and views on the front-end. And they will be notified about every change made to a connected model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
+* you can connect models with controllers and views on the front-end. And they will be notified about every change made to a corresponding model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
 * it allows you to send messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
 * respects permissions (you can send messages only to specified, signed in on the server models _e.g. given admin or user_) (**Loco**)
 * solves other common problems
@@ -39,52 +39,24 @@ Following sections contain more detailed description of its internals and API.
 **Loco** framework was created back in 2016. The main reason for it was a need to make my life easier as a full-stack developer.
 I was using [Coffeescript](http://coffeescript.org) on the front-end back then and [Ruby on Rails](http://rubyonrails.org) on the back-end.
 
-I still use **Rails** but my front-end toolbox has changed a lot. Now, I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and **Loco-JS** obviously :)
+I still use **Rails** but my front-end toolbox has changed a lot. Now, I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and [**Loco-JS**](https://github.com/locoframework/loco-js) obviously :)
 
 **Loco-Rails** enriches Ruby on Rails. It's a functionality layer that works on top of Rails to simplify communication between front-end na back-end code. It is a concept that utilizes good parts of Rails to make this communication straightforward.
 
-But **Loco-JS** can be used as a standalone library to structure a JavaScript code, for example.  
+But [**Loco-JS**](https://github.com/locoframework/loco-js) can be used as a standalone library to structure a JavaScript code, for example.  
 [**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
 
 # ⬇️ Previous doc
 
 Let's describe them shortly and their main responsibilities.
 
-## Demo (ver. 1.0)
-
-[![Loco: demo](http://img.youtube.com/vi/05iJNyIKZZU/0.jpg)](http://www.youtube.com/watch?v=05iJNyIKZZU)
-
 ## Loco-JS
-
-**Loco-JS** (front-end part) is a MVC+\* framework that provides structure for JavaScript assets. It supplies base classes for models, controllers and views. It's main function is to call given method of specified JS controller, based on Rails controller's method that handles current request. So it allows you to easily find Javascript logic that runs current page.
-
-Second - the most important function is receiving notifications from the server. It is done internally through WebSockets (primary) or Ajax polling (auto switching in case of unavailability). Once the notification is received - object related to this notification and all connected objects (e.g. views, controllers) are notified. By *notified*, I mean that a given method is called (`receivedSignal` by default).
-
-Following example presents a view class. It's instance is connected with an instance of an `Article` model. It's done via calling `connectWith` method. Of course `render` method has to be called first. Then - always when a notification (related to this instance of `Article` model) is received internally by Loco-JS - `receivedSignal` method of this view is called automatically.
-
-```coffeescript
-class App.Views.User.Articles.Form extends App.Views.Base
-  constructor: (opts = {}) ->
-    super opts
-    @article = null
-
-  render: (@article) ->
-    this.connectWith @article  # this method is pure magic ;)
-    this._renderArticle()
-
-  receivedSignal: (signal, data) ->
-    switch signal
-      when "updated"
-        @article.reload().then => this._displayChanges @article.changes()
-```
 
 Loco-JS has build-in support for I18n and is maintained in a separate [repository](http://github.com/locoframework/loco-js). There you can read about futher details.
 
-\* *MVC+* - don't restrict yourself to only 3 layers. Good software is layered software. So, Loco-JS provides other layers such as: templates, validators, services, helpers, also. Create your own if you need.
-
 ## Loco-Rails
 
-**Loco-Rails** (back-end part) is a Rails Engine. It allows you to simply send notifications from any part of a system, directy to associated JavaScript objects.
+It allows you to simply send notifications from any part of a system, directly to associated JavaScript objects.
 
 Following example presents a simple ActiveJob class that `emit`s *notifications / signals* directy to *associated* JavaScript objects.
 
@@ -123,23 +95,11 @@ end
 
 `loco:install` generator will take care of this automatically.
 
-## Doubts
-
-### Argument: Loco-JS is developed in CoffeeScript, but some say that the current standard is ES6.
-
-**Answer:** Yeah, it's CoffeeScript. But you know what - it's developed in CoffeScript... Then, compiled to JavaScript... Then, concatenated to one file... And then, I inherit from those plain JavaScript objects (base *"classes"*) in my app written in CoffeeScript. How cool is that? You should be able to do sth similiar with ES6. But, I haven't tried that.
-
-I just *fcukin* hate parentheses and semicolons. And CoffeeScript is even better than Ruby in avoiding parentheses.
-
-Parafrasing Giorgio Moroder from Daft Punk's track titled "Giorgio by Moroder":
-
-> **Once you free your mind about programming languages and technology being correct - you can do whatever you want.**
-
 ## Main features
 
 In terms of the whole system, the most important ones are the following:
 
-### 1. Provides structure for Javascript assets
+### 1️⃣ Provides a structure for Javascript assets
 
 I've said about that in the previous sections. Structure is just good and desirable + everyone knows where is located JavaScript code, that runs current page.
 
@@ -580,6 +540,10 @@ class App.Controllers.User.Events extends App.Controllers.Base
 ```
 
 This was useful before version 1.3. Now you can send direct message using `emit_to` method.
+
+# 🎪 Demo (ver. 1.0)
+
+[![Loco: demo](http://img.youtube.com/vi/05iJNyIKZZU/0.jpg)](http://www.youtube.com/watch?v=05iJNyIKZZU)
 
 # 👩🏽‍🔬 Tests
 
