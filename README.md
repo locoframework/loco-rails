@@ -406,24 +406,6 @@ It is required to keep the latest version numbers between Loco-Rails and Loco-JS
 
 ## Usage
 
-### Development
-
-Along with Loco-Rails come generators, that speed up front-end development. Run *help* for more details.
-
-```bash
-$ bin/rails generate loco:controller
-$ bin/rails generate loco:model
-$ bin/rails generate loco:view
-```
-
-### How to run the test suite
-
-```bash
-$ bin/rails test
-```
-
-Integration tests are powered by Capybara. Capybara is cool but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately. It definitely helps to have focus on the browser's window that runs integration tests on macOS.
-
 ### Emitting signals
 
 To emit signals just include `Loco::Emitter` module inside any class and use `emit` or `emit_to` methods that this module provides. If you want to use `low-level` interface without including module, just look inside the source code of `Loco::Emitter`.
@@ -551,6 +533,8 @@ This was useful before version 1.3. Now you can send direct message using `emit_
 bin/rails test
 ```
 
+Integration tests are powered by Capybara. Capybara is cool but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately. It definitely helps to keep focus on the browser's window that runs integration tests on macOS.
+
 # 📈 Changelog
 
 ## Major releases 🎙
@@ -588,10 +572,10 @@ bin/rails test
 
 Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
 
-# License 📜
+# 📜 License
 
 Loco-Rails is released under the [MIT License](https://opensource.org/licenses/MIT).
 
-# Author 👨‍🏭
+# 👨‍🏭 Author
 
 Zbigniew Humeniuk from [Art of Code](http://artofcode.co)
