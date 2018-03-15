@@ -46,13 +46,70 @@ I still use **Rails** but my front-end toolbox has changed a lot. Now, I work wi
 But [**Loco-JS**](https://github.com/locoframework/loco-js) can be used as a standalone library to structure a JavaScript code, for example.  
 [**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
 
+# 🤝 Dependencies
+
+...
+
+# 📥 Installation
+
+To have Loco fully functional you have to install both: back-end and front-end parts.
+
+Loco-Rails works with Rails 4.2 onwards. You can add it to your Gemfile with:
+
+```ruby
+gem 'loco-rails'
+```
+
+At the command prompt run:
+
+```bash
+$ bundle install
+$ bin/rails generate loco:install
+$ bin/rails db:migrate
+```
+
+Now it's time for the front-end part. Install it using npm (or yarn):
+
+```bash
+$ npm install loco-js --save
+```
+
+_Look inside `test/dummy/` to see how to configure npm with Rails._
+
+_Additionally, you can look at how to add Loco framework to the [**existing project**🔥](https://github.com/artofcodelabs/rails-modern-front-end). [This commit](https://github.com/artofcodelabs/rails-modern-front-end/commit/1d584893031b68bb9d29c5f2c8dbd1a423957a5b) is significant._
+
+Loco-Rails and Loco-JS both use Semantic Versioning (MAJOR.MINOR.PATCH).  
+It is required to keep the MAJOR version number the same between Loco-Rails and Loco-JS to keep compatibility.
+
+Some features may require an upgrade of MINOR version both for front-end and back-end parts so check this out reading Changelogs and follow our [Twitter](https://twitter.com/artofcode_co).
+
+# ⚙️ Configuration
+
+`loco:install` generator creates `config/initializers/loco.rb` file (among other things) that holds configuration:
+
+```ruby
+# frozen_string_literal: true
+
+Loco::Config.configure(
+  silence_logger: false,        # false by default
+  notifications_size: 100,      # 100 by default
+  app_name: "loco_#{Rails.env}" # your app's name (required for namespacing)
+)
+```
+
+Where:
+
+* notifications_size - max number of notifications / signals returned from the server at once
+* app_size - used as key's prefix to store info about current WebSocket connections in Redis or a memory
+
+In a production environment - you'd probably prefer not to store all the data needed for Loco-Rails to work in a memory, but in Redis, which is shared between app servers.  
+If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Except that, you can specify Redis instance directly using `redis_instance: Redis.new(your_config)`.
+
+# 🎮 Usage
+
+...
+
 # ⬇️ Previous doc
-
-Let's describe them shortly and their main responsibilities.
-
-## Loco-JS
-
-Loco-JS has build-in support for I18n and is maintained in a separate [repository](http://github.com/locoframework/loco-js). There you can read about futher details.
 
 ## Loco-Rails
 
@@ -365,44 +422,6 @@ class GarbageCollectorJob < ActiveJob::Base
   end
 end
 ```
-
-## Getting Started
-
-Loco works with Rails 4.2 onwards. You can add it to your Gemfile with:
-
-```ruby
-gem 'loco-rails'
-```
-
-At the command prompt run:
-
-```bash
-$ bundle install
-$ bin/rails generate loco:install
-$ bin/rails db:migrate
-```
-
-Loco-JS is bundled inside Loco-Rails and named `loco-rails.js` Since it is a JavaScript library, I recommend to install it using native package managers like npm:
-
-```bash
-$ npm install loco-js --save
-```
-
-Then, you have to replace one line in your JavaScript manifest file:
-
-```javascript
-//= require loco-rails
-```
-
-to
-
-```javascript
-//= require loco-js
-```
-
-Look inside `test/dummy/` to see how to configure npm with Rails.
-
-It is required to keep the latest version numbers between Loco-Rails and Loco-JS allowed by Semantic versioning (MAJOR.MINOR.PATCH).
 
 ## Usage
 
