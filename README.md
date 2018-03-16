@@ -34,6 +34,10 @@ Following sections contain more detailed description of its internals and API.
 * respects permissions (you can send messages only to specified, signed in on the server models _e.g. given admin or user_) (**Loco**)
 * solves other common problems
 
+# 🚨 Other, more specific problems that Loco solves
+
+...
+
 # 🦕 Origins
 
 **Loco** framework was created back in 2016. The main reason for it was a need to make my life easier as a full-stack developer.
@@ -48,7 +52,15 @@ But [**Loco-JS**](https://github.com/locoframework/loco-js) can be used as a sta
 
 # 🤝 Dependencies
 
-...
+**Loco-JS**
+
+* 🎊 no external strict dependencies. 🎉 But check out its [_"soft dependencies"_](https://github.com/locoframework/loco-js#-dependencies)❗️
+
+**Loco-Rails**
+
+* modern Ruby (tested on >= 2.3.0)
+* Rails 5
+* [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - Loco-Rails stores informations about WebSocket connections in Redis. It is not required if you don't want to use ActionCable or you use Rails in development environment. In the last case - Loco-Rails uses in-process data store or Redis (if available).
 
 # 📥 Installation
 
@@ -107,6 +119,94 @@ If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Ex
 
 # 🎮 Usage
 
+## Emitting signals 📡
+
+1. include `Loco::Emitter` module inside any class
+2. use `emit` or `emit_to` methods that this module provides to emit various types of signals 
+
+If you want to use `low-level` interface without including a module, just look inside the source code of [`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb).
+
+### `emit`
+
+This method emits a signal that informs recipients about an event that occurred on the given resource e.g. _post was updated_, _ticket was validated_... If a WebSocket connection is established - the signal is sent this way. If not - it's delivered via AJAX polling. Switching between available method is done automatically.  
+Signals are stored in a database.
+
+Example:
+
+```ruby
+include Loco::Emitter
+
+receivers = [article.user, Admin, 'a54e1ef01cb9']
+data = {foo: 'bar'}
+
+emit article, :confirmed, for: receivers, data: data
+```
+
+Arguments:
+
+1. a resource that emits an event
+2. a name of an event that occurred (Symbol / String). Default values are:
+	* **:created** - when created\_at == updated\_at
+	* **:updated** - when updated\_at > created\_at
+3. a hash with relevant keys:
+	* **:for** - signal's recipients. It can be a single object or an array of objects. Instances of models, their classes and strings are accepted. If a recipient is a class, then given signal is addressed to all instances of this class. If a receiver is a string (token), then clients who have subscribed to this token on the front-end side, will receive notifications. They can do this by invoking this code: `Env.loco.getWire().setToken("<token>");`
+	* **:data** - additional data, serialized to JSON, that are transmitted along with the notification
+
+⚠️ If you are wondering how to receive those signals on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-connectivity) of Loco-JS [README](https://github.com/locoframework/loco-js).
+
+### `emit_to`
+
+This method emits a signal that is a direct message to recipients. Direct messages are sent only via WebSocket connection and are not persisted in DB.
+
+If you want to send a message to a group of recipients, persist them and have an ability to add / remove members - an entity called **Communication Hub** may be handy.
+
+#### Communication Hub
+
+You can treat it like a virtual room where you can add / remove members.  
+It works over WebSockets only with the `emit_to` method.
+
+Methods for managing hubs such as `add_hub`, `get_hub`, `del_hub` are also included in [`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb) module.
+
+Details:
+
+* `add_hub(name, members = [])` - creates and then returns an instance of `Loco::Hub` with given name and members passed as a 2nd argument. In a typical use case - members should be an array of _ActiveRecord_ instances.
+
+* `get_hub(name)` - returns an instance of `Loco::Hub` with a given name that was created before. If hub does not exist - returns `nil`.
+
+* `del_hub(name)` - destroys an instance of `Loco::Hub` with a given name if exists.
+
+Important instance methods of `Loco::Hub`:
+
+* `name`
+* `members` - returns hub's members. Members are stored in an informative, shortened form inside Redis / in-process storage, so be aware that this method performs calls to DB to fetch all members.
+* `raw_members` - returns hub's members in the shortened form as they are stored: `"{class}:{id}"`
+* `add_member(member)`
+* `del_member(member)`
+* `include?(member)`
+* `destroy`
+
+Example:
+
+```ruby
+include Loco::Emitter
+
+hub1 = get_hub 'room_1'
+admin = Admin.find 1
+
+data = {signal: 'message', message: 'Hi all!', author: 'system'}
+
+emit_to [hub1, admin], data
+```
+
+Arguments:
+
+1. recipients - single object or an array of objects. ActiveRecord instances and Communication Hubs are allowed.
+2. data - a hash serialized to JSON during sending.
+
+⚠️ Check out the [proper section](https://github.com/locoframework/loco-js#-line) of Loco-JS [README](https://github.com/locoframework/loco-js) about receiving those signals on the front-end.
+
+# 🚛 Receiving notifications sent over WebSockets
+
 ...
 
 # ⬇️ Previous doc
@@ -152,7 +252,7 @@ end
 
 `loco:install` generator will take care of this automatically.
 
-## Main features
+# 🏆 Main features
 
 In terms of the whole system, the most important ones are the following:
 
@@ -365,35 +465,6 @@ Loco doesn't force you to structure your web app in a particular way. It's up to
 
 If you define validations in JavaScript model and use instance of `App.UI.Form` class for form handling, then you'll get form validation, instantly. By the way, front-end validations are very similiar to the back-end ones. You can define them nearly by *copy-paste*.
 
-## Dependencies
-
-### Strict dependencies
-
-Dependencies required for Loco to work:
-
-**Loco-JS**
-
-* no dependencies
-
-**Loco-Rails**
-
-* modern Ruby (tested on >= 2.3.0)
-* Rails >= 4.2 (part of features that run over WebSockets require Rails 5)
-
-### Soft dependencies
-
-Recommended dependencies that facilitate development of web app and are not required for Loco to work:
-
-**Loco-JS**
-
-* [lie](https://github.com/calvinmetcalf/lie) - promise library implementing the Promises/A+ spec Version 1.1. Because Loco-JS is based on promises and promises are supported natively only in [some browsers](http://caniuse.com/#feat=promises)
-
-**Loco-Rails**
-
-* [eco](https://github.com/sstephenson/eco) - lets you embed CoffeeScript logic in your markup. Useful when using JST templates. Look at `test/dummy`'s front-end code for examples.
-
-* [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - since version 1.3 Loco-Rails stores informations about WebSocket connections in Redis. It is not required if you are on Rails 4, you don't want to use ActionCable or you use Rails in development environment. In the last case - Loco-Rails uses in-process data store. Internally - if `Redis.current` is available, it uses `Redis.current` as a store.
-
 ## Architecture
 
 When you `emit` signal (~ notification), this signal is actually a record in the **loco_notifications** table in a database. Signal is then  delivered to Loco-JS over the WebSocket connection or through AJAX polling. WebSockets are the primary communication channel. But Loco-JS can automatically switch between WebSockets and AJAX polling in both ways. For example, when you lost or don't have WebSocket connection.
@@ -425,82 +496,6 @@ end
 
 ## Usage
 
-### Emitting signals
-
-To emit signals just include `Loco::Emitter` module inside any class and use `emit` or `emit_to` methods that this module provides. If you want to use `low-level` interface without including module, just look inside the source code of `Loco::Emitter`.
-
-You can emit 2 kind of signals. The first one informs recipients about an event that occured on some resource e.g. post was *updated*, ticket was *validated*... You can emit this kind of signal using `emit` method. If it is possible - the signal is sent via WebSocket connection. If not - via AJAX polling. Switching is done internally.
-
-Second type of signal is a direct message to recipients. You can send this kind by using `emit_to` method. In contrast to the first one - direct messages are sent only via WebSocket connection and are not persisted in DB. `emit_to` is available since version 1.3
-
-There is also entity called **Communication Hub**. It is something like a virtual room. If you want to send a message to a group of recipients, then you can create communication hub, add members and `emit_to` data directly to this hub. It works over WebSockets only. Methods for managing hubs such as `add_hub`, `get_hub`, `del_hub` are also included in `Loco::Emitter` module.
-
-#### `emit`
-
-Use this method to emit signals related to certain resource (informing about an event that has occured on that resource).
-
-Arguments:
-
-1. an object whose the notification concerns
-2. a name of an event that occured (Symbol / String). Default values are:
-	* **:created** - when created\_at == updated\_at
-	* **:updated** - when updated\_at > created\_at
-3. a hash with relevant keys:
-	* **:for** - receiver of the signal. It can be a single object or an array of objects. Instances of models, their classes and strings are acceptable. If receiver is a class, then given signal is addressed to all instances of this class. If receiver is a string (token), then clients who have subscribed to this token on the front-end side, will receive notifications. They can do this by invoking this code: `App.Env.loco.getWire().setToken '<token>'`
-	* **:data** - additional data that will be transmitted along with notification. Data are serialized to JSON.
-
-Example:
-
-```ruby
-include Loco::Emitter
-
-receivers = [article.user, Admin, 'a54e1ef01cb9']
-data = {foo: 'bar'}
-
-emit article, :confirmed, for: receivers, data: data
-```
-
-#### `emit_to` (since ver 1.3)
-
-Use this method if you want to send data over WebSocket Connection with no degradation to AJAX polling.
-
-Arguments:
-
-1. recipients - single object or an array of objects. ActiveRecord instances and Communication Hubs are allowed.
-2. data - a hash serialized to JSON during sending.
-
-Example:
-
-```ruby
-include Loco::Emitter
-
-hub1 = get_hub 'room_1'
-admin = Admin.find 1
-
-data = {signal: 'message', message: 'Hi all!', author: 'system'}
-
-emit_to [hub1, admin], data
-```
-
-### Communication Hub (since ver 1.3)
-
-Use Communication Hub if you want to send an instant message over WebSocket connenction to a group of recipients. `Loco::Emitter` module delivers following methods for working with `Loco::Hub`:
-
-* `add_hub(name, members = [])` - creates and then returns an instance of `Loco::Hub` with given name and members passed as 2nd argument. In a typical use case - members should be an array with ActiveRecord instances.
-
-* `get_hub(name)` - returns an instance of `Loco::Hub` with given name, created before. If hub does not exist - returns `nil`.
-
-* `del_hub(name)` - destroys an instance of `Loco::Hub` with given name if exists.
-
-`Loco::Hub` important instance methods:
-
-* `name`
-* `members` - returns hub's members. Members are stored in an informative, shortened form inside Redis / in-process storage, so be aware that this method performs calls on DB to fetch all members.
-* `raw_members` - returns hub's members in the shortened form as they are stored: `"{class}:{id}"`
-* `add_member(member)`
-* `del_member(member)`
-* `include?(member)`
-* `destroy`
 
 ### Notification Center (since ver 1.3)
 
@@ -585,7 +580,7 @@ Integration tests are powered by Capybara. Capybara is cool but sometimes random
 
 * Communication Hubs - create *virtual rooms*, add members and `emit_to` these hubs messages using WebSockets. All in 2 lines of code!
 
-* now `emit` uses WebSocket connection by default (if available). But it can automatically switch to AJAX polling in case of unavailability. And all the signals will be delivered, even those that were sent during this lack of connection. 👏 If you use `ActionCable` solely and you lost connection to the server, then all the messages that were sent in the meantime are gone 😭.
+* now `emit` uses WebSocket connection by default (if available). But it can automatically switch to AJAX polling in case of unavailability. And all the signals will be delivered, even those that were sent during this lack of a connection. 👏 If you use `ActionCable` solely and you lost connection to the server, then all the messages that were sent in the meantime are gone 😭.
 
 🔥 Only version 3 is under support and development.
 
