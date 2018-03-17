@@ -66,7 +66,7 @@ But [**Loco-JS**](https://github.com/locoframework/loco-js) can be used as a sta
 
 To have Loco fully functional you have to install both: back-end and front-end parts.
 
-Loco-Rails works with Rails 4.2 onwards. You can add it to your Gemfile with:
+1️⃣ Loco-Rails works with Rails 4.2 onwards. You can add it to your Gemfile with:
 
 ```ruby
 gem 'loco-rails'
@@ -80,11 +80,13 @@ $ bin/rails generate loco:install
 $ bin/rails db:migrate
 ```
 
-Now it's time for the front-end part. Install it using npm (or yarn):
+2️⃣ Now it's time for the front-end part. Install it using npm (or yarn):
 
 ```bash
 $ npm install loco-js --save
 ```
+
+Familiarize yourself with the [proper sections](https://github.com/locoframework/loco-js#-installation) from the [Loco-JS documentation](https://github.com/locoframework/loco-js) on how to set up everything on the front-end side.
 
 _Look inside `test/dummy/` to see how to configure npm with Rails._
 
@@ -97,7 +99,7 @@ Some features may require an upgrade of MINOR version both for front-end and bac
 
 # ⚙️ Configuration
 
-`loco:install` generator creates `config/initializers/loco.rb` file (among other things) that holds configuration:
+1️⃣ `loco:install` generator creates `config/initializers/loco.rb` file (among other things) that holds configuration:
 
 ```ruby
 # frozen_string_literal: true
@@ -117,6 +119,8 @@ Where:
 In a production environment - you'd probably prefer not to store all the data needed for Loco-Rails to work in a memory, but in Redis, which is shared between app servers.  
 If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Except that, you can specify Redis instance directly using `redis_instance: Redis.new(your_config)`.
 
+2️⃣ Browse all generated files and customize them according to the comments.
+
 # 🎮 Usage
 
 ## Emitting signals 📡
@@ -128,8 +132,9 @@ If you want to use `low-level` interface without including a module, just look i
 
 ### `emit`
 
-This method emits a signal that informs recipients about an event that occurred on the given resource e.g. _post was updated_, _ticket was validated_... If a WebSocket connection is established - the signal is sent this way. If not - it's delivered via AJAX polling. Switching between available method is done automatically.  
-Signals are stored in a database.
+This method emits a signal that informs recipients about an event that occurred on the given resource e.g. _post was updated_, _ticket was validated_... If a WebSocket connection is established - the signal is sent this way. If not - it's delivered via AJAX polling. Switching between available method is done automatically.
+
+Signals are stored in the **loco_notifications** table in the database. One of the advantages of saving signals in a DB is - when client loses connection with the server and restores it after a certain time - he will get all not received notifications. Unless you delete them before, of course.
 
 Example:
 
@@ -152,11 +157,35 @@ Arguments:
 	* **:for** - signal's recipients. It can be a single object or an array of objects. Instances of models, their classes and strings are accepted. If a recipient is a class, then given signal is addressed to all instances of this class. If a receiver is a string (token), then clients who have subscribed to this token on the front-end side, will receive notifications. They can do this by invoking this code: `Env.loco.getWire().setToken("<token>");`
 	* **:data** - additional data, serialized to JSON, that are transmitted along with the notification
 
+#### Garbage collection
+
+When you emit a lot of notifications, you obviously create a lot of records in the database. In this way, your **loco_notifications** table may soon become very big. You must periodically delete old records. Below is a rather naive approach, but it works.
+
+```ruby
+# frozen_string_literal: true
+
+class GarbageCollectorJob < ApplicationJob
+  queue_as :default
+
+  after_perform do |job|
+    GarbageCollectorJob.set(wait_until: 1.hour.from_now).perform_later
+  end
+
+  def perform
+    Loco::Notification.where('created_at < ?', 1.hour.ago)
+                      .find_in_batches do |batch|
+                        batch.each(&:destroy)
+                      end
+  end
+end
+
+```
+
 ⚠️ If you are wondering how to receive those signals on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-connectivity) of Loco-JS [README](https://github.com/locoframework/loco-js).
 
 ### `emit_to`
 
-This method emits a signal that is a direct message to recipients. Direct messages are sent only via WebSocket connection and are not persisted in DB.
+This method emits a signal that is a direct message to recipients. Direct messages are sent only via WebSocket connection and are not persisted in a DB.
 
 If you want to send a message to a group of recipients, persist them and have an ability to add / remove members - an entity called **Communication Hub** may be handy.
 
@@ -207,7 +236,19 @@ Arguments:
 
 # 🚛 Receiving notifications sent over WebSockets
 
-...
+## Notification Center 🛰
+
+You can send messages over WebSocket connection from the browser to the server using `Env.loco.emit({})`. These messages can be received on the back-end by the `Loco::NotificationCenter` class located in *app/services/loco/notification_center.rb*
+
+This class is generated when you run `loco:install` generator.
+
+The `received_signal` instance method is called automatically for each message sent by front-end clients. 2 arguments are passed:
+
+1. a hash with resources that are able to sign-in to your app. You define them as `loco_permissions` inside `ApplicationCable::Connection` class. The keys of this hash are lowercase class names of signed-in resources and the values are the instances themselves.
+
+2. a hash with sent data
+
+You can look at the working example [here](https://github.com/artofcodelabs/rails-modern-front-end/commit/1d584893031b68bb9d29c5f2c8dbd1a423957a5b#diff-32aaf7d5c1f91a074cc09737ab1c402b).
 
 # ⬇️ Previous doc
 
@@ -255,10 +296,6 @@ end
 # 🏆 Main features
 
 In terms of the whole system, the most important ones are the following:
-
-### 1️⃣ Provides a structure for Javascript assets
-
-I've said about that in the previous sections. Structure is just good and desirable + everyone knows where is located JavaScript code, that runs current page.
 
 ### 2. Big brother and little brother
 
@@ -464,78 +501,6 @@ Loco doesn't force you to structure your web app in a particular way. It's up to
 ### 7. Client-side form validation for free
 
 If you define validations in JavaScript model and use instance of `App.UI.Form` class for form handling, then you'll get form validation, instantly. By the way, front-end validations are very similiar to the back-end ones. You can define them nearly by *copy-paste*.
-
-## Architecture
-
-When you `emit` signal (~ notification), this signal is actually a record in the **loco_notifications** table in a database. Signal is then  delivered to Loco-JS over the WebSocket connection or through AJAX polling. WebSockets are the primary communication channel. But Loco-JS can automatically switch between WebSockets and AJAX polling in both ways. For example, when you lost or don't have WebSocket connection.
-
-One of the advantages of saving signals / notifications in DB is - when client loses connection with the server and restores it after some time - he will get all not received notifications. Unless you delete them before, of course.
-
-There is also `emit_to` command which sends data directly to recipients without persisting in DB. It can operate only over WebSocket connection with no degradation to AJAX polling. It is available since version **1.3**.
-
-### Garbage collection
-
-When you emit a lot of notifications, you obviously create a lot of records in the database. This way, your **loco_notifications** table may by very big soon. You need to get rid of old records, periodically. You may do this, like I present in the following code. It's quite a naive approach but it works for me for months.
-
-```ruby
-class GarbageCollectorJob < ActiveJob::Base
-  queue_as :default
-
-  after_perform do |job|
-    GarbageCollectorJob.set(wait_until: 1.hour.from_now).perform_later
-  end
-
-  def perform
-    Loco::Notification.where("created_at < ?", 1.hour.ago).
-      find_in_batches do |batch|
-        batch.each{ |notification| notification.destroy }
-      end
-  end
-end
-```
-
-## Usage
-
-
-### Notification Center (since ver 1.3)
-
-You can send messages over WebSocket connection from the browser to the server using `App.Env.loco.emit({})`. Messages can be received on the back-end side by `Loco::NotificationCenter` class localized in *app/services/loco/notification_center.rb*
-
-`received_signal` instance method of this class is auto called for each message send by front-end clients. 2 arguments are passed along:
-
-1. a hash with allowed resources that can sign-in to your application. You define them as `loco_permissions` inside `ApplicationCable::Connection` class. The keys of this hash are lowercased class names of signed-in resources and the values are actual instances.
-
-2. hash with sent data
-
-Everything you need is set up by `loco:install` generator.
-
-### Emitting signals for non-ActiveRecord objects
-
-When dealing with non-ActiveRecord objects (e.g. uploaded files), you don't have to create unnecessary models on the back-end side to communicate something. Plain ruby classes are enough:
-
-```ruby
-class DirectMessage
-  def id; 0 end
-end
-
-emit DirectMessage.new, :csv_processed, data: {foo: 'bar'}, for: event.user
-```
-
-```coffeescript
-class App.Models.DirectMessage extends App.Models.Base
-  @identity = 'DirectMessage'
-
-class App.Controllers.User.Events extends App.Controllers.Base
-  show: ->
-    @view = new App.Views.User.Events.Show
-    this.connectWith [App.Models.DirectMessage]
-
-  receivedSignal: (signal, data) ->
-    switch signal
-      when 'DirectMessage csv_processed' then @view.renderResuls data
-```
-
-This was useful before version 1.3. Now you can send direct message using `emit_to` method.
 
 # 🎪 Demo (ver. 1.0)
 
