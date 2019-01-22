@@ -3,6 +3,9 @@ AllCops:
   Exclude:
     - test/**/*
 
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
 Layout/IndentationConsistency:
   Enabled: true
   EnforcedStyle: rails
