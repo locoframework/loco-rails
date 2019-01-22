@@ -25,8 +25,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '>= 5.0', '< 6.0'
 
   s.add_development_dependency 'bcrypt', '~> 3.1.7'
-  s.add_development_dependency 'capybara', '>= 2.16.1', '< 4.0'
-  s.add_development_dependency 'chromedriver-helper'
+  s.add_development_dependency 'capybara', '>= 2.16.1', '< 3.0'
+  s.add_development_dependency 'chromedriver-helper', '< 2.0'
   s.add_development_dependency 'coffee-rails', '~> 4.2'
   s.add_development_dependency 'database_cleaner', '~> 1.6.1'
   s.add_development_dependency 'hirb', '~> 0.7'
@@ -35,5 +35,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'puma', '~> 3.11'
   s.add_development_dependency 'redis', '~> 4.0.1'
   s.add_development_dependency 'sass-rails', '~> 5.0'
-  s.add_development_dependency 'selenium-webdriver'
+  s.add_development_dependency 'selenium-webdriver', '~> 3.7'
 end
