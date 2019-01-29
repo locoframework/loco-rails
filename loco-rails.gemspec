@@ -26,7 +26,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'bcrypt', '~> 3.1.12'
   s.add_development_dependency 'capybara', '>= 2.18', '< 3.0'
-  s.add_development_dependency 'chromedriver-helper', '< 2.0'
   s.add_development_dependency 'coffee-rails', '~> 4.2'
   s.add_development_dependency 'database_cleaner', '~> 1.7.0'
   s.add_development_dependency 'listen', '>= 3.1.5', '< 3.2'
