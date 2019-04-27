@@ -9,10 +9,11 @@ class App.Views.Admin.Articles.Edit extends App.Views.Base
 
   renderComments: (comments) ->
     if comments.length is 0
-      $("#comments").append '<p>No comments.</p>'
+      document.getElementById('comments').insertAdjacentHTML('beforeend', '<p>No comments.</p>')
       return
     for comment in comments
-      $("#comments").append JST["templates/admin/comments/comment"] {comment: comment}
+      renderedComment = JST["templates/admin/comments/comment"] {comment: comment}
+      document.getElementById('comments').insertAdjacentHTML('beforeend', renderedComment);
 
   receivedSignal: (signal, data) ->
     switch signal
@@ -22,6 +23,6 @@ class App.Views.Admin.Articles.Edit extends App.Views.Base
           this._renderArticle()
 
   _renderArticle: ->
-    $("#article_author").text @article.author
-    $("#article_title").text @article.title
-    $("#article_text").text @article.content
+    document.getElementById('article_author').textContent = @article.author
+    document.getElementById('article_title').textContent = @article.title
+    document.getElementById('article_text').textContent = @article.content

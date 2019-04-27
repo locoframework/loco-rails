@@ -53,7 +53,7 @@ loco = new App.Loco
   # at this time Loco's instance is initialized and you can use it to change behaviour of your browser app
   # e.g. polling interval -> App.Env.loco.getWire().setPollingTime <time>
   postInit: ->
-    return if $('body').data('rails-env') isnt 'test'
+    return if document.querySelector('body').getAttribute('data-rails-env') isnt 'test'
     App.Env.loco.getWire().setPollingTime 1000
 
 loco.init()
