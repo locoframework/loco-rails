@@ -4,22 +4,24 @@ class App.Views.Admin.Articles.List extends App.Views.Base
 
   render: (opts) ->
     for article in opts.articles
-      $('#articles').append this._articleForListTemplate(article)
+      renderedArticle = this._articleForListTemplate(article)
+      document.getElementById('articles').insertAdjacentHTML('beforeend', renderedArticle)
 
   renderNewArticle: (article) ->
-    $('#articles').prepend this._articleForListTemplate(article)
+    renderedArticle = this._articleForListTemplate(article)
+    document.getElementById('articles').insertAdjacentHTML('afterbegin', renderedArticle)
 
   updateArticle: (articleId) ->
-    return if $("#article_#{articleId}").length is 0
+    return unless document.getElementById("article_#{articleId}")
     App.Models.Article.find(id: articleId).then (article) =>
-      $("#article_#{article.id}").replaceWith this._articleForListTemplate(article)
+      document.getElementById("article_#{articleId}").outerHTML = this._articleForListTemplate(article)
 
   commentsQuantityChangedForArticle: (articleId, quantity) ->
-    return if $("#article_#{articleId}").length is 0
-    sel = $("#article_#{articleId} span.comments_quantity")
-    match = /\d+/.exec sel.text()
+    return unless document.getElementById("article_#{articleId}")
+    sel = document.querySelector("#article_#{articleId} span.comments_quantity")
+    match = /\d+/.exec(sel.textContent)
     quantity = parseInt(match[0]) + quantity
-    sel.text "#{quantity} comment#{if quantity is 1 then '' else 's'}"
+    sel.textContent = "#{quantity} comment#{if quantity is 1 then '' else 's'}"
 
   _articleForListTemplate: (article) ->
     JST["templates/admin/articles/article_for_list"] article: article
