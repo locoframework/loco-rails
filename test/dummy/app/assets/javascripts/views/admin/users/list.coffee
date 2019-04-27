@@ -4,15 +4,18 @@ class App.Views.Admin.Users.List extends App.Views.Base
     @users = opts.users
 
   render: ->
-    $("table tbody").empty()
+    document.querySelector("table tbody").innerHTML = ''
 
   renderUsers: (users, order = 'append') ->
     for user in users
       if order is 'append'
-        $("table").append JST["templates/admin/users/user"] {user: user}
+        renderedUser = JST["templates/admin/users/user"] {user: user}
+        document.querySelector("table").insertAdjacentHTML('beforeend', renderedUser)
       else
-        $("table").prepend JST["templates/admin/users/user"] {user: user}
-    $('table a.ping').click (e) ->
-      e.preventDefault()
-      userId = $(e.target).parents('tr').data 'id'
-      App.Env.loco.emit signal: 'ping', user_id: userId
+        renderedUser = JST["templates/admin/users/user"] {user: user}
+        document.querySelector("table").insertAdjacentHTML('afterbegin', renderedUser)
+    for el in document.querySelectorAll('table a.ping')
+      el.addEventListener 'click', (e) ->
+        e.preventDefault()
+        userId = e.target.parentNode.parentNode.getAttribute('data-id')
+        App.Env.loco.emit(signal: 'ping', user_id: userId)
