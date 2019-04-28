@@ -11,21 +11,23 @@ class App.Views.Shared.Flash extends App.Views.Base
   setWarning: (text) -> @warning = text
 
   render: ->
-    node = $('.flash')
-    node.removeClass('notice').removeClass('alert').removeClass('warning')
+    node = document.querySelector('.flash')
+    node.classList.remove('notice')
+    node.classList.remove('alert')
+    node.classList.remove('warning')
     if @notice?
-      node.addClass 'notice'
-      node.find('p').text @notice
+      node.classList.add('notice')
+      document.querySelector('.flash p').textContent = @notice
     else if @alert?
-      node.addClass 'alert'
-      node.find('p').text @alert
+      node.classList.add('alert')
+      document.querySelector('.flash p').textContent = @alert
     else if @warning?
-      node.addClass 'warning'
-      node.find('p').text @warning
-    node.slideDown 'normal'
+      node.classList.add('warning')
+      document.querySelector('.flash p').textContent = @warning
+    node.classList.remove('none') # slideDown initially
     this.hideAfterTime() if @hide
 
   hideAfterTime: (time = 4000) ->
     setTimeout ->
-      $('.flash').slideUp 'normal'
+      document.querySelector('.flash').classList.add('none') # slideUp initially
     , time
