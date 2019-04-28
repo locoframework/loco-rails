@@ -8,24 +8,26 @@ class App.Views.User.Articles.List extends App.Views.Base
 
   renderArticle: (article) ->
     template = JST["templates/user/articles/article"] {article: article}
-    if $("#article_#{article.id}").length is 1
-      $("#article_#{article.id}").replaceWith template
+    articleNode = document.getElementById("article_#{article.id}")
+    if articleNode
+      articleNode.outerHTML = template
     else
-      $("table").append template
+      document.querySelector('table').insertAdjacentHTML('beforeend', template)
     this._handleDeletingArticle article
 
   deleteArticle: (articleId) ->
-    $("#article_#{articleId}").remove()
+    articleNode = document.getElementById("article_#{article.id}")
+    articleNode.parentNode.removeChild(articleNode)
 
   commentsQuantityChangedForArticle: (articleId, quantity) ->
-    sel = $("#article_#{articleId} td.comments_quantity")
-    return if sel.length is 0
-    match = /\d+/.exec sel.text()
+    sel = document.querySelector("#article_#{articleId} td.comments_quantity")
+    return unless sel
+    match = /\d+/.exec(sel.textContent)
     quantity = parseInt(match[0]) + quantity
-    sel.text quantity
+    sel.textContent = quantity
 
   _handleDeletingArticle: (article) ->
-    $("tr#article_#{article.id} a.delete_article").click (e) =>
+    document.querySelector("tr#article_#{article.id} a.delete_article").addEventListener 'click', (e) =>
       e.preventDefault()
       return if not confirm "Are you sure?"
       article.delete(null).then (data) =>
