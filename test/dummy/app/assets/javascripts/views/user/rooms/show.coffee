@@ -12,7 +12,8 @@ class App.Views.User.Rooms.Show extends App.Views.Base
       this._memberJoined member
 
   receivedMessage: (message, author) ->
-    $('#messages').append "<p><b>#{author}</b>: #{message}</p>"
+    renderedMessage = "<p><b>#{author}</b>: #{message}</p>"
+    document.getElementById('messages').insertAdjacentHTML('beforeend', renderedMessage)
 
   receivedSignal: (signal, data) ->
     switch signal
@@ -24,14 +25,16 @@ class App.Views.User.Rooms.Show extends App.Views.Base
         this._memberLeft data.member
 
   _handleSendingMessage: ->
-    $(document).on 'keypress', '[data-behavior~=room-speaker]', (event) =>
+    document.querySelector('[data-behavior~=room-speaker]').addEventListener 'keypress', (event) =>
       return if event.keyCode isnt 13
       event.preventDefault()
       App.Env.loco.emit signal: 'message', txt: event.target.value, room_id: @roomId
       event.target.value = ''
 
   _memberJoined: (member) ->
-    $('#members').append "<li id='user_#{member.id}'>#{member.username}</li>"
+    li = "<li id='user_#{member.id}'>#{member.username}</li>"
+    document.getElementById('members').insertAdjacentHTML('beforeend', li)
 
   _memberLeft: (member) ->
-    $('#members').find("li#user_#{member.id}").remove()
+    node = document.querySelector("#members li#user_#{member.id}")
+    node.parentNode.removeChild(node)
