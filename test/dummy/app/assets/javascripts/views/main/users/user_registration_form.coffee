@@ -13,11 +13,13 @@ class App.Views.Main.Users.UserRegistrationForm extends App.Views.Base
 
   _created: (data) ->
     this.connectWith new App.Models.User(id: data.id)
-    $('form').add('#sign_in_paragraph').hide 'slow'
-    $('#verification_info').show 'slow'
+    document.querySelector('form').style.display = 'none'
+    document.getElementById('sign_in_paragraph').classList.remove('none')
+    document.getElementById('verification_info').classList.remove('none')
     flash = new App.Views.Shared.Flash notice: data.notice
     flash.render()
 
-  _confirming: -> $('#verification_info').text $('#verification_progress').text()
+  _confirming: ->
+    document.getElementById('verification_info').textContent = document.getElementById('verification_progress').textContent
 
   _confirmed: -> window.location.href = '/user/sessions/new?event=confirmed'
