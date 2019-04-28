@@ -17,16 +17,18 @@ class App.Views.User.Articles.Form extends App.Views.Base
   renderComments: (comments) ->
     @comments = comments
     if comments.length is 0
-      $("#comments").append '<p id="no_comments">No comments.</p>'
+      document.getElementById('comments').insertAdjacentHTML('beforeend', '<p id="no_comments">No comments.</p>')
       return
-    $('#no_comments').remove()
+    noCommentNode = document.getElementById('no_comments')
+    if noCommentNode
+      noCommentNode.parentNode.removeChild(noCommentNode)
     this._renderComment comment for comment in comments
     this._handleApprovingComment()
 
   receivedSignal: (signal, data) ->
     switch signal
       when "updating"
-        if $('h1').data('mark') isnt data.mark
+        if document.querySelector('h1').getAttribute('data-mark') isnt data.mark
           flash = new App.Views.Shared.Flash warning: 'Uuups someone else started editing this article.'
           flash.render()
       when "updated"
@@ -47,28 +49,31 @@ class App.Views.User.Articles.Form extends App.Views.Base
         App.Models.Article.Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
           this._renderComment comment
       when 'Article.Comment destroyed'
-        $("#comment_#{data.id}").remove()
+        commentNode = document.getElementById("comment_#{data.id}")
+        commentNode.parentNode.removeChild(commentNode)
 
   _renderComment: (comment) ->
     template = JST["templates/user/comments/comment"] {comment: comment, isAdmin: true}
-    if $("#comment_#{comment.id}").length is 1
-      $("#comment_#{comment.id}").replaceWith template
+    commentNode = document.getElementById("comment_#{comment.id}")
+    if commentNode
+      commentNode.outerHTML = template
     else
-      $("#comments").append template
+      document.getElementById('comments').insertAdjacentHTML('beforeend', template)
 
   _displayChanges: ->
     for attrib, changes of @changes
-      sel = $("a.apply_changes[data-for=#{@article.getAttrRemoteName(attrib)}]")
-      continue if sel.length is 0
-      sel.removeClass 'none'
+      sel = document.querySelector("a.apply_changes[data-for=#{@article.getAttrRemoteName(attrib)}]")
+      continue unless sel
+      sel.classList.remove('none')
 
   _handleApplyingChanges: ->
-    $('a.apply_changes').click (e) =>
-      e.preventDefault()
-      attrName = @article.getAttrName $(e.target).data('for')
-      @article[attrName] = @changes[attrName].is
-      @form.fill attrName
-      $(e.target).addClass 'none'
+    for sel in document.querySelectorAll('a.apply_changes')
+      sel.addEventListener 'click', (e) =>
+        e.preventDefault()
+        attrName = @article.getAttrName(e.target.getAttribute('data-for'))
+        @article[attrName] = @changes[attrName].is
+        @form.fill attrName
+        e.target.classList.add('none')
 
   _handleApprovingComment: ->
     for el in document.querySelectorAll('a.approve')
