@@ -8,26 +8,25 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
 
   renderArticles: (articles) ->
     for article in articles
-      $('#articles').append JST["templates/main/articles/article_for_list"] {article: article}
+      document.getElementById('articles').insertAdjacentHTML('beforeend', this._renderedArticle(article))
 
   renderNewArticle: (article) ->
-    $('#articles').prepend JST["templates/main/articles/article_for_list"] {article: article}
+    document.getElementById('articles').insertAdjacentHTML('afterbegin', this._renderedArticle(article))
 
   updateArticle: (articleId) ->
-    return if $("#article_#{articleId}").length is 0
-    App.Models.Article.find(id: articleId, abbr: true).then (article) ->
-      template = JST["templates/main/articles/article_for_list"] {article: article}
-      $("#article_#{article.id}").replaceWith template
+    return unless document.getElementById("article_#{articleId}")
+    App.Models.Article.find(id: articleId, abbr: true).then (article) =>
+      document.getElementById("article_#{article.id}").outerHTML = this._renderedArticle(article)
 
   commentsQuantityChangedForArticle: (articleId, quantity) ->
-    return if $("#article_#{articleId}").length is 0
-    sel = $("#article_#{articleId} a.comments_quantity")
-    match = /\d+/.exec sel.text()
+    return unless document.getElementById("article_#{articleId}")
+    sel = document.querySelector("#article_#{articleId} a.comments_quantity")
+    match = /\d+/.exec(sel.textContent)
     quantity = parseInt(match[0]) + quantity
-    sel.text "#{quantity} comment#{if quantity is 1 then '' else 's'}"
+    sel.textContent = "#{quantity} comment#{if quantity is 1 then '' else 's'}"
 
   _handleLoadMore: ->
-    $('#load_more').click (e) =>
+    document.getElementById('load_more').addEventListener 'click', (e) =>
       e.preventDefault()
       @page += 1
       App.Models.Article.get 'all', page: @page
@@ -35,5 +34,8 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
         if resp.resources.length > 0
           this.renderArticles resp.resources
         else
-          $('#load_more').replaceWith('<p>No more posts.</p>')
+          document.getElementById('load_more').outerHTML = '<p>No more posts.</p>'
       .catch (err) -> alert "Invalid URL"
+
+  _renderedArticle: (article) ->
+    JST["templates/main/articles/article_for_list"] {article: article}
