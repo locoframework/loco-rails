@@ -13,7 +13,8 @@ module CommonHelpers
   end
 
   def update_value_attr_for sel
-    page.execute_script "$('#{sel}').attr('value', $('#{sel}').val());"
+    script = "document.querySelector('#{sel}').setAttribute('value', document.querySelector('#{sel}').value);"
+    page.execute_script script
   end
 
   def create_comment_for_article name, opts = {}

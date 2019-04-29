@@ -1,4 +1,3 @@
-//= require jquery
 //= require rails-ujs
 //= require turbolinks
 //= require loco-js-model/dist/loco-model.js

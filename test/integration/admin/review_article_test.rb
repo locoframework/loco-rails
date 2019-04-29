@@ -20,10 +20,13 @@ class Admin::ReviewArticleTest < IT
   test "should update an article" do
     submit_review
     visit "admin/articles/#{articles(:one).id}/edit"
-    assert_not page.evaluate_script("$('#article_published').is(':checked')")
+    script = "document.getElementById('article_published').checked === true"
+    assert_not page.evaluate_script(script)
     assert_equal 'Damn good article', find(:css, 'textarea').value
-    assert_equal '5', page.evaluate_script(%{$('input[name="article[admin_rate]"]:checked').val()})
-    assert_equal 'Health', page.evaluate_script(%{$('select option:selected').text()})
+    script = %{document.querySelector('input[name="article[admin_rate]"]:checked').value}
+    assert_equal '5', page.evaluate_script(script)
+    script = %{document.querySelector('select option:checked').textContent}
+    assert_equal 'Health', page.evaluate_script(script)
     assert articles(:one).reload.admin_review_time > 0
   end
 
