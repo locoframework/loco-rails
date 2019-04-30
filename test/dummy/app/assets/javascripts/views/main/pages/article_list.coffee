@@ -4,6 +4,7 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
     @page = 1
 
   render: ->
+    document.getElementById('articles').innerHTML = ''
     this._handleLoadMore()
 
   renderArticles: (articles) ->
@@ -26,7 +27,9 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
     sel.textContent = "#{quantity} comment#{if quantity is 1 then '' else 's'}"
 
   _handleLoadMore: ->
-    document.getElementById('load_more').addEventListener 'click', (e) =>
+    loadMoreLink = document.getElementById('load_more')
+    return unless loadMoreLink
+    loadMoreLink.addEventListener 'click', (e) =>
       e.preventDefault()
       @page += 1
       App.Models.Article.get 'all', page: @page

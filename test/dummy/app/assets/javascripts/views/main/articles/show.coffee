@@ -6,6 +6,7 @@ class App.Views.Main.Articles.Show extends App.Views.Base
     @newComment = opts.comment
 
   render: ->
+    document.getElementById('comments').innerHTML = ''
     form = new App.UI.Form for: @newComment, initObj: true, id: "new_comment"
     form.render()
 
@@ -29,7 +30,7 @@ class App.Views.Main.Articles.Show extends App.Views.Base
     else
       noCommentsNode = document.getElementById('no_comments')
       if noCommentsNode
-        noCommentsNode.parentNode.removeChild(noCommentsNode);
+        noCommentsNode.parentNode.removeChild(noCommentsNode)
       for comment in comments
         @comments.push comment
         this.connectWith comment, receiver: "_commentReceivedSignal"
