@@ -21,7 +21,7 @@ App.Deps.NotificationCenter = App.Services.NotificationCenter
 
 loco = new App.Loco
   # set to your Turbolinks version if you have enabled Turbolinks
-  turbolinks: 5                       # false by default
+  #turbolinks: false                  # false by default
 
   # your browser's app will be checking for new notifications periodically via ajax polling
   notifications:

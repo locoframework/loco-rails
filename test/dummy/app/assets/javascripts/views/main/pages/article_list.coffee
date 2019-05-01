@@ -15,7 +15,6 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
         this._commentsQuantityChangedForArticle data.article_id, -1
 
   render: ->
-    document.getElementById('articles').innerHTML = ''
     this._handleLoadMore()
     this.connectWith [App.Models.Article, App.Models.Article.Comment]
     App.Models.Article.get('all', page: 1).then (resp) => this._renderArticles resp.resources
@@ -40,9 +39,7 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
     sel.textContent = "#{quantity} comment#{if quantity is 1 then '' else 's'}"
 
   _handleLoadMore: ->
-    loadMoreLink = document.getElementById('load_more')
-    return unless loadMoreLink
-    loadMoreLink.addEventListener 'click', (e) =>
+    document.getElementById('load_more').addEventListener 'click', (e) =>
       e.preventDefault()
       @page += 1
       App.Models.Article.get 'all', page: @page

@@ -32,6 +32,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mysql2', '~> 0.5.2'
   s.add_development_dependency 'puma', '~> 3.12'
   s.add_development_dependency 'redis', '~> 4.1.0'
-  s.add_development_dependency 'sass-rails', '~> 5.0'
   s.add_development_dependency 'selenium-webdriver', '~> 3.141'
 end

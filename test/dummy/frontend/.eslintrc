@@ -1,0 +1,34 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "eslint-config-airbnb-base",
+    "prettier"
+  ],
+
+  "plugins": [
+    "prettier"
+  ],
+
+  "env": {
+    "browser": true
+  },
+
+  "rules": {
+    "prettier/prettier": "error"
+  },
+
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": {
+          "resolve": {
+            "modules": [
+              "css",
+              "node_modules"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
