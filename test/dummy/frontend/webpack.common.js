@@ -11,7 +11,7 @@ module.exports = {
     modules: [path.join(__dirname, "css"), "node_modules"]
   },
   entry: {
-    index: "./index"
+    application: "./index"
   },
   module: {
     rules: [
