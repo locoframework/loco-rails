@@ -8,7 +8,11 @@ const postCssOptions = require("./postcss.config.js");
 
 module.exports = {
   resolve: {
-    modules: [path.join(__dirname, "css"), "node_modules"]
+    modules: [
+      path.join(__dirname, "css"),
+      path.join(__dirname, "js"),
+      "node_modules"
+    ]
   },
   entry: {
     application: "./index"
