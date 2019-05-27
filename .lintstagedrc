@@ -8,5 +8,9 @@
     "prettier --write",
     "stylelint --fix",
     "git add"
+  ],
+  "*.{gemspec,rb}": [
+    "bundle exec rubocop -a",
+    "git add"
   ]
 }
