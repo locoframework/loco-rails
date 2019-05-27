@@ -9,13 +9,13 @@ const postCssOptions = require("./postcss.config.js");
 module.exports = {
   resolve: {
     modules: [
-      path.join(__dirname, "css"),
-      path.join(__dirname, "js"),
+      path.join(__dirname, "test/dummy/frontend/css"),
+      path.join(__dirname, "test/dummy/frontend/js"),
       "node_modules"
     ]
   },
   entry: {
-    application: "./index"
+    application: "./test/dummy/frontend/index"
   },
   module: {
     rules: [
@@ -66,6 +66,6 @@ module.exports = {
   },
   output: {
     filename: "[name].js",
-    path: path.resolve(__dirname, "../app/assets/bundles")
+    path: path.resolve(__dirname, "test/dummy/app/assets/bundles")
   }
 };
