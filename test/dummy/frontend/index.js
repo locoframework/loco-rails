@@ -1,5 +1,5 @@
 import "initializers/rails";
-import "initializers/cable";
+import "initializers/loco";
 
 import "scaffold.css";
 import "global.scss";
