@@ -1,10 +1,10 @@
 {
-  "*.js": [
+  "test/dummy/frontend/**/*.js": [
     "prettier --write",
     "eslint",
     "git add"
   ],
-  "*.{css,scss}": [
+  "test/dummy/frontend/**/*.{css,scss}": [
     "prettier --write",
     "stylelint --fix",
     "git add"
