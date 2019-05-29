@@ -1,4 +1,4 @@
-class App.Services.NotificationCenter
+class NotificationCenter
   receivedSignal: (data) ->
     switch data.signal
       when 'ping'
@@ -19,3 +19,5 @@ class App.Services.NotificationCenter
     return false if App.Env.controller.constructor isnt App.Controllers.User.Rooms
     return false if App.Env.action isnt 'show'
     App.Env.controller.getView 'show'
+
+export default NotificationCenter
