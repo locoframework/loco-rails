@@ -1,4 +1,6 @@
-class App.Models.Article extends App.Models.Base
+import { Models } from "loco-js"
+
+class Article extends Models.Base
   @identity = "Article"
   @resources =
     url: '/user/articles', paginate: {per: 5}
@@ -59,3 +61,5 @@ class App.Models.Article extends App.Models.Base
     @adminRate ?= 3
     @categoryId ?= 6
     @adminReviewStartedAt = Date.now()
+
+export default Article

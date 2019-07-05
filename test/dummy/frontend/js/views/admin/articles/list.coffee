@@ -1,4 +1,6 @@
-class App.Views.Admin.Articles.List extends App.Views.Base
+import { Views } from "loco-js"
+
+class List extends Views.Base
   constructor: (opts = {}) ->
     super opts
 
@@ -25,3 +27,5 @@ class App.Views.Admin.Articles.List extends App.Views.Base
 
   _articleForListTemplate: (article) ->
     JST["templates/admin/articles/article_for_list"] article: article
+
+export default List

@@ -1,4 +1,8 @@
-class App.Views.Main.Pages.ArticleList extends App.Views.Base
+import { Views } from "loco-js"
+import Article from "models/article.coffee"
+import Comment from "models/article/comment.coffee"
+
+class ArticleList extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @page = 1
@@ -6,7 +10,7 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
   receivedSignal: (signal, data) ->
     switch signal
       when 'Article published'
-        App.Models.Article.find(id: data.id, abbr: true).then (article) => this._renderNewArticle article
+        Article.find(id: data.id, abbr: true).then (article) => this._renderNewArticle article
       when 'Article updated'
         this._updateArticle data.id
       when 'Article.Comment created'
@@ -16,8 +20,8 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
 
   render: ->
     this._handleLoadMore()
-    this.connectWith [App.Models.Article, App.Models.Article.Comment]
-    App.Models.Article.get('all', page: 1).then (resp) => this._renderArticles resp.resources
+    this.connectWith [Article, Comment]
+    Article.get('all', page: 1).then (resp) => this._renderArticles resp.resources
 
   _renderArticles: (articles) ->
     for article in articles
@@ -28,7 +32,7 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
 
   _updateArticle: (articleId) ->
     return unless document.getElementById("article_#{articleId}")
-    App.Models.Article.find(id: articleId, abbr: true).then (article) =>
+    Article.find(id: articleId, abbr: true).then (article) =>
       document.getElementById("article_#{article.id}").outerHTML = this._renderedArticle(article)
 
   _commentsQuantityChangedForArticle: (articleId, quantity) ->
@@ -42,7 +46,7 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
     document.getElementById('load_more').addEventListener 'click', (e) =>
       e.preventDefault()
       @page += 1
-      App.Models.Article.get 'all', page: @page
+      Article.get 'all', page: @page
       .then (resp) =>
         if resp.resources.length > 0
           this._renderArticles resp.resources
@@ -52,3 +56,5 @@ class App.Views.Main.Pages.ArticleList extends App.Views.Base
 
   _renderedArticle: (article) ->
     JST["templates/main/articles/article_for_list"] {article: article}
+
+export default ArticleList

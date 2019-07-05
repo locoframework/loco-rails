@@ -1,4 +1,6 @@
-class App.Models.Article.Comment extends App.Models.Base
+import { Models } from "loco-js"
+
+class Comment extends Models.Base
   @identity = "Article.Comment"
   @remoteName = "Comment"
   @resources =
@@ -42,3 +44,5 @@ class App.Models.Article.Comment extends App.Models.Base
   @receivedSignal: (signal, data) ->
 
   receivedSignal: (signal, data) ->
+
+export default Comment
