@@ -1,4 +1,6 @@
-class App.Views.Shared.Flash extends App.Views.Base
+import { Views } from "loco-js"
+
+class Flash extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @notice = opts.notice ? null
@@ -31,3 +33,5 @@ class App.Views.Shared.Flash extends App.Views.Base
     setTimeout ->
       document.querySelector('.flash').classList.add('none') # slideUp initially
     , time
+
+export default Flash
