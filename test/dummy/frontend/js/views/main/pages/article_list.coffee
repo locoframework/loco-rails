@@ -1,6 +1,10 @@
+import React from "react";
+import { render as renderElement } from "react-dom";
 import { Views } from "loco-js"
+
 import Article from "models/article.coffee"
 import Comment from "models/article/comment.coffee"
+import ArticleListComponent from "components/main/ArticleList"
 
 class ArticleList extends Views.Base
   constructor: (opts = {}) ->
@@ -24,8 +28,11 @@ class ArticleList extends Views.Base
     Article.get('all', page: 1).then (resp) => this._renderArticles resp.resources
 
   _renderArticles: (articles) ->
-    for article in articles
-      document.getElementById('articles').insertAdjacentHTML('beforeend', this._renderedArticle(article))
+    # TODO: document.getElementById('articles').insertAdjacentHTML('beforeend', this._renderedArticle(article))
+    renderElement(
+      React.createElement(ArticleListComponent, {articles: articles}),
+      document.getElementById('articles')
+    )
 
   _renderNewArticle: (article) ->
     document.getElementById('articles').insertAdjacentHTML('afterbegin', this._renderedArticle(article))
