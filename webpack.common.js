@@ -1,8 +1,8 @@
+/* global __dirname module require */
+
 const path = require("path");
-/* eslint-disable import/no-extraneous-dependencies */
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-/* eslint-enable import/no-extraneous-dependencies */
 
 const postCssOptions = require("./postcss.config.js");
 
@@ -19,7 +19,7 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" },
       {
         test: /\.coffee$/,
         use: [
