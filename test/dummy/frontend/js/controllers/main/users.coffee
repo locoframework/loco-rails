@@ -1,4 +1,10 @@
-class App.Controllers.Main.Users extends App.Controllers.Base
+import { Controllers } from "loco-js"
+
+import UserRegistrationForm from "views/main/users/user_registration_form.coffee"
+
+class Users extends Controllers.Base
   new: ->
-    view = new App.Views.Main.Users.UserRegistrationForm
+    view = new UserRegistrationForm
     view.render()
+
+export default Users

@@ -1,4 +1,6 @@
-class App.Models.User extends App.Models.Base
+import { Models } from "loco-js"
+
+class User extends Models.Base
   @identity = "User"
   @resources =
     url: "/users"
@@ -35,3 +37,5 @@ class App.Models.User extends App.Models.Base
   constructor: (data) -> super data
 
   receivedSignal: (signal, data) -> console.log "App.Models.User#receivedSignal: #{signal}"
+
+export default User
