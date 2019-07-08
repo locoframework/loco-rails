@@ -1,6 +1,6 @@
-import { Controllers, Mix, Mixins } from "loco-js"
+import { Controllers, Mix } from "loco-js"
 
-import Disconnection from "controllers/concerns/disconnection.coffee"
+import Disconnection from "./concerns/disconnection.coffee"
 import Pages from "./main/pages.coffee"
 import Users from "./main/users.coffee"
 
