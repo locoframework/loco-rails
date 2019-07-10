@@ -4,7 +4,7 @@ import { Views } from "loco-js"
 
 import Article from "models/article.coffee"
 import Comment from "models/article/comment.coffee"
-import ArticleListComponent from "components/main/ArticleList"
+import ArticleListWrapper from "containers/ArticleListWrapper"
 
 class ArticleList extends Views.Base
   constructor: (opts = {}) ->
@@ -13,8 +13,6 @@ class ArticleList extends Views.Base
 
   receivedSignal: (signal, data) ->
     switch signal
-      when 'Article published'
-        Article.find(id: data.id, abbr: true).then (article) => this._renderNewArticle article
       when 'Article updated'
         this._updateArticle data.id
       when 'Article.Comment created'
@@ -30,12 +28,9 @@ class ArticleList extends Views.Base
   _renderArticles: (articles) ->
     # TODO: document.getElementById('articles').insertAdjacentHTML('beforeend', this._renderedArticle(article))
     renderElement(
-      React.createElement(ArticleListComponent, {articles: articles}),
+      React.createElement(ArticleListWrapper, { articles: articles }),
       document.getElementById('articles')
     )
-
-  _renderNewArticle: (article) ->
-    document.getElementById('articles').insertAdjacentHTML('afterbegin', this._renderedArticle(article))
 
   _updateArticle: (articleId) ->
     return unless document.getElementById("article_#{articleId}")
