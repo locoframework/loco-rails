@@ -4,12 +4,12 @@ import PropTypes from "prop-types";
 import Article from "./Article";
 import ArticleModel from "models/article.coffee";
 
-function ArticleList(props) {
-  const articles = props.articles.map(article => (
+function ArticleList({ articles }) {
+  const list = articles.map(article => (
     <Article key={`article_${article.id}`} article={article} />
   ));
 
-  return <React.Fragment>{articles}</React.Fragment>;
+  return <>{list}</>;
 }
 
 ArticleList.propTypes = {
