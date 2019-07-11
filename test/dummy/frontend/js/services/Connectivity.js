@@ -5,6 +5,21 @@ import { findArticle } from "reducers/main";
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
 
+const commentsChanged = (articleId, diff) => {
+  const [article, index] = findArticle(store.getState(), articleId);
+  if (!article) return;
+  store.dispatch({
+    type: "UPDATE",
+    payload: {
+      article: new Article({
+        ...article,
+        commentsCount: article.commentsCount + diff
+      }),
+      index: index
+    }
+  });
+};
+
 class Connectivity extends Views.Base {
   constructor(opts = {}) {
     super(opts);
@@ -18,8 +33,7 @@ class Connectivity extends Views.Base {
         );
         break;
       case "Article updated": {
-        const article = findArticle(store.getState(), data.id);
-        const index = store.getState().articles.indexOf(article);
+        const [article, index] = findArticle(store.getState(), data.id);
         if (!article) break;
         Article.find({ id: data.id, abbr: true }).then(article =>
           store.dispatch({
@@ -29,6 +43,12 @@ class Connectivity extends Views.Base {
         );
         break;
       }
+      case "Article.Comment created":
+        commentsChanged(data.article_id, 1);
+        break;
+      case "Article.Comment destroyed":
+        commentsChanged(data.article_id, -1);
+        break;
     }
   }
 
