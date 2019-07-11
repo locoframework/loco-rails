@@ -1,26 +1,24 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import reducer from "reducers/main";
+import store from "stores/main";
 import ArticleList from "components/main/ArticleList";
 import ArticleModel from "models/article.coffee";
-import Connectivity from "services/Connectivity";
 
-const connectivity = new Connectivity();
-
-function ArticleListWrapper({ articles }) {
-  const [state, dispatch] = useReducer(reducer, { articles: articles });
+function ArticleListWrapper(props) {
+  const [articles, setArticles] = useState(props.articles);
 
   useEffect(() => {
-    const callbacks = {
-      onArticlePublished: article =>
-        dispatch({ type: "ADD", payload: { articles: [article] } })
-    };
+    const unsubscribe = store.subscribe(() =>
+      setArticles(store.getState().articles)
+    );
 
-    connectivity.call({ callbacks: callbacks });
+    return () => {
+      unsubscribe();
+    };
   });
 
-  return <ArticleList articles={state.articles} />;
+  return <ArticleList articles={articles} />;
 }
 
 ArticleListWrapper.propTypes = {

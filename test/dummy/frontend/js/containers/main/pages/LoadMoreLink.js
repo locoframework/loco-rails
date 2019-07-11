@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import Article from "models/article.coffee";
+import store from "stores/main";
 
 export default function LoadMoreLink() {
   const [page, setPage] = useState(1);
@@ -13,8 +14,10 @@ export default function LoadMoreLink() {
     Article.get("all", { page: currentPage })
       .then(resp => {
         if (resp.resources.length > 0) {
-          console.log("TODO: render articles");
-          console.log(resp.resources);
+          store.dispatch({
+            type: "ADD",
+            payload: { articles: resp.resources }
+          });
         } else {
           setNoMorePosts(true);
         }
