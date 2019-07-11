@@ -4,12 +4,12 @@ import { Views } from "loco-js"
 
 import Article from "models/article.coffee"
 import Comment from "models/article/comment.coffee"
+import LoadMoreLink from "containers/main/pages/LoadMoreLink"
 import ArticleListWrapper from "containers/ArticleListWrapper"
 
 class ArticleList extends Views.Base
   constructor: (opts = {}) ->
     super opts
-    @page = 1
 
   receivedSignal: (signal, data) ->
     switch signal
@@ -22,7 +22,6 @@ class ArticleList extends Views.Base
 
   render: ->
     this._handleLoadMore()
-    this.connectWith [Article, Comment]
     Article.get('all', page: 1).then (resp) => this._renderArticles resp.resources
 
   _renderArticles: (articles) ->
@@ -45,16 +44,10 @@ class ArticleList extends Views.Base
     sel.textContent = "#{quantity} comment#{if quantity is 1 then '' else 's'}"
 
   _handleLoadMore: ->
-    document.getElementById('load_more').addEventListener 'click', (e) =>
-      e.preventDefault()
-      @page += 1
-      Article.get 'all', page: @page
-      .then (resp) =>
-        if resp.resources.length > 0
-          this._renderArticles resp.resources
-        else
-          document.getElementById('load_more').outerHTML = '<p>No more posts.</p>'
-      .catch (err) -> alert "Invalid URL"
+    renderElement(
+      React.createElement(LoadMoreLink),
+      document.getElementById('load_more_wrapper')
+    )
 
   _renderedArticle: (article) ->
     JST["templates/main/articles/article_for_list"] {article: article}
