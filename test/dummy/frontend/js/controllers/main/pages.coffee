@@ -1,5 +1,5 @@
 import { Controllers } from "loco-js"
-import ArticleList from "views/main/pages/article_list.coffee"
+import ArticleList from "views/main/pages/ArticleList"
 
 class Pages extends Controllers.Base
   index: ->
