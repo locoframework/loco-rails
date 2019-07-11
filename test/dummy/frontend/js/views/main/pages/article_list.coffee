@@ -14,30 +14,22 @@ class ArticleList extends Views.Base
 
   receivedSignal: (signal, data) ->
     switch signal
-      when 'Article updated'
-        this._updateArticle data.id
       when 'Article.Comment created'
         this._commentsQuantityChangedForArticle data.article_id, 1
       when 'Article.Comment destroyed'
         this._commentsQuantityChangedForArticle data.article_id, -1
 
   render: ->
-    this._handleLoadMore()
+    renderElement(
+      React.createElement(LoadMoreLink),
+      document.getElementById('load_more_wrapper')
+    )
     Article.get('all', page: 1).then (resp) =>
       store.dispatch({ type: "SET", payload: { articles: resp.resources } })
-      this._renderArticles resp.resources
-
-  _renderArticles: (articles) ->
-    # TODO: document.getElementById('articles').insertAdjacentHTML('beforeend', this._renderedArticle(article))
-    renderElement(
-      React.createElement(ArticleListWrapper, { articles: articles }),
-      document.getElementById('articles')
-    )
-
-  _updateArticle: (articleId) ->
-    return unless document.getElementById("article_#{articleId}")
-    Article.find(id: articleId, abbr: true).then (article) =>
-      document.getElementById("article_#{article.id}").outerHTML = this._renderedArticle(article)
+      renderElement(
+        React.createElement(ArticleListWrapper, { articles: resp.resources }),
+        document.getElementById('articles')
+      )
 
   _commentsQuantityChangedForArticle: (articleId, quantity) ->
     return unless document.getElementById("article_#{articleId}")
@@ -45,14 +37,5 @@ class ArticleList extends Views.Base
     match = /\d+/.exec(sel.textContent)
     quantity = parseInt(match[0]) + quantity
     sel.textContent = "#{quantity} comment#{if quantity is 1 then '' else 's'}"
-
-  _handleLoadMore: ->
-    renderElement(
-      React.createElement(LoadMoreLink),
-      document.getElementById('load_more_wrapper')
-    )
-
-  _renderedArticle: (article) ->
-    JST["templates/main/articles/article_for_list"] {article: article}
 
 export default ArticleList
