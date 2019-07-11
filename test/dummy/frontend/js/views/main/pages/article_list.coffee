@@ -5,7 +5,7 @@ import { Views } from "loco-js"
 import Article from "models/article.coffee"
 import Comment from "models/article/comment.coffee"
 import LoadMoreLink from "containers/main/pages/LoadMoreLink"
-import ArticleListWrapper from "containers/ArticleListWrapper"
+import ArticleListWrapper from "containers/main/pages/ArticleListWrapper"
 
 class ArticleList extends Views.Base
   constructor: (opts = {}) ->

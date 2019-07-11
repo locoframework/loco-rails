@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import reducer from "reducers/main";
 import ArticleList from "components/main/ArticleList";
 import ArticleModel from "models/article.coffee";
-import Connectivity from "./Connectivity";
+import Connectivity from "services/Connectivity";
 
 const connectivity = new Connectivity();
 
