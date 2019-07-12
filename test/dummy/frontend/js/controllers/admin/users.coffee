@@ -1,14 +1,19 @@
+import React from "react";
+import { render as renderElement } from "react-dom";
 import { Controllers } from "loco-js"
 
 import User from "models/user.coffee"
-import List from "views/admin/users/list.coffee"
+
+import UserList from "components/admin/UserList"
 
 class Users extends Controllers.Base
   index: ->
-    @view = new List users: []
-    @view.render()
     this.connectWith [User]
-    User.get("all").then (resp) => @view.renderUsers resp.resources
+    User.get("all").then (resp) =>
+      renderElement(
+        React.createElement(UserList, { users: resp.resources }),
+        document.querySelector("table tbody")
+      )
 
   show: ->
     view = new App.Views.Admin.Users.Show

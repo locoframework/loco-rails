@@ -1,13 +1,38 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Env } from "loco-js";
 
 import UserModel from "models/user.coffee";
 
-function User(props) {
-  const user = props.user;
+const User = ({ user }) => {
+  const ping = (e, userId) => {
+    e.preventDefault();
+    Env.loco.emit({ signal: "ping", user_id: userId });
+  };
 
-  return <tr id={`user_${user.id}`} />;
-}
+  return (
+    <tr id={`user_${user.id}`}>
+      <td>{user.email}</td>
+      <td>{user.username}</td>
+      <td className="confirmed">{user.confirmed ? "Yes" : "No"}</td>
+      <td>
+        <a href={`/admin/users/${user.id}`}>Show</a> |{" "}
+        <a href={`/admin/users/${user.id}/edit`}>Edit</a> |{" "}
+        <a
+          href={`/admin/users/${user.id}`}
+          data-method="delete"
+          data-confirm="Are you sure?"
+        >
+          Delete
+        </a>{" "}
+        |{" "}
+        <a href="#" onClick={e => ping(e, user.id)}>
+          Ping
+        </a>
+      </td>
+    </tr>
+  );
+};
 
 User.propTypes = {
   user: PropTypes.instanceOf(UserModel).isRequired
