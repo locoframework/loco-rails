@@ -1,8 +1,14 @@
-class App.Controllers.Admin.Articles extends App.Controllers.Base
+import { Controllers } from "loco-js";
+
+import Article from "models/article.coffee";
+import Comment from "models/article/comment.coffee";
+import List from "views/admin/articles/List";
+
+class Articles extends Controllers.Base
   published: ->
-    @view = new App.Views.Admin.Articles.List
-    this.connectWith [App.Models.Article, App.Models.Article.Comment]
-    App.Models.Article.get('published').then (resp) =>
+    @view = new List
+    this.connectWith([Article, Comment]);
+    Article.get('published').then (resp) =>
       @view.render articles: resp.resources
 
   edit: ->
@@ -17,7 +23,7 @@ class App.Controllers.Admin.Articles extends App.Controllers.Base
   receivedSignal: (signal, data) ->
     switch signal
       when 'Article published'
-        App.Models.Article.find(id: data.id).then (article) =>
+        Article.find(id: data.id).then (article) =>
           @view.renderNewArticle article
       when 'Article updated'
         @view.updateArticle data.id
@@ -25,3 +31,5 @@ class App.Controllers.Admin.Articles extends App.Controllers.Base
         @view.commentsQuantityChangedForArticle data.article_id, 1
       when 'Article.Comment destroyed'
         @view.commentsQuantityChangedForArticle data.article_id, -1
+
+export default Articles;

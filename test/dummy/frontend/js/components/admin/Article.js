@@ -13,18 +13,15 @@ function Article({ article }) {
       <p>
         <i>
           {article.author} wrote this on {date} /{" "}
-          <a
-            href={`/articles/${article.id}#comments`}
-            className="comments_quantity"
-          >
+          <span className="comments_quantity">
             {article.commentsCount} comment
             {article.commentsCount === 1 ? "" : "s"}
-          </a>
+          </span>
         </i>
       </p>
       <p>{article.content}</p>
       <p>
-        <a href={`/articles/${article.id}`}>Continued…</a>
+        <a href={`/admin/articles/${article.id}/edit`}>Review</a>
       </p>
     </article>
   );

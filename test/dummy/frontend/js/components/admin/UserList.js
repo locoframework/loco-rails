@@ -7,7 +7,7 @@ import UserModel from "models/user.coffee";
 function UserList({ users }) {
   const list = users.map(user => <User key={`user_${user.id}`} user={user} />);
 
-  return <React.Fragment>{list}</React.Fragment>;
+  return <>{list}</>;
 }
 
 UserList.propTypes = {
