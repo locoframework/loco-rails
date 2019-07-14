@@ -29,6 +29,11 @@ Metrics/BlockLength:
   Exclude:
     - loco-rails.gemspec
 
+Metrics/MethodLength:
+  Enabled: true
+  Exclude:
+    - test/dummy/app/controllers/admin/articles_controller.rb
+
 Naming/FileName:
   Enabled: true
   Exclude:

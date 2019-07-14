@@ -1,4 +1,4 @@
-import { Views } from "loco-js";
+import { Env, Views } from "loco-js";
 
 import mainStore from "stores/main";
 import adminStore from "stores/admin";
@@ -7,6 +7,8 @@ import { findArticle } from "reducers/main";
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
 import User from "models/user.coffee";
+
+import AdminController from "controllers/admin.coffee";
 
 const commentsChanged = (articleId, diff) => {
   const [article, index] = findArticle(mainStore.getState(), articleId);
@@ -31,9 +33,23 @@ class Connectivity extends Views.Base {
   receivedSignal(signal, data) {
     switch (signal) {
       case "Article published":
-        Article.find({ id: data.id, abbr: true }).then(article =>
-          mainStore.dispatch({ type: "ADD", payload: { articles: [article] } })
-        );
+        if (Env.namespaceController.constructor === AdminController) {
+          Article.find({ id: data.id, abbr: true, resource: "admin" }).then(
+            article => {
+              adminStore.dispatch({
+                type: "PREPEND_ARTICLE",
+                payload: { articles: [article] }
+              });
+            }
+          );
+        } else {
+          Article.find({ id: data.id, abbr: true }).then(article => {
+            mainStore.dispatch({
+              type: "ADD",
+              payload: { articles: [article] }
+            });
+          });
+        }
         break;
       case "Article updated": {
         const [article, index] = findArticle(mainStore.getState(), data.id);
@@ -55,7 +71,7 @@ class Connectivity extends Views.Base {
       case "User created":
         User.find(data.id).then(user =>
           adminStore.dispatch({
-            type: "PREPEND",
+            type: "PREPEND_USER",
             payload: { users: [user] }
           })
         );

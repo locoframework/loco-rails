@@ -2,7 +2,7 @@ import { Views } from "loco-js";
 import React from "react";
 import { render as renderElement } from "react-dom";
 
-import ArticleList from "components/admin/ArticleList";
+import ArticleListWrapper from "containers/admin/ArticleListWrapper";
 
 class List extends Views.Base {
   constructor(opts = {}) {
@@ -11,18 +11,11 @@ class List extends Views.Base {
 
   render({ articles }) {
     renderElement(
-      <ArticleList articles={articles} />,
+      <ArticleListWrapper articles={articles} />,
       document.getElementById("articles")
     );
-    //for article in opts.articles
-    //  renderedArticle = this._articleForListTemplate(article)
-    //  document.getElementById('articles').insertAdjacentHTML('beforeend', renderedArticle)
   }
 
-  //renderNewArticle: (article) ->
-  //  renderedArticle = this._articleForListTemplate(article)
-  //  document.getElementById('articles').insertAdjacentHTML('afterbegin', renderedArticle)
-  //
   //updateArticle: (articleId) ->
   //  return unless document.getElementById("article_#{articleId}")
   //  App.Models.Article.find(id: articleId).then (article) =>
