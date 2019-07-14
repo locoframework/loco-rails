@@ -1,4 +1,4 @@
-/* global __dirname module require */
+/* eslint-env node */
 
 const path = require("path");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
