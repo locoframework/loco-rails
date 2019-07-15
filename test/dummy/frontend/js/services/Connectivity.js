@@ -41,17 +41,21 @@ const articleUpdated = ({ id }) => {
   if (!article) return;
   Article.find(findParams).then(article =>
     store.dispatch({
-      type: "UPDATE",
+      type: "UPDATE_ARTICLE",
       payload: { article, index }
     })
   );
 };
 
-const commentsChanged = (articleId, diff) => {
-  const [article, index] = findArticle(mainStore.getState(), articleId);
+const commentsChanged = ({ article_id: articleId }, diff) => {
+  let store = mainStore;
+  if (Env.namespaceController.constructor === AdminController) {
+    store = adminStore;
+  }
+  const [article, index] = findArticle(store.getState(), articleId);
   if (!article) return;
-  mainStore.dispatch({
-    type: "UPDATE",
+  store.dispatch({
+    type: "UPDATE_ARTICLE",
     payload: {
       article: new Article({
         ...article,
@@ -76,10 +80,10 @@ class Connectivity extends Views.Base {
         articleUpdated(data);
         break;
       case "Article.Comment created":
-        commentsChanged(data.article_id, 1);
+        commentsChanged(data, 1);
         break;
       case "Article.Comment destroyed":
-        commentsChanged(data.article_id, -1);
+        commentsChanged(data, -1);
         break;
       case "User created":
         User.find(data.id).then(user =>

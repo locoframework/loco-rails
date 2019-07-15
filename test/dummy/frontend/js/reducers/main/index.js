@@ -4,7 +4,7 @@ const reducer = (state, action) => {
       return { articles: [...action.payload.articles] };
     case "ADD":
       return { articles: [...state.articles, ...action.payload.articles] };
-    case "UPDATE":
+    case "UPDATE_ARTICLE":
       return {
         articles: [
           ...state.articles.slice(0, action.payload.index),

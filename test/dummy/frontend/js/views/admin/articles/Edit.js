@@ -2,7 +2,7 @@ import React from "react";
 import { render as renderElement } from "react-dom";
 import { Views } from "loco-js";
 
-import StatefulCommentList from "containers/admin/StatefulCommentList";
+import CommentList from "components/admin/CommentList";
 
 class Edit extends Views.Base {
   constructor(opts = {}) {
@@ -28,7 +28,7 @@ class Edit extends Views.Base {
 
   renderComments(comments) {
     renderElement(
-      <StatefulCommentList comments={comments} />,
+      <CommentList comments={comments} />,
       document.getElementById("comments")
     );
   }
