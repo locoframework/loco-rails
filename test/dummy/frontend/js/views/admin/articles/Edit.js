@@ -10,6 +10,16 @@ class Edit extends Views.Base {
     this.article = null;
   }
 
+  receivedSignal(signal) {
+    switch (signal) {
+      case "updated":
+        this.article.reload().then(() => {
+          this.article.applyChanges();
+          this._renderArticle();
+        });
+    }
+  }
+
   render(article) {
     this.article = article;
     this.connectWith(article);
@@ -21,16 +31,6 @@ class Edit extends Views.Base {
       <StatefulCommentList comments={comments} />,
       document.getElementById("comments")
     );
-  }
-
-  receivedSignal(signal) {
-    switch (signal) {
-      case "updated":
-        this.article.reload().then(() => {
-          this.article.applyChanges();
-          this._renderArticle();
-        });
-    }
   }
 
   _renderArticle() {

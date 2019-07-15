@@ -26,8 +26,6 @@ class Articles extends Controllers.Base
 
   receivedSignal: (signal, data) ->
     switch signal
-      when 'Article updated'
-        @view.updateArticle data.id
       when 'Article.Comment created'
         @view.commentsQuantityChangedForArticle data.article_id, 1
       when 'Article.Comment destroyed'

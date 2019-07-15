@@ -2,13 +2,50 @@ import { Env, Views } from "loco-js";
 
 import mainStore from "stores/main";
 import adminStore from "stores/admin";
-import { findArticle } from "reducers/main";
+import { findArticle } from "selectors/articles";
 
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
 import User from "models/user.coffee";
 
 import AdminController from "controllers/admin.coffee";
+
+const articlePublished = ({ id }) => {
+  if (Env.namespaceController.constructor === AdminController) {
+    Article.find({ id, abbr: true, resource: "admin" }).then(article => {
+      adminStore.dispatch({
+        type: "PREPEND_ARTICLE",
+        payload: { articles: [article] }
+      });
+    });
+  } else {
+    Article.find({ id, abbr: true }).then(article => {
+      mainStore.dispatch({
+        type: "ADD",
+        payload: { articles: [article] }
+      });
+    });
+  }
+};
+
+const articleUpdated = ({ id }) => {
+  const findParams = { id: id, abbr: true };
+  let store = mainStore;
+
+  if (Env.namespaceController.constructor === AdminController) {
+    findParams["resource"] = "admin";
+    store = adminStore;
+  }
+
+  const [article, index] = findArticle(store.getState(), id);
+  if (!article) return;
+  Article.find(findParams).then(article =>
+    store.dispatch({
+      type: "UPDATE",
+      payload: { article, index }
+    })
+  );
+};
 
 const commentsChanged = (articleId, diff) => {
   const [article, index] = findArticle(mainStore.getState(), articleId);
@@ -33,35 +70,11 @@ class Connectivity extends Views.Base {
   receivedSignal(signal, data) {
     switch (signal) {
       case "Article published":
-        if (Env.namespaceController.constructor === AdminController) {
-          Article.find({ id: data.id, abbr: true, resource: "admin" }).then(
-            article => {
-              adminStore.dispatch({
-                type: "PREPEND_ARTICLE",
-                payload: { articles: [article] }
-              });
-            }
-          );
-        } else {
-          Article.find({ id: data.id, abbr: true }).then(article => {
-            mainStore.dispatch({
-              type: "ADD",
-              payload: { articles: [article] }
-            });
-          });
-        }
+        articlePublished(data);
         break;
-      case "Article updated": {
-        const [article, index] = findArticle(mainStore.getState(), data.id);
-        if (!article) break;
-        Article.find({ id: data.id, abbr: true }).then(article =>
-          mainStore.dispatch({
-            type: "UPDATE",
-            payload: { article: article, index: index }
-          })
-        );
+      case "Article updated":
+        articleUpdated(data);
         break;
-      }
       case "Article.Comment created":
         commentsChanged(data.article_id, 1);
         break;
