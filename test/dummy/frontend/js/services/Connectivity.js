@@ -81,6 +81,13 @@ class Connectivity extends Views.Base {
         break;
       case "Article.Comment created":
         commentsChanged(data, 1);
+        Comment.find({ articleId: data.article_id, id: data.id }).then(
+          comment =>
+            mainStore.dispatch({
+              type: "ADD_COMMENTS",
+              payload: { articleId: data.article_id, comments: [comment] }
+            })
+        );
         break;
       case "Article.Comment destroyed":
         commentsChanged(data, -1);

@@ -6,12 +6,14 @@ import Comment from "components/main/Comment";
 import CommentModel from "models/article/comment.coffee";
 
 function StatefulCommentList(props) {
+  const articleId = props.articleId;
   const [comments, setComments] = useState(props.comments);
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(() =>
-      setComments(store.getState().comments)
-    );
+    const unsubscribe = store.subscribe(() => {
+      // TODO: extract to selector
+      setComments(store.getState().comments[articleId]);
+    });
 
     return () => {
       unsubscribe();
@@ -30,6 +32,7 @@ function StatefulCommentList(props) {
 }
 
 StatefulCommentList.propTypes = {
+  articleId: PropTypes.number.isRequired,
   comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired
 };
 

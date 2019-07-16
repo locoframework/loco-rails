@@ -19,12 +19,12 @@ class Articles extends Controllers.Base
       @view.renderArticle article
     Comment.get("count", articleId: @params.id).then (res) =>
       Comment
-        .all(articleId: @params.id, total: res.total)
+        .all(articleId: this.params.id, total: res.total)
         .then (comments) =>
           #@view.renderComments comments
-          store.dispatch({ type: "SET_COMMENTS", payload: { comments } });
+          store.dispatch({ type: "SET_COMMENTS", payload: { articleId: this.params.id, comments } });
           render(
-            React.createElement(CommentList, { comments }),
+            React.createElement(CommentList, { articleId: this.params.id, comments }),
             document.getElementById('comments')
           )
 
