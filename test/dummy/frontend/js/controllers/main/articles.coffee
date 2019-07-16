@@ -21,7 +21,7 @@ class Articles extends Controllers.Base
       Comment
         .all(articleId: this.params.id, total: res.total)
         .then (comments) =>
-          #@view.renderComments comments
+          @view.renderComments comments
           store.dispatch({ type: "SET_COMMENTS", payload: { articleId: this.params.id, comments } });
           render(
             React.createElement(CommentList, { articleId: this.params.id, comments }),

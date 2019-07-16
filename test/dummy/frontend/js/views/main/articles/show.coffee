@@ -20,7 +20,7 @@ class Show extends Views.Base
     document.getElementById("title").textContent = @article.title
     document.getElementById("author").textContent = @article.author
     dateService = new Services.Date @article.publishedAt
-    document.getElementById("pub_date").textContent = dateService.toString 'short'
+    document.getElementById("pub_date").textContent = dateService.toString('short')
     textEl = document.getElementById "text"
     textEl.innerHTML = ""
     text = (new Helpers.Text).simpleFormat @article.content
@@ -29,7 +29,7 @@ class Show extends Views.Base
   renderComments: (comments) ->
     for comment in comments
       @comments.push comment
-      this.connectWith comment, receiver: "_commentReceivedSignal"
+      #this.connectWith comment, receiver: "_commentReceivedSignal"
     this._updateCommentsQuantity()
 
   _updateCommentsQuantity: ->
