@@ -15,7 +15,10 @@ class Pages extends Controllers.Base {
     );
 
     Article.get("all", { page: 1 }).then(resp => {
-      store.dispatch({ type: "SET", payload: { articles: resp.resources } });
+      store.dispatch({
+        type: "SET_ARTICLES",
+        payload: { articles: resp.resources }
+      });
       renderElement(
         <ArticleList articles={resp.resources} />,
         document.getElementById("articles")

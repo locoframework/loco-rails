@@ -15,7 +15,7 @@ export default function LoadMoreLink() {
       .then(resp => {
         if (resp.resources.length > 0) {
           store.dispatch({
-            type: "ADD",
+            type: "ADD_ARTICLES",
             payload: { articles: resp.resources }
           });
         } else {

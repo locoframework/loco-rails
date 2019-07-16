@@ -31,20 +31,13 @@ class Show extends Views.Base
     textEl.insertAdjacentHTML "beforeend", text
 
   renderComments: (comments) ->
-    if comments.length is 0
-      noCommentsHTML = '<p id="no_comments">No comments.</p>'
-      document.getElementById('comments').insertAdjacentHTML('beforeend', noCommentsHTML)
-    else
-      noCommentsNode = document.getElementById('no_comments')
-      if noCommentsNode
-        noCommentsNode.parentNode.removeChild(noCommentsNode)
-      for comment in comments
-        @comments.push comment
-        this.connectWith comment, receiver: "_commentReceivedSignal"
-      renderElement(
-        React.createElement(CommentList, { comments }),
-        document.getElementById('comments')
-      )
+    for comment in comments
+      @comments.push comment
+      this.connectWith comment, receiver: "_commentReceivedSignal"
+    renderElement(
+      React.createElement(CommentList, { comments }),
+      document.getElementById('comments')
+    )
     this._updateCommentsQuantity()
 
   _updateCommentsQuantity: ->

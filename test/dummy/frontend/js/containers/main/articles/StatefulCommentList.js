@@ -22,6 +22,10 @@ function StatefulCommentList(props) {
     <Comment key={comment.id} comment={comment} />
   ));
 
+  if (comments.length === 0) {
+    return <p id="no_comments">No comments.</p>;
+  }
+
   return <>{list}</>;
 }
 

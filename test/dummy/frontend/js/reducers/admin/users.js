@@ -1,4 +1,4 @@
-const users = (state = [], action) => {
+export default (state = [], action) => {
   switch (action.type) {
     case "APPEND_USER":
       return [...state, ...action.payload.users];
@@ -10,5 +10,3 @@ const users = (state = [], action) => {
       return state;
   }
 };
-
-export default users;

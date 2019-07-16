@@ -21,7 +21,7 @@ const articlePublished = ({ id }) => {
   } else {
     Article.find({ id, abbr: true }).then(article => {
       mainStore.dispatch({
-        type: "ADD",
+        type: "ADD_ARTICLES",
         payload: { articles: [article] }
       });
     });
