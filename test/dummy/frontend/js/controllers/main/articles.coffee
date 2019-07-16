@@ -1,4 +1,9 @@
+import React from "react";
+import { render } from "react-dom";
 import { Controllers } from "loco-js";
+
+import store from "stores/main";
+import CommentList from "containers/main/articles/StatefulCommentList";
 
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
@@ -15,7 +20,13 @@ class Articles extends Controllers.Base
     Comment.get("count", articleId: @params.id).then (res) =>
       Comment
         .all(articleId: @params.id, total: res.total)
-        .then (comments) => @view.renderComments comments
+        .then (comments) =>
+          #@view.renderComments comments
+          store.dispatch({ type: "SET_COMMENTS", payload: { comments } });
+          render(
+            React.createElement(CommentList, { comments }),
+            document.getElementById('comments')
+          )
 
   receivedSignal: (signal, data) ->
     switch signal

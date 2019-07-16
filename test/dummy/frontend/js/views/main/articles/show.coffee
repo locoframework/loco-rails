@@ -1,10 +1,6 @@
-import React from "react";
-import { render as renderElement } from "react-dom";
 import { Helpers, Services, UI, Views } from "loco-js";
 
 import Flash from "views/shared/flash.coffee";
-
-import CommentList from "containers/main/articles/StatefulCommentList";
 
 class Show extends Views.Base
   constructor: (opts = {}) ->
@@ -34,10 +30,6 @@ class Show extends Views.Base
     for comment in comments
       @comments.push comment
       this.connectWith comment, receiver: "_commentReceivedSignal"
-    renderElement(
-      React.createElement(CommentList, { comments }),
-      document.getElementById('comments')
-    )
     this._updateCommentsQuantity()
 
   _updateCommentsQuantity: ->
