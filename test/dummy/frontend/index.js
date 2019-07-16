@@ -7,7 +7,7 @@ import "scaffold.css";
 import "global.scss";
 
 import Admin from "controllers/Admin";
-import Main from "controllers/main.coffee";
+import Main from "controllers/Main";
 
 import CustomModels from "models";
 

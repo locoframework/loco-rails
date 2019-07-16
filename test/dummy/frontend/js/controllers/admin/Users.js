@@ -13,7 +13,7 @@ class Users extends Controllers.Base {
     User.get("all").then(resp => {
       store.dispatch({ type: "SET_USERS", payload: { users: resp.resources } });
       renderElement(
-        React.createElement(UserList, { users: resp.resources }),
+        <UserList users={resp.resources} />,
         document.querySelector("table tbody")
       );
     });

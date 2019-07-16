@@ -1,4 +1,12 @@
-class App.Views.Main.Articles.Show extends App.Views.Base
+import React from "react";
+import { render as renderElement } from "react-dom";
+import { Helpers, Services, UI, Views } from "loco-js";
+
+import Flash from "views/shared/flash.coffee";
+
+import CommentList from "containers/main/articles/StatefulCommentList";
+
+class Show extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @article = null
@@ -6,7 +14,7 @@ class App.Views.Main.Articles.Show extends App.Views.Base
     @newComment = opts.comment
 
   render: ->
-    form = new App.UI.Form for: @newComment, initObj: true, id: "new_comment"
+    form = new UI.Form for: @newComment, initObj: true, id: "new_comment"
     form.render()
 
   renderArticle: (article = null) ->
@@ -15,11 +23,11 @@ class App.Views.Main.Articles.Show extends App.Views.Base
       this.connectWith @article, receiver: "_articleReceivedSignal"
     document.getElementById("title").textContent = @article.title
     document.getElementById("author").textContent = @article.author
-    dateService = new App.Services.Date @article.publishedAt
+    dateService = new Services.Date @article.publishedAt
     document.getElementById("pub_date").textContent = dateService.toString 'short'
     textEl = document.getElementById "text"
     textEl.innerHTML = ""
-    text = (new App.Helpers.Text).simpleFormat @article.content
+    text = (new Helpers.Text).simpleFormat @article.content
     textEl.insertAdjacentHTML "beforeend", text
 
   renderComments: (comments) ->
@@ -33,8 +41,10 @@ class App.Views.Main.Articles.Show extends App.Views.Base
       for comment in comments
         @comments.push comment
         this.connectWith comment, receiver: "_commentReceivedSignal"
-        renderedComment = JST["templates/main/comments/comment"] {comment: comment}
-        document.getElementById('comments').insertAdjacentHTML('beforeend', renderedComment)
+      renderElement(
+        React.createElement(CommentList, { comments }),
+        document.getElementById('comments')
+      )
     this._updateCommentsQuantity()
 
   _updateCommentsQuantity: ->
@@ -45,7 +55,7 @@ class App.Views.Main.Articles.Show extends App.Views.Base
     switch signal
       when 'updating'
         txt = 'Author is currently editing article. Be aware of possible changes.'
-        flash = new App.Views.Shared.Flash warning: txt
+        flash = new Flash warning: txt
         flash.render()
       when 'updated'
         @article.reload().then =>
@@ -70,3 +80,5 @@ class App.Views.Main.Articles.Show extends App.Views.Base
         this._updateCommentsQuantity()
       else
         console.log "App.Views.Main.Articles.Show#_commentReceivedSignal: #{signal}"
+
+export default Show
