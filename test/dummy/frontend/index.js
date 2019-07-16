@@ -6,7 +6,7 @@ import "initializers/loco";
 import "scaffold.css";
 import "global.scss";
 
-import Admin from "controllers/admin.coffee";
+import Admin from "controllers/Admin";
 import Main from "controllers/main.coffee";
 
 import CustomModels from "models";

@@ -8,7 +8,7 @@ import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
 import User from "models/user.coffee";
 
-import AdminController from "controllers/admin.coffee";
+import AdminController from "controllers/Admin";
 
 const articlePublished = ({ id }) => {
   if (Env.namespaceController.constructor === AdminController) {
