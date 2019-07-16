@@ -5,7 +5,7 @@ import { Controllers } from "loco-js";
 import store from "stores/main";
 import Article from "models/article.coffee";
 import LoadMoreLink from "containers/main/pages/LoadMoreLink";
-import ArticleListWrapper from "containers/main/pages/ArticleListWrapper";
+import ArticleList from "containers/main/pages/StatefulArticleList";
 
 class Pages extends Controllers.Base {
   index() {
@@ -17,7 +17,7 @@ class Pages extends Controllers.Base {
     Article.get("all", { page: 1 }).then(resp => {
       store.dispatch({ type: "SET", payload: { articles: resp.resources } });
       renderElement(
-        <ArticleListWrapper articles={resp.resources} />,
+        <ArticleList articles={resp.resources} />,
         document.getElementById("articles")
       );
     });

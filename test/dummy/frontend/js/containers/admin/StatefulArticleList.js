@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import store from "stores/admin";
-import ArticleList from "components/admin/ArticleList";
+import Article from "components/admin/Article";
 import ArticleModel from "models/article.coffee";
 
 function ArticleListWrapper(props) {
@@ -18,7 +18,11 @@ function ArticleListWrapper(props) {
     };
   });
 
-  return <ArticleList articles={articles} />;
+  const list = articles.map(article => (
+    <Article key={article.id} article={article} />
+  ));
+
+  return <>{list}</>;
 }
 
 ArticleListWrapper.propTypes = {

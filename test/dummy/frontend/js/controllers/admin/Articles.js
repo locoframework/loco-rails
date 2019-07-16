@@ -8,7 +8,7 @@ import Comment from "models/article/comment.coffee";
 import Edit from "views/admin/articles/Edit";
 import Form from "views/admin/articles/Form";
 
-import ArticleListWrapper from "containers/admin/ArticleListWrapper";
+import ArticleList from "containers/admin/StatefulArticleList";
 
 class Articles extends Controllers.Base {
   published() {
@@ -18,7 +18,7 @@ class Articles extends Controllers.Base {
         payload: { articles: resp.resources }
       });
       render(
-        <ArticleListWrapper articles={resp.resources} />,
+        <ArticleList articles={resp.resources} />,
         document.getElementById("articles")
       );
     });

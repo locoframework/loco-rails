@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import store from "stores/admin";
-import UserList from "components/admin/UserList";
+import User from "components/admin/User";
 import UserModel from "models/user.coffee";
 
 function UserListWrapper(props) {
@@ -16,7 +16,9 @@ function UserListWrapper(props) {
     };
   });
 
-  return <UserList users={users} />;
+  const list = users.map(user => <User key={`user_${user.id}`} user={user} />);
+
+  return <>{list}</>;
 }
 
 UserListWrapper.propTypes = {
