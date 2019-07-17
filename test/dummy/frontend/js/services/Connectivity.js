@@ -66,6 +66,16 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
   });
 };
 
+// TODO: check if the proper article is displayed
+const commentCreated = ({ article_id: articleId, id }) => {
+  Comment.find({ articleId, id }).then(comment =>
+    mainStore.dispatch({
+      type: "ADD_COMMENTS",
+      payload: { articleId, comments: [comment] }
+    })
+  );
+};
+
 class Connectivity extends Views.Base {
   constructor(opts = {}) {
     super(opts);
@@ -81,13 +91,7 @@ class Connectivity extends Views.Base {
         break;
       case "Article.Comment created":
         commentsChanged(data, 1);
-        Comment.find({ articleId: data.article_id, id: data.id }).then(
-          comment =>
-            mainStore.dispatch({
-              type: "ADD_COMMENTS",
-              payload: { articleId: data.article_id, comments: [comment] }
-            })
-        );
+        commentCreated(data);
         break;
       case "Article.Comment destroyed":
         commentsChanged(data, -1);

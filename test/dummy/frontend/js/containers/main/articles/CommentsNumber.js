@@ -3,16 +3,14 @@ import PropTypes from "prop-types";
 
 import store from "stores/main";
 import { commentsForArticle } from "selectors/comments";
-import Comment from "components/main/Comment";
 import CommentModel from "models/article/comment.coffee";
 
-function StatefulCommentList(props) {
-  const articleId = props.articleId;
+function CommentsNumber(props) {
   const [comments, setComments] = useState(props.comments);
 
   useEffect(() => {
     const unsubscribe = store.subscribe(() => {
-      setComments(commentsForArticle(store.getState(), articleId));
+      setComments(commentsForArticle(store.getState(), props.articleId));
     });
 
     return () => {
@@ -20,20 +18,12 @@ function StatefulCommentList(props) {
     };
   });
 
-  const list = comments.map(comment => (
-    <Comment key={comment.id} comment={comment} />
-  ));
-
-  if (comments.length === 0) {
-    return <p id="no_comments">No comments.</p>;
-  }
-
-  return <>{list}</>;
+  return <>{`${comments.length} comment${comments.length === 1 ? "" : "s"}`}</>;
 }
 
-StatefulCommentList.propTypes = {
+CommentsNumber.propTypes = {
   articleId: PropTypes.number.isRequired,
   comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired
 };
 
-export default StatefulCommentList;
+export default CommentsNumber;

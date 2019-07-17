@@ -4,6 +4,7 @@ import { Controllers } from "loco-js";
 
 import store from "stores/main";
 import CommentList from "containers/main/articles/StatefulCommentList";
+import CommentsNumber from "containers/main/articles/CommentsNumber";
 
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
@@ -21,18 +22,14 @@ class Articles extends Controllers.Base
       Comment
         .all(articleId: this.params.id, total: res.total)
         .then (comments) =>
-          @view.renderComments comments
           store.dispatch({ type: "SET_COMMENTS", payload: { articleId: this.params.id, comments } });
           render(
             React.createElement(CommentList, { articleId: this.params.id, comments }),
             document.getElementById('comments')
           )
-
-  receivedSignal: (signal, data) ->
-    switch signal
-      when 'Article.Comment created'
-        return if data.article_id isnt @params.id
-        Comment.find(id: data.id, articleId: data.article_id)
-        .then (comment) => @view.renderComments [comment]
+          render(
+            React.createElement(CommentsNumber, { articleId: this.params.id, comments }),
+            document.getElementById('comments_count')
+          )
 
 export default Articles

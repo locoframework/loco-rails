@@ -26,16 +26,6 @@ class Show extends Views.Base
     text = (new Helpers.Text).simpleFormat @article.content
     textEl.insertAdjacentHTML "beforeend", text
 
-  renderComments: (comments) ->
-    for comment in comments
-      @comments.push comment
-      #this.connectWith comment, receiver: "_commentReceivedSignal"
-    this._updateCommentsQuantity()
-
-  _updateCommentsQuantity: ->
-    text = "#{@comments.length} comment#{if @comments.length is 1 then '' else 's'}"
-    document.getElementById('comments_count').textContent = text
-
   _articleReceivedSignal: (signal, data) ->
     switch signal
       when 'updating'
@@ -62,8 +52,5 @@ class Show extends Views.Base
         @comments.splice @comments.indexOf(comment), 1
         commentNode = document.getElementById("comment_#{comment.id}")
         commentNode.parentNode.removeChild(commentNode)
-        this._updateCommentsQuantity()
-      else
-        console.log "App.Views.Main.Articles.Show#_commentReceivedSignal: #{signal}"
 
 export default Show
