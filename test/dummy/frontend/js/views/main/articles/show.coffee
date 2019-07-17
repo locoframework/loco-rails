@@ -47,10 +47,5 @@ class Show extends Views.Base
           comment.applyChanges()
           renderedComment = JST["templates/main/comments/comment"] {comment: comment}
           document.getElementById("comment_#{comment.id}").outerHTML = renderedComment
-      when 'destroyed'
-        comment = App.Utils.Collection.find @comments, (c) -> c.id is data.id
-        @comments.splice @comments.indexOf(comment), 1
-        commentNode = document.getElementById("comment_#{comment.id}")
-        commentNode.parentNode.removeChild(commentNode)
 
 export default Show

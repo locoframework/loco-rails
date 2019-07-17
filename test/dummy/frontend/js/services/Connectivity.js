@@ -76,6 +76,13 @@ const commentCreated = ({ article_id: articleId, id }) => {
   );
 };
 
+const commentDestroyed = ({ article_id: articleId, id }) => {
+  mainStore.dispatch({
+    type: "REMOVE_COMMENT",
+    payload: { id, articleId }
+  });
+};
+
 class Connectivity extends Views.Base {
   constructor(opts = {}) {
     super(opts);
@@ -95,6 +102,7 @@ class Connectivity extends Views.Base {
         break;
       case "Article.Comment destroyed":
         commentsChanged(data, -1);
+        commentDestroyed(data);
         break;
       case "User created":
         User.find(data.id).then(user =>
