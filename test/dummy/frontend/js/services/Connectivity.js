@@ -86,7 +86,7 @@ const commentDestroyed = ({ article_id: articleId, id }) => {
 
 const commentUpdated = ({ article_id: articleId, id }) => {
   const [comment, index] = findComment(mainStore.getState(), id, {
-    subResourceId: articleId
+    parentId: articleId
   });
   if (!comment) return;
   comment.reload().then(() => {
