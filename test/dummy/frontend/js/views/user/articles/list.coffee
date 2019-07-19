@@ -1,4 +1,6 @@
-class App.Views.User.Articles.List extends App.Views.Base
+import { Views } from "loco-js"
+
+class List extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @articles = opts.articles
@@ -38,3 +40,5 @@ class App.Views.User.Articles.List extends App.Views.Base
         else
           flash.setAlert data.alert
         flash.render()
+
+export default List;

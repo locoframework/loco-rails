@@ -1,14 +1,23 @@
-class App.Controllers.User.Articles extends App.Controllers.Base
+import { Controllers } from "loco-js"
+
+import UserLayout from "views/layouts/user.coffee";
+import Flash from "views/shared/flash.coffee";
+import List from "views/user/articles/list.coffee";
+
+import Article from "models/article.coffee";
+import Comment from "models/article/comment.coffee";
+
+class Articles extends Controllers.Base
   initialize: ->
-    @layout = new App.Views.Layouts.User
+    this.layout = new UserLayout
 
   index: ->
-    if @params.message is 'deleted'
-      flash = new App.Views.Shared.Flash alert: 'Article has been deleted.'
+    if this.params.message is 'deleted'
+      flash = new Flash alert: 'Article has been deleted.'
       flash.render()
-    @listView = new App.Views.User.Articles.List articles: []
-    this.connectWith [App.Models.Article, App.Models.Article.Comment]
-    App.Models.Article.get("all").then (resp) => @listView.renderArticles resp.resources
+    this.listView = new List articles: []
+    this.connectWith [Article, Comment];
+    Article.get("all").then (resp) => this.listView.renderArticles resp.resources
 
   show: ->
     @showView = new App.Views.User.Articles.Show
@@ -47,3 +56,5 @@ class App.Controllers.User.Articles extends App.Controllers.Base
       when "Article.Comment destroyed"
         if @listView?
           @listView.commentsQuantityChangedForArticle data.article_id, -1
+
+export default Articles
