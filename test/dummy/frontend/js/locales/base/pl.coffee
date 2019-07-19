@@ -1,4 +1,6 @@
-App.I18n.pl =
+import { I18n } from "loco-js";
+
+I18n.pl =
   variants:
     few: (i) ->
       num = parseInt App.Utils.String.last String(i)

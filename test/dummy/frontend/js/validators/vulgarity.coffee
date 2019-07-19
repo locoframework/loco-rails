@@ -1,4 +1,6 @@
-class App.Validators.Vulgarity extends App.Validators.Base
+import { Env, I18n, Validators } from "loco-js";
+
+class Vulgarity extends Validators.Base
   @identity = 'Vulgarity'
 
   constructor: -> super
@@ -16,10 +18,12 @@ class App.Validators.Vulgarity extends App.Validators.Base
         throw new TypeError "Vulgarity validator is applicable only for strings and #{@attr} isn't."
 
   _addErrorMessage: ->
-    message = App.I18n[App.Env.loco.getLocale()].errors.messages.vulgarity
+    message = I18n[Env.loco.getLocale()].errors.messages.vulgarity
     @obj.addErrorMessage message, for: @attr
 
   _getVulgarWord: ->
-    switch App.Env.loco.getLocale()
+    switch Env.loco.getLocale()
       when 'pl' then 'kurwa'
       when 'en' then 'fuck'
+
+export default Vulgarity

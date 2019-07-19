@@ -6,9 +6,10 @@ import "initializers/loco";
 import "scaffold.css";
 import "global.scss";
 
+import "validators";
+import "locales";
 import Admin from "controllers/Admin";
 import Main from "controllers/Main";
-
 import CustomModels from "models";
 
 Object.assign(Models, CustomModels);
