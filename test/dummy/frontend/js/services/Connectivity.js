@@ -2,7 +2,7 @@ import { Env, Views } from "loco-js";
 
 import mainStore from "stores/main";
 import adminStore from "stores/admin";
-import { findArticle } from "selectors/articles";
+import { findArticle, findComment } from "selectors/articles";
 
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
@@ -66,8 +66,9 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
   });
 };
 
-// TODO: check if the proper article is displayed
 const commentCreated = ({ article_id: articleId, id }) => {
+  const [article] = findArticle(mainStore.getState(), articleId);
+  if (!article) return;
   Comment.find({ articleId, id }).then(comment =>
     mainStore.dispatch({
       type: "ADD_COMMENTS",
@@ -80,6 +81,20 @@ const commentDestroyed = ({ article_id: articleId, id }) => {
   mainStore.dispatch({
     type: "REMOVE_COMMENT",
     payload: { id, articleId }
+  });
+};
+
+const commentUpdated = ({ article_id: articleId, id }) => {
+  const [comment, index] = findComment(mainStore.getState(), id, {
+    subResourceId: articleId
+  });
+  if (!comment) return;
+  comment.reload().then(() => {
+    comment.applyChanges();
+    mainStore.dispatch({
+      type: "UPDATE_COMMENT",
+      payload: { comment, index, articleId }
+    });
   });
 };
 
@@ -103,6 +118,9 @@ class Connectivity extends Views.Base {
       case "Article.Comment destroyed":
         commentsChanged(data, -1);
         commentDestroyed(data);
+        break;
+      case "Article.Comment updated":
+        commentUpdated(data);
         break;
       case "User created":
         User.find(data.id).then(user =>

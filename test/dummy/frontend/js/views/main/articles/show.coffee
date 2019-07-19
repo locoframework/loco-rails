@@ -6,7 +6,6 @@ class Show extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @article = null
-    @comments = []
     @newComment = opts.comment
 
   render: ->
@@ -36,16 +35,5 @@ class Show extends Views.Base
         @article.reload().then =>
           @article.applyChanges()
           this.renderArticle()
-      else
-        console.log "App.Views.Main.Articles.Show#_articleReceivedSignal: #{signal}"
-
-  _commentReceivedSignal: (signal, data) ->
-    switch signal
-      when 'updated'
-        comment = App.Utils.Collection.find @comments, (c) -> c.id is data.id
-        comment.reload().then =>
-          comment.applyChanges()
-          renderedComment = JST["templates/main/comments/comment"] {comment: comment}
-          document.getElementById("comment_#{comment.id}").outerHTML = renderedComment
 
 export default Show
