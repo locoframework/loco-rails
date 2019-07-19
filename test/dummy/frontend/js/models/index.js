@@ -1,12 +1,12 @@
+import { Models } from "loco-js";
+
 import Article from "./article.coffee";
 import Comment from "./article/comment.coffee";
 import User from "./user.coffee";
 
 Object.assign(Article, { Comment });
 
-const Models = {
+Object.assign(Models, {
   Article,
   User
-};
-
-export default Models;
+});
