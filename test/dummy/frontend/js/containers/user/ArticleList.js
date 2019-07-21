@@ -19,14 +19,19 @@ function ArticleList(props) {
   });
 
   const list = articles.map(article => (
-    <Article key={article.id} article={article} />
+    <Article
+      key={article.id}
+      article={article}
+      onArticleDestroyed={props.onArticleDestroyed}
+    />
   ));
 
   return <>{list}</>;
 }
 
 ArticleList.propTypes = {
-  articles: PropTypes.arrayOf(PropTypes.instanceOf(ArticleModel)).isRequired
+  articles: PropTypes.arrayOf(PropTypes.instanceOf(ArticleModel)).isRequired,
+  onArticleDestroyed: PropTypes.func.isRequired
 };
 
 export default ArticleList;

@@ -3,7 +3,23 @@ import PropTypes from "prop-types";
 
 import ArticleModel from "models/article.coffee";
 
-function Article({ article }) {
+import store from "stores/user";
+
+function Article({ article, onArticleDestroyed }) {
+  const handleDeletingArticle = e => {
+    e.preventDefault();
+    if (!confirm("Are you sure?")) return;
+    article.delete(null).then(data => {
+      if (data.success) {
+        store.dispatch({
+          type: "REMOVE_ARTICLE",
+          payload: { id: data.id }
+        });
+      }
+      onArticleDestroyed(data);
+    });
+  };
+
   return (
     <tr id={`article_${article.id}`}>
       <td>{article.title}</td>
@@ -13,7 +29,11 @@ function Article({ article }) {
       <td>
         <a href={`/user/articles/${article.id}`}>Show</a> |
         <a href={`/user/articles/${article.id}/edit`}>Edit</a> |
-        <a href={`/user/articles/${article.id}`} className="delete_article">
+        <a
+          href={`/user/articles/${article.id}`}
+          className="delete_article"
+          onClick={handleDeletingArticle}
+        >
           Delete
         </a>
       </td>
@@ -22,7 +42,8 @@ function Article({ article }) {
 }
 
 Article.propTypes = {
-  article: PropTypes.instanceOf(ArticleModel).isRequired
+  article: PropTypes.instanceOf(ArticleModel).isRequired,
+  onArticleDestroyed: PropTypes.func.isRequired
 };
 
 export default Article;

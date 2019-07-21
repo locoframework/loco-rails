@@ -17,6 +17,14 @@ class Articles extends Controllers.Base
   initialize: ->
     this.layout = new UserLayout
 
+  onArticleDestroyed: (res) ->
+    flash = new Flash
+    if res.success
+      flash.setNotice res.notice
+    else
+      flash.setAlert res.alert
+    flash.render()
+
   index: ->
     if this.params.message is 'deleted'
       flash = new Flash alert: 'Article has been deleted.'
@@ -31,7 +39,8 @@ class Articles extends Controllers.Base
       #this.listView.renderArticles resp.resources
       render(
         React.createElement(ArticleList, {
-          articles: resp.resources
+          articles: resp.resources,
+          onArticleDestroyed: this.onArticleDestroyed
         }),
         document.getElementById("article_list");
       );
@@ -61,8 +70,6 @@ class Articles extends Controllers.Base
       when "Article updated"
         App.Models.Article.find(id: data.id, abbr: true).then (article) =>
           @listView.renderArticle article
-      when "Article destroyed"
-        @listView.deleteArticle data.id
       when "Article.Comment created"
         return if @params.id? and data.article_id? and data.article_id isnt @params.id
         if @listView?
