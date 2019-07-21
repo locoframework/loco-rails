@@ -1,7 +1,8 @@
 import { Env, Views } from "loco-js";
 
-import mainStore from "stores/main";
 import adminStore from "stores/admin";
+import mainStore from "stores/main";
+import userStore from "stores/user";
 import { findArticle, findComment } from "selectors/articles";
 
 import Article from "models/article.coffee";
@@ -9,6 +10,7 @@ import Comment from "models/article/comment.coffee";
 import User from "models/user.coffee";
 
 import AdminController from "controllers/Admin";
+import UserController from "controllers/User";
 
 const articlePublished = ({ id }) => {
   if (Env.namespaceController.constructor === AdminController) {
@@ -51,6 +53,8 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
   let store = mainStore;
   if (Env.namespaceController.constructor === AdminController) {
     store = adminStore;
+  } else if (Env.namespaceController.constructor === UserController) {
+    store = userStore;
   }
   const [article, index] = findArticle(store.getState(), articleId);
   if (!article) return;
