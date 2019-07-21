@@ -1,4 +1,8 @@
+import React from "react";
+import { render } from "react-dom";
 import { Controllers } from "loco-js"
+
+import store from "stores/user";
 
 import UserLayout from "views/layouts/user.coffee";
 import Flash from "views/shared/flash.coffee";
@@ -6,6 +10,8 @@ import List from "views/user/articles/list.coffee";
 
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
+
+import ArticleList from "containers/user/ArticleList";
 
 class Articles extends Controllers.Base
   initialize: ->
@@ -17,7 +23,18 @@ class Articles extends Controllers.Base
       flash.render()
     this.listView = new List articles: []
     this.connectWith [Article, Comment];
-    Article.get("all").then (resp) => this.listView.renderArticles resp.resources
+    Article.get("all").then (resp) =>
+      store.dispatch({
+        type: "SET_ARTICLES",
+        payload: { articles: resp.resources }
+      });
+      #this.listView.renderArticles resp.resources
+      render(
+        React.createElement(ArticleList, {
+          articles: resp.resources
+        }),
+        document.getElementById("article_list");
+      );
 
   show: ->
     @showView = new App.Views.User.Articles.Show
