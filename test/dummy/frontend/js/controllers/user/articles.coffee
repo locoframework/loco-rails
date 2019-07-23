@@ -61,9 +61,6 @@ class Articles extends Controllers.Base
 
   receivedSignal: (signal, data) ->
     switch signal
-      when "Article created"
-        App.Models.Article.find(id: data.id, abbr: true).then (article) =>
-          @listView.renderArticles [article]
       when "Article updated"
         App.Models.Article.find(id: data.id, abbr: true).then (article) =>
           @listView.renderArticle article

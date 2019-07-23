@@ -1,9 +1,9 @@
 export default (state = [], action) => {
   switch (action.type) {
-    case "SET_ARTICLES":
-      return [...action.payload.articles];
     case "ADD_ARTICLES":
       return [...state, ...action.payload.articles];
+    case "SET_ARTICLES":
+      return [...action.payload.articles];
     case "UPDATE_ARTICLE":
       return [
         ...state.slice(0, action.payload.index),

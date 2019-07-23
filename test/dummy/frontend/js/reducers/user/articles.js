@@ -1,5 +1,7 @@
 export default (state = [], action) => {
   switch (action.type) {
+    case "ADD_ARTICLES":
+      return [...state, ...action.payload.articles];
     case "REMOVE_ARTICLE":
       return state.filter(article => article.id !== action.payload.id);
     case "SET_ARTICLES":

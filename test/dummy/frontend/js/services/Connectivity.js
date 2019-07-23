@@ -12,6 +12,16 @@ import User from "models/user.coffee";
 import AdminController from "controllers/Admin";
 import UserController from "controllers/User";
 
+const articleCreated = ({ id }) => {
+  if (Env.namespaceController.constructor !== UserController) return;
+  Article.find({ id, abbr: true }).then(article => {
+    userStore.dispatch({
+      type: "ADD_ARTICLES",
+      payload: { articles: [article] }
+    });
+  });
+};
+
 const articlePublished = ({ id }) => {
   if (Env.namespaceController.constructor === AdminController) {
     Article.find({ id, abbr: true, resource: "admin" }).then(article => {
@@ -109,6 +119,9 @@ class Connectivity extends Views.Base {
 
   receivedSignal(signal, data) {
     switch (signal) {
+      case "Article created":
+        articleCreated(data);
+        break;
       case "Article published":
         articlePublished(data);
         break;
