@@ -6,6 +6,7 @@ import store from "stores/user";
 
 import UserLayout from "views/layouts/user.coffee";
 import Flash from "views/shared/flash.coffee";
+import ShowView from "views/user/articles/show.coffee";
 
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
@@ -43,11 +44,15 @@ class Articles extends Controllers.Base
       );
 
   show: ->
-    @showView = new App.Views.User.Articles.Show
-    this.connectWith [App.Models.Article.Comment]
-    App.Models.Article.find(@params.id).then (article) => @showView.renderArticle article
-    App.Models.Article.Comment.all(articleId: @params.id).then (resp) =>
-      @showView.renderComments resp.resources
+    this.showView = new ShowView
+    this.connectWith([Comment]);
+    Article.find(this.params.id).then (article) => this.showView.renderArticle(article)
+    Comment.all(articleId: this.params.id).then (resp) =>
+      store.dispatch({
+        type: "SET_COMMENTS",
+        payload: { articleId: this.params.id, comments: resp.resources }
+      });
+      this.showView.renderComments(resp.resources)
 
   new: ->
     view = new App.Views.User.Articles.Form

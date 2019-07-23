@@ -1,4 +1,8 @@
-class App.Views.User.Articles.Show extends App.Views.Base
+import { Views } from "loco-js";
+
+import FlashView from "views/shared/flash.coffee";
+
+class Show extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @article = null
@@ -9,10 +13,11 @@ class App.Views.User.Articles.Show extends App.Views.Base
       @article = article
     document.getElementById('article_title').textContent = @article.title
     document.getElementById('article_text').textContent = @article.content
-    if @article.publishedAt?
-      document.getElementById('publish_article').style.display = 'none'
-    else
-      document.getElementById('publish_article').style.display = ''
+    node = document.getElementById('publish_article')
+    if node and @article.publishedAt?
+      node.style.display = 'none'
+    else if node
+      node.style.display = ''
     this._handlePublishing()
     this._updateEditLink()
 
@@ -53,9 +58,11 @@ class App.Views.User.Articles.Show extends App.Views.Base
         document.getElementById('publish_article').outerHTML = '<span>Published!</span>'
       .catch (err) ->
         e.target.textContent = 'Publish'
-        flash = new App.Views.Shared.Flash alert: "Connection error!"
+        flash = new FlashView alert: "Connection error!"
         flash.render()
 
   _updateEditLink: ->
     href = document.getElementById('edit_link').getAttribute('href')
     document.getElementById('edit_link').setAttribute('href', href.replace("/0/", "/#{@article.id}/"))
+
+export default Show;
