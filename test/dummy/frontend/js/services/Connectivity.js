@@ -47,6 +47,8 @@ const articleUpdated = ({ id }) => {
   if (Env.namespaceController.constructor === AdminController) {
     findParams["resource"] = "admin";
     store = adminStore;
+  } else if (Env.namespaceController.constructor === UserController) {
+    store = userStore;
   }
 
   const [article, index] = findArticle(store.getState(), id);

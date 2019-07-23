@@ -61,16 +61,10 @@ class Articles extends Controllers.Base
 
   receivedSignal: (signal, data) ->
     switch signal
-      when "Article updated"
-        App.Models.Article.find(id: data.id, abbr: true).then (article) =>
-          @listView.renderArticle article
       when "Article.Comment created"
         return if @params.id? and data.article_id? and data.article_id isnt @params.id
         if @showView?
           App.Models.Article.Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
             @showView.renderComments [comment]
-      when "Article.Comment destroyed"
-        if @listView?
-          @listView.commentsQuantityChangedForArticle data.article_id, -1
 
 export default Articles

@@ -9,6 +9,7 @@ export default (state = {}, action) => {
         ]
       };
     case "REMOVE_COMMENT":
+      if (state[action.payload.articleId] == null) return state;
       return {
         ...state,
         [action.payload.articleId]: state[action.payload.articleId].filter(
