@@ -21,15 +21,6 @@ class Show extends Views.Base
     this._handlePublishing()
     this._updateEditLink()
 
-  renderComments: (comments) ->
-    if comments.length is 0
-      document.getElementById('comments').insertAdjacentHTML('beforeend', '<p>No comments.</p>')
-      return
-    for comment in comments
-      this.connectWith comment, receiver: "commentReceivedSignal"
-      renderedComment = JST["templates/user/comments/comment"] {comment: comment, isAdmin: false}
-      document.getElementById('comments').insertAdjacentHTML('beforeend', renderedComment)
-
   articleReceivedSignal: (signal, data) ->
     switch signal
       when "updated"
@@ -38,16 +29,6 @@ class Show extends Views.Base
           this.renderArticle()
       when "destroyed"
         window.location.href = "/user/articles?message=deleted"
-
-  commentReceivedSignal: (signal, data) ->
-    switch signal
-      when "updated"
-        App.Models.Article.Comment.find(id: data.id, articleId: data.article_id).then (comment) ->
-          template = JST["templates/user/comments/comment"] {comment: comment, isAdmin: false}
-          document.getElementById("comment_#{comment.id}").outerHTML = template
-      when "destroyed"
-        commentNode = document.getElementById("comment_#{data.id}")
-        commentNode.parentNode.removeChild(commentNode)
 
   _handlePublishing: ->
     document.getElementById('publish_article').addEventListener 'click', (e) =>

@@ -10,6 +10,7 @@ import Comment from "models/article/comment.coffee";
 import User from "models/user.coffee";
 
 import AdminController from "controllers/Admin";
+import MainController from "controllers/Main";
 import UserController from "controllers/User";
 
 const articleCreated = ({ id }) => {
@@ -83,10 +84,17 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
 };
 
 const commentCreated = ({ article_id: articleId, id }) => {
-  const [article] = findArticle(mainStore.getState(), articleId);
+  let store = userStore;
+  const findParams = { articleId, id };
+
+  if (Env.namespaceController.constructor === MainController) {
+    store = mainStore;
+    findParams["resource"] = "main";
+  }
+  const [article] = findArticle(store.getState(), articleId);
   if (!article) return;
-  Comment.find({ articleId, id }).then(comment =>
-    mainStore.dispatch({
+  Comment.find(findParams).then(comment =>
+    store.dispatch({
       type: "ADD_COMMENTS",
       payload: { articleId, comments: [comment] }
     })
@@ -94,20 +102,28 @@ const commentCreated = ({ article_id: articleId, id }) => {
 };
 
 const commentDestroyed = ({ article_id: articleId, id }) => {
-  mainStore.dispatch({
+  let store = mainStore;
+  if (Env.namespaceController.constructor === UserController) {
+    store = userStore;
+  }
+  store.dispatch({
     type: "REMOVE_COMMENT",
     payload: { id, articleId }
   });
 };
 
 const commentUpdated = ({ article_id: articleId, id }) => {
-  const [comment, index] = findComment(mainStore.getState(), id, {
+  let store = mainStore;
+  if (Env.namespaceController.constructor === UserController) {
+    store = userStore;
+  }
+  const [comment, index] = findComment(store.getState(), id, {
     parentId: articleId
   });
   if (!comment) return;
   comment.reload().then(() => {
     comment.applyChanges();
-    mainStore.dispatch({
+    store.dispatch({
       type: "UPDATE_COMMENT",
       payload: { comment, index, articleId }
     });
