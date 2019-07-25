@@ -1,4 +1,10 @@
-class App.Views.User.Articles.Form extends App.Views.Base
+import { UI, Views } from "loco-js";
+
+import Comment from "models/article/comment.coffee";
+
+import FlashView from "views/shared/flash.coffee";
+
+class Form extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @article = null
@@ -9,9 +15,9 @@ class App.Views.User.Articles.Form extends App.Views.Base
   render: (article = null) ->
     @article = article
     this.connectWith @article
-    this.connectWith [App.Models.Article.Comment], receiver: 'receivedArticleCommentSignal'
+    this.connectWith [Comment], receiver: 'receivedArticleCommentSignal'
     this._handleApplyingChanges()
-    @form = new App.UI.Form for: @article
+    @form = new UI.Form for: @article
     @form.render()
 
   renderComments: (comments) ->
@@ -29,7 +35,7 @@ class App.Views.User.Articles.Form extends App.Views.Base
     switch signal
       when "updating"
         if document.querySelector('h1').getAttribute('data-mark') isnt data.mark
-          flash = new App.Views.Shared.Flash warning: 'Uuups someone else started editing this article.'
+          flash = new FlashView warning: 'Uuups someone else started editing this article.'
           flash.render()
       when "updated"
         @article.reload().then =>
@@ -43,10 +49,10 @@ class App.Views.User.Articles.Form extends App.Views.Base
     return if data.article_id? and data.article_id isnt @article.id
     switch signal
       when 'Article.Comment created'
-        App.Models.Article.Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
+        Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
           this.renderComments [comment]
       when 'Article.Comment updated'
-        App.Models.Article.Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
+        Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
           this._renderComment comment
       when 'Article.Comment destroyed'
         commentNode = document.getElementById("comment_#{data.id}")
@@ -89,3 +95,5 @@ class App.Views.User.Articles.Form extends App.Views.Base
         commentToApprove.updateAttribute 'approved'
         .then (res) ->
           document.getElementById("comment_#{res.id}").querySelector('a.approve').outerHTML = '<span>approved</span>'
+
+export default Form;

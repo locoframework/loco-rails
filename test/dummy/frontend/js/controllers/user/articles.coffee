@@ -5,8 +5,9 @@ import { Controllers } from "loco-js"
 import store from "stores/user";
 
 import UserLayout from "views/layouts/user.coffee";
-import Flash from "views/shared/flash.coffee";
+import FlashView from "views/shared/flash.coffee";
 import ShowView from "views/user/articles/show.coffee";
+import FormView from "views/user/articles/form.coffee";
 
 import Article from "models/article.coffee";
 import Comment from "models/article/comment.coffee";
@@ -19,7 +20,7 @@ class Articles extends Controllers.Base
     this.layout = new UserLayout
 
   onArticleDestroyed: (res) ->
-    flash = new Flash
+    flash = new FlashView
     if res.success
       flash.setNotice res.notice
     else
@@ -28,7 +29,7 @@ class Articles extends Controllers.Base
 
   index: ->
     if this.params.message is 'deleted'
-      flash = new Flash alert: 'Article has been deleted.'
+      flash = new FlashView alert: 'Article has been deleted.'
       flash.render()
     Article.get("all").then (resp) =>
       store.dispatch({
@@ -65,13 +66,13 @@ class Articles extends Controllers.Base
       );
 
   new: ->
-    view = new App.Views.User.Articles.Form
-    view.render new App.Models.Article
+    view = new FormView;
+    view.render(new Article);
 
   edit: ->
-    view = new App.Views.User.Articles.Form
-    App.Models.Article.find(@params.id).then (article) -> view.render article
-    App.Models.Article.Comment.all(articleId: @params.id).then (resp) ->
-      view.renderComments resp.resources
+    view = new FormView;
+    Article.find(this.params.id).then (article) -> view.render article
+    Comment.all(articleId: this.params.id).then (resp) ->
+      view.renderComments(resp.resources)
 
 export default Articles
