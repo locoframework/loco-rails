@@ -41,7 +41,6 @@ class Form extends Views.Base
         }),
         document.getElementById("comments");
       );
-      #this._handleApprovingComment()
 
   receivedSignal: (signal, data) ->
     switch signal
@@ -59,24 +58,13 @@ class Form extends Views.Base
   receivedArticleCommentSignal: (signal, data) ->
     return if not @article.id?
     return if data.article_id? and data.article_id isnt @article.id
-    switch signal
-      when 'Article.Comment created'
-        Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
-          this.renderComments [comment]
-      when 'Article.Comment updated'
-        Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
-          this._renderComment comment
-      when 'Article.Comment destroyed'
-        commentNode = document.getElementById("comment_#{data.id}")
-        commentNode.parentNode.removeChild(commentNode)
-
-  _renderComment: (comment) ->
-    template = JST["templates/user/comments/comment"] {comment: comment, isAdmin: true}
-    commentNode = document.getElementById("comment_#{comment.id}")
-    if commentNode
-      commentNode.outerHTML = template
-    else
-      document.getElementById('comments').insertAdjacentHTML('beforeend', template)
+    #switch signal
+    #  when 'Article.Comment created'
+    #    Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
+    #      this.renderComments [comment]
+    #  when 'Article.Comment destroyed'
+    #    commentNode = document.getElementById("comment_#{data.id}")
+    #    commentNode.parentNode.removeChild(commentNode)
 
   _displayChanges: ->
     for attrib, changes of @changes
@@ -92,20 +80,5 @@ class Form extends Views.Base
         @article[attrName] = @changes[attrName].is
         @form.fill attrName
         e.target.classList.add('none')
-
-  _handleApprovingComment: ->
-    for el in document.querySelectorAll('a.approve')
-      el.addEventListener 'click', (e) =>
-        e.preventDefault()
-        commentId = parseInt e.target.parentNode.getAttribute('data-id')
-        commentToApprove = null
-        for comment in @comments
-          continue if comment.id isnt commentId
-          commentToApprove = comment
-          break
-        commentToApprove.approved = true
-        commentToApprove.updateAttribute 'approved'
-        .then (res) ->
-          document.getElementById("comment_#{res.id}").querySelector('a.approve').outerHTML = '<span>approved</span>'
 
 export default Form;

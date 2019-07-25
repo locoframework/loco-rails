@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import store from "stores/user";
 import { commentsForArticle } from "selectors/comments";
-import Comment from "components/shared/Comment";
+import Comment from "containers/user/Comment";
 import CommentModel from "models/article/comment.coffee";
 
 function CommentList(props) {

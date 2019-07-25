@@ -20,12 +20,19 @@ export default (state = {}, action) => {
       return { [action.payload.articleId]: action.payload.comments };
     case "UPDATE_COMMENT": {
       const articleId = action.payload.articleId;
+      let index = action.payload.index;
+      if (!index) {
+        const comment = state[articleId].find(
+          c => c.id === action.payload.comment.id
+        );
+        index = state[articleId].indexOf(comment);
+      }
       return {
         ...state,
         [articleId]: [
-          ...state[articleId].slice(0, action.payload.index),
+          ...state[articleId].slice(0, index),
           action.payload.comment,
-          ...state[articleId].slice(action.payload.index + 1)
+          ...state[articleId].slice(index + 1)
         ]
       };
     }

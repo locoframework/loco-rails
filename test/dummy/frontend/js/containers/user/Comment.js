@@ -1,16 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Services } from "loco-js";
+
+import store from "stores/user";
 
 import CommentModel from "models/article/comment.coffee";
 
 function Comment({ comment, isAdmin = false }) {
+  const [approving, setApproving] = useState(false);
+
   const createdAt = new Services.Date(comment.createdAt).strftime("%d %b %y");
+
+  const handleApproving = e => {
+    e.preventDefault();
+    setApproving(true);
+    comment.approved = true;
+    comment.updateAttribute("approved").then(res => {
+      if (!res.ok) return;
+      store.dispatch({
+        type: "UPDATE_COMMENT",
+        payload: {
+          articleId: comment.articleId,
+          comment: new CommentModel({ ...comment, approved: true })
+        }
+      });
+    });
+  };
 
   const adminSection = () => {
     let approveLink;
 
-    if (!comment.approved) {
+    if (comment.approved) {
+      approveLink = (
+        <>
+          <span>approved</span> |{" "}
+        </>
+      );
+    } else if (approving) {
+      approveLink = (
+        <>
+          <span>approving...</span> |{" "}
+        </>
+      );
+    } else {
       approveLink = (
         <>
           <a
@@ -18,6 +50,7 @@ function Comment({ comment, isAdmin = false }) {
               comment.id
             }/approve`}
             className="approve"
+            onClick={handleApproving}
           >
             approve
           </a>{" "}
@@ -51,7 +84,7 @@ function Comment({ comment, isAdmin = false }) {
   };
 
   return (
-    <p id={`comment_${comment.id}`} data-id={comment.id}>
+    <p id={`comment_${comment.id}`}>
       <b>{comment.author}</b> on <i>{createdAt}</i>
       {isAdmin ? adminSection() : ""}
       <br />
