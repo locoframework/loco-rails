@@ -8,6 +8,7 @@ import CommentModel from "models/article/comment.coffee";
 
 function CommentList(props) {
   const articleId = props.articleId;
+  const isAdmin = props.isAdmin || false;
   const [comments, setComments] = useState(props.comments);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ function CommentList(props) {
   if (comments.length === 0) return <p>No comments.</p>;
 
   const list = comments.map(comment => (
-    <Comment key={comment.id} comment={comment} />
+    <Comment key={comment.id} comment={comment} isAdmin={isAdmin} />
   ));
 
   return <>{list}</>;
@@ -31,6 +32,7 @@ function CommentList(props) {
 
 CommentList.propTypes = {
   articleId: PropTypes.number.isRequired,
+  isAdmin: PropTypes.bool,
   comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired
 };
 

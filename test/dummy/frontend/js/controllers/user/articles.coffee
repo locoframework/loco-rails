@@ -72,7 +72,6 @@ class Articles extends Controllers.Base
   edit: ->
     view = new FormView;
     Article.find(this.params.id).then (article) -> view.render article
-    Comment.all(articleId: this.params.id).then (resp) ->
-      view.renderComments(resp.resources)
+    view.renderComments(this.params.id)
 
 export default Articles

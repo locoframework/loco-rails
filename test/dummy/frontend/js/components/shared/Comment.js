@@ -10,9 +10,9 @@ function Comment({ comment, isAdmin = false }) {
   const adminSection = () => {
     let approveLink;
 
-    if (comment.approved) {
-      approveLink =
-        (
+    if (!comment.approved) {
+      approveLink = (
+        <>
           <a
             href={`/user/articles/${comment.articleId}/comments/${
               comment.id
@@ -20,13 +20,16 @@ function Comment({ comment, isAdmin = false }) {
             className="approve"
           >
             approve
-          </a>
-        ) + " | ";
+          </a>{" "}
+          |{" "}
+        </>
+      );
     }
 
     return (
       <>
-        {approveLink}
+        {" "}
+        ({approveLink}
         <a
           href={`/user/articles/${comment.articleId}/comments/${
             comment.id
@@ -34,7 +37,7 @@ function Comment({ comment, isAdmin = false }) {
         >
           edit
         </a>{" "}
-        |
+        |{" "}
         <a
           href={`/user/articles/${comment.articleId}/comments/${comment.id}`}
           data-method="delete"
@@ -42,6 +45,7 @@ function Comment({ comment, isAdmin = false }) {
         >
           delete
         </a>
+        )
       </>
     );
   };
@@ -49,7 +53,7 @@ function Comment({ comment, isAdmin = false }) {
   return (
     <p id={`comment_${comment.id}`} data-id={comment.id}>
       <b>{comment.author}</b> on <i>{createdAt}</i>
-      {isAdmin ? `(${adminSection()})` : ""}
+      {isAdmin ? adminSection() : ""}
       <br />
       {comment.text}
     </p>

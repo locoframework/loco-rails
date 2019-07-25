@@ -1,14 +1,20 @@
+import React from "react";
+import { render as renderElement } from "react-dom";
 import { UI, Views } from "loco-js";
+
+import store from "stores/user";
 
 import Comment from "models/article/comment.coffee";
 
 import FlashView from "views/shared/flash.coffee";
 
+import CommentList from "containers/user/CommentList";
+
 class Form extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @article = null
-    @comments = null
+    this.comments = null
     @form = null
     @changes = null
 
@@ -20,16 +26,22 @@ class Form extends Views.Base
     @form = new UI.Form for: @article
     @form.render()
 
-  renderComments: (comments) ->
-    @comments = comments
-    if comments.length is 0
-      document.getElementById('comments').insertAdjacentHTML('beforeend', '<p id="no_comments">No comments.</p>')
-      return
-    noCommentNode = document.getElementById('no_comments')
-    if noCommentNode
-      noCommentNode.parentNode.removeChild(noCommentNode)
-    this._renderComment comment for comment in comments
-    this._handleApprovingComment()
+  renderComments: (articleId) ->
+    Comment.all(articleId: articleId).then (resp) =>
+      this.comments = resp.resources
+      store.dispatch({
+        type: "SET_COMMENTS",
+        payload: { articleId: articleId, comments: this.comments }
+      });
+      renderElement(
+        React.createElement(CommentList, {
+          articleId: articleId,
+          comments: this.comments,
+          isAdmin: true
+        }),
+        document.getElementById("comments");
+      );
+      #this._handleApprovingComment()
 
   receivedSignal: (signal, data) ->
     switch signal
