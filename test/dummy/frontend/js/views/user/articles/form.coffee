@@ -13,13 +13,17 @@ import CommentList from "containers/user/CommentList";
 class Form extends Views.Base
   constructor: (opts = {}) ->
     super opts
-    @article = null
+    this.article = null
     this.comments = null
     @form = null
     @changes = null
 
-  render: (article = null) ->
-    @article = article
+  render: (article) ->
+    store.dispatch({
+      type: "ADD_ARTICLES",
+      payload: { articles: [article] }
+    });
+    this.article = article
     this.connectWith @article
     this.connectWith [Comment], receiver: 'receivedArticleCommentSignal'
     this._handleApplyingChanges()
@@ -59,9 +63,6 @@ class Form extends Views.Base
     return if not @article.id?
     return if data.article_id? and data.article_id isnt @article.id
     #switch signal
-    #  when 'Article.Comment created'
-    #    Comment.find(articleId: data.article_id, id: data.id).then (comment) =>
-    #      this.renderComments [comment]
     #  when 'Article.Comment destroyed'
     #    commentNode = document.getElementById("comment_#{data.id}")
     #    commentNode.parentNode.removeChild(commentNode)

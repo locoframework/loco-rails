@@ -66,12 +66,11 @@ class Articles extends Controllers.Base
       );
 
   new: ->
-    view = new FormView;
-    view.render(new Article);
+    (new FormView).render(new Article);
 
   edit: ->
     view = new FormView;
-    Article.find(this.params.id).then (article) -> view.render article
+    Article.find(this.params.id).then (article) -> view.render(article)
     view.renderComments(this.params.id)
 
 export default Articles
