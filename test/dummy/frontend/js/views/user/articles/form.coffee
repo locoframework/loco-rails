@@ -12,11 +12,10 @@ import CommentList from "containers/user/CommentList";
 
 class Form extends Views.Base
   constructor: (opts = {}) ->
-    super opts
-    this.article = null
-    this.comments = null
-    @form = null
-    @changes = null
+    super(opts);
+    this.article = null;
+    this.form = null;
+    this.changes = null;
 
   render: (article) ->
     store.dispatch({
@@ -24,23 +23,21 @@ class Form extends Views.Base
       payload: { articles: [article] }
     });
     this.article = article
-    this.connectWith @article
-    this.connectWith [Comment], receiver: 'receivedArticleCommentSignal'
+    this.connectWith(this.article);
     this._handleApplyingChanges()
-    @form = new UI.Form for: @article
-    @form.render()
+    this.form = new UI.Form for: @article
+    this.form.render()
 
   renderComments: (articleId) ->
     Comment.all(articleId: articleId).then (resp) =>
-      this.comments = resp.resources
       store.dispatch({
         type: "SET_COMMENTS",
-        payload: { articleId: articleId, comments: this.comments }
+        payload: { articleId: articleId, comments: resp.resources }
       });
       renderElement(
         React.createElement(CommentList, {
           articleId: articleId,
-          comments: this.comments,
+          comments: resp.resources,
           isAdmin: true
         }),
         document.getElementById("comments");
@@ -54,21 +51,13 @@ class Form extends Views.Base
           flash.render()
       when "updated"
         @article.reload().then =>
-          @changes = @article.changes()
+          this.changes = @article.changes()
           this._displayChanges()
       when "destroyed"
         window.location.href = "/user/articles?message=deleted"
 
-  receivedArticleCommentSignal: (signal, data) ->
-    return if not @article.id?
-    return if data.article_id? and data.article_id isnt @article.id
-    #switch signal
-    #  when 'Article.Comment destroyed'
-    #    commentNode = document.getElementById("comment_#{data.id}")
-    #    commentNode.parentNode.removeChild(commentNode)
-
   _displayChanges: ->
-    for attrib, changes of @changes
+    for attrib, changes of this.changes
       sel = document.querySelector("a.apply_changes[data-for=#{@article.getAttrRemoteName(attrib)}]")
       continue unless sel
       sel.classList.remove('none')
@@ -78,8 +67,8 @@ class Form extends Views.Base
       sel.addEventListener 'click', (e) =>
         e.preventDefault()
         attrName = @article.getAttrName(e.target.getAttribute('data-for'))
-        @article[attrName] = @changes[attrName].is
-        @form.fill attrName
+        @article[attrName] = this.changes[attrName].is
+        this.form.fill attrName
         e.target.classList.add('none')
 
 export default Form;
