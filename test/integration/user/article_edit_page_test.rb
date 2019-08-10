@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class User::ArticleEditPageTest < IT
@@ -9,22 +11,22 @@ class User::ArticleEditPageTest < IT
   def setup
     super
     sign_in_user 'zbigniew.humeniuk@example.com', 'secret'
-    within("#article_#{articles(:two).id}"){ click_link 'Edit' }
+    within("#article_#{articles(:two).id}") { click_link 'Edit' }
   end
 
-  test "should show info about editing" do
+  test 'should show info about editing' do
     sleep 0.1
-    emit articles(:two), :updating, data: {mark: Time.current.to_f.to_s}, for: [users(:user_zbig)]
+    emit articles(:two), :updating, data: { mark: Time.current.to_f.to_s }, for: [users(:user_zbig)]
     assert page.has_content? 'Uuups someone else started editing this article.'
   end
 
-  test "should update article" do
+  test 'should update article' do
     fill_in 'Title', with: 'What is Active Record? (updated)'
     click_button 'Update Article'
     assert page.has_selector? "input[type=submit][value='Article updated!']"
   end
 
-  test "should allow to update fields in order to have updated values" do
+  test 'should allow to update fields in order to have updated values' do
     sleep 0.1
     update_article :two
     within "div[data-attr='title']" do
@@ -40,56 +42,56 @@ class User::ArticleEditPageTest < IT
     end
   end
 
-  test "should auto load new comments" do
-    within "#comments" do
+  test 'should auto load new comments' do
+    within '#comments' do
       assert_not page.has_content? 'Some nice thoughts dude'
     end
     create_comment_for_article :two
-    within "#comments" do
+    within '#comments' do
       assert page.has_content? 'Some nice thoughts dude'
     end
   end
 
-  test "should auto update comment" do
+  test 'should auto update comment' do
     comment = create_comment_for_article :two
     visit "/user/articles/#{articles(:two).id}/edit"
-    within "#comments" do
+    within '#comments' do
       assert_not page.has_content? 'Some nice thoughts dude (edited)'
     end
     update_comment comment
-    within "#comments" do
+    within '#comments' do
       assert page.has_content? 'Some nice thoughts dude (edited)'
     end
   end
 
-  test "should auto remove comment if was destroyed" do
+  test 'should auto remove comment if was destroyed' do
     comment = create_comment_for_article :two
-    within "#comments" do
+    within '#comments' do
       assert page.has_content? 'Some nice thoughts dude'
     end
     destroy_comment comment
     sleep 1
-    within "#comments" do
+    within '#comments' do
       assert_not page.has_content? 'Some nice thoughts dude'
     end
   end
 
-  test "should auto redirect to list of articles if article has been deleted" do
+  test 'should auto redirect to list of articles if article has been deleted' do
     sleep 0.1
     destroy_article :two
     assert page.has_content? 'Article has been deleted.'
   end
 
-  test "should approve comment" do
+  test 'should approve comment' do
     create_comment_for_article :two
     sign_in
     sleep 0.1
     visit '/user'
-    within("#article_#{articles(:two).id}"){ click_link 'Edit' }
-    within "#comments" do
+    within("#article_#{articles(:two).id}") { click_link 'Edit' }
+    within '#comments' do
       click_link 'approve'
       sleep 0.1
-      assert_not page.has_content? 'approve'
+      assert page.has_content? 'approved'
     end
   end
 end
