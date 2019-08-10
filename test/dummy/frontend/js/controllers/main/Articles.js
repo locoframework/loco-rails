@@ -15,7 +15,13 @@ class Articles extends Controllers.Base {
     const newComment = new Comment({ articleId: this.params.id });
     const view = new Show({ comment: newComment });
     view.render();
-    Article.find(this.params.id).then(article => view.renderArticle(article));
+    Article.find(this.params.id).then(article => {
+      store.dispatch({
+        type: "SET_ARTICLES",
+        payload: { articles: [article] }
+      });
+      view.renderArticle(article);
+    });
     Comment.get("count", { articleId: this.params.id }).then(res => {
       Comment.all({ articleId: this.params.id, total: res.total }).then(
         comments => {

@@ -7,3 +7,10 @@ import "validators";
 import "locales";
 import "controllers";
 import "models";
+
+// for testing purposes only
+import { Channels, Env } from "loco-js";
+window.test = {
+  Channels,
+  Env
+};
