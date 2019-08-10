@@ -1,9 +1,9 @@
-import { I18n } from "loco-js";
+import { I18n, Utils } from "loco-js";
 
 I18n.pl =
   variants:
     few: (i) ->
-      num = parseInt App.Utils.String.last String(i)
+      num = parseInt Utils.String.last String(i)
       [2,3,4].indexOf(num) isnt -1 and not(String(i).length is 2 && String(i)[0] is '1')
   models: {}
   attributes: {}

@@ -32,10 +32,10 @@ class User extends Models.Base
       type: "Date"
       remoteName: "updated_at"
 
-  @receivedSignal: (signal, data) -> console.log "App.Models.User.receivedSignal: #{signal}"
+  @receivedSignal: (signal, data) -> console.log "User.receivedSignal: #{signal}"
 
   constructor: (data) -> super data
 
-  receivedSignal: (signal, data) -> console.log "App.Models.User#receivedSignal: #{signal}"
+  receivedSignal: (signal, data) -> console.log "User#receivedSignal: #{signal}"
 
 export default User

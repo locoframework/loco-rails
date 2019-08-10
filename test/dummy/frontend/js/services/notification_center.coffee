@@ -1,4 +1,7 @@
-import { Env } from "loco-js"
+import { Env } from "loco-js";
+
+import UserController from "controllers/User";
+import RoomsController from "controllers/user/rooms.coffee";
 
 class NotificationCenter
   receivedSignal: (data) ->
@@ -9,7 +12,7 @@ class NotificationCenter
         this._messageSignal data
 
   _pingSignal: ->
-    return if Env.namespaceController.constructor isnt App.Controllers.User
+    return if Env.namespaceController.constructor isnt UserController
     alert 'Ping!'
 
   _messageSignal: (data) ->
@@ -17,8 +20,8 @@ class NotificationCenter
     view.receivedMessage data.message, data.author
 
   _getRoomView: ->
-    return false if Env.namespaceController.constructor isnt App.Controllers.User
-    return false if Env.controller.constructor isnt App.Controllers.User.Rooms
+    return false if Env.namespaceController.constructor isnt UserController
+    return false if Env.controller.constructor isnt RoomsController
     return false if Env.action isnt 'show'
     Env.controller.getView 'show'
 

@@ -1,4 +1,9 @@
-class App.Controllers.Admin.Sessions extends App.Controllers.Base
+import { Controllers } from "loco-js";
+
+import Form from "views/admin/sessions/form.coffee";
+
+class Sessions extends Controllers.Base
   new: ->
-    view = new App.Views.Admin.Sessions.Form
-    view.render()
+    (new Form).render();
+
+export default Sessions;

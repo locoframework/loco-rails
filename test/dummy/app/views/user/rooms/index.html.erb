@@ -9,6 +9,7 @@
       <th></th>
     </tr>
   </thead>
+  <tbody>
     <% @rooms_with_hub.each do |os| %>
     <tr id='room_<%= os.room.id %>'>
       <td><%= os.room.name %></td>
@@ -24,7 +25,6 @@
       </td>
     </tr>
     <% end %>
-  <tbody>
   </tbody>
 </table>
 <% end %>

@@ -1,13 +1,22 @@
-class App.Controllers.User.Rooms extends App.Controllers.Base
+import { Controllers } from "loco-js";
+
+import Member from "models/room/member.coffee";
+
+import List from "views/user/rooms/list.coffee";
+import Show from "views/user/rooms/show.coffee";
+
+class Rooms extends Controllers.Base
   initialize: ->
 
   index: ->
-    view = new App.Views.User.Rooms.List
+    view = new List
     view.render()
 
   show: ->
-    view = new App.Views.User.Rooms.Show id: @params.id
+    view = new Show id: @params.id
     this.setView 'show', view
     view.render()
-    App.Models.Room.Member.all(roomId: @params.id).then (resp) ->
+    Member.all(roomId: @params.id).then (resp) ->
       view.renderMembers resp.resources
+
+export default Rooms;

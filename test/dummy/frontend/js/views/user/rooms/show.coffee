@@ -1,10 +1,14 @@
-class App.Views.User.Rooms.Show extends App.Views.Base
+import { Env, Views } from "loco-js";
+
+import Room from "models/room.coffee";
+
+class Show extends Views.Base
   constructor: (opts = {}) ->
     super opts
     @roomId = opts.id
 
   render: ->
-    this.connectWith App.Models.Room
+    this.connectWith(Room);
     this._handleSendingMessage()
 
   renderMembers: (members) ->
@@ -28,7 +32,7 @@ class App.Views.User.Rooms.Show extends App.Views.Base
     document.querySelector('[data-behavior~=room-speaker]').addEventListener 'keypress', (event) =>
       return if event.keyCode isnt 13
       event.preventDefault()
-      App.Env.loco.emit signal: 'message', txt: event.target.value, room_id: @roomId
+      Env.loco.emit(signal: 'message', txt: event.target.value, room_id: @roomId);
       event.target.value = ''
 
   _memberJoined: (member) ->
@@ -38,3 +42,5 @@ class App.Views.User.Rooms.Show extends App.Views.Base
   _memberLeft: (member) ->
     node = document.querySelector("#members li#user_#{member.id}")
     node.parentNode.removeChild(node)
+
+export default Show;

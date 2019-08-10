@@ -1,4 +1,6 @@
-class App.Models.Room extends App.Models.Base
+import { Models } from "loco-js"
+
+class Room extends Models.Base
   @identity = "Room"
   @resources = {}
 
@@ -12,3 +14,5 @@ class App.Models.Room extends App.Models.Base
     super data
 
   receivedSignal: (signal, data) ->
+
+export default Room;

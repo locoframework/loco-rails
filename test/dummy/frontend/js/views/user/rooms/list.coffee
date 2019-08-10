@@ -1,9 +1,13 @@
-class App.Views.User.Rooms.List extends App.Views.Base
+import { Views } from "loco-js";
+
+import Room from "models/room.coffee";
+
+class List extends Views.Base
   constructor: (opts = {}) ->
-    super opts
+    super(opts);
 
   render: ->
-    this.connectWith App.Models.Room
+    this.connectWith(Room);
 
   receivedSignal: (signal, data) ->
     switch signal
@@ -12,7 +16,7 @@ class App.Views.User.Rooms.List extends App.Views.Base
       when "Room member_left"
         this._memberLeft data.room_id
       when "Room created"
-        renderedRoom = JST["templates/user/rooms/room_for_list"] room: data.room
+        renderedRoom = this._renderRoom(data.room);
         document.getElementById('rooms_list').insertAdjacentHTML('beforeend', renderedRoom)
       when "Room destroyed"
         roomNode = document.getElementById("room_#{data.room_id}")
@@ -28,3 +32,18 @@ class App.Views.User.Rooms.List extends App.Views.Base
 
   _membersNode: (roomId) ->
     document.querySelector("#room_#{roomId} td.members")
+
+  _renderRoom: (room) ->
+    "
+    <tr id='room_#{room.id}'>
+      <td>#{room.name}</td>
+      <td class='members'>0</td>
+      <td>
+        <a rel='nofollow' data-method='patch' href='/user/rooms/#{room.id}/join'>Join</a> |
+        <a data-confirm='R U sure?' rel='nofollow' data-method='delete'
+          href='/user/rooms/#{room.id}'>Destroy</a>
+      </td>
+    </tr>
+    "
+
+export default List;
