@@ -1,1 +1,0 @@
-App.I18n.en.errors.messages.vulgarity = 'contains strong language.'

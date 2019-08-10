@@ -1,0 +1,21 @@
+{
+  "./*.js": [
+    "prettier --write",
+    "eslint",
+    "git add"
+  ],
+  "test/dummy/frontend/**/*.js": [
+    "prettier --write",
+    "eslint",
+    "git add"
+  ],
+  "test/dummy/frontend/**/*.{css,scss}": [
+    "prettier --write",
+    "stylelint --fix",
+    "git add"
+  ],
+  "*.{gemspec,rb}": [
+    "bundle exec rubocop -a",
+    "git add"
+  ]
+}
