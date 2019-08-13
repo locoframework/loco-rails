@@ -1,6 +1,6 @@
 import { Controllers, Mix } from "loco-js";
 
-import Disconnection from "./concerns/disconnection.coffee";
+import Disconnection from "./concerns/Disconnection";
 import Articles from "./admin/Articles";
 import Comments from "./admin/Comments";
 import Sessions from "./admin/Sessions";
