@@ -4,7 +4,7 @@ import { Services } from "loco-js";
 
 import store from "stores/user";
 
-import CommentModel from "models/article/comment.coffee";
+import CommentModel from "models/article/Comment";
 
 function Comment({ comment, isAdmin = false }) {
   const [approving, setApproving] = useState(false);

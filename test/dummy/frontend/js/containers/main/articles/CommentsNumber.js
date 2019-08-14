@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import store from "stores/main";
 import { commentsForArticle } from "selectors/comments";
-import CommentModel from "models/article/comment.coffee";
+import CommentModel from "models/article/Comment";
 
 function CommentsNumber(props) {
   const [comments, setComments] = useState(props.comments);

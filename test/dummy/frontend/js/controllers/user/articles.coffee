@@ -9,8 +9,8 @@ import FlashView from "views/shared/flash.coffee";
 import ShowView from "views/user/articles/show.coffee";
 import FormView from "views/user/articles/form.coffee";
 
-import Article from "models/article.coffee";
-import Comment from "models/article/comment.coffee";
+import Article from "models/Article";
+import Comment from "models/article/Comment";
 
 import ArticleList from "containers/user/ArticleList";
 import CommentList from "containers/user/CommentList";

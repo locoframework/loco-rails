@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import CommentModel from "models/article/comment.coffee";
+import CommentModel from "models/article/Comment";
 import Comment from "components/admin/comment";
 
 function CommentList({ comments }) {

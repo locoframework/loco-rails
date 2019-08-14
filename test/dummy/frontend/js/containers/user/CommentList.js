@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import store from "stores/user";
 import { commentsForArticle } from "selectors/comments";
 import Comment from "containers/user/Comment";
-import CommentModel from "models/article/comment.coffee";
+import CommentModel from "models/article/Comment";
 
 function CommentList(props) {
   const articleId = props.articleId;

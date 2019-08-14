@@ -5,9 +5,9 @@ import mainStore from "stores/main";
 import userStore from "stores/user";
 import { findArticle, findComment } from "selectors/articles";
 
-import Article from "models/article.coffee";
-import Comment from "models/article/comment.coffee";
-import User from "models/user.coffee";
+import Article from "models/Article";
+import Comment from "models/article/Comment";
+import User from "models/User";
 
 import AdminController from "controllers/Admin";
 import MainController from "controllers/Main";

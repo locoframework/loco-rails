@@ -1,6 +1,6 @@
 import { Env, UI, Views } from "loco-js";
 
-import CommentModel from "models/article/comment.coffee";
+import CommentModel from "models/article/Comment";
 
 class Form extends Views.Base {
   constructor(opts = {}) {

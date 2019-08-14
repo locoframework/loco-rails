@@ -1,6 +1,6 @@
 import { Env, Views } from "loco-js";
 
-import Room from "models/room.coffee";
+import Room from "models/User";
 
 class Show extends Views.Base
   constructor: (opts = {}) ->

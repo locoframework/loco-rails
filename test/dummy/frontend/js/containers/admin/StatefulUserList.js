@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import store from "stores/admin";
 import User from "components/admin/User";
-import UserModel from "models/user.coffee";
+import UserModel from "models/User";
 
 function UserListWrapper(props) {
   const [users, setUsers] = useState(props.users);

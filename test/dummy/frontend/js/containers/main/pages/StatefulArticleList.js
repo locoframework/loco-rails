@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import store from "stores/main";
 import Article from "components/main/Article";
-import ArticleModel from "models/article.coffee";
+import ArticleModel from "models/Article";
 
 function StatefulArticleList(props) {
   const [articles, setArticles] = useState(props.articles);

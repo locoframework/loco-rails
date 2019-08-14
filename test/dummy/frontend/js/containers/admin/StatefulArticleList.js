@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import store from "stores/admin";
 import Article from "components/admin/Article";
-import ArticleModel from "models/article.coffee";
+import ArticleModel from "models/Article";
 
 function ArticleListWrapper(props) {
   const [articles, setArticles] = useState(props.articles);

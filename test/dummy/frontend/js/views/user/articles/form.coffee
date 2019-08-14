@@ -4,7 +4,7 @@ import { UI, Views } from "loco-js";
 
 import store from "stores/user";
 
-import Comment from "models/article/comment.coffee";
+import Comment from "models/article/Comment";
 
 import FlashView from "views/shared/flash.coffee";
 

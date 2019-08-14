@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Article from "models/article.coffee";
+import Article from "models/Article";
 import store from "stores/main";
 
 export default function LoadMoreLink() {

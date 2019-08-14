@@ -1,6 +1,6 @@
 import { UI, Views } from "loco-js"
 
-import User from "models/user.coffee"
+import User from "models/User"
 import Flash from "views/shared/flash.coffee"
 
 class UserRegistrationForm extends Views.Base

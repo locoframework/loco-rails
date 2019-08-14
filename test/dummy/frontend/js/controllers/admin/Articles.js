@@ -3,8 +3,8 @@ import { render } from "react-dom";
 import { Controllers } from "loco-js";
 
 import store from "stores/admin";
-import Article from "models/article.coffee";
-import Comment from "models/article/comment.coffee";
+import Article from "models/Article";
+import Comment from "models/article/Comment";
 import Edit from "views/admin/articles/Edit";
 import Form from "views/admin/articles/Form";
 

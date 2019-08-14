@@ -6,8 +6,8 @@ import store from "stores/main";
 import CommentList from "containers/main/articles/StatefulCommentList";
 import CommentsNumber from "containers/main/articles/CommentsNumber";
 
-import Article from "models/article.coffee";
-import Comment from "models/article/comment.coffee";
+import Article from "models/Article";
+import Comment from "models/article/Comment";
 import Show from "views/main/articles/Show";
 
 class Articles extends Controllers.Base {

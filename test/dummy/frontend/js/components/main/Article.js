@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Services } from "loco-js";
 
-import ArticleModel from "models/article.coffee";
+import ArticleModel from "models/Article";
 
 function Article({ article }) {
   const date = new Services.Date(article.publishedAt).toString("short");

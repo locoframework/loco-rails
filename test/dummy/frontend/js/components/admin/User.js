@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Env } from "loco-js";
 
-import UserModel from "models/user.coffee";
+import UserModel from "models/User";
 
 const User = ({ user }) => {
   const ping = (e, userId) => {
