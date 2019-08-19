@@ -6,7 +6,7 @@ import store from "stores/user";
 
 import Comment from "models/article/Comment";
 
-import FlashView from "views/shared/flash.coffee";
+import FlashView from "views/shared/Flash";
 
 import CommentList from "containers/user/CommentList";
 

@@ -5,7 +5,7 @@ import { Controllers } from "loco-js"
 import store from "stores/user";
 
 import UserLayout from "views/layouts/user.coffee";
-import FlashView from "views/shared/flash.coffee";
+import FlashView from "views/shared/Flash";
 import ShowView from "views/user/articles/show.coffee";
 import FormView from "views/user/articles/form.coffee";
 

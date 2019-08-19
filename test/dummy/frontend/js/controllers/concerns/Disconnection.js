@@ -1,4 +1,4 @@
-import Flash from "views/shared/flash.coffee";
+import Flash from "views/shared/Flash";
 
 class Disconnection {
   disconnectedForTooLong() {
