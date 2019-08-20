@@ -9,7 +9,7 @@ class Show extends Views.Base {
   }
 
   renderArticle(article = null) {
-    if (this.article != null) {
+    if (this.article == null) {
       this.connectWith(article, { receiver: "articleReceivedSignal" });
       this.article = article;
     }
