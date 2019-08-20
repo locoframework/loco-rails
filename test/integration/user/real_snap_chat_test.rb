@@ -26,9 +26,6 @@ class User::RealSnapChatTest < IT
   end
 
   test "should send messages" do
-    if Rails.version.to_i == 4
-      skip "Rails4 does not support web sockets."
-    end
     join_room users(:user_jane), @room
     fill_in 'message', with: 'Hello Jane!'
     find('#message').native.send_keys :return

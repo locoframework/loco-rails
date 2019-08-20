@@ -1,6 +1,6 @@
 import { Env, Views } from "loco-js";
 
-import Room from "models/User";
+import Room from "models/Room";
 
 class Show extends Views.Base {
   constructor(opts = {}) {
@@ -14,7 +14,9 @@ class Show extends Views.Base {
   }
 
   renderMembers(members) {
-    for (const member of members) this._memberJoined(member);
+    for (const member of members) {
+      this._memberJoined(member);
+    }
   }
 
   receivedMessage(message, author) {
