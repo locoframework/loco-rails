@@ -29,7 +29,7 @@ class NotificationCenter {
     if (Env.namespaceController.constructor !== UserController) return false;
     if (Env.controller.constructor !== RoomsController) return false;
     if (Env.action !== "show") return false;
-    Env.controller.getView("show");
+    return Env.controller.getView("show");
   }
 }
 
