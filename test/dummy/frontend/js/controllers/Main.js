@@ -3,7 +3,7 @@ import { Controllers, Mix } from "loco-js";
 import Disconnection from "./concerns/Disconnection";
 import Articles from "./main/Articles";
 import Pages from "./main/Pages";
-import Users from "./main/users.coffee";
+import Users from "./main/Users";
 
 class Main extends Mix(Controllers.Base, Disconnection) {
   initialize() {
