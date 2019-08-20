@@ -1,7 +1,7 @@
 import { Controllers, Mix } from "loco-js";
 
 import Disconnection from "./concerns/Disconnection";
-import Articles from "./user/articles.coffee";
+import Articles from "./user/Articles";
 import Rooms from "./user/Rooms";
 
 class User extends Mix(Controllers.Base, Disconnection) {}
