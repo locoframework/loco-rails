@@ -1,4 +1,4 @@
-import { Controllers, Mix } from "loco-js";
+import { Controllers } from "loco-js";
 
 import Disconnection from "./concerns/Disconnection";
 import Articles from "./admin/Articles";
@@ -6,7 +6,9 @@ import Comments from "./admin/Comments";
 import Sessions from "./admin/Sessions";
 import Users from "./admin/Users";
 
-class Admin extends Mix(Controllers.Base, Disconnection) {
+Object.assign(Controllers.Base.prototype, Disconnection);
+
+class Admin extends Controllers.Base {
   initialize() {
     this.setScope("admin");
   }
