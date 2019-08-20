@@ -1,6 +1,6 @@
 import { Controllers } from "loco-js";
 
-import Form from "views/admin/sessions/form.coffee";
+import Form from "views/admin/sessions/Form";
 
 class Sessions extends Controllers.Base {
   new() {

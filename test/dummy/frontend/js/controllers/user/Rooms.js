@@ -2,8 +2,8 @@ import { Controllers } from "loco-js";
 
 import Member from "models/room/Member";
 
-import List from "views/user/rooms/list.coffee";
-import Show from "views/user/rooms/show.coffee";
+import List from "views/user/rooms/List";
+import Show from "views/user/rooms/Show";
 
 class Rooms extends Controllers.Base {
   initialize() {}
