@@ -1,6 +1,6 @@
 import { Helpers, Services, UI, Views } from "loco-js";
 
-import Flash from "views/shared/flash.coffee";
+import Flash from "views/shared/Flash";
 
 class Show extends Views.Base {
   constructor(opts = {}) {

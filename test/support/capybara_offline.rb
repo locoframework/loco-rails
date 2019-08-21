@@ -2,17 +2,13 @@
 
 module CapybaraOffline
   def go_disconnected disconnected_mode = :server_error
-    if Rails.version.to_i >= 5
-      page.evaluate_script 'window.test.Channels.Loco.NotificationCenter.disconnected();'
-    end
+    page.evaluate_script 'window.test.Channels.Loco.NotificationCenter.disconnected();'
     current_proxy = NoResponseRack.new disconnected_mode
     rack_mappings.unshift [nil, '', /^(.*)/n, current_proxy]
   end
 
   def go_connected
-    if Rails.version.to_i >= 5
-      page.evaluate_script 'window.test.Channels.Loco.NotificationCenter.connected();'
-    end
+    page.evaluate_script 'window.test.Channels.Loco.NotificationCenter.connected();'
     rack_mappings.shift
   end
 

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import store from "stores/main";
 import { commentsForArticle } from "selectors/comments";
 import Comment from "components/main/Comment";
-import CommentModel from "models/article/comment.coffee";
+import CommentModel from "models/article/Comment";
 
 function StatefulCommentList(props) {
   const articleId = props.articleId;

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import ArticleModel from "models/article.coffee";
+import ArticleModel from "models/Article";
 
 import store from "stores/user";
 

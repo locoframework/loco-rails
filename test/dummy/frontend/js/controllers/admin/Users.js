@@ -3,7 +3,7 @@ import { render as renderElement } from "react-dom";
 import { Controllers } from "loco-js";
 
 import store from "stores/admin";
-import User from "models/user.coffee";
+import User from "models/User";
 import UserList from "containers/admin/StatefulUserList";
 import Show from "views/admin/users/Show";
 import Form from "views/admin/users/Form";

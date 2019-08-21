@@ -21,19 +21,6 @@ module.exports = {
     rules: [
       { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" },
       {
-        test: /\.coffee$/,
-        use: [
-          {
-            loader: "coffee-loader",
-            options: {
-              transpile: {
-                presets: ["env"]
-              }
-            }
-          }
-        ]
-      },
-      {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
