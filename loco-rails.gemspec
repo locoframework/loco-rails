@@ -32,5 +32,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'puma', '~> 3.12'
   s.add_development_dependency 'redis', '~> 4.1.0'
   s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'rubocop-rails'
   s.add_development_dependency 'selenium-webdriver', '~> 3.142'
 end
