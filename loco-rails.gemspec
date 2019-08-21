@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   ]
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'rails', '>= 5.0', '< 6.0'
+  s.add_dependency 'rails', '>= 5.0'
 
   s.add_development_dependency 'bcrypt', '~> 3.1.12'
   s.add_development_dependency 'capybara', '~> 3.25.0'
