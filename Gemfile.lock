@@ -113,7 +113,8 @@ GEM
     parser (2.6.3.0)
       ast (~> 2.4.0)
     public_suffix (3.1.1)
-    puma (3.12.1)
+    puma (4.1.0)
+      nio4r (~> 2.0)
     rack (2.0.7)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -193,16 +194,16 @@ DEPENDENCIES
   bcrypt (~> 3.1.12)
   capybara (~> 3.28.0)
   database_cleaner (~> 1.7.0)
-  jbuilder (~> 2.5)
+  jbuilder (~> 2.9.1)
   listen (>= 3.1.5, < 3.2)
   loco-rails!
   mysql2 (~> 0.5.2)
-  puma (~> 3.12)
-  redis (~> 4.1.0)
+  puma (~> 4.1)
+  redis (~> 4.1.2)
   rubocop
   rubocop-rails
   selenium-webdriver (~> 3.142)
-  will_paginate (~> 3.1.0)
+  will_paginate (~> 3.1.8)
 
 BUNDLED WITH
    1.17.2
