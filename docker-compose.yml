@@ -11,5 +11,13 @@ services:
     ports:
       - "3307:3306"
 
+  redis:
+    image: redis:5.0.5
+    expose:
+      - '6379'
+    volumes:
+      - 'redis:/var/lib/redis/data'
+
 volumes:
   mysql:
+  redis:
