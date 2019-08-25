@@ -14,6 +14,6 @@ gemspec
 
 group :development, :test do
   # integration tests need following gems in test group
-  gem 'jbuilder', '~> 2.5'
-  gem 'will_paginate', '~> 3.1.0'
+  gem 'jbuilder', '~> 2.9.1'
+  gem 'will_paginate', '~> 3.1.8'
 end

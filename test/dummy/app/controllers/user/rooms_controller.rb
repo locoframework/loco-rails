@@ -50,7 +50,7 @@ class User::RoomsController < UserController
 
   def destroy
     if @hub.raw_members.any?
-      redirect_to :back, alert: 'Only empty room can be deleted'
+      redirect_to user_rooms_path, alert: 'Only empty room can be deleted'
       return
     end
     del_hub @hub

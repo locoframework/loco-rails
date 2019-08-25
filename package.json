@@ -20,11 +20,11 @@
   "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "actioncable": "^5.2.3",
+    "@rails/actioncable": "^6.0.0-alpha",
     "core-js": "^3.0.1",
     "loco-js": "~3.2.4",
     "prop-types": "^15.7.2",
-    "rails-ujs": "^5.2.3",
+    "@rails/ujs": "^6.0.0-alpha",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "redux": "^4.0.4"

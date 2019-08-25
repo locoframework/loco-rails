@@ -1,3 +1,5 @@
+require: rubocop-rails
+
 AllCops:
   TargetRubyVersion: 2.6
   Exclude:
@@ -9,7 +11,7 @@ Layout/EmptyLineAfterGuardClause:
 
 Layout/IndentationConsistency:
   Enabled: true
-  EnforcedStyle: rails
+  EnforcedStyle: indented_internal_methods
   Exclude:
     - lib/generators/loco/file_injector/templates/connection.rb
 

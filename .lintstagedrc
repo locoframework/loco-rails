@@ -15,7 +15,7 @@
     "git add"
   ],
   "*.{gemspec,rb}": [
-    "bundle exec rubocop -a",
+    "bundle exec rubocop --force-exclusion -a",
     "git add"
   ]
 }
