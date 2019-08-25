@@ -4,7 +4,7 @@ development:
   channel_prefix: dummy_dev
 
 test:
-  adapter: redis
+  adapter: async
   url: redis://localhost:6379/2
   channel_prefix: dummy_test
 
