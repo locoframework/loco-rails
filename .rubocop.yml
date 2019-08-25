@@ -30,17 +30,11 @@ Metrics/BlockLength:
   Enabled: true
   Exclude:
     - loco-rails.gemspec
-    - test/dummy/db/schema.rb
 
 Metrics/MethodLength:
   Enabled: true
   Exclude:
     - test/dummy/app/controllers/admin/articles_controller.rb
-
-Metrics/LineLength:
-  Enabled: true
-  Exclude:
-    - test/dummy/db/schema.rb
 
 Naming/FileName:
   Enabled: true
