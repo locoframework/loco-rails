@@ -17,7 +17,7 @@ class Admin::CommentsController < AdminController
   end
 
   def update
-    if @comment.update_attributes comment_params
+    if @comment.update comment_params
       emit @comment, :updated, data: {article_id: @article.id}
       render json: {success: true, status: 200, flash: {success: 'Comment updated!'}, data: {}}
     else
