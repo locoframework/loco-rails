@@ -28,9 +28,11 @@ class User::RealSnapChatTest < IT
   end
 
   test 'should send messages' do
+    perform_enqueued_jobs
     join_room users(:user_jane), @room
     fill_in 'message', with: 'Hello Jane!'
     find('#message').native.send_keys :return
+    perform_enqueued_jobs
     assert page.has_content? 'zbig: Hello Jane!'
     emit_to HubFinder.new(@room).find, signal: 'message', message: 'Hi zbig!', author: 'jane'
     assert page.has_content? 'jane: Hi zbig!'
@@ -38,6 +40,7 @@ class User::RealSnapChatTest < IT
 
   test 'should show info about joining room after returning from disconnection' do
     go_disconnected
+    sleep 0.1
     join_room users(:user_jane), @room
     go_connected
     assert page.has_content? 'jane'
