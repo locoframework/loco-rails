@@ -8,7 +8,7 @@ import Comment from "models/article/Comment";
 import Edit from "views/admin/articles/Edit";
 import Form from "views/admin/articles/Form";
 
-import ArticleList from "containers/admin/StatefulArticleList";
+import ArticleList from "containers/admin/ArticleList";
 
 class Articles extends Controllers.Base {
   published() {

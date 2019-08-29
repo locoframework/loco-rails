@@ -6,7 +6,7 @@ import { commentsForArticle } from "selectors/comments";
 import Comment from "components/main/Comment";
 import CommentModel from "models/article/Comment";
 
-function StatefulCommentList(props) {
+function CommentList(props) {
   const articleId = props.articleId;
   const [comments, setComments] = useState(props.comments);
 
@@ -31,9 +31,9 @@ function StatefulCommentList(props) {
   return <>{list}</>;
 }
 
-StatefulCommentList.propTypes = {
+CommentList.propTypes = {
   articleId: PropTypes.number.isRequired,
   comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired
 };
 
-export default StatefulCommentList;
+export default CommentList;

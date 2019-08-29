@@ -5,7 +5,7 @@ import store from "stores/admin";
 import Article from "components/admin/Article";
 import ArticleModel from "models/Article";
 
-function ArticleListWrapper(props) {
+function ArticleList(props) {
   const [articles, setArticles] = useState(props.articles);
 
   useEffect(() => {
@@ -25,8 +25,8 @@ function ArticleListWrapper(props) {
   return <>{list}</>;
 }
 
-ArticleListWrapper.propTypes = {
+ArticleList.propTypes = {
   articles: PropTypes.arrayOf(PropTypes.instanceOf(ArticleModel)).isRequired
 };
 
-export default ArticleListWrapper;
+export default ArticleList;

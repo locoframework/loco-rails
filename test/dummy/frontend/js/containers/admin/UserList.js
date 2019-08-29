@@ -5,7 +5,7 @@ import store from "stores/admin";
 import User from "components/admin/User";
 import UserModel from "models/User";
 
-function UserListWrapper(props) {
+function UserList(props) {
   const [users, setUsers] = useState(props.users);
 
   useEffect(() => {
@@ -21,8 +21,8 @@ function UserListWrapper(props) {
   return <>{list}</>;
 }
 
-UserListWrapper.propTypes = {
+UserList.propTypes = {
   users: PropTypes.arrayOf(PropTypes.instanceOf(UserModel)).isRequired
 };
 
-export default UserListWrapper;
+export default UserList;

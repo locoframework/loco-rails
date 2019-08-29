@@ -4,7 +4,7 @@ import { Controllers } from "loco-js";
 
 import store from "stores/admin";
 import User from "models/User";
-import UserList from "containers/admin/StatefulUserList";
+import UserList from "containers/admin/UserList";
 import Show from "views/admin/users/Show";
 import Form from "views/admin/users/Form";
 

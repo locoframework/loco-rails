@@ -5,7 +5,7 @@ import store from "stores/main";
 import Article from "components/main/Article";
 import ArticleModel from "models/Article";
 
-function StatefulArticleList(props) {
+function ArticleList(props) {
   const [articles, setArticles] = useState(props.articles);
 
   useEffect(() => {
@@ -25,8 +25,8 @@ function StatefulArticleList(props) {
   return <>{list}</>;
 }
 
-StatefulArticleList.propTypes = {
+ArticleList.propTypes = {
   articles: PropTypes.arrayOf(PropTypes.instanceOf(ArticleModel)).isRequired
 };
 
-export default StatefulArticleList;
+export default ArticleList;

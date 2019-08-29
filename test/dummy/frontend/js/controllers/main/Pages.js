@@ -5,7 +5,7 @@ import { Controllers } from "loco-js";
 import store from "stores/main";
 import Article from "models/Article";
 import LoadMoreLink from "containers/main/pages/LoadMoreLink";
-import ArticleList from "containers/main/pages/StatefulArticleList";
+import ArticleList from "containers/main/pages/ArticleList";
 
 class Pages extends Controllers.Base {
   index() {
