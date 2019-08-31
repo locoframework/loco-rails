@@ -1,10 +1,10 @@
-import { ADD_ARTICLES } from "actions/shared";
+import { ADD_ARTICLES, SET_ARTICLES } from "actions/shared";
 
 export default (state = [], action) => {
   switch (action.type) {
     case ADD_ARTICLES:
       return [...state, ...action.payload.articles];
-    case "SET_ARTICLES":
+    case SET_ARTICLES:
       return [...action.payload.articles];
     case "UPDATE_ARTICLE":
       return [

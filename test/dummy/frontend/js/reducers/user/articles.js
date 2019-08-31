@@ -1,4 +1,4 @@
-import { ADD_ARTICLES } from "actions/shared";
+import { ADD_ARTICLES, SET_ARTICLES } from "actions/shared";
 import { REMOVE_ARTICLE } from "actions/user";
 
 export default (state = [], action) => {
@@ -7,7 +7,7 @@ export default (state = [], action) => {
       return [...state, ...action.payload.articles];
     case REMOVE_ARTICLE:
       return state.filter(article => article.id !== action.payload.id);
-    case "SET_ARTICLES":
+    case SET_ARTICLES:
       return [...action.payload.articles];
     case "UPDATE_ARTICLE":
       return [
