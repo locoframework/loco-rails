@@ -1,8 +1,9 @@
+import { PREPEND_ARTICLES } from "actions/admin";
 import { SET_ARTICLES, UPDATE_ARTICLE } from "actions/shared";
 
 export default (state = [], action) => {
   switch (action.type) {
-    case "PREPEND_ARTICLE":
+    case PREPEND_ARTICLES:
       return [...action.payload.articles, ...state];
     case SET_ARTICLES:
       return [...action.payload.articles];

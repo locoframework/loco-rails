@@ -1,5 +1,6 @@
 import { Env, Views } from "loco-js";
 
+import { prependArticles } from "actions/admin";
 import { addArticles, updateArticle } from "actions/shared";
 import adminStore from "stores/admin";
 import mainStore from "stores/main";
@@ -24,10 +25,7 @@ const articleCreated = ({ id }) => {
 const articlePublished = ({ id }) => {
   if (Env.namespaceController.constructor === AdminController) {
     Article.find({ id, abbr: true, resource: "admin" }).then(article => {
-      adminStore.dispatch({
-        type: "PREPEND_ARTICLE",
-        payload: { articles: [article] }
-      });
+      adminStore.dispatch(prependArticles([article]));
     });
   } else {
     Article.find({ id, abbr: true }).then(article =>
