@@ -1,6 +1,6 @@
 import { Env, Views } from "loco-js";
 
-import { prependArticles } from "actions/admin";
+import { prependArticles, prependUsers } from "actions/admin";
 import { addArticles, updateArticle } from "actions/shared";
 import adminStore from "stores/admin";
 import mainStore from "stores/main";
@@ -144,10 +144,7 @@ class Connectivity extends Views.Base {
         break;
       case "User created":
         User.find(data.id).then(user =>
-          adminStore.dispatch({
-            type: "PREPEND_USER",
-            payload: { users: [user] }
-          })
+          adminStore.dispatch(prependUsers([user]))
         );
         break;
     }
