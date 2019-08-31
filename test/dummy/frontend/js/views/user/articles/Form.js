@@ -2,6 +2,7 @@ import React from "react";
 import { render as renderElement } from "react-dom";
 import { UI, Views } from "loco-js";
 
+import { addArticles } from "actions/shared";
 import store from "stores/user";
 
 import Comment from "models/article/Comment";
@@ -19,10 +20,7 @@ class Form extends Views.Base {
   }
 
   render(article) {
-    store.dispatch({
-      type: "ADD_ARTICLES",
-      payload: { articles: [article] }
-    });
+    store.dispatch(addArticles([article]));
     this.article = article;
     this.connectWith(this.article);
     this._handleApplyingChanges();

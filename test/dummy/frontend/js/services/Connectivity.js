@@ -1,5 +1,6 @@
 import { Env, Views } from "loco-js";
 
+import { addArticles } from "actions/shared";
 import adminStore from "stores/admin";
 import mainStore from "stores/main";
 import userStore from "stores/user";
@@ -15,12 +16,9 @@ import UserController from "controllers/User";
 
 const articleCreated = ({ id }) => {
   if (Env.namespaceController.constructor !== UserController) return;
-  Article.find({ id, abbr: true }).then(article => {
-    userStore.dispatch({
-      type: "ADD_ARTICLES",
-      payload: { articles: [article] }
-    });
-  });
+  Article.find({ id, abbr: true }).then(article =>
+    userStore.dispatch(addArticles([article]))
+  );
 };
 
 const articlePublished = ({ id }) => {
@@ -32,12 +30,9 @@ const articlePublished = ({ id }) => {
       });
     });
   } else {
-    Article.find({ id, abbr: true }).then(article => {
-      mainStore.dispatch({
-        type: "ADD_ARTICLES",
-        payload: { articles: [article] }
-      });
-    });
+    Article.find({ id, abbr: true }).then(article =>
+      mainStore.dispatch(addArticles([article]))
+    );
   }
 };
 
