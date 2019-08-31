@@ -1,6 +1,6 @@
 import { Env, Views } from "loco-js";
 
-import { addArticles } from "actions/shared";
+import { addArticles, updateArticle } from "actions/shared";
 import adminStore from "stores/admin";
 import mainStore from "stores/main";
 import userStore from "stores/user";
@@ -50,10 +50,7 @@ const articleUpdated = ({ id }) => {
   const [article, index] = findArticle(store.getState(), id);
   if (!article) return;
   Article.find(findParams).then(article =>
-    store.dispatch({
-      type: "UPDATE_ARTICLE",
-      payload: { article, index }
-    })
+    store.dispatch(updateArticle(article, index))
   );
 };
 
@@ -66,16 +63,11 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
   }
   const [article, index] = findArticle(store.getState(), articleId);
   if (!article) return;
-  store.dispatch({
-    type: "UPDATE_ARTICLE",
-    payload: {
-      article: new Article({
-        ...article,
-        commentsCount: article.commentsCount + diff
-      }),
-      index: index
-    }
+  const updatedArticle = new Article({
+    ...article,
+    commentsCount: article.commentsCount + diff
   });
+  store.dispatch(updateArticle(updatedArticle, index));
 };
 
 const commentCreated = ({ article_id: articleId, id }) => {
