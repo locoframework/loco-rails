@@ -1,7 +1,7 @@
 import { Env, Views } from "loco-js";
 
 import { prependArticles, prependUsers } from "actions/admin";
-import { addArticles, updateArticle } from "actions/shared";
+import { addArticles, updateArticle, addComments } from "actions/shared";
 import adminStore from "stores/admin";
 import mainStore from "stores/main";
 import userStore from "stores/user";
@@ -79,10 +79,7 @@ const commentCreated = ({ article_id: articleId, id }) => {
   const [article] = findArticle(store.getState(), articleId);
   if (!article) return;
   Comment.find(findParams).then(comment =>
-    store.dispatch({
-      type: "ADD_COMMENTS",
-      payload: { articleId, comments: [comment] }
-    })
+    store.dispatch(addComments([comment], articleId))
   );
 };
 

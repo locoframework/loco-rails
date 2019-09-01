@@ -1,6 +1,8 @@
+import { ADD_COMMENTS } from "actions/shared";
+
 export default (state = {}, action) => {
   switch (action.type) {
-    case "ADD_COMMENTS":
+    case ADD_COMMENTS:
       return {
         ...state,
         [action.payload.articleId]: [
