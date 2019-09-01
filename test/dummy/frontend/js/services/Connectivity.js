@@ -1,7 +1,12 @@
 import { Env, Views } from "loco-js";
 
 import { prependArticles, prependUsers } from "actions/admin";
-import { addArticles, updateArticle, addComments } from "actions/shared";
+import {
+  addArticles,
+  updateArticle,
+  addComments,
+  removeComment
+} from "actions/shared";
 import adminStore from "stores/admin";
 import mainStore from "stores/main";
 import userStore from "stores/user";
@@ -88,10 +93,7 @@ const commentDestroyed = ({ article_id: articleId, id }) => {
   if (Env.namespaceController.constructor === UserController) {
     store = userStore;
   }
-  store.dispatch({
-    type: "REMOVE_COMMENT",
-    payload: { id, articleId }
-  });
+  store.dispatch(removeComment(id, articleId));
 };
 
 const commentUpdated = ({ article_id: articleId, id }) => {

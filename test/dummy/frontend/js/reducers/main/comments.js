@@ -1,4 +1,4 @@
-import { ADD_COMMENTS } from "actions/shared";
+import { ADD_COMMENTS, REMOVE_COMMENT, SET_COMMENTS } from "actions/shared";
 
 export default (state = {}, action) => {
   switch (action.type) {
@@ -10,7 +10,7 @@ export default (state = {}, action) => {
           ...action.payload.comments
         ]
       };
-    case "REMOVE_COMMENT":
+    case REMOVE_COMMENT:
       if (state[action.payload.articleId] == null) return state;
       return {
         ...state,
@@ -18,7 +18,7 @@ export default (state = {}, action) => {
           comment => comment.id !== action.payload.id
         )
       };
-    case "SET_COMMENTS":
+    case SET_COMMENTS:
       return { [action.payload.articleId]: action.payload.comments };
     case "UPDATE_COMMENT": {
       const articleId = action.payload.articleId;

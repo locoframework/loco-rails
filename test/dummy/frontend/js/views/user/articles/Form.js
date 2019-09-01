@@ -2,7 +2,7 @@ import React from "react";
 import { render as renderElement } from "react-dom";
 import { UI, Views } from "loco-js";
 
-import { addArticles } from "actions/shared";
+import { addArticles, setComments } from "actions/shared";
 import store from "stores/user";
 
 import Comment from "models/article/Comment";
@@ -30,10 +30,7 @@ class Form extends Views.Base {
 
   renderComments(articleId) {
     Comment.all({ articleId: articleId }).then(resp => {
-      store.dispatch({
-        type: "SET_COMMENTS",
-        payload: { articleId: articleId, comments: resp.resources }
-      });
+      store.dispatch(setComments(resp.resources, articleId));
       renderElement(
         <CommentList
           articleId={articleId}

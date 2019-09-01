@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import { Controllers } from "loco-js";
 
-import { setArticles } from "actions/shared";
+import { setArticles, setComments } from "actions/shared";
 import store from "stores/user";
 
 import UserLayout from "views/layouts/User";
@@ -52,10 +52,7 @@ class Articles extends Controllers.Base {
       this.showView.renderArticle(article);
     });
     Comment.all({ articleId: this.params.id }).then(resp => {
-      store.dispatch({
-        type: "SET_COMMENTS",
-        payload: { articleId: this.params.id, comments: resp.resources }
-      });
+      store.dispatch(setComments(resp.resources, this.params.id));
       render(
         <CommentList articleId={this.params.id} comments={resp.resources} />,
         document.getElementById("comments")
