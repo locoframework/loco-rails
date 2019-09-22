@@ -2,7 +2,9 @@ import React from "react";
 import { render } from "react-dom";
 import { Controllers } from "loco-js";
 
-import store from "stores/main";
+import { setArticles, setComments } from "actions";
+import store from "store";
+
 import CommentList from "containers/main/articles/CommentList";
 import CommentsNumber from "containers/main/articles/CommentsNumber";
 
@@ -16,31 +18,19 @@ class Articles extends Controllers.Base {
     const view = new Show({ comment: newComment });
     view.render();
     Article.find(this.params.id).then(article => {
-      store.dispatch({
-        type: "SET_ARTICLES",
-        payload: { articles: [article] }
-      });
+      store.dispatch(setArticles([article]));
       view.renderArticle(article);
     });
     Comment.get("count", { articleId: this.params.id }).then(res => {
       Comment.all({ articleId: this.params.id, total: res.total }).then(
         comments => {
-          store.dispatch({
-            type: "SET_COMMENTS",
-            payload: { articleId: this.params.id, comments }
-          });
+          store.dispatch(setComments(comments, this.params.id));
           render(
-            React.createElement(CommentList, {
-              articleId: this.params.id,
-              comments
-            }),
+            <CommentList articleId={this.params.id} comments={comments} />,
             document.getElementById("comments")
           );
           render(
-            React.createElement(CommentsNumber, {
-              articleId: this.params.id,
-              comments
-            }),
+            <CommentsNumber articleId={this.params.id} comments={comments} />,
             document.getElementById("comments_count")
           );
         }

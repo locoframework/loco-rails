@@ -1,10 +1,10 @@
+import { PREPEND_USERS, SET_USERS } from "actions";
+
 export default (state = [], action) => {
   switch (action.type) {
-    case "APPEND_USER":
-      return [...state, ...action.payload.users];
-    case "SET_USERS":
+    case SET_USERS:
       return [...action.payload.users];
-    case "PREPEND_USER":
+    case PREPEND_USERS:
       return [...action.payload.users, ...state];
     default:
       return state;

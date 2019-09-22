@@ -2,7 +2,8 @@ import React from "react";
 import { render } from "react-dom";
 import { Controllers } from "loco-js";
 
-import store from "stores/user";
+import { setArticles, setComments } from "actions";
+import store from "store";
 
 import UserLayout from "views/layouts/User";
 import FlashView from "views/shared/Flash";
@@ -33,10 +34,7 @@ class Articles extends Controllers.Base {
       flash.render();
     }
     Article.get("all").then(resp => {
-      store.dispatch({
-        type: "SET_ARTICLES",
-        payload: { articles: resp.resources }
-      });
+      store.dispatch(setArticles(resp.resources));
       render(
         <ArticleList
           articles={resp.resources}
@@ -50,17 +48,11 @@ class Articles extends Controllers.Base {
   show() {
     this.showView = new ShowView();
     Article.find(this.params.id).then(article => {
-      store.dispatch({
-        type: "SET_ARTICLES",
-        payload: { articles: [article] }
-      });
+      store.dispatch(setArticles([article]));
       this.showView.renderArticle(article);
     });
     Comment.all({ articleId: this.params.id }).then(resp => {
-      store.dispatch({
-        type: "SET_COMMENTS",
-        payload: { articleId: this.params.id, comments: resp.resources }
-      });
+      store.dispatch(setComments(resp.resources, this.params.id));
       render(
         <CommentList articleId={this.params.id} comments={resp.resources} />,
         document.getElementById("comments")

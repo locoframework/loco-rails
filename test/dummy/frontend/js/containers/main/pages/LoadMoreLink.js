@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
 import Article from "models/Article";
-import store from "stores/main";
+
+import { addArticles } from "actions";
+import store from "store";
 
 export default function LoadMoreLink() {
   const [page, setPage] = useState(1);
@@ -14,10 +16,7 @@ export default function LoadMoreLink() {
     Article.get("all", { page: currentPage })
       .then(resp => {
         if (resp.resources.length > 0) {
-          store.dispatch({
-            type: "ADD_ARTICLES",
-            payload: { articles: resp.resources }
-          });
+          store.dispatch(addArticles(resp.resources));
         } else {
           setNoMorePosts(true);
         }

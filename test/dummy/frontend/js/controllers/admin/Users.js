@@ -2,7 +2,9 @@ import React from "react";
 import { render as renderElement } from "react-dom";
 import { Controllers } from "loco-js";
 
-import store from "stores/admin";
+import { setUsers } from "actions";
+import store from "store";
+
 import User from "models/User";
 import UserList from "containers/admin/UserList";
 import Show from "views/admin/users/Show";
@@ -11,7 +13,7 @@ import Form from "views/admin/users/Form";
 class Users extends Controllers.Base {
   index() {
     User.get("all").then(resp => {
-      store.dispatch({ type: "SET_USERS", payload: { users: resp.resources } });
+      store.dispatch(setUsers(resp.resources));
       renderElement(
         <UserList users={resp.resources} />,
         document.querySelector("table tbody")

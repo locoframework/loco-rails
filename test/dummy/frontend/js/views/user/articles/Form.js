@@ -2,7 +2,8 @@ import React from "react";
 import { render as renderElement } from "react-dom";
 import { UI, Views } from "loco-js";
 
-import store from "stores/user";
+import { addArticles, setComments } from "actions";
+import store from "store";
 
 import Comment from "models/article/Comment";
 
@@ -19,10 +20,7 @@ class Form extends Views.Base {
   }
 
   render(article) {
-    store.dispatch({
-      type: "ADD_ARTICLES",
-      payload: { articles: [article] }
-    });
+    store.dispatch(addArticles([article]));
     this.article = article;
     this.connectWith(this.article);
     this._handleApplyingChanges();
@@ -32,10 +30,7 @@ class Form extends Views.Base {
 
   renderComments(articleId) {
     Comment.all({ articleId: articleId }).then(resp => {
-      store.dispatch({
-        type: "SET_COMMENTS",
-        payload: { articleId: articleId, comments: resp.resources }
-      });
+      store.dispatch(setComments(resp.resources, articleId));
       renderElement(
         <CommentList
           articleId={articleId}
