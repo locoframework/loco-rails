@@ -9,18 +9,18 @@ import {
 export default (state = [], action) => {
   switch (action.type) {
     case ADD_ARTICLES:
-      return [...state, ...action.payload.articles];
+      return [...state, ...action.articles];
     case PREPEND_ARTICLES:
-      return [...action.payload.articles, ...state];
+      return [...action.articles, ...state];
     case REMOVE_ARTICLE:
-      return state.filter(article => article.id !== action.payload.id);
+      return state.filter(article => article.id !== action.id);
     case SET_ARTICLES:
-      return [...action.payload.articles];
+      return [...action.articles];
     case UPDATE_ARTICLE:
       return [
-        ...state.slice(0, action.payload.index),
-        action.payload.article,
-        ...state.slice(action.payload.index + 1)
+        ...state.slice(0, action.index),
+        action.article,
+        ...state.slice(action.index + 1)
       ];
     default:
       return state;

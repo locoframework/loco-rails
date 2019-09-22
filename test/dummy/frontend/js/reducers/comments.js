@@ -10,35 +10,30 @@ export default (state = {}, action) => {
     case ADD_COMMENTS:
       return {
         ...state,
-        [action.payload.articleId]: [
-          ...state[action.payload.articleId],
-          ...action.payload.comments
-        ]
+        [action.articleId]: [...state[action.articleId], ...action.comments]
       };
     case REMOVE_COMMENT:
-      if (state[action.payload.articleId] == null) return state;
+      if (state[action.articleId] == null) return state;
       return {
         ...state,
-        [action.payload.articleId]: state[action.payload.articleId].filter(
-          comment => comment.id !== action.payload.id
+        [action.articleId]: state[action.articleId].filter(
+          comment => comment.id !== action.id
         )
       };
     case SET_COMMENTS:
-      return { [action.payload.articleId]: action.payload.comments };
+      return { [action.articleId]: action.comments };
     case UPDATE_COMMENT: {
-      const articleId = action.payload.articleId;
-      let index = action.payload.index;
+      const articleId = action.articleId;
+      let index = action.index;
       if (!index) {
-        const comment = state[articleId].find(
-          c => c.id === action.payload.comment.id
-        );
+        const comment = state[articleId].find(c => c.id === action.comment.id);
         index = state[articleId].indexOf(comment);
       }
       return {
         ...state,
         [articleId]: [
           ...state[articleId].slice(0, index),
-          action.payload.comment,
+          action.comment,
           ...state[articleId].slice(index + 1)
         ]
       };

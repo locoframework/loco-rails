@@ -21,45 +21,45 @@ export const SET_USERS = "SET_USERS";
  */
 
 export function addArticles(articles) {
-  return { type: ADD_ARTICLES, payload: { articles } };
+  return { type: ADD_ARTICLES, articles };
 }
 
 export function prependArticles(articles) {
-  return { type: PREPEND_ARTICLES, payload: { articles } };
+  return { type: PREPEND_ARTICLES, articles };
 }
 
 export function removeArticle(id) {
-  return { type: REMOVE_ARTICLE, payload: { id } };
+  return { type: REMOVE_ARTICLE, id };
 }
 
 export function setArticles(articles) {
-  return { type: SET_ARTICLES, payload: { articles } };
+  return { type: SET_ARTICLES, articles };
 }
 
 export function updateArticle(article, index) {
-  return { type: UPDATE_ARTICLE, payload: { article, index } };
+  return { type: UPDATE_ARTICLE, article, index };
 }
 
 export function addComments(comments, articleId) {
-  return { type: ADD_COMMENTS, payload: { articleId, comments } };
+  return { type: ADD_COMMENTS, articleId, comments };
 }
 
 export function removeComment(id, articleId) {
-  return { type: REMOVE_COMMENT, payload: { id, articleId } };
+  return { type: REMOVE_COMMENT, id, articleId };
 }
 
 export function setComments(comments, articleId) {
-  return { type: SET_COMMENTS, payload: { comments, articleId } };
+  return { type: SET_COMMENTS, comments, articleId };
 }
 
 export function updateComment(comment, articleId, index) {
-  return { type: UPDATE_COMMENT, payload: { comment, articleId, index } };
+  return { type: UPDATE_COMMENT, comment, articleId, index };
 }
 
 export function prependUsers(users) {
-  return { type: PREPEND_USERS, payload: { users } };
+  return { type: PREPEND_USERS, users };
 }
 
 export function setUsers(users) {
-  return { type: PREPEND_USERS, payload: { users } };
+  return { type: PREPEND_USERS, users };
 }
