@@ -1,10 +1,11 @@
 import { Env, Views } from "loco-js";
 
-import { prependArticles, prependUsers } from "actions";
 import {
   addArticles,
+  prependArticles,
   updateArticle,
   addComments,
+  prependUsers,
   removeComment,
   updateComment
 } from "actions";
