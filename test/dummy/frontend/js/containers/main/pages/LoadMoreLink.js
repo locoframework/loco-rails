@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Article from "models/Article";
 
 import { addArticles } from "actions";
-import store from "stores/main";
+import store from "store";
 
 export default function LoadMoreLink() {
   const [page, setPage] = useState(1);

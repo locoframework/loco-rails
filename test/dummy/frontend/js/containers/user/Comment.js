@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Services } from "loco-js";
 
 import { updateComment } from "actions";
-import store from "stores/user";
+import store from "store";
 
 import CommentModel from "models/article/Comment";
 

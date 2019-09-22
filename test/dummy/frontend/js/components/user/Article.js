@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ArticleModel from "models/Article";
 
 import { removeArticle } from "actions";
-import store from "stores/user";
+import store from "store";
 
 function Article({ article, onArticleDestroyed }) {
   const handleDeletingArticle = e => {

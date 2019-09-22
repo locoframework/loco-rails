@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import store from "stores/main";
+import store from "store";
 import Article from "components/main/Article";
 import ArticleModel from "models/Article";
 

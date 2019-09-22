@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import store from "stores/admin";
+import store from "store";
 import User from "components/admin/User";
 import UserModel from "models/User";
 

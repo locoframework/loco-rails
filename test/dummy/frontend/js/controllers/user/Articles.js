@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import { Controllers } from "loco-js";
 
 import { setArticles, setComments } from "actions";
-import store from "stores/user";
+import store from "store";
 
 import UserLayout from "views/layouts/User";
 import FlashView from "views/shared/Flash";

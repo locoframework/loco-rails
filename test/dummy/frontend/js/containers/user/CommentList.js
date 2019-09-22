@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-import store from "stores/user";
+import store from "store";
 import { commentsForArticle } from "selectors/comments";
 import Comment from "containers/user/Comment";
 import CommentModel from "models/article/Comment";

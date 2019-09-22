@@ -3,7 +3,7 @@ import { render as renderElement } from "react-dom";
 import { Controllers } from "loco-js";
 
 import { setArticles } from "actions";
-import store from "stores/main";
+import store from "store";
 
 import Article from "models/Article";
 import LoadMoreLink from "containers/main/pages/LoadMoreLink";

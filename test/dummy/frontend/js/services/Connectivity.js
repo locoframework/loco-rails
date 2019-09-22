@@ -9,9 +9,7 @@ import {
   removeComment,
   updateComment
 } from "actions";
-import adminStore from "stores/admin";
-import mainStore from "stores/main";
-import userStore from "stores/user";
+import store from "store";
 import { findArticle, findComment } from "selectors/articles";
 
 import Article from "models/Article";
@@ -25,33 +23,27 @@ import UserController from "controllers/User";
 const articleCreated = ({ id }) => {
   if (Env.namespaceController.constructor !== UserController) return;
   Article.find({ id, abbr: true }).then(article =>
-    userStore.dispatch(addArticles([article]))
+    store.dispatch(addArticles([article]))
   );
 };
 
 const articlePublished = ({ id }) => {
   if (Env.namespaceController.constructor === AdminController) {
     Article.find({ id, abbr: true, resource: "admin" }).then(article => {
-      adminStore.dispatch(prependArticles([article]));
+      store.dispatch(prependArticles([article]));
     });
   } else {
     Article.find({ id, abbr: true }).then(article =>
-      mainStore.dispatch(addArticles([article]))
+      store.dispatch(addArticles([article]))
     );
   }
 };
 
 const articleUpdated = ({ id }) => {
   const findParams = { id: id, abbr: true };
-  let store = mainStore;
-
   if (Env.namespaceController.constructor === AdminController) {
     findParams["resource"] = "admin";
-    store = adminStore;
-  } else if (Env.namespaceController.constructor === UserController) {
-    store = userStore;
   }
-
   const [article, index] = findArticle(store.getState(), id);
   if (!article) return;
   Article.find(findParams).then(article =>
@@ -60,12 +52,6 @@ const articleUpdated = ({ id }) => {
 };
 
 const commentsChanged = ({ article_id: articleId }, diff) => {
-  let store = mainStore;
-  if (Env.namespaceController.constructor === AdminController) {
-    store = adminStore;
-  } else if (Env.namespaceController.constructor === UserController) {
-    store = userStore;
-  }
   const [article, index] = findArticle(store.getState(), articleId);
   if (!article) return;
   const updatedArticle = new Article({
@@ -76,11 +62,8 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
 };
 
 const commentCreated = ({ article_id: articleId, id }) => {
-  let store = userStore;
   const findParams = { articleId, id };
-
   if (Env.namespaceController.constructor === MainController) {
-    store = mainStore;
     findParams["resource"] = "main";
   }
   const [article] = findArticle(store.getState(), articleId);
@@ -91,18 +74,10 @@ const commentCreated = ({ article_id: articleId, id }) => {
 };
 
 const commentDestroyed = ({ article_id: articleId, id }) => {
-  let store = mainStore;
-  if (Env.namespaceController.constructor === UserController) {
-    store = userStore;
-  }
   store.dispatch(removeComment(id, articleId));
 };
 
 const commentUpdated = ({ article_id: articleId, id }) => {
-  let store = mainStore;
-  if (Env.namespaceController.constructor === UserController) {
-    store = userStore;
-  }
   const [comment, index] = findComment(store.getState(), id, {
     parentId: articleId
   });
@@ -141,9 +116,7 @@ class Connectivity extends Views.Base {
         commentUpdated(data);
         break;
       case "User created":
-        User.find(data.id).then(user =>
-          adminStore.dispatch(prependUsers([user]))
-        );
+        User.find(data.id).then(user => store.dispatch(prependUsers([user])));
         break;
     }
   }

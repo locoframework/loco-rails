@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import { Controllers } from "loco-js";
 
 import { setArticles } from "actions";
-import store from "stores/admin";
+import store from "store";
 
 import Article from "models/Article";
 import Comment from "models/article/Comment";
