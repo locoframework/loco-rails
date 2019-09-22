@@ -26,17 +26,11 @@ class Articles extends Controllers.Base {
         comments => {
           store.dispatch(setComments(comments, this.params.id));
           render(
-            React.createElement(CommentList, {
-              articleId: this.params.id,
-              comments
-            }),
+            <CommentList articleId={this.params.id} comments={comments} />,
             document.getElementById("comments")
           );
           render(
-            React.createElement(CommentsNumber, {
-              articleId: this.params.id,
-              comments
-            }),
+            <CommentsNumber articleId={this.params.id} comments={comments} />,
             document.getElementById("comments_count")
           );
         }
