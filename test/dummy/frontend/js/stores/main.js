@@ -1,6 +1,6 @@
 import { createStore } from "redux";
 
-import reducer from "reducers/main";
+import reducer from "reducers";
 
 const store = createStore(reducer, { articles: [], comments: {} });
 
