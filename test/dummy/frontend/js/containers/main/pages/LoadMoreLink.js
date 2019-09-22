@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Article from "models/Article";
 
-import { addArticles } from "actions/shared";
+import { addArticles } from "actions";
 import store from "stores/main";
 
 export default function LoadMoreLink() {

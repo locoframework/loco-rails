@@ -1,4 +1,4 @@
-import { PREPEND_USERS, SET_USERS } from "actions/admin";
+import { PREPEND_USERS, SET_USERS } from "actions";
 
 export default (state = [], action) => {
   switch (action.type) {

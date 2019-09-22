@@ -1,5 +1,5 @@
-import { ADD_ARTICLES, SET_ARTICLES, UPDATE_ARTICLE } from "actions/shared";
-import { REMOVE_ARTICLE } from "actions/user";
+import { ADD_ARTICLES, SET_ARTICLES, UPDATE_ARTICLE } from "actions";
+import { REMOVE_ARTICLE } from "actions";
 
 export default (state = [], action) => {
   switch (action.type) {

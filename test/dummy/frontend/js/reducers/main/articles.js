@@ -1,4 +1,4 @@
-import { ADD_ARTICLES, SET_ARTICLES, UPDATE_ARTICLE } from "actions/shared";
+import { ADD_ARTICLES, SET_ARTICLES, UPDATE_ARTICLE } from "actions";
 
 export default (state = [], action) => {
   switch (action.type) {

@@ -1,5 +1,5 @@
-import { PREPEND_ARTICLES } from "actions/admin";
-import { SET_ARTICLES, UPDATE_ARTICLE } from "actions/shared";
+import { PREPEND_ARTICLES } from "actions";
+import { SET_ARTICLES, UPDATE_ARTICLE } from "actions";
 
 export default (state = [], action) => {
   switch (action.type) {

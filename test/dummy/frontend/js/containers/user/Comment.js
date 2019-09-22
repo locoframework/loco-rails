@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Services } from "loco-js";
 
+import { updateComment } from "actions";
 import store from "stores/user";
 
 import CommentModel from "models/article/Comment";
@@ -17,13 +18,12 @@ function Comment({ comment, isAdmin = false }) {
     comment.approved = true;
     comment.updateAttribute("approved").then(res => {
       if (!res.ok) return;
-      store.dispatch({
-        type: "UPDATE_COMMENT",
-        payload: {
-          articleId: comment.articleId,
-          comment: new CommentModel({ ...comment, approved: true })
-        }
-      });
+      store.dispatch(
+        updateComment(
+          new CommentModel({ ...comment, approved: true }),
+          comment.articleId
+        )
+      );
     });
   };
 

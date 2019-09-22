@@ -2,7 +2,7 @@ import React from "react";
 import { render as renderElement } from "react-dom";
 import { Controllers } from "loco-js";
 
-import { setArticles } from "actions/shared";
+import { setArticles } from "actions";
 import store from "stores/main";
 
 import Article from "models/Article";

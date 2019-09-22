@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import { Controllers } from "loco-js";
 
-import { setArticles, setComments } from "actions/shared";
+import { setArticles, setComments } from "actions";
 import store from "stores/main";
 
 import CommentList from "containers/main/articles/CommentList";

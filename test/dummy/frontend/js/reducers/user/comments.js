@@ -1,4 +1,9 @@
-import { ADD_COMMENTS, REMOVE_COMMENT, SET_COMMENTS } from "actions/shared";
+import {
+  ADD_COMMENTS,
+  REMOVE_COMMENT,
+  SET_COMMENTS,
+  UPDATE_COMMENT
+} from "actions";
 
 export default (state = {}, action) => {
   switch (action.type) {
@@ -20,7 +25,7 @@ export default (state = {}, action) => {
       };
     case SET_COMMENTS:
       return { [action.payload.articleId]: action.payload.comments };
-    case "UPDATE_COMMENT": {
+    case UPDATE_COMMENT: {
       const articleId = action.payload.articleId;
       let index = action.payload.index;
       if (!index) {

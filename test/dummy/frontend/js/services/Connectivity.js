@@ -1,12 +1,13 @@
 import { Env, Views } from "loco-js";
 
-import { prependArticles, prependUsers } from "actions/admin";
+import { prependArticles, prependUsers } from "actions";
 import {
   addArticles,
   updateArticle,
   addComments,
-  removeComment
-} from "actions/shared";
+  removeComment,
+  updateComment
+} from "actions";
 import adminStore from "stores/admin";
 import mainStore from "stores/main";
 import userStore from "stores/user";
@@ -107,10 +108,7 @@ const commentUpdated = ({ article_id: articleId, id }) => {
   if (!comment) return;
   comment.reload().then(() => {
     comment.applyChanges();
-    store.dispatch({
-      type: "UPDATE_COMMENT",
-      payload: { comment, index, articleId }
-    });
+    store.dispatch(updateComment(comment, articleId, index));
   });
 };
 

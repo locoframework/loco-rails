@@ -2,7 +2,7 @@ import React from "react";
 import { render as renderElement } from "react-dom";
 import { Controllers } from "loco-js";
 
-import { setUsers } from "actions/admin";
+import { setUsers } from "actions";
 import store from "stores/admin";
 
 import User from "models/User";

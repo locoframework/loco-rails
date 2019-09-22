@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import { Controllers } from "loco-js";
 
-import { setArticles, setComments } from "actions/shared";
+import { setArticles, setComments } from "actions";
 import store from "stores/user";
 
 import UserLayout from "views/layouts/User";
