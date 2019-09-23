@@ -11,7 +11,7 @@ import {
 export default produce((draft = [], action) => {
   switch (action.type) {
     case ADD_ARTICLES:
-      return action.articles;
+      return draft.concat(action.articles);
     case PREPEND_ARTICLES:
       return action.articles.concat(draft);
     case REMOVE_ARTICLE:
