@@ -2,6 +2,6 @@ import { createStore } from "redux";
 
 import reducer from "reducers";
 
-const store = createStore(reducer, { articles: [], comments: {}, users: [] });
+const store = createStore(reducer);
 
 export default store;
