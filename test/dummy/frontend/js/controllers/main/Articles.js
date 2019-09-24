@@ -17,9 +17,17 @@ class Articles extends Controllers.Base {
     const newComment = new Comment({ articleId: this.params.id });
     const view = new Show({ comment: newComment });
     view.render();
+    this._renderArticle(view);
+    this._renderComments();
+  }
+
+  async _renderArticle(view) {
     const article = await Article.find(this.params.id);
     store.dispatch(setArticles([article]));
     view.renderArticle(article);
+  }
+
+  async _renderComments() {
     const res = await Comment.get("count", { articleId: this.params.id });
     const comments = await Comment.all({
       articleId: this.params.id,
