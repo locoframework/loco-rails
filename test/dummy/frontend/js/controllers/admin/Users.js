@@ -11,18 +11,18 @@ import Show from "views/admin/users/Show";
 import Form from "views/admin/users/Form";
 
 class Users extends Controllers.Base {
-  index() {
-    User.get("all").then(resp => {
-      store.dispatch(setUsers(resp.resources));
-      renderElement(
-        <UserList users={resp.resources} />,
-        document.querySelector("table tbody")
-      );
-    });
+  async index() {
+    const resp = await User.get("all");
+    store.dispatch(setUsers(resp.resources));
+    renderElement(
+      <UserList users={resp.resources} />,
+      document.querySelector("table tbody")
+    );
   }
 
-  show() {
-    User.find(this.params.id).then(user => new Show({ user: user }).render());
+  async show() {
+    const user = await User.find(this.params.id);
+    new Show({ user: user }).render();
   }
 
   edit() {
