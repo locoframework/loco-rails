@@ -12,13 +12,12 @@ class Rooms extends Controllers.Base {
     new List().render();
   }
 
-  show() {
+  async show() {
     const view = new Show({ id: this.params.id });
     this.setView("show", view);
     view.render();
-    Member.all({ roomId: this.params.id }).then(resp =>
-      view.renderMembers(resp.resources)
-    );
+    const resp = await Member.all({ roomId: this.params.id });
+    view.renderMembers(resp.resources);
   }
 }
 

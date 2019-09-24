@@ -20,35 +20,31 @@ import AdminController from "controllers/Admin";
 import MainController from "controllers/Main";
 import UserController from "controllers/User";
 
-const articleCreated = ({ id }) => {
+const articleCreated = async ({ id }) => {
   if (Env.namespaceController.constructor !== UserController) return;
-  Article.find({ id, abbr: true }).then(article =>
-    store.dispatch(addArticles([article]))
-  );
+  const article = await Article.find({ id, abbr: true });
+  store.dispatch(addArticles([article]));
 };
 
-const articlePublished = ({ id }) => {
+const articlePublished = async ({ id }) => {
   if (Env.namespaceController.constructor === AdminController) {
-    Article.find({ id, abbr: true, resource: "admin" }).then(article => {
-      store.dispatch(prependArticles([article]));
-    });
+    const article = await Article.find({ id, abbr: true, resource: "admin" });
+    store.dispatch(prependArticles([article]));
   } else {
-    Article.find({ id, abbr: true }).then(article =>
-      store.dispatch(addArticles([article]))
-    );
+    const article = await Article.find({ id, abbr: true });
+    store.dispatch(addArticles([article]));
   }
 };
 
-const articleUpdated = ({ id }) => {
+const articleUpdated = async ({ id }) => {
   const findParams = { id: id, abbr: true };
   if (Env.namespaceController.constructor === AdminController) {
     findParams["resource"] = "admin";
   }
-  const [article, index] = findArticle(store.getState(), id);
+  let [article, index] = findArticle(store.getState(), id);
   if (!article) return;
-  Article.find(findParams).then(article =>
-    store.dispatch(updateArticle(article, index))
-  );
+  article = await Article.find(findParams);
+  store.dispatch(updateArticle(article, index));
 };
 
 const commentsChanged = ({ article_id: articleId }, diff) => {
@@ -61,33 +57,29 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
   store.dispatch(updateArticle(updatedArticle, index));
 };
 
-const commentCreated = ({ article_id: articleId, id }) => {
+const commentCreated = async ({ article_id: articleId, id }) => {
   const findParams = { articleId, id };
   if (Env.namespaceController.constructor === MainController) {
     findParams["resource"] = "main";
   }
   const [article] = findArticle(store.getState(), articleId);
   if (!article) return;
-  Comment.find(findParams).then(comment =>
-    store.dispatch(addComments([comment], articleId))
-  );
+  const comment = await Comment.find(findParams);
+  store.dispatch(addComments([comment], articleId));
 };
 
 const commentDestroyed = ({ article_id: articleId, id }) => {
   store.dispatch(removeComment(id, articleId));
 };
 
-const commentUpdated = ({ article_id: articleId, id }) => {
+const commentUpdated = async ({ article_id: articleId, id }) => {
   const [comment, index] = findComment(store.getState(), id, {
     parentId: articleId
   });
   if (!comment) return;
-  comment.reload().then(() => {
-    comment.applyChanges();
-    store.dispatch(
-      updateComment(new Comment({ ...comment }), articleId, index)
-    );
-  });
+  await comment.reload();
+  comment.applyChanges();
+  store.dispatch(updateComment(new Comment({ ...comment }), articleId, index));
 };
 
 class Connectivity extends Views.Base {
@@ -95,7 +87,7 @@ class Connectivity extends Views.Base {
     super(opts);
   }
 
-  receivedSignal(signal, data) {
+  async receivedSignal(signal, data) {
     switch (signal) {
       case "Article created":
         articleCreated(data);
@@ -117,9 +109,11 @@ class Connectivity extends Views.Base {
       case "Article.Comment updated":
         commentUpdated(data);
         break;
-      case "User created":
-        User.find(data.id).then(user => store.dispatch(prependUsers([user])));
+      case "User created": {
+        const user = await User.find(data.id);
+        store.dispatch(prependUsers([user]));
         break;
+      }
     }
   }
 

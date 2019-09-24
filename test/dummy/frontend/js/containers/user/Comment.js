@@ -12,19 +12,18 @@ function Comment({ comment, isAdmin = false }) {
 
   const createdAt = new Services.Date(comment.createdAt).strftime("%d %b %y");
 
-  const handleApproving = e => {
+  const handleApproving = async e => {
     e.preventDefault();
     setApproving(true);
     comment.approved = true;
-    comment.updateAttribute("approved").then(res => {
-      if (!res.ok) return;
-      store.dispatch(
-        updateComment(
-          new CommentModel({ ...comment, approved: true }),
-          comment.articleId
-        )
-      );
-    });
+    const res = await comment.updateAttribute("approved");
+    if (!res.ok) return;
+    store.dispatch(
+      updateComment(
+        new CommentModel({ ...comment, approved: true }),
+        comment.articleId
+      )
+    );
   };
 
   const adminSection = () => {

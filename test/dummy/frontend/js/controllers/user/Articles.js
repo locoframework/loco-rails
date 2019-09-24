@@ -28,46 +28,51 @@ class Articles extends Controllers.Base {
     flash.render();
   }
 
-  index() {
+  async index() {
     if (this.params.message === "deleted") {
       const flash = new FlashView({ alert: "Article has been deleted." });
       flash.render();
     }
-    Article.get("all").then(resp => {
-      store.dispatch(setArticles(resp.resources));
-      render(
-        <ArticleList
-          articles={resp.resources}
-          onArticleDestroyed={this.onArticleDestroyed}
-        />,
-        document.getElementById("article_list")
-      );
-    });
+    const resp = await Article.get("all");
+    store.dispatch(setArticles(resp.resources));
+    render(
+      <ArticleList
+        articles={resp.resources}
+        onArticleDestroyed={this.onArticleDestroyed}
+      />,
+      document.getElementById("article_list")
+    );
   }
 
-  show() {
-    this.showView = new ShowView();
-    Article.find(this.params.id).then(article => {
-      store.dispatch(setArticles([article]));
-      this.showView.renderArticle(article);
-    });
-    Comment.all({ articleId: this.params.id }).then(resp => {
-      store.dispatch(setComments(resp.resources, this.params.id));
-      render(
-        <CommentList articleId={this.params.id} comments={resp.resources} />,
-        document.getElementById("comments")
-      );
-    });
+  async show() {
+    this._renderArticle();
+    this._renderComments();
   }
 
   new() {
     new FormView().render(new Article());
   }
 
-  edit() {
+  async edit() {
     const view = new FormView();
-    Article.find(this.params.id).then(article => view.render(article));
     view.renderComments(this.params.id);
+    const article = await Article.find(this.params.id);
+    view.render(article);
+  }
+
+  async _renderArticle() {
+    const article = await Article.find(this.params.id);
+    store.dispatch(setArticles([article]));
+    new ShowView().render(article);
+  }
+
+  async _renderComments() {
+    const resp = await Comment.all({ articleId: this.params.id });
+    store.dispatch(setComments(resp.resources, this.params.id));
+    render(
+      <CommentList articleId={this.params.id} comments={resp.resources} />,
+      document.getElementById("comments")
+    );
   }
 }
 

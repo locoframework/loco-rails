@@ -10,19 +10,17 @@ import LoadMoreLink from "containers/main/pages/LoadMoreLink";
 import ArticleList from "containers/main/pages/ArticleList";
 
 class Pages extends Controllers.Base {
-  index() {
+  async index() {
     renderElement(
       <LoadMoreLink />,
       document.getElementById("load_more_wrapper")
     );
-
-    Article.get("all", { page: 1 }).then(resp => {
-      store.dispatch(setArticles(resp.resources));
-      renderElement(
-        <ArticleList articles={resp.resources} />,
-        document.getElementById("articles")
-      );
-    });
+    const resp = await Article.get("all", { page: 1 });
+    store.dispatch(setArticles(resp.resources));
+    renderElement(
+      <ArticleList articles={resp.resources} />,
+      document.getElementById("articles")
+    );
   }
 }
 

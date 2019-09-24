@@ -13,25 +13,30 @@ import Form from "views/admin/articles/Form";
 import ArticleList from "containers/admin/ArticleList";
 
 class Articles extends Controllers.Base {
-  published() {
-    Article.get("published").then(resp => {
-      store.dispatch(setArticles(resp.resources));
-      render(
-        <ArticleList articles={resp.resources} />,
-        document.getElementById("articles")
-      );
-    });
+  async published() {
+    const resp = await Article.get("published");
+    store.dispatch(setArticles(resp.resources));
+    render(
+      <ArticleList articles={resp.resources} />,
+      document.getElementById("articles")
+    );
   }
 
-  edit() {
+  async edit() {
     const editView = new Edit();
-    Article.find(this.params.id).then(article => {
-      editView.render(article);
-      new Form().render(article);
-    });
-    Comment.all({ articleId: this.params.id }).then(resp => {
-      editView.renderComments(resp.resources);
-    });
+    this._renderArticle(editView);
+    this._renderComment(editView);
+  }
+
+  async _renderArticle(view) {
+    const article = await Article.find(this.params.id);
+    view.render(article);
+    new Form().render(article);
+  }
+
+  async _renderComment(view) {
+    const resp = await Comment.all({ articleId: this.params.id });
+    view.renderComments(resp.resources);
   }
 }
 

@@ -9,19 +9,22 @@ export default function LoadMoreLink() {
   const [page, setPage] = useState(1);
   const [noMorePosts, setNoMorePosts] = useState(false);
 
-  function handleClick(e) {
+  async function handleClick(e) {
     e.preventDefault();
     const currentPage = page + 1;
     setPage(currentPage);
-    Article.get("all", { page: currentPage })
-      .then(resp => {
-        if (resp.resources.length > 0) {
-          store.dispatch(addArticles(resp.resources));
-        } else {
-          setNoMorePosts(true);
-        }
-      })
-      .catch(err => alert(`Invalid URL: ${err}`));
+    let resp = null;
+    try {
+      resp = await Article.get("all", { page: currentPage });
+    } catch (e) {
+      alert(`Invalid URL: ${e}`);
+      return;
+    }
+    if (resp.resources.length > 0) {
+      store.dispatch(addArticles(resp.resources));
+    } else {
+      setNoMorePosts(true);
+    }
   }
 
   function output() {

@@ -35,7 +35,7 @@ class Show extends Views.Base {
     textEl.insertAdjacentHTML("beforeend", text);
   }
 
-  _articleReceivedSignal(signal) {
+  async _articleReceivedSignal(signal) {
     switch (signal) {
       case "updating": {
         const txt =
@@ -45,10 +45,9 @@ class Show extends Views.Base {
         break;
       }
       case "updated":
-        this.article.reload().then(() => {
-          this.article.applyChanges();
-          this.renderArticle();
-        });
+        await this.article.reload();
+        this.article.applyChanges();
+        this.renderArticle();
     }
   }
 }

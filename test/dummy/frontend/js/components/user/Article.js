@@ -7,15 +7,14 @@ import { removeArticle } from "actions";
 import store from "store";
 
 function Article({ article, onArticleDestroyed }) {
-  const handleDeletingArticle = e => {
+  const handleDeletingArticle = async e => {
     e.preventDefault();
     if (!confirm("Are you sure?")) return;
-    article.delete(null).then(data => {
-      if (data.success) {
-        store.dispatch(removeArticle(data.id));
-      }
-      onArticleDestroyed(data);
-    });
+    const data = await article.delete(null);
+    if (data.success) {
+      store.dispatch(removeArticle(data.id));
+    }
+    onArticleDestroyed(data);
   };
 
   return (
