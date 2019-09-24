@@ -28,21 +28,20 @@ class Form extends Views.Base {
     this.form.render();
   }
 
-  renderComments(articleId) {
-    Comment.all({ articleId: articleId }).then(resp => {
-      store.dispatch(setComments(resp.resources, articleId));
-      renderElement(
-        <CommentList
-          articleId={articleId}
-          comments={resp.resources}
-          isAdmin={true}
-        />,
-        document.getElementById("comments")
-      );
-    });
+  async renderComments(articleId) {
+    const resp = await Comment.all({ articleId: articleId });
+    store.dispatch(setComments(resp.resources, articleId));
+    renderElement(
+      <CommentList
+        articleId={articleId}
+        comments={resp.resources}
+        isAdmin={true}
+      />,
+      document.getElementById("comments")
+    );
   }
 
-  receivedSignal(signal, data) {
+  async receivedSignal(signal, data) {
     switch (signal) {
       case "updating":
         if (
@@ -55,10 +54,9 @@ class Form extends Views.Base {
         }
         break;
       case "updated":
-        this.article.reload().then(() => {
-          this.changes = this.article.changes();
-          this._displayChanges();
-        });
+        await this.article.reload();
+        this.changes = this.article.changes();
+        this._displayChanges();
         break;
       case "destroyed":
         window.location.href = "/user/articles?message=deleted";

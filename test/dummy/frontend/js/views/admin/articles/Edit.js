@@ -10,13 +10,12 @@ class Edit extends Views.Base {
     this.article = null;
   }
 
-  receivedSignal(signal) {
+  async receivedSignal(signal) {
     switch (signal) {
       case "updated":
-        this.article.reload().then(() => {
-          this.article.applyChanges();
-          this._renderArticle();
-        });
+        await this.article.reload();
+        this.article.applyChanges();
+        this._renderArticle();
     }
   }
 
