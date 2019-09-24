@@ -8,7 +8,7 @@ class Show extends Views.Base {
     this.article = null;
   }
 
-  renderArticle(article = null) {
+  render(article = null) {
     if (this.article == null) {
       this.connectWith(article, { receiver: "articleReceivedSignal" });
       this.article = article;
@@ -27,7 +27,7 @@ class Show extends Views.Base {
       case "updated":
         await this.article.reload();
         this.article.applyChanges();
-        this.renderArticle();
+        this.render();
         break;
       case "destroyed":
         window.location.href = "/user/articles?message=deleted";

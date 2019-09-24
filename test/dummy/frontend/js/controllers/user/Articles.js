@@ -45,16 +45,8 @@ class Articles extends Controllers.Base {
   }
 
   async show() {
-    this.showView = new ShowView();
-    const article = await Article.find(this.params.id);
-    store.dispatch(setArticles([article]));
-    this.showView.renderArticle(article);
-    const resp = await Comment.all({ articleId: this.params.id });
-    store.dispatch(setComments(resp.resources, this.params.id));
-    render(
-      <CommentList articleId={this.params.id} comments={resp.resources} />,
-      document.getElementById("comments")
-    );
+    this._renderArticle();
+    this._renderComments();
   }
 
   new() {
@@ -66,6 +58,21 @@ class Articles extends Controllers.Base {
     view.renderComments(this.params.id);
     const article = await Article.find(this.params.id);
     view.render(article);
+  }
+
+  async _renderArticle() {
+    const article = await Article.find(this.params.id);
+    store.dispatch(setArticles([article]));
+    new ShowView().render(article);
+  }
+
+  async _renderComments() {
+    const resp = await Comment.all({ articleId: this.params.id });
+    store.dispatch(setComments(resp.resources, this.params.id));
+    render(
+      <CommentList articleId={this.params.id} comments={resp.resources} />,
+      document.getElementById("comments")
+    );
   }
 }
 

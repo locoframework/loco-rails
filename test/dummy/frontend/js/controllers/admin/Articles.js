@@ -24,11 +24,19 @@ class Articles extends Controllers.Base {
 
   async edit() {
     const editView = new Edit();
+    this._renderArticle(editView);
+    this._renderComment(editView);
+  }
+
+  async _renderArticle(view) {
     const article = await Article.find(this.params.id);
-    editView.render(article);
+    view.render(article);
     new Form().render(article);
+  }
+
+  async _renderComment(view) {
     const resp = await Comment.all({ articleId: this.params.id });
-    editView.renderComments(resp.resources);
+    view.renderComments(resp.resources);
   }
 }
 
