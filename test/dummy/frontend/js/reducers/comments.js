@@ -29,7 +29,6 @@ export default produce((draft = {}, action) => {
         index = draft[articleId].indexOf(comment);
       }
       draft[articleId][index] = action.comment;
-      draft[articleId] = [].concat(draft[articleId]); // TODO remove after === is reimplemented
       break;
     }
     default:
