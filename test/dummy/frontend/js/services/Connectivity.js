@@ -77,17 +77,14 @@ const commentDestroyed = ({ article_id: articleId, id }) => {
   store.dispatch(removeComment(id, articleId));
 };
 
-const commentUpdated = ({ article_id: articleId, id }) => {
+const commentUpdated = async ({ article_id: articleId, id }) => {
   const [comment, index] = findComment(store.getState(), id, {
     parentId: articleId
   });
   if (!comment) return;
-  comment.reload().then(() => {
-    comment.applyChanges();
-    store.dispatch(
-      updateComment(new Comment({ ...comment }), articleId, index)
-    );
-  });
+  await comment.reload();
+  comment.applyChanges();
+  store.dispatch(updateComment(new Comment({ ...comment }), articleId, index));
 };
 
 class Connectivity extends Views.Base {
