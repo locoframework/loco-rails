@@ -1,3 +1,5 @@
+import produce from "immer";
+
 import {
   ADD_ARTICLES,
   PREPEND_ARTICLES,
@@ -6,23 +8,20 @@ import {
   UPDATE_ARTICLE
 } from "actions";
 
-export default (state = [], action) => {
+export default produce((draft = [], action) => {
   switch (action.type) {
     case ADD_ARTICLES:
-      return [...state, ...action.articles];
+      return draft.concat(action.articles);
     case PREPEND_ARTICLES:
-      return [...action.articles, ...state];
+      return action.articles.concat(draft);
     case REMOVE_ARTICLE:
-      return state.filter(article => article.id !== action.id);
+      return draft.filter(article => article.id !== action.id);
     case SET_ARTICLES:
-      return [...action.articles];
+      return action.articles;
     case UPDATE_ARTICLE:
-      return [
-        ...state.slice(0, action.index),
-        action.article,
-        ...state.slice(action.index + 1)
-      ];
+      draft[action.index] = action.article;
+      break;
     default:
-      return state;
+      return draft;
   }
-};
+});

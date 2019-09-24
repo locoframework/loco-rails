@@ -84,7 +84,9 @@ const commentUpdated = ({ article_id: articleId, id }) => {
   if (!comment) return;
   comment.reload().then(() => {
     comment.applyChanges();
-    store.dispatch(updateComment(comment, articleId, index));
+    store.dispatch(
+      updateComment(new Comment({ ...comment }), articleId, index)
+    );
   });
 };
 

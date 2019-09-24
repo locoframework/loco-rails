@@ -1,3 +1,5 @@
+import produce from "immer";
+
 import {
   ADD_COMMENTS,
   REMOVE_COMMENT,
@@ -5,40 +7,31 @@ import {
   UPDATE_COMMENT
 } from "actions";
 
-export default (state = {}, action) => {
+export default produce((draft = {}, action) => {
   switch (action.type) {
     case ADD_COMMENTS:
-      return {
-        ...state,
-        [action.articleId]: [...state[action.articleId], ...action.comments]
-      };
+      draft[action.articleId] = draft[action.articleId].concat(action.comments);
+      break;
     case REMOVE_COMMENT:
-      if (state[action.articleId] == null) return state;
-      return {
-        ...state,
-        [action.articleId]: state[action.articleId].filter(
-          comment => comment.id !== action.id
-        )
-      };
+      if (draft[action.articleId] == null) return draft;
+      draft[action.articleId] = draft[action.articleId].filter(
+        comment => comment.id !== action.id
+      );
+      break;
     case SET_COMMENTS:
-      return { [action.articleId]: action.comments };
+      draft[action.articleId] = action.comments;
+      break;
     case UPDATE_COMMENT: {
       const articleId = action.articleId;
       let index = action.index;
       if (!index) {
-        const comment = state[articleId].find(c => c.id === action.comment.id);
-        index = state[articleId].indexOf(comment);
+        const comment = draft[articleId].find(c => c.id === action.comment.id);
+        index = draft[articleId].indexOf(comment);
       }
-      return {
-        ...state,
-        [articleId]: [
-          ...state[articleId].slice(0, index),
-          action.comment,
-          ...state[articleId].slice(index + 1)
-        ]
-      };
+      draft[articleId][index] = action.comment;
+      break;
     }
     default:
-      return state;
+      return draft;
   }
-};
+});
