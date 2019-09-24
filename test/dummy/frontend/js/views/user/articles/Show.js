@@ -22,13 +22,12 @@ class Show extends Views.Base {
     this._updateEditLink();
   }
 
-  articleReceivedSignal(signal) {
+  async articleReceivedSignal(signal) {
     switch (signal) {
       case "updated":
-        this.article.reload().then(() => {
-          this.article.applyChanges();
-          this.renderArticle();
-        });
+        await this.article.reload();
+        this.article.applyChanges();
+        this.renderArticle();
         break;
       case "destroyed":
         window.location.href = "/user/articles?message=deleted";
@@ -36,22 +35,21 @@ class Show extends Views.Base {
   }
 
   _handlePublishing() {
-    document.getElementById("publish_article").addEventListener("click", e => {
-      e.preventDefault();
-      e.target.textContent = "Publishing...";
-      this.article
-        .put("publish")
-        .then(
-          () =>
-            (document.getElementById("publish_article").outerHTML =
-              "<span>Published!</span>")
-        )
-        .catch(() => {
-          e.target.textContent = "Publish";
+    document
+      .getElementById("publish_article")
+      .addEventListener("click", async e => {
+        e.preventDefault();
+        e.target.textContent = "Publishing...";
+        try {
+          await this.article.put("publish");
+          document.getElementById("publish_article").outerHTML =
+            "<span>Published!</span>";
+        } catch (err) {
+          document.getElementById("publish_article").textContent = "Publish";
           const flash = new FlashView({ alert: "Connection error!" });
           flash.render();
-        });
-    });
+        }
+      });
   }
 
   _updateEditLink() {
