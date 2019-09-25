@@ -9,7 +9,7 @@
     "eslint",
     "git add"
   ],
-  "test/dummy/frontend/**/*.{css,scss}": [
+  "test/dummy/frontend/**/*.css": [
     "prettier --write",
     "stylelint --fix",
     "git add"

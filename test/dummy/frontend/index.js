@@ -1,5 +1,5 @@
 import "scaffold.css";
-import "global.scss";
+import "global.css";
 
 import "initializers/rails";
 import "initializers/loco";

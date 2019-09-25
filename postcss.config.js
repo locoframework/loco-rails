@@ -5,6 +5,7 @@ module.exports = {
   sourceMap: true,
   plugins: [
     require("postcss-flexbugs-fixes"),
+    require("postcss-nested"),
     require("autoprefixer"),
     require("cssnano")()
   ]
