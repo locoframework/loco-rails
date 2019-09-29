@@ -11,9 +11,7 @@ function Comment({ comment }) {
     <p id={`comment_${comment.id}`}>
       <b>{comment.author}</b> on <i>{createdAt}</i> (
       <a
-        href={`/admin/articles/${comment.articleId}/comments/${
-          comment.id
-        }/edit`}
+        href={`/admin/articles/${comment.articleId}/comments/${comment.id}/edit`}
       >
         edit
       </a>
