@@ -45,9 +45,7 @@ function Comment({ comment, isAdmin = false }) {
       approveLink = (
         <>
           <a
-            href={`/user/articles/${comment.articleId}/comments/${
-              comment.id
-            }/approve`}
+            href={`/user/articles/${comment.articleId}/comments/${comment.id}/approve`}
             className="approve"
             onClick={handleApproving}
           >
@@ -63,9 +61,7 @@ function Comment({ comment, isAdmin = false }) {
         {" "}
         ({approveLink}
         <a
-          href={`/user/articles/${comment.articleId}/comments/${
-            comment.id
-          }/edit`}
+          href={`/user/articles/${comment.articleId}/comments/${comment.id}/edit`}
         >
           edit
         </a>{" "}

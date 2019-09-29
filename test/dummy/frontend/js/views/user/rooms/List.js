@@ -53,9 +53,7 @@ class List extends Views.Base {
       <td>${room.name}</td>
       <td class='members'>0</td>
       <td>
-        <a rel='nofollow' data-method='patch' href='/user/rooms/${
-          room.id
-        }/join'>Join</a> |
+        <a rel='nofollow' data-method='patch' href='/user/rooms/${room.id}/join'>Join</a> |
         <a data-confirm='R U sure?' rel='nofollow' data-method='delete'
           href='/user/rooms/${room.id}'>Destroy</a>
       </td>
