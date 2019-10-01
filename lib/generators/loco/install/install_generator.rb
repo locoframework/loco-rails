@@ -7,6 +7,7 @@ module Loco
     def install
       generate 'loco:initializer'
       generate 'loco:file_injector'
+      generate 'loco:core:file_injector'
       generate 'loco:notification_center'
       rake 'loco:install:migrations'
     end
