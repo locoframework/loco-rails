@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'loco-rails-core'
+
 require 'loco/engine'
 require 'loco/config'
 require 'loco/broadcaster'
