@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   ]
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'loco-rails-core', '~> 0.1.0'
+  s.add_dependency 'loco-rails-core', '~> 0.1.1'
   s.add_dependency 'rails', '>= 5.0'
 
   s.add_development_dependency 'bcrypt', '~> 3.1.12'
