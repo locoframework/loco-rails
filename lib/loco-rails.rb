@@ -2,15 +2,16 @@
 
 require 'loco-rails-core'
 
-require 'loco/engine'
-require 'loco/config'
 require 'loco/broadcaster'
-require 'loco/sender'
+require 'loco/config'
 require 'loco/emitter'
-require 'loco/ws_connection_storage'
+require 'loco/engine'
+require 'loco/helpers'
+require 'loco/hub'
+require 'loco/sender'
 require 'loco/ws_connection_manager'
 require 'loco/ws_connected_resources_manager'
-require 'loco/hub'
+require 'loco/ws_connection_storage'
 
 module Loco
 end

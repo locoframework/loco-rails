@@ -1,5 +1,5 @@
 module ApplicationHelper
-  include Loco::Core::Helpers
+  include Loco::Helpers
 
   def admin_panel?
     controller_path.split('/').first == 'admin'
