@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
     'Rakefile',
     'README.rdoc'
   ]
-  s.test_files = Dir['test/**/*']
 
   s.add_dependency 'loco-rails-core', '~> 0.1.1'
   s.add_dependency 'rails', '>= 5.0'
