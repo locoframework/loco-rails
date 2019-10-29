@@ -29,6 +29,7 @@ class Admin::ArticlesListTest < IT
     assert page.has_content? "0 comments"
     comment = create_comment_for_article :one
     assert page.has_content? "1 comment"
+    sleep 0.1
     destroy_comment comment
     assert page.has_content? "0 comments"
   end
