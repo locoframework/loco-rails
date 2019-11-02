@@ -1,4 +1,5 @@
-import { Helpers, Services, UI, Views } from "loco-js";
+import { Services, UI, Views } from "loco-js";
+import { simpleFormat } from "helpers/text";
 
 import Flash from "views/shared/Flash";
 
@@ -31,7 +32,7 @@ class Show extends Views.Base {
     );
     const textEl = document.getElementById("text");
     textEl.innerHTML = "";
-    const text = new Helpers.Text().simpleFormat(this.article.content);
+    const text = simpleFormat(this.article.content);
     textEl.insertAdjacentHTML("beforeend", text);
   }
 
