@@ -1,4 +1,5 @@
-import { UI, Views } from "loco-js";
+import { Views } from "loco-js";
+import { UI } from "loco-js-ui";
 
 import User from "models/User";
 import Flash from "views/shared/Flash";

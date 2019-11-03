@@ -1,6 +1,7 @@
 import React from "react";
 import { render as renderElement } from "react-dom";
-import { UI, Views } from "loco-js";
+import { Views } from "loco-js";
+import { UI } from "loco-js-ui";
 
 import { addArticles, setComments } from "actions";
 import store from "store";

@@ -1,5 +1,6 @@
-import { Services, UI, Views } from "loco-js";
+import { Services, Views } from "loco-js";
 import { simpleFormat } from "helpers/text";
+import { UI } from "loco-js-ui";
 
 import Flash from "views/shared/Flash";
 

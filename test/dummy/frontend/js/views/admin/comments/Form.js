@@ -1,4 +1,5 @@
-import { Env, UI, Views } from "loco-js";
+import { Env, Views } from "loco-js";
+import { UI } from "loco-js-ui";
 
 import CommentModel from "models/article/Comment";
 
