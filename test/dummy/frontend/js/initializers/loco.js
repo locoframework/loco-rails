@@ -1,17 +1,16 @@
-import { Deps, Env, Loco, connector } from "loco-js";
+import { Env, Loco, connector } from "loco-js";
 import { connect } from "loco-js-ui";
 import { createConsumer } from "@rails/actioncable";
 import NotificationCenter from "services/NotificationCenter";
 import Connectivity from "services/Connectivity";
-
-Deps.cable = createConsumer();
-Deps.NotificationCenter = NotificationCenter;
 
 connect(connector);
 
 const connectivity = new Connectivity();
 
 const loco = new Loco({
+  cable: createConsumer(),
+  notificationCenter: NotificationCenter,
   notifications: {
     enable: true,
     log: true,
