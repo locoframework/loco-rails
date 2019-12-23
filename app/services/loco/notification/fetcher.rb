@@ -44,6 +44,7 @@ module Loco
         # OPTIMIZE: one query
         def notifications
           return @notifications if @notifications
+
           notifications = notifications_for_all
           notifications += notifications_behind_permissions
           notifications += notifications_behind_token if @recipient_token
@@ -62,6 +63,7 @@ module Loco
           notifications = []
           @permissions.each do |resource|
             next unless resource
+
             notifications += notification_for_resource resource
           end
           notifications
@@ -71,7 +73,7 @@ module Loco
           default_scope.where(recipient_token: @recipient_token).first max_size
         end
 
-        def notification_for_resource resource
+        def notification_for_resource(resource)
           if resource.instance_of? Class
             sql = 'recipient_class = ? AND recipient_id IS NULL'
             return default_scope.where(sql, resource.to_s).first max_size

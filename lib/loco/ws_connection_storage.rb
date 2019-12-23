@@ -16,7 +16,7 @@ module Loco
       @storage = Config.redis_instance || {}
     end
 
-    def get key
+    def get(key)
       case @storage
       when Hash
         storage[proper_key(key)]
@@ -25,7 +25,7 @@ module Loco
       end
     end
 
-    def set key, val
+    def set(key, val)
       case @storage
       when Hash
         storage[proper_key(key)] = val
@@ -34,7 +34,7 @@ module Loco
       end
     end
 
-    def del key
+    def del(key)
       case @storage
       when Hash
         storage.delete proper_key(key)
@@ -45,7 +45,7 @@ module Loco
 
     protected
 
-      def proper_key key
+      def proper_key(key)
         "#{Config.app_name}:#{key}"
       end
   end

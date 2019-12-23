@@ -17,7 +17,7 @@ module Loco
       end
     end
 
-    def obj= val
+    def obj=(val)
       if val.instance_of? Class
         self.obj_class = val.to_s
       else
@@ -27,9 +27,10 @@ module Loco
       end
     end
 
-    def recipient= val
+    def recipient=(val)
       return if val.nil?
       return if val == :all
+
       if val.is_a? String
         self.recipient_token = val
       elsif val.instance_of? Class
@@ -40,10 +41,11 @@ module Loco
       end
     end
 
-    def recipient opts = {}
+    def recipient(opts = {})
       return recipient_token if recipient_token
       return unless regular_recipient?
       return class_recipient unless recipient_id
+
       obj_recipient opts[:shallow]
     end
 
@@ -66,7 +68,7 @@ module Loco
         recipient_class.constantize
       end
 
-      def obj_recipient shallow = false
+      def obj_recipient(shallow = false)
         if shallow
           recipient_class.constantize.new id: recipient_id
         else
@@ -77,6 +79,7 @@ module Loco
       def set_event
         return if event.present?
         return if obj.instance_of? Class
+
         if obj.new_record?
           self.event = 'creating'
         else
@@ -91,6 +94,7 @@ module Loco
       def set_data
         self.data ||= {}
         return if obj.nil?
+
         self.data.merge!(id: obj.id)
       end
   end

@@ -6,15 +6,16 @@ module Loco
 
     attr_reader :raw_members
 
-    def initialize name, members = []
+    def initialize(name, members = [])
       @name = "#{PREFIX}#{name}"
       @raw_members = members.map { |m| serialize m }
     end
 
     class << self
-      def get name
+      def get(name)
         hub = WsConnectionStorage.current.get "#{PREFIX}#{name}"
         return nil if hub.blank?
+
         new name, JSON.parse(hub)
       end
     end
@@ -23,17 +24,19 @@ module Loco
       @name.split(PREFIX).last
     end
 
-    def add_member member
+    def add_member(member)
       serialized = serialize member
       return raw_members if raw_members.include? serialized
+
       raw_members << serialized
       save
       raw_members
     end
 
-    def del_member member
+    def del_member(member)
       serialized = serialize member
       return nil unless raw_members.include? serialized
+
       raw_members.delete serialized
       save
       serialized
@@ -49,7 +52,7 @@ module Loco
       self
     end
 
-    def include? resource
+    def include?(resource)
       raw_members.include? serialize(resource)
     end
 
@@ -62,7 +65,7 @@ module Loco
 
     private
 
-      def serialize member
+      def serialize(member)
         WsConnectionManager.new(member).identifier
       end
   end

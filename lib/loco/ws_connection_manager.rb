@@ -2,16 +2,17 @@
 
 module Loco
   class WsConnectionManager
-    def initialize resource
+    def initialize(resource)
       @resource = resource
     end
 
     def identifier
       return @resource if @resource.is_a?(String)
+
       "#{@resource.class.name.downcase}:#{@resource.id}"
     end
 
-    def connected? uuid
+    def connected?(uuid)
       connected_uuids.include? uuid
     end
 
@@ -19,17 +20,17 @@ module Loco
       data.find_all { |_, v| v.is_a? String }.to_h.keys
     end
 
-    def add uuid
+    def add(uuid)
       update uuid
       check_connections
     end
 
-    def del uuid
+    def del(uuid)
       save(data.tap { |h| h.delete uuid })
       check_connections
     end
 
-    def update uuid
+    def update(uuid)
       save(data.tap { |h| h[uuid] = current_time })
     end
 
@@ -42,6 +43,7 @@ module Loco
       def data
         serialized_uuids = WsConnectionStorage.current.get identifier
         return {} if serialized_uuids.blank?
+
         JSON.parse serialized_uuids
       end
 
@@ -49,7 +51,7 @@ module Loco
         data.keys
       end
 
-      def save hash
+      def save(hash)
         WsConnectionStorage.current.set identifier, hash.to_json
       end
 
@@ -61,7 +63,7 @@ module Loco
         save hash
       end
 
-      def check_connection uuid, val
+      def check_connection(uuid, val)
         case val
         when String
           val = check_connection_str uuid, val
@@ -71,14 +73,16 @@ module Loco
         [uuid, val]
       end
 
-      def check_connection_str uuid, val
+      def check_connection_str(uuid, val)
         return val if Time.zone.parse(val) >= 3.minutes.ago
+
         SenderJob.perform_later uuid, loco: { connection_check: true }
         { 'check' => current_time }
       end
 
-      def check_connection_hash uuid, val
+      def check_connection_hash(uuid, val)
         return [uuid, val] if Time.zone.parse(val['check']) >= 5.seconds.ago
+
         [nil, nil]
       end
 
