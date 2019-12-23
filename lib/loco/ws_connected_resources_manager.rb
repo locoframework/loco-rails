@@ -2,7 +2,7 @@
 
 module Loco
   class WsConnectedResourcesManager
-    def initialize resources
+    def initialize(resources)
       @resources = resources
       @connected_resources = nil
     end
@@ -11,19 +11,22 @@ module Loco
       def identifiers
         val = WsConnectionStorage.current.get key
         return [] if val.blank?
+
         JSON.parse val
       end
 
-      def add identifier
+      def add(identifier)
         ids = identifiers
         return if ids.include? identifier
+
         ids << identifier
         WsConnectionStorage.current.set key, ids.to_json
       end
 
-      def del identifier
+      def del(identifier)
         ids = identifiers
         return unless ids.include? identifier
+
         ids.delete identifier
         WsConnectionStorage.current.set key, ids.to_json
       end
@@ -35,14 +38,16 @@ module Loco
 
     def connected_resources
       return @connected_resources if @connected_resources
+
       @resources.each do |resource|
         next if WsConnectionManager.new(resource).connected_uuids.empty?
+
         add resource
       end
       @connected_resources || []
     end
 
-    def connected? resource
+    def connected?(resource)
       connected_resources.map do |res|
         WsConnectionManager.new(res).identifier
       end.include? WsConnectionManager.new(resource).identifier
@@ -50,7 +55,7 @@ module Loco
 
     private
 
-      def add resource
+      def add(resource)
         @connected_resources ||= []
         @connected_resources << resource
         @connected_resources.uniq!

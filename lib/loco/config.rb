@@ -7,7 +7,7 @@ module Loco
     cattr_accessor(:app_name) { 'loco' }
     cattr_accessor(:redis_instance) { nil }
 
-    def self.configure opts = {}
+    def self.configure(opts = {})
       self.silence_logger = opts[:silence_logger] if opts[:silence_logger]
       if opts[:notifications_size]
         self.notifications_size = opts[:notifications_size]
@@ -18,12 +18,13 @@ module Loco
       true
     end
 
-    def self.configure_redis redis_instance
+    def self.configure_redis(redis_instance)
       if redis_instance
         self.redis_instance = redis_instance
         return
       end
       return unless defined? Redis
+
       Redis.current.get 'random_redis_key'
       self.redis_instance = Redis.current
     rescue Redis::CannotConnectError

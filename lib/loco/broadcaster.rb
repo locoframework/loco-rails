@@ -4,7 +4,7 @@ module Loco
   class Broadcaster
     attr_reader :obj, :event, :recipients, :data, :notifications
 
-    def initialize obj, event = nil, opts = {}
+    def initialize(obj, event = nil, opts = {})
       recipient_key = opts[:for] ? :for : :to
       @obj = obj
       @event = event
@@ -55,13 +55,15 @@ module Loco
         notifications.each do |notification|
           notification.save!
           next if notification.recipient_id.nil?
+
           shallow_recipient = notification.recipient shallow: true
           next unless @conn_res_manager.connected? shallow_recipient
+
           send_via_ws notification
         end
       end
 
-      def send_via_ws notification
+      def send_via_ws(notification)
         recipient = notification.recipient shallow: true
         data = { loco: { notification: notification.compact } }
         SenderJob.perform_later recipient, data
@@ -77,6 +79,7 @@ module Loco
         fetch_identifiers.each do |ident|
           Loco::WsConnectionManager.new(ident).connected_uuids.each do |uuid|
             next if uuids.include? uuid
+
             uuids << uuid
             SenderJob.perform_later uuid, loco: { xhr_notifications: true }
           end

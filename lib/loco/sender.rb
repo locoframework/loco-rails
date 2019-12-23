@@ -2,7 +2,7 @@
 
 module Loco
   class Sender
-    def initialize recipient, data = {}
+    def initialize(recipient, data = {})
       @recipients = [*recipient]
       @data = data
     end
@@ -27,7 +27,7 @@ module Loco
         end.flatten.uniq
       end
 
-      def recipients_from_hub hub
+      def recipients_from_hub(hub)
         hub.raw_members.map do |m|
           WsConnectionManager.new(m).connected_uuids
         end.flatten.uniq

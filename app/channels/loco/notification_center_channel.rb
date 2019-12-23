@@ -4,19 +4,22 @@ module Loco
   class NotificationCenterChannel < ApplicationCable::Channel
     def subscribed
       return unless loco_permissions.is_a?(Array)
+
       stream_for_resources
       return if loco_permissions.compact.size > 1
+
       SenderJob.perform_later @uuid, loco: { start_ajax_polling: true }
     end
 
     def unsubscribed
       loco_permissions.each do |resource|
         next if resource.nil? || resource.is_a?(String)
+
         UuidJob.perform_later serialize_resource(resource), @uuid, 'del'
       end
     end
 
-    def receive data
+    def receive(data)
       update_connections if data['loco'] && data['loco']['connection_check']
       NotificationCenter.new.received_signal permissions, data
     end
@@ -36,7 +39,7 @@ module Loco
         end
       end
 
-      def stream_for_resource resource
+      def stream_for_resource(resource)
         identifier = WsConnectionManager.new(resource).identifier
         stream_from "loco:notification_center:#{identifier}"
       end
@@ -50,11 +53,12 @@ module Loco
       def update_connections
         permissions.each do |key, val|
           next if key == :string
+
           UuidJob.perform_later serialize_resource(val), @uuid, 'update'
         end
       end
 
-      def serialize_resource resource
+      def serialize_resource(resource)
         { 'class' => resource.class.name, 'id' => resource.id }
       end
   end
