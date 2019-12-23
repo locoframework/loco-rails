@@ -20,6 +20,8 @@ end
 Bundler.require(*Rails.groups)
 
 require 'loco-rails'
+require 'jbuilder'
+require 'will_paginate'
 
 module Dummy
   class Application < Rails::Application
