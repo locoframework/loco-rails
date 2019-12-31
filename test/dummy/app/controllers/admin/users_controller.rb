@@ -53,10 +53,11 @@ class Admin::UsersController < AdminController
                 User.find params[:id]
               else
                 User.new
-      end
+              end
     end
 
     def user_params
-      params.require(:user).permit :email, :username, :password, :password_confirmation, :confirmed
+      params.require(:user).permit :email, :username, :password, :password_confirmation,
+        :confirmed
     end
 end

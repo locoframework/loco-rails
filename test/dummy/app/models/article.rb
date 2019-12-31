@@ -2,8 +2,9 @@
 
 class Article < ApplicationRecord
   CATEGORIES = ['Arts and Entertainment', 'Cars & Other Vehicles', 'Computers and Electronic',
-                'Education and Communications', 'Family Life', 'Finance and Business', 'Food and Entertaining',
-                'Health', 'Hobbies and Crafts', 'Holidays and Traditions', 'Home and Garden', 'Pets and Animals',
+                'Education and Communications', 'Family Life', 'Finance and Business',
+                'Food and Entertaining', 'Health', 'Hobbies and Crafts',
+                'Holidays and Traditions', 'Home and Garden', 'Pets and Animals',
                 'Travel'].freeze
 
   has_many :comments, dependent: :destroy
@@ -33,7 +34,7 @@ class Article < ApplicationRecord
                  when 'String' then val == '1'
                  when 'NilClass' then nil
                  else val ? true : false
-    end
+                 end
     if published
       set_published_at
     else
