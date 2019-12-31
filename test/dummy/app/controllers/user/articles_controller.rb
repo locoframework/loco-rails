@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 class User::ArticlesController < UserController
-  before_action :set_article, only: [:new, :edit, :update, :destroy, :publish]
+  before_action :set_article, only: %i[new edit update destroy publish]
 
   def index
     respond_to do |format|
-      format.html{ render }
+      format.html { render }
       format.json do
-        @articles = current_user.articles.order("created_at ASC").
-          paginate page: params[:page], per_page: 5
+        @articles = current_user.articles.order('created_at ASC')
+                                .paginate page: params[:page], per_page: 5
         @count = current_user.articles.count
       end
     end
@@ -14,7 +16,7 @@ class User::ArticlesController < UserController
 
   def show
     respond_to do |format|
-      format.html{ render }
+      format.html { render }
       format.json do
         set_article
         @abbr = params[:abbr].present? ? true : false
@@ -28,7 +30,7 @@ class User::ArticlesController < UserController
 
   def edit
     @mark = Time.current.to_f.to_s
-    emit @article, :updating, data: {mark: @mark}, for: [@article.published? ? :all : current_user]
+    emit @article, :updating, data: { mark: @mark }, for: [@article.published? ? :all : current_user]
   end
 
   def create
@@ -38,14 +40,14 @@ class User::ArticlesController < UserController
       notice = 'Article was successfully created.'
       respond_to do |format|
         format.json do
-          render json: {success: true, status: 201, flash: {success: notice}, data: {id: @article.id}}
+          render json: { success: true, status: 201, flash: { success: notice }, data: { id: @article.id } }
         end
-        format.html{ redirect_to @article, notice: notice }
+        format.html { redirect_to @article, notice: notice }
       end
     else
       respond_to do |format|
-        format.json{ render json: {success: false, status: 400, errors: @article.errors} }
-        format.html{ render :new }
+        format.json { render json: { success: false, status: 400, errors: @article.errors } }
+        format.html { render :new }
       end
     end
   end
@@ -55,25 +57,25 @@ class User::ArticlesController < UserController
       emit @article, :updated, for: [@article.published? ? :all : current_user]
       respond_to do |format|
         format.json do
-          render json: {success: true, status: 200, flash: {success: 'Article updated!'}, data: {}}
+          render json: { success: true, status: 200, flash: { success: 'Article updated!' }, data: {} }
         end
-        format.html{ redirect_to articles_url, notice: 'Article was successfully updated.' }
+        format.html { redirect_to articles_url, notice: 'Article was successfully updated.' }
       end
     else
       respond_to do |format|
-        format.json{ render json: {success: false, status: 400, errors: @article.errors} }
-        format.html{ render :edit }
+        format.json { render json: { success: false, status: 400, errors: @article.errors } }
+        format.html { render :edit }
       end
     end
   end
 
   def publish
     if @article.publish
-      emit @article, :published, data: {id: @article.id}
+      emit @article, :published, data: { id: @article.id }
       emit @article, :updated, for: [current_user]
-      render json: {success: true, status: 200}
+      render json: { success: true, status: 200 }
     else
-      render json: {success: false, status: 400, errors: @article.errors}
+      render json: { success: false, status: 400, errors: @article.errors }
     end
   end
 
@@ -92,9 +94,9 @@ class User::ArticlesController < UserController
       end
       format.json do
         if success
-          render json: {success: true, status: 200, notice: destroy_notice, id: @article.id}
+          render json: { success: true, status: 200, notice: destroy_notice, id: @article.id }
         else
-          render json: {success: false, status: 422, alert: destroy_alert}
+          render json: { success: false, status: 422, alert: destroy_alert }
         end
       end
     end
@@ -104,9 +106,9 @@ class User::ArticlesController < UserController
 
     def set_article
       @article = if params[:id].present?
-        current_user.articles.find params[:id]
-      else
-        current_user.articles.new
+                   current_user.articles.find params[:id]
+                 else
+                   current_user.articles.new
       end
     end
 
@@ -114,7 +116,11 @@ class User::ArticlesController < UserController
       params.require(:article).permit(:title, :text)
     end
 
-    def destroy_notice; 'Article was successfully destroyed.' end
+    def destroy_notice
+      'Article was successfully destroyed.'
+    end
 
-    def destroy_alert; "Article can't be destroyed because is published." end
+    def destroy_alert
+      "Article can't be destroyed because is published."
+    end
 end

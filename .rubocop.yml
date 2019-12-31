@@ -4,7 +4,6 @@ AllCops:
   TargetRubyVersion: 2.7
   Exclude:
     - node_modules/**/*
-    - test/**/*
 
 Layout/IndentationConsistency:
   Enabled: true

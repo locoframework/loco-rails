@@ -8,7 +8,7 @@ require 'rails/test_help'
 require 'capybara/rails'
 require 'database_cleaner'
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixture_path = File.expand_path('fixtures', __dir__)

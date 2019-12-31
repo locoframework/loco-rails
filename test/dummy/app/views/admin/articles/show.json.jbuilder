@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if @abbr
   json.partial! 'admin/articles/article_for_list', article: @article
 else

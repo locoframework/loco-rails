@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class HubFinder
   include Loco::Emitter
 
-  def initialize room
+  def initialize(room)
     @room = room
   end
 

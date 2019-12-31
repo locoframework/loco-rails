@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class User::ArticlesCreatePageTest < IT
@@ -8,13 +10,13 @@ class User::ArticlesCreatePageTest < IT
     sign_in_user 'zbigniew.humeniuk@example.com', 'secret'
   end
 
-  test "should create article" do
+  test 'should create article' do
     click_on 'New Article'
     try_add_invalid_article
     assert page.has_content? "can't be blank"
-    assert page.has_content? "Article contains strong language."
+    assert page.has_content? 'Article contains strong language.'
     add_valid_article
-    txt = "Article was successfully created."
+    txt = 'Article was successfully created.'
     assert page.has_selector? "input[type=submit][value='#{txt}']"
   end
 

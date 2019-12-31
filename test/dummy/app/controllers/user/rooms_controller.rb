@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class User::RoomsController < UserController
-  before_action :find_room, only: [:show, :join, :leave, :destroy]
-  before_action :find_hub, only: [:join, :leave, :destroy]
+  before_action :find_room, only: %i[show join leave destroy]
+  before_action :find_hub, only: %i[join leave destroy]
 
   def index
     @rooms = Room.paginate page: params[:page], per_page: 10
@@ -16,8 +18,8 @@ class User::RoomsController < UserController
   def create
     @room = Room.new params_room
     if @room.save
-      emit @room, :created, data: {room: {id: @room.id, name: @room.name}}
-      redirect_to user_rooms_path, notice: "Room has been created"
+      emit @room, :created, data: { room: { id: @room.id, name: @room.name } }
+      redirect_to user_rooms_path, notice: 'Room has been created'
     else
       render :new
     end
@@ -33,7 +35,7 @@ class User::RoomsController < UserController
       room_id: @room.id,
       member: {
         id: current_user.id,
-        username: current_user.username,
+        username: current_user.username
       }
     }
     redirect_to user_room_url(id: params[:id])
@@ -43,7 +45,7 @@ class User::RoomsController < UserController
     @hub.del_member current_user
     emit @room, :member_left, data: {
       room_id: @room.id,
-      member: {id: current_user.id}
+      member: { id: current_user.id }
     }
     redirect_to user_rooms_path
   end
@@ -55,7 +57,7 @@ class User::RoomsController < UserController
     end
     del_hub @hub
     @room.destroy
-    emit @room, :destroyed, data: {room_id: @room.id}
+    emit @room, :destroyed, data: { room_id: @room.id }
     redirect_to user_rooms_path, notice: 'Room has been deleted'
   end
 

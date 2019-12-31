@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminHelpers
   def sign_in
     visit '/admin/sessions/new'
@@ -6,15 +8,15 @@ module AdminHelpers
     click_button 'Sign In'
   end
 
-  def update_article article
+  def update_article(article)
     article.title = 'AGtTRA'
     article.text = 'TESTING_SUPPORT...' * 6
     article.save!
     emit article, :updated, for: [:all]
   end
 
-  def publish_article article
+  def publish_article(article)
     article.publish
-    emit article, :published, data: {id: article.id}
+    emit article, :published, data: { id: article.id }
   end
 end

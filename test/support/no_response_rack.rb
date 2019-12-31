@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class NoResponseRack
   attr_reader :requests
 
-  def initialize disconnected_mode
+  def initialize(disconnected_mode)
     @disconnected_mode = disconnected_mode
 
     @requests = []
@@ -20,7 +22,7 @@ class NoResponseRack
     when :server_maintenance
       [200, {}, ['status_message=Atlas is down for maintenance.']]
     else
-      [999, {}, [""]]
+      [999, {}, ['']]
     end
   end
 

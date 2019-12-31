@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class Admin::ReviewArticleTest < IT
@@ -7,17 +9,17 @@ class Admin::ReviewArticleTest < IT
   def setup
     super
     sign_in
-    click_on "Articles"
-    click_on "Review"
+    click_on 'Articles'
+    click_on 'Review'
   end
 
-  test "should auto update an article" do
+  test 'should auto update an article' do
     update_article articles(:one)
-    assert page.has_content? "AGtTRA"
-    assert page.has_content? "TESTING_SUPPORT..." * 6
+    assert page.has_content? 'AGtTRA'
+    assert page.has_content? 'TESTING_SUPPORT...' * 6
   end
 
-  test "should update an article" do
+  test 'should update an article' do
     submit_review
     visit "admin/articles/#{articles(:one).id}/edit"
     script = "document.getElementById('article_published').checked === true"
@@ -33,9 +35,9 @@ class Admin::ReviewArticleTest < IT
   private
 
     def submit_review
-      uncheck "Published"
+      uncheck 'Published'
       fill_in 'Short review', with: 'Damn good article'
-      choose "Amazing"
+      choose 'Amazing'
       select 'Health', from: 'Category'
       click_button 'Update Article'
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Main::UsersController < MainController
   def new
     render
@@ -12,12 +14,12 @@ class Main::UsersController < MainController
       render json: {
         success: true,
         status: 201,
-        flash: {success: 'Signed up!'},
-        data: {id: user.id, notice: 'Welcome! You have signed up successfully.'},
+        flash: { success: 'Signed up!' },
+        data: { id: user.id, notice: 'Welcome! You have signed up successfully.' },
         access_token: token
       }
     else
-      render json: {success: false, status: 400, errors: user.errors}
+      render json: { success: false, status: 400, errors: user.errors }
     end
   end
 

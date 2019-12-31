@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class Main::CommentsController < MainController
   def count
-    render json: {total: skope.count}
+    render json: { total: skope.count }
   end
 
   def index
@@ -13,14 +15,14 @@ class Main::CommentsController < MainController
   def create
     comment = Comment.new comment_params
     if comment.save
-      emit comment, :created, data: {article_id: comment.article_id}
+      emit comment, :created, data: { article_id: comment.article_id }
       render json: {
         success: true,
         status: 201,
-        flash: {success: 'Your comment has been posted!'}
+        flash: { success: 'Your comment has been posted!' }
       }
     else
-      render json: {success: false, status: 400, errors: comment.errors}
+      render json: { success: false, status: 400, errors: comment.errors }
     end
   end
 

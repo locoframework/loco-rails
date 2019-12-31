@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User::SessionsController < ApplicationController
   def new
     if params[:event] == 'confirmed'
@@ -9,8 +11,10 @@ class User::SessionsController < ApplicationController
   def create
     user = User.find_by email: params[:email]
     auth_failed && return if user.nil?
-    auth_failed('Your account is waiting for confirmation.') && return if not user.confirmed?
-    auth_failed && return if not user.authenticate params[:password]
+    unless user.confirmed?
+      auth_failed('Your account is waiting for confirmation.') && return
+    end
+    auth_failed && return unless user.authenticate params[:password]
     cookies.signed[:user_id] = user.id
     redirect_to user_root_url, notice: 'Successfully signed in.'
   end
@@ -22,7 +26,7 @@ class User::SessionsController < ApplicationController
 
   private
 
-    def auth_failed alert = 'Invalid email or password.'
+    def auth_failed(alert = 'Invalid email or password.')
       redirect_to new_user_session_url, alert: alert
     end
 end

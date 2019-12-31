@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Main::ArticlesController < MainController
   def index
     skope = Article.published
-    @articles = skope.order("published_at DESC").includes(:user).paginate page: params[:page], per_page: 3
+    @articles = skope.order('published_at DESC').includes(:user).paginate page: params[:page], per_page: 3
     @count = skope.count
   end
 
@@ -11,7 +13,7 @@ class Main::ArticlesController < MainController
         @article = Article.published.includes(:user).find params[:id]
         @abbr = params[:abbr].present? ? true : false
       end
-      format.html{ render }
+      format.html { render }
     end
   end
 end

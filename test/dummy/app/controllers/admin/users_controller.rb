@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 class Admin::UsersController < AdminController
-  before_action :set_user, only: [:edit, :update, :destroy]
+  before_action :set_user, only: %i[edit update destroy]
 
   def index
     respond_to do |format|
       format.html
       format.json do
-        @users = User.order("created_at DESC").paginate page: params[:page], per_page: 10
+        @users = User.order('created_at DESC').paginate page: params[:page], per_page: 10
         @count = User.count
       end
     end
@@ -13,15 +15,17 @@ class Admin::UsersController < AdminController
 
   def show
     respond_to do |format|
-      format.html{ render }
-      format.json{ set_user }
+      format.html { render }
+      format.json { set_user }
     end
   end
 
   def edit
     return if @user.confirmed?
+
     connection = Connection.for_obj(@user).last
     return if connection.nil?
+
     emit @user, :confirming, for: connection.token
   end
 
@@ -31,24 +35,24 @@ class Admin::UsersController < AdminController
         emit @user, :confirmed, for: connection.token
         connection.destroy
       end
-      render json: {success: true, status: 200, flash: {success: 'User updated!'}}
+      render json: { success: true, status: 200, flash: { success: 'User updated!' } }
     else
-      render json: {success: false, status: 400, errors: @user.errors}
+      render json: { success: false, status: 400, errors: @user.errors }
     end
   end
 
   def destroy
     @user.destroy
-    redirect_to admin_users_path, notice: "User was successfully destroyed."
+    redirect_to admin_users_path, notice: 'User was successfully destroyed.'
   end
 
   private
 
     def set_user
       @user = if params[:id].present?
-        User.find params[:id]
-      else
-        User.new
+                User.find params[:id]
+              else
+                User.new
       end
     end
 

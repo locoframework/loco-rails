@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
     identified_by :loco_permissions
 
     def connect
       self.loco_permissions = [SecureRandom.uuid, current_user, current_admin]
-      logger.add_tags 'AC', loco_permissions.map{ |e| e.try(:id) || '-' }
+      logger.add_tags 'AC', loco_permissions.map { |e| e.try(:id) || '-' }
     end
 
     protected

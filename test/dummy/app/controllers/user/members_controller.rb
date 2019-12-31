@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User::MembersController < ApplicationController
   before_action :find_room
 

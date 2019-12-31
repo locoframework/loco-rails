@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class SigningUpTest < IT
   include Loco::Emitter
 
-  test "signing up user" do
+  test 'signing up user' do
     browse_to_sign_up_page
     fill_in_form
     assert page.has_content?('Please wait while administrator verifies your account')
@@ -36,7 +38,11 @@ class SigningUpTest < IT
       emit user, :confirmed, for: connection.token
     end
 
-    def user; User.find_by email: 'joe@example.com' end
+    def user
+      User.find_by email: 'joe@example.com'
+    end
 
-    def connection; Connection.for_obj(user).last end
+    def connection
+      Connection.for_obj(user).last
+    end
 end
