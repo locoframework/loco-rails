@@ -30,17 +30,19 @@ Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
 DatabaseCleaner.strategy = :truncation, { except: %w[ar_internal_metadata] }
 
-class ActiveSupport::TestCase
-  self.use_transactional_tests = false
+module ActiveSupport
+  class TestCase
+    self.use_transactional_tests = false
 
-  fixtures :all
+    fixtures :all
 
-  def setup
-    DatabaseCleaner.start
-  end
+    def setup
+      DatabaseCleaner.start
+    end
 
-  def teardown
-    DatabaseCleaner.clean
+    def teardown
+      DatabaseCleaner.clean
+    end
   end
 end
 
