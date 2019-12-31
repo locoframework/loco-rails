@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Loco::Emitter
+  include Ephemeron::ControllerAddons
 
   protect_from_forgery with: :exception  # For APIs, you may want to use :null_session instead.
 
