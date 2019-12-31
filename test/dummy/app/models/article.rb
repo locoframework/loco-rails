@@ -1,4 +1,4 @@
-class Article < ActiveRecord::Base
+class Article < ApplicationRecord
   CATEGORIES = ["Arts and Entertainment", "Cars & Other Vehicles", "Computers and Electronic",
     "Education and Communications", "Family Life", "Finance and Business", "Food and Entertaining",
     "Health", "Hobbies and Crafts", "Holidays and Traditions", "Home and Garden", "Pets and Animals",

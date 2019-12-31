@@ -1,4 +1,4 @@
-class Connection < ActiveRecord::Base
+class Connection < ApplicationRecord
   validates :obj_class, presence: true
   validates :obj_id, presence: true
 
