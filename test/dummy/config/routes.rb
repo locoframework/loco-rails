@@ -13,7 +13,8 @@ Rails.application.routes.draw do
     end
     resources :rooms, only: %i[index new create show destroy] do
       member do
-        patch :join, :leave
+        patch :join
+        patch :leave
       end
       resources :members, only: [:index]
     end

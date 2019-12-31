@@ -16,7 +16,7 @@ class User < ApplicationRecord
                      when 'String' then '1'
                      when 'Fixnum' then 1
                      else true
-           end
+                     end
     self.confirmed_at = success ? Time.current : nil
   end
 

@@ -11,9 +11,7 @@ class User::SessionsController < ApplicationController
   def create
     user = User.find_by email: params[:email]
     auth_failed && return if user.nil?
-    unless user.confirmed?
-      auth_failed('Your account is waiting for confirmation.') && return
-    end
+    auth_failed('Your account is waiting for confirmation.') && return unless user.confirmed?
     auth_failed && return unless user.authenticate params[:password]
     cookies.signed[:user_id] = user.id
     redirect_to user_root_url, notice: 'Successfully signed in.'
