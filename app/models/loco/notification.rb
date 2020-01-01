@@ -60,42 +60,42 @@ module Loco
 
     private
 
-      def regular_recipient?
-        recipient_class && recipient_id
+    def regular_recipient?
+      recipient_class && recipient_id
+    end
+
+    def class_recipient
+      recipient_class.constantize
+    end
+
+    def obj_recipient(shallow = false)
+      if shallow
+        recipient_class.constantize.new id: recipient_id
+      else
+        recipient_class.constantize.find recipient_id
       end
+    end
 
-      def class_recipient
-        recipient_class.constantize
+    def set_event
+      return if event.present?
+      return if obj.instance_of? Class
+
+      if obj.new_record?
+        self.event = 'creating'
+      else
+        set_event_for_persisted_obj
       end
+    end
 
-      def obj_recipient(shallow = false)
-        if shallow
-          recipient_class.constantize.new id: recipient_id
-        else
-          recipient_class.constantize.find recipient_id
-        end
-      end
+    def set_event_for_persisted_obj
+      self.event = obj.created_at == obj.updated_at ? 'created' : 'updated'
+    end
 
-      def set_event
-        return if event.present?
-        return if obj.instance_of? Class
+    def set_data
+      self.data ||= {}
+      return if obj.nil?
 
-        if obj.new_record?
-          self.event = 'creating'
-        else
-          set_event_for_persisted_obj
-        end
-      end
-
-      def set_event_for_persisted_obj
-        self.event = obj.created_at == obj.updated_at ? 'created' : 'updated'
-      end
-
-      def set_data
-        self.data ||= {}
-        return if obj.nil?
-
-        self.data.merge!(id: obj.id)
-      end
+      self.data.merge!(id: obj.id)
+    end
   end
 end

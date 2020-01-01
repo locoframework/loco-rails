@@ -9,9 +9,7 @@ module Loco
 
     def self.configure(opts = {})
       self.silence_logger = opts[:silence_logger] if opts[:silence_logger]
-      if opts[:notifications_size]
-        self.notifications_size = opts[:notifications_size]
-      end
+      self.notifications_size = opts[:notifications_size] if opts[:notifications_size]
       self.app_name = opts[:app_name] if opts[:app_name]
       configure_redis opts[:redis_instance]
     ensure

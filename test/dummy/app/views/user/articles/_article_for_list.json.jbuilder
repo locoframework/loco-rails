@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.id article.id
 json.title truncate(article.title, length: 25, separator: ' ')
 json.text truncate(article.text, length: 75, separator: ' ')

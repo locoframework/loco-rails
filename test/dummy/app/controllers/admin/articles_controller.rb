@@ -41,10 +41,10 @@ class Admin
 
     private
 
-      def article_params
-        params.require(:article).permit :admin_review, :category_id,
-                                        :admin_rate, :admin_review_started_at,
-                                        :published
-      end
+    def article_params
+      params.require(:article).permit :admin_review, :category_id,
+                                      :admin_rate, :admin_review_started_at,
+                                      :published
+    end
   end
 end
