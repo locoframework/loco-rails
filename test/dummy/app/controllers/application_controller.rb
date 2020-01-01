@@ -25,12 +25,14 @@ class ApplicationController < ActionController::Base
       [current_user, current_admin]
     end
 
-    def success_response(status, msg)
-      render json: {
-        success: true,
-        status: status,
-        flash: { success: msg }
-      }
+    def success_response(status, msg, data = nil, other = {})
+      resp = { success: true, status: status, flash: { success: msg } }
+      unless data.nil?
+        resp[:data] = {}
+        data.each { |key, val| resp[:data][key] = val }
+      end
+      other.each { |key, val| resp[key] = val } if other.any?
+      render json: resp
     end
 
     def failure_response(status, errors)
