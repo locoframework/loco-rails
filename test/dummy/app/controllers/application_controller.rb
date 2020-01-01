@@ -24,4 +24,16 @@ class ApplicationController < ActionController::Base
     def loco_permissions
       [current_user, current_admin]
     end
+
+    def success_response(status, msg)
+      render json: {
+        success: true,
+        status: status,
+        flash: { success: msg }
+      }
+    end
+
+    def failure_response(status, errors)
+      render json: { success: false, status: status, errors: errors }
+    end
 end

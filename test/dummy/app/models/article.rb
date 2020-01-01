@@ -60,10 +60,14 @@ class Article < ApplicationRecord
   private
 
     def vulgarity_level
+      return unless contains_vulgarity?(title) || contains_vulgarity?(text)
+
+      errors.add :base, 'Article contains strong language.'
+    end
+
+    def contains_vulgarity?(attrib)
       vulgar_word = 'fuck'
-      if (title.present? && title =~ /#{vulgar_word}/i) || (text.present? && text =~ /#{vulgar_word}/i)
-        errors.add :base, 'Article contains strong language.'
-      end
+      attrib.present? && attrib =~ /#{vulgar_word}/i
     end
 
     def set_published_at

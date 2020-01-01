@@ -17,13 +17,9 @@ module Main
       comment = Comment.new comment_params
       if comment.save
         emit comment, :created, data: { article_id: comment.article_id }
-        render json: {
-          success: true,
-          status: 201,
-          flash: { success: 'Your comment has been posted!' }
-        }
+        success_response(201, 'Your comment has been posted!')
       else
-        render json: { success: false, status: 400, errors: comment.errors }
+        failure_response(400, comment.errors)
       end
     end
 
