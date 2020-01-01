@@ -23,7 +23,7 @@ class User
       respond_to do |format|
         format.html { render }
         format.json do
-          set_article
+          Ephemeron.used(set_article)
           @abbr = params[:abbr].present? ? true : false
         end
       end
@@ -35,8 +35,8 @@ class User
 
     def edit
       @mark = Time.current.to_f.to_s
-      emit @article, :updating, data: { mark: @mark },
-                                for: [@article.published? ? :all : current_user]
+      emit Ephemeron.used(@article), :updating, data: { mark: @mark },
+                                                for: [@article.published? ? :all : current_user]
     end
 
     def create
@@ -50,8 +50,11 @@ class User
     end
 
     def update
-      success = @article.update article_params
-      emit(@article, :updated, for: [@article.published? ? :all : current_user]) if success
+      @article.assign_attributes article_params
+      success = @article.valid?
+      Ephemeron.after_save! do
+        emit(@article, :updated, for: [@article.published? ? :all : current_user]) if success
+      end
       html_json_response success, @article,
                          notice_json: 'Article updated!',
                          notice_html: 'Article was successfully updated.',
@@ -99,20 +102,6 @@ class User
         success_response 200, DESTROY_NOTICE, id: article.id
       else
         failure_response 422, DESTROY_ALERT
-      end
-    end
-
-    def html_json_response(success, article, data = {})
-      if success
-        respond_to do |format|
-          format.json { success_response 200, data[:notice_json], {} }
-          format.html { redirect_to data[:redirect_to], notice: data[:notice_html] }
-        end
-      else
-        respond_to do |format|
-          format.json { failure_response 400, article.errors }
-          format.html { render :edit }
-        end
       end
     end
   end

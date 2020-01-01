@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   def current_user
     return nil if cookies.signed[:user_id].nil?
 
-    @current_user ||= User.find_by id: cookies.signed[:user_id]
+    Ephemeron.used(@current_user) if @current_user ||= User.find_by(id: cookies.signed[:user_id])
   end
 
   def loco_permissions
@@ -38,5 +38,19 @@ class ApplicationController < ActionController::Base
 
   def failure_response(status, errors)
     render json: { success: false, status: status, errors: errors }
+  end
+
+  def html_json_response(success, model, data = {})
+    if success
+      respond_to do |format|
+        format.json { success_response 200, data[:notice_json], {} }
+        format.html { redirect_to data[:redirect_to], notice: data[:notice_html] }
+      end
+    else
+      respond_to do |format|
+        format.json { failure_response 400, model.errors }
+        format.html { render :edit }
+      end
+    end
   end
 end

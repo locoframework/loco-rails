@@ -6,7 +6,7 @@ class User
     before_action :set_comment, only: %i[show edit update destroy]
 
     def index
-      skope = Comment.where article_id: @article.id
+      skope = Comment.where article_id: Ephemeron.used(@article).id
       @comments = skope.order('created_at ASC').paginate page: params[:page], per_page: 10
       @count = skope.count
     end
