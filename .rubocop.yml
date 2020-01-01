@@ -35,6 +35,11 @@ Metrics/BlockLength:
     - loco-rails.gemspec
     - test/dummy/config/routes.rb
 
+Metrics/ClassLength:
+  Enabled: true
+  Exclude:
+    - test/integration/**/*
+
 Metrics/MethodLength:
   Enabled: true
   Max: 12

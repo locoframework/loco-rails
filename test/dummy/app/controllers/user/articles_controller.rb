@@ -43,13 +43,19 @@ class User
       @article = current_user.articles.new article_params
       success = @article.save
       emit(@article, :created, for: [current_user]) if success
-      response_for_create success, @article
+      html_json_response success, @article,
+                         notice_json: CREATE_NOTICE,
+                         notice_html: CREATE_NOTICE,
+                         redirect_to: @article
     end
 
     def update
       success = @article.update article_params
       emit(@article, :updated, for: [@article.published? ? :all : current_user]) if success
-      response_for_update success, @article
+      html_json_response success, @article,
+                         notice_json: 'Article updated!',
+                         notice_html: 'Article was successfully updated.',
+                         redirect_to: articles_url
     end
 
     def publish
@@ -67,7 +73,7 @@ class User
       emit(@article, :destroyed, for: [current_user]) if success
       respond_to do |format|
         format.html do
-          flash_for_destroy success
+          flash[success ? :notice : :alert] = success ? DESTROY_NOTICE : DESTROY_ALERT
           redirect_to user_articles_url
         end
         format.json { json_response_for_destroy @article }
@@ -88,14 +94,6 @@ class User
         params.require(:article).permit(:title, :text)
       end
 
-      def flash_for_destroy(success)
-        if success
-          flash[:notice] = DESTROY_NOTICE
-        else
-          flash[:alert] = DESTROY_ALERT
-        end
-      end
-
       def json_response_for_destroy(article)
         if success
           success_response 200, DESTROY_NOTICE, id: article.id
@@ -104,30 +102,16 @@ class User
         end
       end
 
-      def response_for_update(success, article)
+      def html_json_response(success, article, data = {})
         if success
           respond_to do |format|
-            format.json { success_response 200, 'Article updated!', {} }
-            format.html { redirect_to articles_url, notice: 'Article was successfully updated.' }
+            format.json { success_response 200, data[:notice_json], {} }
+            format.html { redirect_to data[:redirect_to], notice: data[:notice_html] }
           end
         else
           respond_to do |format|
             format.json { failure_response 400, article.errors }
             format.html { render :edit }
-          end
-        end
-      end
-
-      def response_for_create(success, article)
-        if success
-          respond_to do |format|
-            format.json { success_response 201, CREATE_NOTICE, id: article.id }
-            format.html { redirect_to article, notice: CREATE_NOTICE }
-          end
-        else
-          respond_to do |format|
-            format.json { failure_response 400, article.errors }
-            format.html { render :new }
           end
         end
       end
