@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.id article.id
 json.title article.title
 json.text article.text

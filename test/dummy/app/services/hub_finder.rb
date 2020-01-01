@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class HubFinder
   include Loco::Emitter
 
-  def initialize room
+  def initialize(room)
     @room = room
   end
 
@@ -11,7 +13,7 @@ class HubFinder
 
   private
 
-    def name
-      "room_#{@room.id}"
-    end
+  def name
+    "room_#{@room.id}"
+  end
 end

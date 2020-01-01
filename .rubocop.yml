@@ -4,11 +4,10 @@ AllCops:
   TargetRubyVersion: 2.7
   Exclude:
     - node_modules/**/*
-    - test/**/*
+    - test/dummy/db/schema.rb
 
 Layout/IndentationConsistency:
   Enabled: true
-  EnforcedStyle: indented_internal_methods
   Exclude:
     - lib/generators/loco/file_injector/templates/connection.rb
 
@@ -17,6 +16,12 @@ Layout/InitialIndentation:
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
     - lib/generators/loco/file_injector/templates/connection.rb
+
+Layout/LineLength:
+  Enabled: true
+  Max: 97
+  Exclude:
+    - test/dummy/config/environments/production.rb
 
 Layout/TrailingEmptyLines:
   Enabled: true
@@ -27,11 +32,16 @@ Metrics/BlockLength:
   Enabled: true
   Exclude:
     - loco-rails.gemspec
+    - test/dummy/config/routes.rb
+
+Metrics/ClassLength:
+  Enabled: true
+  Exclude:
+    - test/integration/**/*
 
 Metrics/MethodLength:
   Enabled: true
-  Exclude:
-    - test/dummy/app/controllers/admin/articles_controller.rb
+  Max: 12
 
 Naming/FileName:
   Enabled: true

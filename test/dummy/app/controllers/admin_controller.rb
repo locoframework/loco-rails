@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AdminController < ApplicationController
   before_action :authenticate
 
@@ -5,9 +7,7 @@ class AdminController < ApplicationController
 
   private
 
-    def authenticate
-      if not current_admin
-        redirect_to new_admin_session_url
-      end
-    end
+  def authenticate
+    redirect_to new_admin_session_url unless current_admin
+  end
 end
