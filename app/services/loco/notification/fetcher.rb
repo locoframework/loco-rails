@@ -32,58 +32,58 @@ module Loco
 
       private
 
-        def sync_time
-          Time.zone.parse @synced_at
+      def sync_time
+        Time.zone.parse @synced_at
+      end
+
+      def default_scope
+        Notification.order('created_at ASC')
+                    .where('created_at > ?', sync_time)
+      end
+
+      # OPTIMIZE: one query
+      def notifications
+        return @notifications if @notifications
+
+        notifications = notifications_for_all
+        notifications += notifications_behind_permissions
+        notifications += notifications_behind_token if @recipient_token
+        @notifications = notifications.sort_by(&:created_at)[0, max_size]
+      end
+
+      def notifications_for_all
+        default_scope.where(
+          recipient_class: nil,
+          recipient_id: nil,
+          recipient_token: nil
+        ).first max_size
+      end
+
+      def notifications_behind_permissions
+        notifications = []
+        @permissions.each do |resource|
+          next unless resource
+
+          notifications += notification_for_resource resource
         end
+        notifications
+      end
 
-        def default_scope
-          Notification.order('created_at ASC')
-                      .where('created_at > ?', sync_time)
+      def notifications_behind_token
+        default_scope.where(recipient_token: @recipient_token).first max_size
+      end
+
+      def notification_for_resource(resource)
+        if resource.instance_of? Class
+          sql = 'recipient_class = ? AND recipient_id IS NULL'
+          return default_scope.where(sql, resource.to_s).first max_size
         end
-
-        # OPTIMIZE: one query
-        def notifications
-          return @notifications if @notifications
-
-          notifications = notifications_for_all
-          notifications += notifications_behind_permissions
-          notifications += notifications_behind_token if @recipient_token
-          @notifications = notifications.sort_by(&:created_at)[0, max_size]
-        end
-
-        def notifications_for_all
-          default_scope.where(
-            recipient_class: nil,
-            recipient_id: nil,
-            recipient_token: nil
-          ).first max_size
-        end
-
-        def notifications_behind_permissions
-          notifications = []
-          @permissions.each do |resource|
-            next unless resource
-
-            notifications += notification_for_resource resource
-          end
-          notifications
-        end
-
-        def notifications_behind_token
-          default_scope.where(recipient_token: @recipient_token).first max_size
-        end
-
-        def notification_for_resource(resource)
-          if resource.instance_of? Class
-            sql = 'recipient_class = ? AND recipient_id IS NULL'
-            return default_scope.where(sql, resource.to_s).first max_size
-          end
-          klass = resource.class.name
-          cond1 = '(recipient_class = ? AND recipient_id = ?)'
-          cond2 = '(recipient_class = ? AND recipient_id IS NULL)'
-          sql = "#{cond1} OR #{cond2}"
-          default_scope.where(sql, klass, resource.id, klass).first max_size
-        end
+        klass = resource.class.name
+        cond1 = '(recipient_class = ? AND recipient_id = ?)'
+        cond2 = '(recipient_class = ? AND recipient_id IS NULL)'
+        sql = "#{cond1} OR #{cond2}"
+        default_scope.where(sql, klass, resource.id, klass).first max_size
+      end
     end
   end
 end

@@ -45,8 +45,8 @@ module Loco
 
     protected
 
-      def proper_key(key)
-        "#{Config.app_name}:#{key}"
-      end
+    def proper_key(key)
+      "#{Config.app_name}:#{key}"
+    end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module CapybaraOffline
-  def go_disconnected disconnected_mode = :server_error
+  def go_disconnected(disconnected_mode = :server_error)
     page.evaluate_script 'window.test.Channels.Loco.NotificationCenter.disconnected();'
     current_proxy = NoResponseRack.new disconnected_mode
     rack_mappings.unshift [nil, '', /^(.*)/n, current_proxy]

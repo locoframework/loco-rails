@@ -65,8 +65,8 @@ module Loco
 
     private
 
-      def serialize(member)
-        WsConnectionManager.new(member).identifier
-      end
+    def serialize(member)
+      WsConnectionManager.new(member).identifier
+    end
   end
 end

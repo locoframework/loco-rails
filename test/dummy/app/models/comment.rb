@@ -1,4 +1,6 @@
-class Comment < ActiveRecord::Base
+# frozen_string_literal: true
+
+class Comment < ApplicationRecord
   belongs_to :article
 
   validates :author, presence: true
@@ -9,9 +11,9 @@ class Comment < ActiveRecord::Base
 
   private
 
-    def set_defaults
-      self.emotion ||= 0
-      self.pinned = false if pinned.nil?
-      self.admin_rate ||= 3
-    end
+  def set_defaults
+    self.emotion ||= 0
+    self.pinned = false if pinned.nil?
+    self.admin_rate ||= 3
+  end
 end

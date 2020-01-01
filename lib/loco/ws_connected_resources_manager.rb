@@ -55,10 +55,10 @@ module Loco
 
     private
 
-      def add(resource)
-        @connected_resources ||= []
-        @connected_resources << resource
-        @connected_resources.uniq!
-      end
+    def add(resource)
+      @connected_resources ||= []
+      @connected_resources << resource
+      @connected_resources.uniq!
+    end
   end
 end

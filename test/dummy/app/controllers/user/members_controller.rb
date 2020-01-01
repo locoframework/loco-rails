@@ -1,13 +1,17 @@
-class User::MembersController < ApplicationController
-  before_action :find_room
+# frozen_string_literal: true
 
-  def index
-    @members = HubFinder.new(@room).find.members
-  end
+class User
+  class MembersController < ApplicationController
+    before_action :find_room
 
-  protected
+    def index
+      @members = HubFinder.new(@room).find.members
+    end
+
+    protected
 
     def find_room
       @room = Room.find params[:room_id]
     end
+  end
 end

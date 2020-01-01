@@ -40,54 +40,54 @@ module Loco
 
     protected
 
-      def data
-        serialized_uuids = WsConnectionStorage.current.get identifier
-        return {} if serialized_uuids.blank?
+    def data
+      serialized_uuids = WsConnectionStorage.current.get identifier
+      return {} if serialized_uuids.blank?
 
-        JSON.parse serialized_uuids
-      end
+      JSON.parse serialized_uuids
+    end
 
-      def uuids
-        data.keys
-      end
+    def uuids
+      data.keys
+    end
 
-      def save(hash)
-        WsConnectionStorage.current.set identifier, hash.to_json
-      end
+    def save(hash)
+      WsConnectionStorage.current.set identifier, hash.to_json
+    end
 
-      def check_connections
-        hash = data.to_a.map do |arr|
-          uuid, val = check_connection arr.first, arr.last
-          [uuid, val]
-        end.to_h.compact
-        save hash
-      end
-
-      def check_connection(uuid, val)
-        case val
-        when String
-          val = check_connection_str uuid, val
-        when Hash
-          uuid, val = check_connection_hash uuid, val
-        end
+    def check_connections
+      hash = data.to_a.map do |arr|
+        uuid, val = check_connection arr.first, arr.last
         [uuid, val]
+      end.to_h.compact
+      save hash
+    end
+
+    def check_connection(uuid, val)
+      case val
+      when String
+        val = check_connection_str uuid, val
+      when Hash
+        uuid, val = check_connection_hash uuid, val
       end
+      [uuid, val]
+    end
 
-      def check_connection_str(uuid, val)
-        return val if Time.zone.parse(val) >= 3.minutes.ago
+    def check_connection_str(uuid, val)
+      return val if Time.zone.parse(val) >= 3.minutes.ago
 
-        SenderJob.perform_later uuid, loco: { connection_check: true }
-        { 'check' => current_time }
-      end
+      SenderJob.perform_later uuid, loco: { connection_check: true }
+      { 'check' => current_time }
+    end
 
-      def check_connection_hash(uuid, val)
-        return [uuid, val] if Time.zone.parse(val['check']) >= 5.seconds.ago
+    def check_connection_hash(uuid, val)
+      return [uuid, val] if Time.zone.parse(val['check']) >= 5.seconds.ago
 
-        [nil, nil]
-      end
+      [nil, nil]
+    end
 
-      def current_time
-        Time.current.iso8601(6)
-      end
+    def current_time
+      Time.current.iso8601(6)
+    end
   end
 end

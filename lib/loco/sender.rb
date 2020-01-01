@@ -15,22 +15,22 @@ module Loco
 
     private
 
-      def uuids
-        @recipients.map do |r|
-          if r.is_a? String
-            r
-          elsif r.is_a? Hub
-            recipients_from_hub r
-          else
-            WsConnectionManager.new(r).connected_uuids
-          end
-        end.flatten.uniq
-      end
+    def uuids
+      @recipients.map do |r|
+        if r.is_a? String
+          r
+        elsif r.is_a? Hub
+          recipients_from_hub r
+        else
+          WsConnectionManager.new(r).connected_uuids
+        end
+      end.flatten.uniq
+    end
 
-      def recipients_from_hub(hub)
-        hub.raw_members.map do |m|
-          WsConnectionManager.new(m).connected_uuids
-        end.flatten.uniq
-      end
+    def recipients_from_hub(hub)
+      hub.raw_members.map do |m|
+        WsConnectionManager.new(m).connected_uuids
+      end.flatten.uniq
+    end
   end
 end

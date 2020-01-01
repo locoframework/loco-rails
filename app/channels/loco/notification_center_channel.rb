@@ -26,40 +26,40 @@ module Loco
 
     protected
 
-      def stream_for_resources
-        loco_permissions.compact.each do |resource|
-          if resource.is_a? String
-            @uuid = resource
-            stream_for_resource resource
-            SenderJob.perform_later @uuid, loco: { uuid: @uuid }
-          else
-            UuidJob.perform_later serialize_resource(resource), @uuid, 'add'
-            stream_for_resource resource
-          end
+    def stream_for_resources
+      loco_permissions.compact.each do |resource|
+        if resource.is_a? String
+          @uuid = resource
+          stream_for_resource resource
+          SenderJob.perform_later @uuid, loco: { uuid: @uuid }
+        else
+          UuidJob.perform_later serialize_resource(resource), @uuid, 'add'
+          stream_for_resource resource
         end
       end
+    end
 
-      def stream_for_resource(resource)
-        identifier = WsConnectionManager.new(resource).identifier
-        stream_from "loco:notification_center:#{identifier}"
+    def stream_for_resource(resource)
+      identifier = WsConnectionManager.new(resource).identifier
+      stream_from "loco:notification_center:#{identifier}"
+    end
+
+    def permissions
+      loco_permissions.compact.map do |o|
+        [o.class.name.downcase.to_sym, o]
+      end.to_h
+    end
+
+    def update_connections
+      permissions.each do |key, val|
+        next if key == :string
+
+        UuidJob.perform_later serialize_resource(val), @uuid, 'update'
       end
+    end
 
-      def permissions
-        loco_permissions.compact.map do |o|
-          [o.class.name.downcase.to_sym, o]
-        end.to_h
-      end
-
-      def update_connections
-        permissions.each do |key, val|
-          next if key == :string
-
-          UuidJob.perform_later serialize_resource(val), @uuid, 'update'
-        end
-      end
-
-      def serialize_resource(resource)
-        { 'class' => resource.class.name, 'id' => resource.id }
-      end
+    def serialize_resource(resource)
+      { 'class' => resource.class.name, 'id' => resource.id }
+    end
   end
 end

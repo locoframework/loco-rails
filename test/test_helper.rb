@@ -8,7 +8,7 @@ require 'rails/test_help'
 require 'capybara/rails'
 require 'database_cleaner'
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixture_path = File.expand_path('fixtures', __dir__)
@@ -30,17 +30,19 @@ Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
 DatabaseCleaner.strategy = :truncation, { except: %w[ar_internal_metadata] }
 
-class ActiveSupport::TestCase
-  self.use_transactional_tests = false
+module ActiveSupport
+  class TestCase
+    self.use_transactional_tests = false
 
-  fixtures :all
+    fixtures :all
 
-  def setup
-    DatabaseCleaner.start
-  end
+    def setup
+      DatabaseCleaner.start
+    end
 
-  def teardown
-    DatabaseCleaner.clean
+    def teardown
+      DatabaseCleaner.clean
+    end
   end
 end
 
