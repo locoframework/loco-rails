@@ -37,6 +37,7 @@ Metrics/BlockLength:
 
 Metrics/MethodLength:
   Enabled: true
+  Max: 12
   Exclude:
     - test/dummy/app/controllers/admin/articles_controller.rb
 

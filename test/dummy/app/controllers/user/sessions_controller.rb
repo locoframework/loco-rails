@@ -10,12 +10,15 @@ class User
     end
 
     def create
-      user = User.find_by email: params[:email]
-      auth_failed && return if user.nil?
-      auth_failed('Your account is waiting for confirmation.') && return unless user.confirmed?
-      auth_failed && return unless user.authenticate params[:password]
-      cookies.signed[:user_id] = user.id
-      redirect_to user_root_url, notice: 'Successfully signed in.'
+      if (user = User.find_by email: params[:email]).nil?
+        auth_failed
+      elsif !user.confirmed?
+        auth_failed 'Your account is waiting for confirmation.'
+      elsif !user.authenticate(params[:password])
+        auth_failed
+      else
+        auth_succeeded user
+      end
     end
 
     def destroy
@@ -27,6 +30,11 @@ class User
 
       def auth_failed(alert = 'Invalid email or password.')
         redirect_to new_user_session_url, alert: alert
+      end
+
+      def auth_succeeded(user)
+        cookies.signed[:user_id] = user.id
+        redirect_to user_root_url, notice: 'Successfully signed in.'
       end
   end
 end

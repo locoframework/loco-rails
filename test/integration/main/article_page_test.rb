@@ -33,7 +33,8 @@ module Main
     test 'should show info about editing' do
       sleep 0.1
       emit articles(:one), :updating, data: { mark: Time.current.to_f.to_s }
-      assert page.has_content? 'Author is currently editing article. Be aware of possible changes.'
+      content = 'Author is currently editing article. Be aware of possible changes.'
+      assert page.has_content? content
     end
 
     test 'should update number of comments if one was added' do

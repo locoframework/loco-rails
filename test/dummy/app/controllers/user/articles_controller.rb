@@ -41,33 +41,15 @@ class User
 
     def create
       @article = current_user.articles.new article_params
-      if @article.save
-        emit @article, :created, for: [current_user]
-        respond_to do |format|
-          format.json { success_response 201, CREATE_NOTICE, id: @article.id }
-          format.html { redirect_to @article, notice: CREATE_NOTICE }
-        end
-      else
-        respond_to do |format|
-          format.json { failure_response 400, @article.errors }
-          format.html { render :new }
-        end
-      end
+      success = @article.save
+      emit(@article, :created, for: [current_user]) if success
+      response_for_create success, @article
     end
 
     def update
-      if @article.update article_params
-        emit @article, :updated, for: [@article.published? ? :all : current_user]
-        respond_to do |format|
-          format.json { success_response 200, 'Article updated!', {} }
-          format.html { redirect_to articles_url, notice: 'Article was successfully updated.' }
-        end
-      else
-        respond_to do |format|
-          format.json { failure_response 400, @article.errors }
-          format.html { render :edit }
-        end
-      end
+      success = @article.update article_params
+      emit(@article, :updated, for: [@article.published? ? :all : current_user]) if success
+      response_for_update success, @article
     end
 
     def publish
@@ -81,25 +63,14 @@ class User
     end
 
     def destroy
-      if (success = @article.destroy)
-        emit @article, :destroyed, for: [current_user]
-      end
+      success = @article.destroy
+      emit(@article, :destroyed, for: [current_user]) if success
       respond_to do |format|
         format.html do
-          if success
-            flash[:notice] = DESTROY_NOTICE
-          else
-            flash[:alert] = DESTROY_ALERT
-          end
+          flash_for_destroy success
           redirect_to user_articles_url
         end
-        format.json do
-          if success
-            render json: { success: true, status: 200, notice: DESTROY_NOTICE, id: @article.id }
-          else
-            render json: { success: false, status: 422, alert: DESTROY_ALERT }
-          end
-        end
+        format.json { json_response_for_destroy @article }
       end
     end
 
@@ -115,6 +86,50 @@ class User
 
       def article_params
         params.require(:article).permit(:title, :text)
+      end
+
+      def flash_for_destroy(success)
+        if success
+          flash[:notice] = DESTROY_NOTICE
+        else
+          flash[:alert] = DESTROY_ALERT
+        end
+      end
+
+      def json_response_for_destroy(article)
+        if success
+          success_response 200, DESTROY_NOTICE, id: article.id
+        else
+          failure_response 422, DESTROY_ALERT
+        end
+      end
+
+      def response_for_update(success, article)
+        if success
+          respond_to do |format|
+            format.json { success_response 200, 'Article updated!', {} }
+            format.html { redirect_to articles_url, notice: 'Article was successfully updated.' }
+          end
+        else
+          respond_to do |format|
+            format.json { failure_response 400, article.errors }
+            format.html { render :edit }
+          end
+        end
+      end
+
+      def response_for_create(success, article)
+        if success
+          respond_to do |format|
+            format.json { success_response 201, CREATE_NOTICE, id: article.id }
+            format.html { redirect_to article, notice: CREATE_NOTICE }
+          end
+        else
+          respond_to do |format|
+            format.json { failure_response 400, article.errors }
+            format.html { render :new }
+          end
+        end
       end
   end
 end
