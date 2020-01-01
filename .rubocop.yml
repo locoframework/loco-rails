@@ -21,6 +21,8 @@ Layout/InitialIndentation:
 Layout/LineLength:
   Enabled: true
   Max: 97
+  Exclude:
+    - test/dummy/config/environments/production.rb
 
 Layout/TrailingEmptyLines:
   Enabled: true

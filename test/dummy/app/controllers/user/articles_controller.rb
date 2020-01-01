@@ -31,7 +31,8 @@ class User
 
     def edit
       @mark = Time.current.to_f.to_s
-      emit @article, :updating, data: { mark: @mark }, for: [@article.published? ? :all : current_user]
+      emit @article, :updating, data: { mark: @mark },
+                                for: [@article.published? ? :all : current_user]
     end
 
     def create
@@ -89,7 +90,7 @@ class User
     end
 
     def destroy
-      if success = @article.destroy
+      if (success = @article.destroy)
         emit @article, :destroyed, for: [current_user]
       end
       respond_to do |format|
@@ -115,10 +116,10 @@ class User
 
       def set_article
         @article = if params[:id].present?
-                    current_user.articles.find params[:id]
-                  else
-                    current_user.articles.new
-                  end
+                     current_user.articles.find params[:id]
+                   else
+                     current_user.articles.new
+                   end
       end
 
       def article_params
