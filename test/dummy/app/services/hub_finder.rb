@@ -13,7 +13,7 @@ class HubFinder
 
   private
 
-    def name
-      "room_#{@room.id}"
-    end
+  def name
+    "room_#{@room.id}"
+  end
 end

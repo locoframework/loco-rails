@@ -82,38 +82,38 @@ class User
 
     private
 
-      def set_article
-        @article = if params[:id].present?
-                     current_user.articles.find params[:id]
-                   else
-                     current_user.articles.new
-                   end
-      end
+    def set_article
+      @article = if params[:id].present?
+                   current_user.articles.find params[:id]
+                 else
+                   current_user.articles.new
+                 end
+    end
 
-      def article_params
-        params.require(:article).permit(:title, :text)
-      end
+    def article_params
+      params.require(:article).permit(:title, :text)
+    end
 
-      def json_response_for_destroy(article)
-        if success
-          success_response 200, DESTROY_NOTICE, id: article.id
-        else
-          failure_response 422, DESTROY_ALERT
+    def json_response_for_destroy(article)
+      if success
+        success_response 200, DESTROY_NOTICE, id: article.id
+      else
+        failure_response 422, DESTROY_ALERT
+      end
+    end
+
+    def html_json_response(success, article, data = {})
+      if success
+        respond_to do |format|
+          format.json { success_response 200, data[:notice_json], {} }
+          format.html { redirect_to data[:redirect_to], notice: data[:notice_html] }
+        end
+      else
+        respond_to do |format|
+          format.json { failure_response 400, article.errors }
+          format.html { render :edit }
         end
       end
-
-      def html_json_response(success, article, data = {})
-        if success
-          respond_to do |format|
-            format.json { success_response 200, data[:notice_json], {} }
-            format.html { redirect_to data[:redirect_to], notice: data[:notice_html] }
-          end
-        else
-          respond_to do |format|
-            format.json { failure_response 400, article.errors }
-            format.html { render :edit }
-          end
-        end
-      end
+    end
   end
 end

@@ -20,15 +20,15 @@ module Main
 
     private
 
-      def user_params
-        params.require(:user).permit :email, :password, :password_confirmation, :username
-      end
+    def user_params
+      params.require(:user).permit :email, :password, :password_confirmation, :username
+    end
 
-      def success_response_for_create(user, token)
-        success_response 201, 'Signed up!', {
-          id: user.id,
-          notice: 'Welcome! You have signed up successfully.'
-        }, access_token: token
-      end
+    def success_response_for_create(user, token)
+      success_response 201, 'Signed up!', {
+        id: user.id,
+        notice: 'Welcome! You have signed up successfully.'
+      }, access_token: token
+    end
   end
 end

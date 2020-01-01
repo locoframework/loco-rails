@@ -29,9 +29,9 @@ class NoResponseRack
 
   private
 
-    def take_a_nap
-      @sleeping_threads << Thread.current
-      sleep 65
-      @sleeping_threads.delete Thread.current
-    end
+  def take_a_nap
+    @sleeping_threads << Thread.current
+    sleep 65
+    @sleeping_threads.delete Thread.current
+  end
 end

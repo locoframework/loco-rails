@@ -39,18 +39,18 @@ class User
 
     private
 
-      def comment_params
-        permitted_params = %i[author text]
-        permitted_params << :approved if current_admin
-        params.require(:comment).permit(*permitted_params)
-      end
+    def comment_params
+      permitted_params = %i[author text]
+      permitted_params << :approved if current_admin
+      params.require(:comment).permit(*permitted_params)
+    end
 
-      def set_article
-        @article = current_user.articles.find params[:article_id]
-      end
+    def set_article
+      @article = current_user.articles.find params[:article_id]
+    end
 
-      def set_comment
-        @comment = @article.comments.find params[:id]
-      end
+    def set_comment
+      @comment = @article.comments.find params[:id]
+    end
   end
 end

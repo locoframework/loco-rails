@@ -80,36 +80,36 @@ module Main
 
     private
 
-      def publish_article(name)
-        articles(name).publish
-        emit articles(name), :published, data: { id: articles(name).id }
-      end
+    def publish_article(name)
+      articles(name).publish
+      emit articles(name), :published, data: { id: articles(name).id }
+    end
 
-      def destroy_comment(comment)
-        comment.destroy
-        emit comment, :destroyed, data: { article_id: comment.article_id }
-      end
+    def destroy_comment(comment)
+      comment.destroy
+      emit comment, :destroyed, data: { article_id: comment.article_id }
+    end
 
-      def create_zbig_articles
-        users(:user_zbig).articles.create!(
-          title: 'Why Associations?', text: ARTICLE_TEXTS[:one], published_at: 2.days.ago
-        )
-        users(:user_zbig).articles.create!(
-          title: 'Configuring Rails Components',
-          text: ARTICLE_TEXTS[:four],
-          published_at: 5.days.ago
-        )
-      end
+    def create_zbig_articles
+      users(:user_zbig).articles.create!(
+        title: 'Why Associations?', text: ARTICLE_TEXTS[:one], published_at: 2.days.ago
+      )
+      users(:user_zbig).articles.create!(
+        title: 'Configuring Rails Components',
+        text: ARTICLE_TEXTS[:four],
+        published_at: 5.days.ago
+      )
+    end
 
-      def create_jane_articles
-        users(:user_jane).articles.create!(
-          title: 'Form Helpers', text: ARTICLE_TEXTS[:two], published_at: 3.days.ago
-        )
-        users(:user_jane).articles.create!(
-          title: 'Active Support Core Extensions',
-          text: ARTICLE_TEXTS[:three],
-          published_at: 4.days.ago
-        )
-      end
+    def create_jane_articles
+      users(:user_jane).articles.create!(
+        title: 'Form Helpers', text: ARTICLE_TEXTS[:two], published_at: 3.days.ago
+      )
+      users(:user_jane).articles.create!(
+        title: 'Active Support Core Extensions',
+        text: ARTICLE_TEXTS[:three],
+        published_at: 4.days.ago
+      )
+    end
   end
 end

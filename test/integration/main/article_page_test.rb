@@ -108,24 +108,24 @@ module Main
 
     private
 
-      def try_add_invalid_article
-        fill_in 'comment_text', with: 'Fuck this shit!'
-        click_button 'Post this comment'
-      end
+    def try_add_invalid_article
+      fill_in 'comment_text', with: 'Fuck this shit!'
+      click_button 'Post this comment'
+    end
 
-      def add_valid_article
-        fill_in 'comment_author', with: 'David'
-        fill_in 'comment_text', with: 'Nice article man!'
-        click_button 'Post this comment'
-      end
+    def add_valid_article
+      fill_in 'comment_author', with: 'David'
+      fill_in 'comment_text', with: 'Nice article man!'
+      click_button 'Post this comment'
+    end
 
-      def update_article(name)
-        articles(name).tap do |a|
-          a.title = "#{a.title} (edited)"
-          a.text = "#{a.text} (edited)"
-          a.save!
-        end
-        emit articles(name), :updated, for: [:all]
+    def update_article(name)
+      articles(name).tap do |a|
+        a.title = "#{a.title} (edited)"
+        a.text = "#{a.text} (edited)"
+        a.save!
       end
+      emit articles(name), :updated, for: [:all]
+    end
   end
 end

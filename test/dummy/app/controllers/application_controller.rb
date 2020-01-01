@@ -9,33 +9,33 @@ class ApplicationController < ActionController::Base
 
   private
 
-    def current_admin
-      return nil if cookies.signed[:admin_id].nil?
+  def current_admin
+    return nil if cookies.signed[:admin_id].nil?
 
-      @current_admin ||= Admin.find_by id: cookies.signed[:admin_id]
+    @current_admin ||= Admin.find_by id: cookies.signed[:admin_id]
+  end
+
+  def current_user
+    return nil if cookies.signed[:user_id].nil?
+
+    @current_user ||= User.find_by id: cookies.signed[:user_id]
+  end
+
+  def loco_permissions
+    [current_user, current_admin]
+  end
+
+  def success_response(status, msg, data = nil, other = {})
+    resp = { success: true, status: status, flash: { success: msg } }
+    unless data.nil?
+      resp[:data] = {}
+      data.each { |key, val| resp[:data][key] = val }
     end
+    other.each { |key, val| resp[key] = val } if other.any?
+    render json: resp
+  end
 
-    def current_user
-      return nil if cookies.signed[:user_id].nil?
-
-      @current_user ||= User.find_by id: cookies.signed[:user_id]
-    end
-
-    def loco_permissions
-      [current_user, current_admin]
-    end
-
-    def success_response(status, msg, data = nil, other = {})
-      resp = { success: true, status: status, flash: { success: msg } }
-      unless data.nil?
-        resp[:data] = {}
-        data.each { |key, val| resp[:data][key] = val }
-      end
-      other.each { |key, val| resp[key] = val } if other.any?
-      render json: resp
-    end
-
-    def failure_response(status, errors)
-      render json: { success: false, status: status, errors: errors }
-    end
+  def failure_response(status, errors)
+    render json: { success: false, status: status, errors: errors }
+  end
 end

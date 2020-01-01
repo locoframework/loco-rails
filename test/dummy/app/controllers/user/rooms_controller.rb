@@ -64,16 +64,16 @@ class User
 
     protected
 
-      def params_room
-        params.require(:room).permit :name
-      end
+    def params_room
+      params.require(:room).permit :name
+    end
 
-      def find_room
-        @room = Room.find params[:id]
-      end
+    def find_room
+      @room = Room.find params[:id]
+    end
 
-      def find_hub
-        @hub = HubFinder.new(@room).find
-      end
+    def find_hub
+      @hub = HubFinder.new(@room).find
+    end
   end
 end

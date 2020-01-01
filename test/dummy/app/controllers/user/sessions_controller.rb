@@ -28,13 +28,13 @@ class User
 
     private
 
-      def auth_failed(alert = 'Invalid email or password.')
-        redirect_to new_user_session_url, alert: alert
-      end
+    def auth_failed(alert = 'Invalid email or password.')
+      redirect_to new_user_session_url, alert: alert
+    end
 
-      def auth_succeeded(user)
-        cookies.signed[:user_id] = user.id
-        redirect_to user_root_url, notice: 'Successfully signed in.'
-      end
+    def auth_succeeded(user)
+      cookies.signed[:user_id] = user.id
+      redirect_to user_root_url, notice: 'Successfully signed in.'
+    end
   end
 end

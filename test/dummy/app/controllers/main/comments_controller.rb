@@ -29,13 +29,13 @@ module Main
 
     private
 
-      def comment_params
-        params.require(:comment).permit :author, :text, :article_id
-      end
+    def comment_params
+      params.require(:comment).permit :author, :text, :article_id
+    end
 
-      def skope
-        Comment.where(article_id: params[:article_id])
-               .order('created_at ASC')
-      end
+    def skope
+      Comment.where(article_id: params[:article_id])
+             .order('created_at ASC')
+    end
   end
 end

@@ -34,16 +34,16 @@ class Admin
 
     private
 
-      def comment_params
-        params.require(:comment).permit :author, :text, :emotion, :pinned, :admin_rate
-      end
+    def comment_params
+      params.require(:comment).permit :author, :text, :emotion, :pinned, :admin_rate
+    end
 
-      def set_article
-        @article = Article.find params[:article_id]
-      end
+    def set_article
+      @article = Article.find params[:article_id]
+    end
 
-      def set_comment
-        @comment = @article.comments.find params[:id]
-      end
+    def set_comment
+      @comment = @article.comments.find params[:id]
+    end
   end
 end

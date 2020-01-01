@@ -11,9 +11,9 @@ class Comment < ApplicationRecord
 
   private
 
-    def set_defaults
-      self.emotion ||= 0
-      self.pinned = false if pinned.nil?
-      self.admin_rate ||= 3
-    end
+  def set_defaults
+    self.emotion ||= 0
+    self.pinned = false if pinned.nil?
+    self.admin_rate ||= 3
+  end
 end

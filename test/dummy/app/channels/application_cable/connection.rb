@@ -11,12 +11,12 @@ module ApplicationCable
 
     protected
 
-      def current_admin
-        Admin.find_by id: cookies.signed[:admin_id]
-      end
+    def current_admin
+      Admin.find_by id: cookies.signed[:admin_id]
+    end
 
-      def current_user
-        User.find_by id: cookies.signed[:user_id]
-      end
+    def current_user
+      User.find_by id: cookies.signed[:user_id]
+    end
   end
 end

@@ -59,27 +59,27 @@ class Article < ApplicationRecord
 
   private
 
-    def vulgarity_level
-      return unless contains_vulgarity?(title) || contains_vulgarity?(text)
+  def vulgarity_level
+    return unless contains_vulgarity?(title) || contains_vulgarity?(text)
 
-      errors.add :base, 'Article contains strong language.'
-    end
+    errors.add :base, 'Article contains strong language.'
+  end
 
-    def contains_vulgarity?(attrib)
-      vulgar_word = 'fuck'
-      attrib.present? && attrib =~ /#{vulgar_word}/i
-    end
+  def contains_vulgarity?(attrib)
+    vulgar_word = 'fuck'
+    attrib.present? && attrib =~ /#{vulgar_word}/i
+  end
 
-    def set_published_at
-      return nil if published_at.present?
+  def set_published_at
+    return nil if published_at.present?
 
-      self.published_at = Time.current
-    end
+    self.published_at = Time.current
+  end
 
-    def calculate_admin_review_time
-      return if admin_review_started_at.nil?
+  def calculate_admin_review_time
+    return if admin_review_started_at.nil?
 
-      val = (Time.now.to_f * 1000 - admin_review_started_at.to_f) / 1000
-      self.admin_review_time = val.round 2
-    end
+    val = (Time.now.to_f * 1000 - admin_review_started_at.to_f) / 1000
+    self.admin_review_time = val.round 2
+  end
 end

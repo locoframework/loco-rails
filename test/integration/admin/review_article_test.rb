@@ -35,12 +35,12 @@ class Admin
 
     private
 
-      def submit_review
-        uncheck 'Published'
-        fill_in 'Short review', with: 'Damn good article'
-        choose 'Amazing'
-        select 'Health', from: 'Category'
-        click_button 'Update Article'
-      end
+    def submit_review
+      uncheck 'Published'
+      fill_in 'Short review', with: 'Damn good article'
+      choose 'Amazing'
+      select 'Health', from: 'Category'
+      click_button 'Update Article'
+    end
   end
 end

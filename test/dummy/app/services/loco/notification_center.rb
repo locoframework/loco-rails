@@ -20,25 +20,25 @@ module Loco
 
     protected
 
-      def validate_signal(name, permissions, data = {})
-        case name
-        when 'ping'
-          return false if permissions[:admin].nil?
+    def validate_signal(name, permissions, data = {})
+      case name
+      when 'ping'
+        return false if permissions[:admin].nil?
 
-          user = User.new id: data['user_id']
-          { user: user }
-        when 'message'
-          return false if permissions[:user].nil?
-          return false unless (hub = find_room(data['room_id']))
+        user = User.new id: data['user_id']
+        { user: user }
+      when 'message'
+        return false if permissions[:user].nil?
+        return false unless (hub = find_room(data['room_id']))
 
-          { hub: hub }
-        else
-          false
-        end
+        { hub: hub }
+      else
+        false
       end
+    end
 
-      def find_room(id)
-        Hub.get "room_#{id}"
-      end
+    def find_room(id)
+      Hub.get "room_#{id}"
+    end
   end
 end

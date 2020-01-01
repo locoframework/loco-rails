@@ -65,20 +65,20 @@ class User
 
     private
 
-      def create_article_for(user_name)
-        article = users(user_name).articles.new(
-          title: 'Article #1',
-          text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' * 2
-        ).tap(&:save!)
-        emit article, :created, for: [users(user_name)]
-        article
-      end
+    def create_article_for(user_name)
+      article = users(user_name).articles.new(
+        title: 'Article #1',
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' * 2
+      ).tap(&:save!)
+      emit article, :created, for: [users(user_name)]
+      article
+    end
 
-      def destroy_article(name)
-        articles(name).tap do |article|
-          article.destroy
-          emit article, :destroyed, for: [users(:user_zbig)]
-        end
+    def destroy_article(name)
+      articles(name).tap do |article|
+        article.destroy
+        emit article, :destroyed, for: [users(:user_zbig)]
       end
+    end
   end
 end

@@ -49,17 +49,17 @@ class Admin
 
     private
 
-      def set_user
-        @user = if params[:id].present?
-                  User.find params[:id]
-                else
-                  User.new
-                end
-      end
+    def set_user
+      @user = if params[:id].present?
+                User.find params[:id]
+              else
+                User.new
+              end
+    end
 
-      def user_params
-        params.require(:user).permit :email, :username, :password, :password_confirmation,
-                                     :confirmed
-      end
+    def user_params
+      params.require(:user).permit :email, :username, :password, :password_confirmation,
+                                   :confirmed
+    end
   end
 end

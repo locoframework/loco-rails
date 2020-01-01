@@ -20,21 +20,21 @@ class Admin
 
     private
 
-      def auth_succeeded(admin)
-        cookies.signed[:admin_id] = admin.id
-        flash[:notice] = 'Successfully signed in.'
-        respond_to do |f|
-          f.json { render json: { success: true } }
-          f.html { redirect_to admin_root_url }
-        end
+    def auth_succeeded(admin)
+      cookies.signed[:admin_id] = admin.id
+      flash[:notice] = 'Successfully signed in.'
+      respond_to do |f|
+        f.json { render json: { success: true } }
+        f.html { redirect_to admin_root_url }
       end
+    end
 
-      def auth_failed
-        msg = 'Invalid email or password.'
-        respond_to do |f|
-          f.json { render json: { errors: { base: [msg] } } }
-          f.html { redirect_to new_admin_session_url, alert: msg }
-        end
+    def auth_failed
+      msg = 'Invalid email or password.'
+      respond_to do |f|
+        f.json { render json: { errors: { base: [msg] } } }
+        f.html { redirect_to new_admin_session_url, alert: msg }
       end
+    end
   end
 end

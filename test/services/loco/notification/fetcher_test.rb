@@ -69,9 +69,9 @@ module Loco
 
       private
 
-        def current_admin(which = :one)
-          admins which
-        end
+      def current_admin(which = :one)
+        admins which
+      end
     end
   end
 end

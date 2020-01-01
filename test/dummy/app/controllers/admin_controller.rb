@@ -7,7 +7,7 @@ class AdminController < ApplicationController
 
   private
 
-    def authenticate
-      redirect_to new_admin_session_url unless current_admin
-    end
+  def authenticate
+    redirect_to new_admin_session_url unless current_admin
+  end
 end

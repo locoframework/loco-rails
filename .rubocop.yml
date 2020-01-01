@@ -8,7 +8,6 @@ AllCops:
 
 Layout/IndentationConsistency:
   Enabled: true
-  EnforcedStyle: indented_internal_methods
   Exclude:
     - lib/generators/loco/file_injector/templates/connection.rb
 
@@ -43,8 +42,6 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Enabled: true
   Max: 12
-  Exclude:
-    - test/dummy/app/controllers/admin/articles_controller.rb
 
 Naming/FileName:
   Enabled: true
