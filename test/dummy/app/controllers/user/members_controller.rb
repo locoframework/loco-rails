@@ -5,7 +5,7 @@ class User
     before_action :find_room
 
     def index
-      @members = HubFinder.new(@room).find.members
+      @members = HubFinder.new(Ephemeron.used(@room)).find.members
     end
 
     protected

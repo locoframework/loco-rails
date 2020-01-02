@@ -1,6 +1,6 @@
 <h1>RealSnapChat rooms</h1>
 
-<% if Ephemeron.used(@rooms).any? %>
+<% if @rooms.any? %>
 <table id='rooms_list'>
   <thead>
     <tr>
@@ -11,7 +11,7 @@
   </thead>
   <tbody>
     <% @rooms_with_hub.each do |os| %>
-    <tr id='room_<%= os.room.id %>'>
+    <tr id='room_<%= Ephemeron.used(os.room).id %>'>
       <td><%= os.room.name %></td>
       <td class='members'><%= os.hub.raw_members.size %></td>
       <td>

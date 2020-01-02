@@ -30,7 +30,7 @@ class User
     end
 
     def new
-      render
+      @article = current_user.articles.new
     end
 
     def edit
@@ -86,11 +86,7 @@ class User
     private
 
     def set_article
-      @article = if params[:id].present?
-                   current_user.articles.find params[:id]
-                 else
-                   current_user.articles.new
-                 end
+      @article = current_user.articles.find params[:id]
     end
 
     def article_params

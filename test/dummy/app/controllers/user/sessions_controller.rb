@@ -29,7 +29,7 @@ class User
     private
 
     def auth_failed(user = nil, alert = 'Invalid email or password.')
-      Ephemeron.used user
+      Ephemeron.used(user) if user
       redirect_to new_user_session_url, alert: alert
     end
 
