@@ -32,7 +32,7 @@ class User
 
     def join
       @hub.add_member current_user
-      emit @room, :member_joined, data: {
+      emit Ephemeron.used(@room), :member_joined, data: {
         room_id: @room.id,
         member: {
           id: current_user.id,
@@ -44,7 +44,7 @@ class User
 
     def leave
       @hub.del_member current_user
-      emit @room, :member_left, data: {
+      emit Ephemeron.used(@room), :member_left, data: {
         room_id: @room.id,
         member: { id: current_user.id }
       }

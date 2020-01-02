@@ -13,9 +13,9 @@ class User
       if (user = User.find_by email: params[:email]).nil?
         auth_failed
       elsif !user.confirmed?
-        auth_failed 'Your account is waiting for confirmation.'
+        auth_failed user, 'Your account is waiting for confirmation.'
       elsif !user.authenticate(params[:password])
-        auth_failed
+        auth_failed user
       else
         auth_succeeded user
       end
@@ -28,11 +28,13 @@ class User
 
     private
 
-    def auth_failed(alert = 'Invalid email or password.')
+    def auth_failed(user = nil, alert = 'Invalid email or password.')
+      Ephemeron.used user
       redirect_to new_user_session_url, alert: alert
     end
 
     def auth_succeeded(user)
+      Ephemeron.used user
       cookies.signed[:user_id] = user.id
       redirect_to user_root_url, notice: 'Successfully signed in.'
     end

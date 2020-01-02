@@ -1,6 +1,6 @@
 <h1>RealSnapChat rooms</h1>
 
-<% if @rooms.any? %>
+<% if Ephemeron.used(@rooms).any? %>
 <table id='rooms_list'>
   <thead>
     <tr>
