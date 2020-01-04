@@ -17,12 +17,12 @@ module UserHelpers
   end
 
   def update_article(name)
-    articles(name).tap do |a|
+    Ephemeron.allow_save!(articles(name)).tap do |a|
       a.title = 'WiAR'
       a.text = 'Lorem Ipsum II' * 8
       a.save!
     end
-    emit articles(name), :updated, for: [users(:user_zbig)]
+    emit articles(name), :updated, for: [Ephemeron.state["user#{articles(name).user_id}"]]
   end
 
   def destroy_article(name)

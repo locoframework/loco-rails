@@ -42,6 +42,7 @@ module ActiveSupport
 
     def teardown
       DatabaseCleaner.clean
+      Ephemeron.reset
     end
   end
 end

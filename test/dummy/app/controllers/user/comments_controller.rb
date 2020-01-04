@@ -12,7 +12,7 @@ class User
     end
 
     def show
-      render
+      Ephemeron.used @article
     end
 
     def edit

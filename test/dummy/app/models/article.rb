@@ -48,7 +48,6 @@ class Article < ApplicationRecord
 
   def publish
     set_published_at
-    save!
   end
 
   def destroy(force = false)

@@ -40,7 +40,7 @@ module Main
 
     test 'should update title of recently updated article' do
       sleep 0.5
-      articles(:one).tap do |a|
+      Ephemeron.allow_save!(articles(:one)).tap do |a|
         a.title = 'AGtTRA'
         a.save!
       end
@@ -82,6 +82,7 @@ module Main
 
     def publish_article(name)
       articles(name).publish
+      Ephemeron.allow_save!(articles(name)).save!
       emit articles(name), :published, data: { id: articles(name).id }
     end
 
