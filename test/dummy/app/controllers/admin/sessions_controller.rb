@@ -9,7 +9,7 @@ class Admin
     def create
       admin = Admin.find_by email: params[:email]
       auth_failed && return if admin.nil?
-      auth_failed && return unless admin.authenticate params[:password]
+      auth_failed(admin) && return unless admin.authenticate params[:password]
       auth_succeeded(admin)
     end
 
@@ -21,7 +21,7 @@ class Admin
     private
 
     def auth_succeeded(admin)
-      cookies.signed[:admin_id] = admin.id
+      cookies.signed[:admin_id] = Ephemeron.used(admin).id
       flash[:notice] = 'Successfully signed in.'
       respond_to do |f|
         f.json { render json: { success: true } }
@@ -29,7 +29,8 @@ class Admin
       end
     end
 
-    def auth_failed
+    def auth_failed(admin = nil)
+      Ephemeron.used(admin) if admin
       msg = 'Invalid email or password.'
       respond_to do |f|
         f.json { render json: { errors: { base: [msg] } } }

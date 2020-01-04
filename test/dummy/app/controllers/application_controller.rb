@@ -12,8 +12,9 @@ class ApplicationController < ActionController::Base
 
   def current_admin
     return nil if cookies.signed[:admin_id].nil?
+    return unless @current_admin ||= Admin.find_by(id: cookies.signed[:admin_id])
 
-    @current_admin ||= Admin.find_by id: cookies.signed[:admin_id]
+    Ephemeron.used @current_admin
   end
 
   def current_user

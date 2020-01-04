@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-json.id user.id
+json.id Ephemeron.used(user).id
 json.email user.email
 json.username user.username
 json.confirmed user.confirmed

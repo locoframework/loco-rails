@@ -22,7 +22,7 @@ class Admin
     end
 
     def edit
-      return if @user.confirmed?
+      return if Ephemeron.used(@user).confirmed?
 
       connection = Connection.for_obj(@user).last
       return if connection.nil?
@@ -31,7 +31,8 @@ class Admin
     end
 
     def update
-      if @user.update user_params
+      @user.assign_attributes user_params
+      if @user.valid?
         if @user.confirmed? && (connection = Connection.for_obj(@user).last)
           emit @user, :confirmed, for: connection.token
           connection.destroy

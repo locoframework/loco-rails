@@ -34,8 +34,7 @@ class User
     end
 
     def auth_succeeded(user)
-      Ephemeron.used user
-      cookies.signed[:user_id] = user.id
+      cookies.signed[:user_id] = Ephemeron.used(user).id
       redirect_to user_root_url, notice: 'Successfully signed in.'
     end
   end
