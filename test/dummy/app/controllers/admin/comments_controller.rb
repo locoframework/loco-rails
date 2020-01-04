@@ -6,7 +6,7 @@ class Admin
     before_action :set_comment, only: %i[show edit update]
 
     def index
-      skope = Comment.where article_id: @article.id
+      skope = Comment.where article_id: Ephemeron.used(@article).id
       @comments = skope.order('created_at ASC').paginate page: params[:page], per_page: 5
       @count = skope.count
     end
@@ -16,7 +16,7 @@ class Admin
     end
 
     def edit
-      render
+      Ephemeron.used [@article, @comment]
     end
 
     def update

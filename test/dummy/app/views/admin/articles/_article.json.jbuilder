@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-json.id article.id
+json.id Ephemeron.used(article).id
 json.title article.title
 json.text article.text
 json.created_at article.created_at
 json.updated_at article.updated_at
 json.published_at article.published_at
-json.author article.user.username
+json.author Ephemeron.used(article.user).username
 json.comments_count article.comments.count
 json.admin_review article.admin_review
 json.category_id article.category_id

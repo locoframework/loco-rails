@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-json.id comment.id
+json.id Ephemeron.used(comment).id
 json.author comment.author
 json.text comment.text
 json.article_id comment.article_id
