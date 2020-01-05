@@ -12,7 +12,7 @@ class Admin
     end
 
     def show
-      render
+      Ephemeron.used @article
     end
 
     def edit

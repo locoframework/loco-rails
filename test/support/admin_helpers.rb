@@ -17,6 +17,7 @@ module AdminHelpers
 
   def publish_article(article)
     article.publish
+    Ephemeron.allow_save!(article).save!
     emit article, :published, data: { id: article.id }
   end
 end

@@ -8,6 +8,7 @@ class Comment < ApplicationRecord
   validates :article_id, presence: true
 
   after_initialize :set_defaults
+  after_validation ->(_) { Ephemeron.used article }
 
   private
 
