@@ -55,6 +55,7 @@ Rails/ApplicationJob:
   Enabled: true
   Exclude:
     - app/jobs/loco/*
+    - test/test_helper.rb
 
 Style/Documentation:
   Enabled: false

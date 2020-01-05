@@ -31,11 +31,11 @@ Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 DatabaseCleaner.strategy = :truncation, { except: %w[ar_internal_metadata] }
 
 module Loco
-  class UuidJob < ApplicationJob
+  class UuidJob < ActiveJob::Base
     after_perform { |_| Ephemeron.reset }
   end
 
-  class SenderJob < ApplicationJob
+  class SenderJob < ActiveJob::Base
     after_perform { |_| Ephemeron.reset }
   end
 end

@@ -39,10 +39,10 @@ class SigningUpTest < IT
   end
 
   def user
-    User.find_by email: 'joe@example.com'
+    @user ||= User.find_by email: 'joe@example.com'
   end
 
   def connection
-    Connection.for_obj(user).last
+    @connection ||= Connection.for_obj(user).last
   end
 end
