@@ -34,6 +34,10 @@ module Loco
   class UuidJob < ApplicationJob
     after_perform { |_| Ephemeron.reset }
   end
+
+  class SenderJob < ApplicationJob
+    after_perform { |_| Ephemeron.reset }
+  end
 end
 
 module ActiveSupport
