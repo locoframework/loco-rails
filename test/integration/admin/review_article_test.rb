@@ -30,7 +30,9 @@ class Admin
       assert_equal '5', page.evaluate_script(script)
       script = %{document.querySelector('select option:checked').textContent}
       assert_equal 'Health', page.evaluate_script(script)
-      assert articles(:one).reload.admin_review_time.positive?
+      Ephemeron.proxy do
+        assert articles(:one).reload.admin_review_time.positive?
+      end
     end
 
     private

@@ -17,6 +17,7 @@ class Article < ApplicationRecord
   validates :text, presence: true, length: { minimum: 100 }
 
   validate :vulgarity_level
+  after_validation ->(article) { Ephemeron.used article.user }
   before_update :calculate_admin_review_time
 
   class << self

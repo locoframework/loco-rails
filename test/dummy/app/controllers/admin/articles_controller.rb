@@ -27,7 +27,8 @@ class Admin
 
     def update
       article = Article.find params[:id]
-      if article.update article_params
+      article.assign_attributes article_params
+      if article.valid?
         render json: {
           success: true,
           status: 200,

@@ -9,7 +9,7 @@ module AdminHelpers
   end
 
   def update_article(article)
-    article.title = 'AGtTRA'
+    Ephemeron.allow_save!(article).title = 'AGtTRA'
     article.text = 'TESTING_SUPPORT...' * 6
     article.save!
     emit article, :updated, for: [:all]

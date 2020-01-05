@@ -120,7 +120,7 @@ module Main
     end
 
     def update_article(name)
-      articles(name).tap do |a|
+      Ephemeron.allow_save!(articles(name)).tap do |a|
         a.title = "#{a.title} (edited)"
         a.text = "#{a.text} (edited)"
         a.save!
