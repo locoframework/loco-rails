@@ -2,7 +2,7 @@
 
 class User
   class ArticlesController < UserController
-    before_action :set_article, only: %i[new edit update destroy publish]
+    before_action :set_article, only: %i[edit update destroy publish]
 
     CREATE_NOTICE = 'Article was successfully created.'
     DESTROY_NOTICE = 'Article was successfully destroyed.'

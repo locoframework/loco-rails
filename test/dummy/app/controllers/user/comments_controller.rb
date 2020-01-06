@@ -20,7 +20,8 @@ class User
     end
 
     def update
-      render(:edit) && return unless @comment.update comment_params
+      @comment.assign_attributes comment_params
+      render(:edit) && return if @comment.invalid?
       emit @comment, :updated, data: { article_id: @article.id }
       respond_to do |f|
         f.json { render json: { ok: true, id: @comment.id } }

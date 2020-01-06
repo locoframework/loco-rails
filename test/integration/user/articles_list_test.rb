@@ -23,9 +23,11 @@ class User
     test 'should update published on the list' do
       visit '/user/articles'
       sleep 0.5
-      articles(:two).publish
-      emit articles(:two), :updated, for: [users(:user_zbig)]
-      within "#article_#{articles(:two).id} td.published" do
+      article = articles :two
+      article.publish
+      Ephemeron.allow_save!(article).save!
+      emit article, :updated, for: [article.user]
+      within "#article_#{article.id} td.published" do
         assert page.has_content? 'yes'
       end
     end
