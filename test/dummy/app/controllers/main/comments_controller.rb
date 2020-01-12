@@ -14,9 +14,11 @@ module Main
     end
 
     def create
-      comment = Comment.new comment_params
-      if comment.save
-        emit comment, :created, data: { article_id: comment.article_id }
+      comment = Ephemeron.add Comment.new(comment_params)
+      if comment.valid?
+        Ephemeron.after_save! do
+          emit comment, :created, data: { article_id: comment.article_id }
+        end
         success_response(201, 'Your comment has been posted!')
       else
         failure_response(400, comment.errors)

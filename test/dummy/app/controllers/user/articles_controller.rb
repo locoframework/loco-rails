@@ -41,9 +41,8 @@ class User
 
     def create
       @article = current_user.articles.new article_params
-      success = @article.save
-      emit(@article, :created, for: [current_user]) if success
-      html_json_response success, @article,
+      Ephemeron.after_save! { emit @article, :created, for: [current_user] } if @article.valid?
+      html_json_response @article.valid?, @article,
                          notice_json: CREATE_NOTICE,
                          notice_html: CREATE_NOTICE,
                          redirect_to: @article

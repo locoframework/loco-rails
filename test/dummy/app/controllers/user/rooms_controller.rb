@@ -17,9 +17,11 @@ class User
     end
 
     def create
-      @room = Room.new params_room
-      if @room.save
-        emit @room, :created, data: { room: { id: @room.id, name: @room.name } }
+      @room = Ephemeron.add Room.new(params_room)
+      if @room.valid?
+        Ephemeron.after_save! do
+          emit @room, :created, data: { room: { id: @room.id, name: @room.name } }
+        end
         redirect_to user_rooms_path, notice: 'Room has been created'
       else
         render :new
