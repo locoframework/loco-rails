@@ -19,8 +19,9 @@ end
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require 'loco-rails'
+require 'ephemeron'
 require 'jbuilder'
+require 'loco-rails'
 require 'will_paginate'
 
 module Dummy
