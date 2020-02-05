@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Services } from "loco-js";
+import DateService from "services/Date";
 
 import { updateComment } from "actions";
 import store from "store";
@@ -10,7 +10,7 @@ import CommentModel from "models/article/Comment";
 function Comment({ comment, isAdmin = false }) {
   const [approving, setApproving] = useState(false);
 
-  const createdAt = new Services.Date(comment.createdAt).strftime("%d %b %y");
+  const createdAt = new DateService(comment.createdAt).strftime("%d %b %y");
 
   const handleApproving = async e => {
     e.preventDefault();

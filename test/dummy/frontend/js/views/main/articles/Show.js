@@ -1,5 +1,6 @@
-import { Services, Views } from "loco-js";
+import { Views } from "loco-js";
 import { simpleFormat } from "helpers/text";
+import DateService from "services/Date";
 import { UI } from "loco-js-ui";
 
 import Flash from "views/shared/Flash";
@@ -27,7 +28,7 @@ class Show extends Views.Base {
     }
     document.getElementById("title").textContent = this.article.title;
     document.getElementById("author").textContent = this.article.author;
-    const dateService = new Services.Date(this.article.publishedAt);
+    const dateService = new DateService(this.article.publishedAt);
     document.getElementById("pub_date").textContent = dateService.toString(
       "short"
     );
