@@ -25,6 +25,7 @@ class Admin
       visit "admin/articles/#{articles(:one).id}/edit"
       script = "document.getElementById('article_published').checked === true"
       assert_not page.evaluate_script(script)
+      sleep 0.1
       assert_equal 'Damn good article', find(:css, 'textarea').value
       script = %{document.querySelector('input[name="article[admin_rate]"]:checked').value}
       assert_equal '5', page.evaluate_script(script)
