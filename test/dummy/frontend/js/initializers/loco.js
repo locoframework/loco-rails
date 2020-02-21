@@ -1,14 +1,14 @@
-import { Env, Loco, connector } from "loco-js";
-import { connect } from "loco-js-ui";
+import { Env, connector as locoConnector, init } from "loco-js";
+import { connect as connectUI } from "loco-js-ui";
 import { createConsumer } from "@rails/actioncable";
 import NotificationCenter from "services/NotificationCenter";
 import Connectivity from "services/Connectivity";
 
-connect(connector);
+connectUI(locoConnector);
 
 const connectivity = new Connectivity();
 
-const loco = new Loco({
+const loco = init({
   cable: createConsumer(),
   notificationCenter: NotificationCenter,
   notifications: {
