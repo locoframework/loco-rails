@@ -15,17 +15,17 @@
 <%= form_for [Article.new(id: 0), Comment.new] do |f| %>
   <div class="field" data-attr="author">
     <%= f.text_field :author, placeholder: "Name (required)" %>
-    <span class="errors" data-for="author"><%= f.object.errors[:author].first %></span>
+    <span class="errors" data-for="author"></span>
   </div>
 
   <div class="field" data-attr="text">
     <%= f.text_area :text, placeholder: "Type your thoughts here..." %>
-    <span class="errors" data-for="text"><%= f.object.errors[:text].first %></span>
+    <span class="errors" data-for="text"></span>
   </div>
 
   <div class="actions">
     <%= f.submit "Post this comment" %>
-    <span class="errors" data-for="base"><%= f.object.errors[:base].first %></span>
+    <span class="errors" data-for="base"></span>
   </div>
 <% end %>
 

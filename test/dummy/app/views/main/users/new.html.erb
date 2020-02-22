@@ -1,45 +1,33 @@
 <h1>Sign up</h1>
 
 <%= form_for User.new, url: users_url do |f| %>
-  <% if f.object.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(f.object.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-      <ul>
-      <% f.object.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
   <div class="field" data-attr="email">
     <%= f.label :email %><br>
     <%= f.text_field :email %>
-    <span class="errors" data-for="email"><%= f.object.errors[:email].first %></span>
+    <span class="errors" data-for="email"></span>
   </div>
 
   <div class="field" data-attr="password">
     <%= f.label :password %><br>
     <%= f.password_field :password %>
-    <span class="errors" data-for="password"><%= f.object.errors[:password].first %></span>
+    <span class="errors" data-for="password"></span>
   </div>
 
   <div class="field" data-attr="password_confirmation">
     <%= f.label :password_confirmation %><br>
     <%= f.password_field :password_confirmation %>
-    <span class="errors" data-for="password_confirmation"><%= f.object.errors[:password_confirmation].first %></span>
+    <span class="errors" data-for="password_confirmation"></span>
   </div>
 
   <div class="field" data-attr="username">
     <%= f.label :username %><br>
     <%= f.text_field :username %>
-    <span class="errors" data-for="username"><%= f.object.errors[:username].first %></span>
+    <span class="errors" data-for="username"></span>
   </div>
 
   <div class="actions">
     <%= f.submit %>
-    <span class="errors" data-for="base"><%= f.object.errors[:base].first %></span>
+    <span class="errors" data-for="base"></span>
   </div>
 <% end %>
 
