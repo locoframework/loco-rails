@@ -20,10 +20,10 @@ module Main
     end
 
     test 'should add a comment' do
-      try_add_invalid_article
+      try_add_invalid_comment
       assert page.has_content? "can't be blank"
       assert page.has_content? 'contains strong language.'
-      add_valid_article
+      add_valid_comment
       txt = 'Your comment has been posted!'
       assert page.has_selector? "input[type=submit][value='#{txt}']"
       assert page.has_content? '1 comment'
@@ -108,12 +108,12 @@ module Main
 
     private
 
-    def try_add_invalid_article
+    def try_add_invalid_comment
       fill_in 'comment_text', with: 'Fuck this shit!'
       click_button 'Post this comment'
     end
 
-    def add_valid_article
+    def add_valid_comment
       fill_in 'comment_author', with: 'David'
       fill_in 'comment_text', with: 'Nice article man!'
       click_button 'Post this comment'
