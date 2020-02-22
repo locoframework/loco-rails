@@ -4,11 +4,7 @@ import { createConsumer } from "@rails/actioncable";
 import NotificationCenter from "services/NotificationCenter";
 import Connectivity from "services/Connectivity";
 
-connectUI(locoConnector);
-
-const connectivity = new Connectivity();
-
-const loco = init({
+init({
   cable: createConsumer(),
   notificationCenter: NotificationCenter,
   notifications: {
@@ -17,7 +13,7 @@ const loco = init({
     size: 10
   },
   postInit: () => {
-    connectivity.call();
+    new Connectivity().call();
 
     if (
       document.querySelector("body").getAttribute("data-rails-env") !== "test"
@@ -27,4 +23,4 @@ const loco = init({
   }
 });
 
-loco.init();
+connectUI(locoConnector);
