@@ -48,7 +48,7 @@ class Article < ApplicationRecord
 
   def publish
     set_published_at
-    save!
+    changed? ? save : nil
   end
 
   def destroy(force = false)
