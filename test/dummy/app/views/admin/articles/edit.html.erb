@@ -28,7 +28,7 @@
     <%= f.label :admin_review, 'Short review' %><br>
     <%= f.text_area :admin_review %>
     <br>
-    <span class="errors" data-for="published"><%= f.object.errors[:admin_review].first %></span>
+    <span class="errors" data-for="published"></span>
   </div>
 
   <div class="field" data-attr="admin_rate">
@@ -52,7 +52,7 @@
 
   <div class="actions">
     <%= f.submit 'Update Article' %>
-    <span class="errors" data-for="base"><%= f.object.errors[:base].first %></span>
+    <span class="errors" data-for="base"></span>
   </div>
 <% end %>
 
