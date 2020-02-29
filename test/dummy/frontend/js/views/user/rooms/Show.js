@@ -1,4 +1,4 @@
-import { Env, Views } from "loco-js";
+import { emit, Views } from "loco-js";
 
 import Room from "models/Room";
 
@@ -44,7 +44,7 @@ class Show extends Views.Base {
       .addEventListener("keypress", event => {
         if (event.keyCode !== 13) return;
         event.preventDefault();
-        Env.loco.emit({
+        emit({
           signal: "message",
           txt: event.target.value,
           room_id: this.roomId
