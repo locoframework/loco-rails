@@ -2,7 +2,6 @@ import { Env, connector as locoConnector, init } from "loco-js";
 import { connect as connectUI } from "loco-js-ui";
 import { createConsumer } from "@rails/actioncable";
 import NotificationCenter from "services/NotificationCenter";
-import Connectivity from "services/Connectivity";
 
 init({
   cable: createConsumer(),
@@ -13,8 +12,6 @@ init({
     size: 10
   },
   postInit: () => {
-    new Connectivity().call();
-
     if (
       document.querySelector("body").getAttribute("data-rails-env") !== "test"
     )
