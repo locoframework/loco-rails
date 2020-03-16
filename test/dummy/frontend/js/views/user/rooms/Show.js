@@ -2,8 +2,6 @@ import { emit, subscribe, Views } from "loco-js";
 
 import Room from "models/Room";
 
-let roomId = null;
-
 const memberJoined = member => {
   const li = `<li id='user_${member.id}'>${member.username}</li>`;
   document.getElementById("members").insertAdjacentHTML("beforeend", li);
@@ -14,19 +12,21 @@ const memberLeft = member => {
   node.parentNode.removeChild(node);
 };
 
-const receivedSignal = (signal, data) => {
-  switch (signal) {
-    case "Room member_joined":
-      if (data.room_id !== roomId) return;
-      memberJoined(data.member);
-      break;
-    case "Room member_left":
-      if (data.room_id !== roomId) return;
-      memberLeft(data.member);
-  }
+const createReceivedSignal = roomId => {
+  return function(signal, data) {
+    switch (signal) {
+      case "Room member_joined":
+        if (data.room_id !== roomId) return;
+        memberJoined(data.member);
+        break;
+      case "Room member_left":
+        if (data.room_id !== roomId) return;
+        memberLeft(data.member);
+    }
+  };
 };
 
-const handleSendingMessage = () => {
+const handleSendingMessage = roomId => {
   document
     .querySelector("[data-behavior~=room-speaker]")
     .addEventListener("keypress", event => {
@@ -44,12 +44,12 @@ const handleSendingMessage = () => {
 class Show extends Views.Base {
   constructor(opts = {}) {
     super(opts);
-    roomId = opts.id;
+    this.roomId = opts.id;
   }
 
   render() {
-    subscribe({ to: Room, with: receivedSignal });
-    handleSendingMessage();
+    subscribe({ to: Room, with: createReceivedSignal(this.roomId) });
+    handleSendingMessage(this.roomId);
   }
 
   renderMembers(members) {

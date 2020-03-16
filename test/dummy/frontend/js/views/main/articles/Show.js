@@ -5,28 +5,27 @@ import { UI } from "loco-js-ui";
 
 import Flash from "views/shared/Flash";
 
-let article = null;
-
-const articleReceivedSignal = async signal => {
-  switch (signal) {
-    case "updating": {
-      const txt =
-        "Author is currently editing article. Be aware of possible changes.";
-      const flash = new Flash({ warning: txt });
-      flash.render();
-      break;
+const createArticleReceivedSignal = article => {
+  return async function(signal) {
+    switch (signal) {
+      case "updating": {
+        const txt =
+          "Author is currently editing article. Be aware of possible changes.";
+        const flash = new Flash({ warning: txt });
+        flash.render();
+        break;
+      }
+      case "updated":
+        await article.reload();
+        article.applyChanges();
+        renderArticle(article, true);
     }
-    case "updated":
-      await article.reload();
-      article.applyChanges();
-      renderArticle();
-  }
+  };
 };
 
-const renderArticle = (anArticle = null) => {
-  if (!article) {
-    article = anArticle;
-    subscribe({ to: article, with: articleReceivedSignal });
+const renderArticle = (article, update = false) => {
+  if (update === false) {
+    subscribe({ to: article, with: createArticleReceivedSignal(article) });
   }
   document.getElementById("title").textContent = article.title;
   document.getElementById("author").textContent = article.author;
@@ -43,7 +42,6 @@ const renderArticle = (anArticle = null) => {
 class Show extends Views.Base {
   constructor(opts = {}) {
     super(opts);
-    article = null;
     this.newComment = opts.comment;
   }
 

@@ -4,21 +4,21 @@ import { subscribe, Views } from "loco-js";
 
 import CommentList from "components/admin/CommentList";
 
-let article = null;
-
-const renderArticle = () => {
+const renderArticle = article => {
   document.getElementById("article_author").textContent = article.author;
   document.getElementById("article_title").textContent = article.title;
   document.getElementById("article_text").textContent = article.content;
 };
 
-const receivedSignal = async signal => {
-  switch (signal) {
-    case "updated":
-      await article.reload();
-      article.applyChanges();
-      renderArticle();
-  }
+const createReceivedSignal = article => {
+  return async function(signal) {
+    switch (signal) {
+      case "updated":
+        await article.reload();
+        article.applyChanges();
+        renderArticle(article);
+    }
+  };
 };
 
 class Edit extends Views.Base {
@@ -26,10 +26,9 @@ class Edit extends Views.Base {
     super(opts);
   }
 
-  render(anArticle) {
-    article = anArticle;
-    subscribe({ to: article, with: receivedSignal });
-    renderArticle();
+  render(article) {
+    subscribe({ to: article, with: createReceivedSignal(article) });
+    renderArticle(article);
   }
 
   renderComments(comments) {
