@@ -1,21 +1,45 @@
-import { emit, Views } from "loco-js";
+import { emit, subscribe, Views } from "loco-js";
 
 import Room from "models/Room";
+
+let roomId = null;
+
+const memberJoined = member => {
+  const li = `<li id='user_${member.id}'>${member.username}</li>`;
+  document.getElementById("members").insertAdjacentHTML("beforeend", li);
+};
+
+const memberLeft = member => {
+  const node = document.querySelector(`#members li#user_${member.id}`);
+  node.parentNode.removeChild(node);
+};
+
+const receivedSignal = (signal, data) => {
+  switch (signal) {
+    case "Room member_joined":
+      if (data.room_id !== roomId) return;
+      memberJoined(data.member);
+      break;
+    case "Room member_left":
+      if (data.room_id !== roomId) return;
+      memberLeft(data.member);
+  }
+};
 
 class Show extends Views.Base {
   constructor(opts = {}) {
     super(opts);
-    this.roomId = opts.id;
+    roomId = opts.id;
   }
 
   render() {
-    this.connectWith(Room);
+    subscribe({ to: Room, with: receivedSignal });
     this._handleSendingMessage();
   }
 
   renderMembers(members) {
     for (const member of members) {
-      this._memberJoined(member);
+      memberJoined(member);
     }
   }
 
@@ -24,18 +48,6 @@ class Show extends Views.Base {
     document
       .getElementById("messages")
       .insertAdjacentHTML("beforeend", renderedMessage);
-  }
-
-  receivedSignal(signal, data) {
-    switch (signal) {
-      case "Room member_joined":
-        if (data.room_id !== this.roomId) return;
-        this._memberJoined(data.member);
-        break;
-      case "Room member_left":
-        if (data.room_id !== this.roomId) return;
-        this._memberLeft(data.member);
-    }
   }
 
   _handleSendingMessage() {
@@ -51,16 +63,6 @@ class Show extends Views.Base {
         });
         event.target.value = "";
       });
-  }
-
-  _memberJoined(member) {
-    const li = `<li id='user_${member.id}'>${member.username}</li>`;
-    document.getElementById("members").insertAdjacentHTML("beforeend", li);
-  }
-
-  _memberLeft(member) {
-    const node = document.querySelector(`#members li#user_${member.id}`);
-    node.parentNode.removeChild(node);
   }
 }
 
