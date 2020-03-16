@@ -26,6 +26,21 @@ const receivedSignal = (signal, data) => {
   }
 };
 
+const handleSendingMessage = () => {
+  document
+    .querySelector("[data-behavior~=room-speaker]")
+    .addEventListener("keypress", event => {
+      if (event.keyCode !== 13) return;
+      event.preventDefault();
+      emit({
+        signal: "message",
+        txt: event.target.value,
+        room_id: roomId
+      });
+      event.target.value = "";
+    });
+};
+
 class Show extends Views.Base {
   constructor(opts = {}) {
     super(opts);
@@ -34,7 +49,7 @@ class Show extends Views.Base {
 
   render() {
     subscribe({ to: Room, with: receivedSignal });
-    this._handleSendingMessage();
+    handleSendingMessage();
   }
 
   renderMembers(members) {
@@ -48,21 +63,6 @@ class Show extends Views.Base {
     document
       .getElementById("messages")
       .insertAdjacentHTML("beforeend", renderedMessage);
-  }
-
-  _handleSendingMessage() {
-    document
-      .querySelector("[data-behavior~=room-speaker]")
-      .addEventListener("keypress", event => {
-        if (event.keyCode !== 13) return;
-        event.preventDefault();
-        emit({
-          signal: "message",
-          txt: event.target.value,
-          room_id: this.roomId
-        });
-        event.target.value = "";
-      });
   }
 }
 
