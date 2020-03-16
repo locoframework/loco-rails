@@ -10,21 +10,21 @@ import CommentsNumber from "containers/main/articles/CommentsNumber";
 
 import Article from "models/Article";
 import Comment from "models/article/Comment";
-import Show from "views/main/articles/Show";
+import Show, { renderArticle } from "views/main/articles/Show";
 
 class Articles extends Controllers.Base {
   async show() {
     const newComment = new Comment({ articleId: this.params.id });
     const view = new Show({ comment: newComment });
     view.render();
-    this._renderArticle(view);
+    this._renderArticle();
     this._renderComments();
   }
 
-  async _renderArticle(view) {
+  async _renderArticle() {
     const article = await Article.find(this.params.id);
     store.dispatch(setArticles([article]));
-    view.renderArticle(article);
+    renderArticle(article);
   }
 
   async _renderComments() {
