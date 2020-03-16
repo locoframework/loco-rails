@@ -1,4 +1,4 @@
-import { subscribe, Views } from "loco-js";
+import { subscribe } from "loco-js";
 
 import Room from "models/User";
 
@@ -52,14 +52,6 @@ const receivedSignal = (signal, data) => {
   }
 };
 
-class List extends Views.Base {
-  constructor(opts = {}) {
-    super(opts);
-  }
-
-  render() {
-    subscribe({ to: Room, with: receivedSignal });
-  }
+export default function() {
+  subscribe({ to: Room, with: receivedSignal });
 }
-
-export default List;

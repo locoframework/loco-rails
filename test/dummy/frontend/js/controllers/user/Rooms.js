@@ -9,7 +9,7 @@ class Rooms extends Controllers.Base {
   initialize() {}
 
   index() {
-    new List().render();
+    List();
   }
 
   async show() {
