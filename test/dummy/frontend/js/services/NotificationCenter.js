@@ -92,13 +92,13 @@ const getRoomView = () => {
   if (Env.namespaceController.constructor !== UserController) return false;
   if (Env.controller.constructor !== RoomsController) return false;
   if (Env.action !== "show") return false;
-  return Env.controller.getView("show");
+  return Env.controller.getView("receivedMessage");
 };
 
 const messageSignal = data => {
-  const view = getRoomView();
-  if (!view) return;
-  view.receivedMessage(data.message, data.author);
+  const receivedMessage = getRoomView();
+  if (!receivedMessage) return;
+  receivedMessage(data.message, data.author);
 };
 
 export default async data => {

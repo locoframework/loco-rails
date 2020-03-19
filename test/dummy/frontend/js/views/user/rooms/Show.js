@@ -1,4 +1,4 @@
-import { emit, subscribe, Views } from "loco-js";
+import { emit, subscribe } from "loco-js";
 
 import Room from "models/Room";
 
@@ -41,29 +41,22 @@ const handleSendingMessage = roomId => {
     });
 };
 
-class Show extends Views.Base {
-  constructor(opts = {}) {
-    super(opts);
-    this.roomId = opts.id;
+const renderMembers = members => {
+  for (const member of members) {
+    memberJoined(member);
   }
+};
 
-  render() {
-    subscribe({ to: Room, with: createReceivedSignal(this.roomId) });
-    handleSendingMessage(this.roomId);
-  }
+const receivedMessage = (message, author) => {
+  const renderedMessage = `<p><b>${author}</b>: ${message}</p>`;
+  document
+    .getElementById("messages")
+    .insertAdjacentHTML("beforeend", renderedMessage);
+};
 
-  renderMembers(members) {
-    for (const member of members) {
-      memberJoined(member);
-    }
-  }
+export default roomId => {
+  subscribe({ to: Room, with: createReceivedSignal(roomId) });
+  handleSendingMessage(roomId);
+};
 
-  receivedMessage(message, author) {
-    const renderedMessage = `<p><b>${author}</b>: ${message}</p>`;
-    document
-      .getElementById("messages")
-      .insertAdjacentHTML("beforeend", renderedMessage);
-  }
-}
-
-export default Show;
+export { renderMembers, receivedMessage };
