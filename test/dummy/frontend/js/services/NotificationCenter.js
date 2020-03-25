@@ -88,17 +88,13 @@ const pingSignal = () => {
   alert("Ping!");
 };
 
-const getRoomView = () => {
-  if (Env.namespaceController.constructor !== UserController) return false;
-  if (Env.controller.constructor !== RoomsController) return false;
-  if (Env.action !== "show") return false;
-  return Env.controller.getView("receivedMessage");
-};
-
-const messageSignal = data => {
-  const receivedMessage = getRoomView();
-  if (!receivedMessage) return;
-  receivedMessage(data.message, data.author);
+const getCallbackForReceivedMessage = () => {
+  const nullCallback = () => {};
+  if (Env.namespaceController.constructor !== UserController)
+    return nullCallback;
+  if (Env.controller.constructor !== RoomsController) return nullCallback;
+  if (Env.action !== "show") return nullCallback;
+  return Env.controller.callbacks["receivedMessage"];
 };
 
 export default async data => {
@@ -107,7 +103,7 @@ export default async data => {
       pingSignal();
       break;
     case "message":
-      messageSignal(data);
+      getCallbackForReceivedMessage()(data.message, data.author);
       break;
     case "Article created":
       articleCreated(data.payload);

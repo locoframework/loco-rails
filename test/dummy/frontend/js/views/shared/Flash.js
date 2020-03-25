@@ -2,7 +2,7 @@ import { Views } from "loco-js";
 
 class Flash extends Views.Base {
   constructor(opts = {}) {
-    super(opts);
+    super();
     this.notice = opts.notice;
     this.alert = opts.alert;
     this.warning = opts.warning;

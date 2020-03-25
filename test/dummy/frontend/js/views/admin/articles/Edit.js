@@ -22,10 +22,6 @@ const createReceivedSignal = article => {
 };
 
 class Edit extends Views.Base {
-  constructor(opts = {}) {
-    super(opts);
-  }
-
   render(article) {
     subscribe({ to: article, with: createReceivedSignal(article) });
     renderArticle(article);

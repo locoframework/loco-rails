@@ -4,10 +4,6 @@ import { UI } from "loco-js-ui";
 import CommentModel from "models/article/Comment";
 
 class Form extends Views.Base {
-  constructor(opts = {}) {
-    super(opts);
-  }
-
   render(opts = {}) {
     const form = new UI.Form({
       for: new CommentModel({ id: opts.commentId, resource: "admin" }),

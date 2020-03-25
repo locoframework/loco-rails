@@ -2,7 +2,7 @@ import { Views } from "loco-js";
 
 class Show extends Views.Base {
   constructor(opts = {}) {
-    super(opts);
+    super();
     this.user = opts.user;
   }
 

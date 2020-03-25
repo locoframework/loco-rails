@@ -59,10 +59,6 @@ const handleApplyingChanges = form => {
 };
 
 class Form extends Views.Base {
-  constructor(opts = {}) {
-    super(opts);
-  }
-
   render(article) {
     store.dispatch(addArticles([article]));
     subscribe({ to: article, with: createReceivedSignal(article) });

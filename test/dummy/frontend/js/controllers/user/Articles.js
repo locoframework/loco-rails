@@ -5,7 +5,6 @@ import { Controllers } from "loco-js";
 import { setArticles, setComments } from "actions";
 import store from "store";
 
-import UserLayout from "views/layouts/User";
 import FlashView from "views/shared/Flash";
 import ShowView from "views/user/articles/Show";
 import FormView from "views/user/articles/Form";
@@ -17,10 +16,6 @@ import ArticleList from "containers/user/ArticleList";
 import CommentList from "containers/user/CommentList";
 
 class Articles extends Controllers.Base {
-  initialize() {
-    this.layout = new UserLayout();
-  }
-
   onArticleDestroyed(res) {
     const flash = new FlashView();
     if (res.success) flash.setNotice(res.notice);

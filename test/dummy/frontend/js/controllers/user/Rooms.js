@@ -6,14 +6,17 @@ import List from "views/user/rooms/List";
 import Show, { renderMembers, receivedMessage } from "views/user/rooms/Show";
 
 class Rooms extends Controllers.Base {
-  initialize() {}
+  constructor() {
+    super();
+    this.callbacks = {};
+  }
 
   index() {
     List();
   }
 
   async show() {
-    this.setView("receivedMessage", receivedMessage);
+    this.callbacks["receivedMessage"] = receivedMessage;
     Show(this.params.id);
     const resp = await Member.all({ roomId: this.params.id });
     renderMembers(resp.resources);

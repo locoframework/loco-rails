@@ -25,10 +25,6 @@ const receivedSignal = signal => {
 };
 
 class UserRegistrationForm extends Views.Base {
-  constructor(opts = {}) {
-    super(opts);
-  }
-
   render() {
     const form = new UI.Form({
       for: new User(),

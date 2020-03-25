@@ -3,7 +3,7 @@ import { UI } from "loco-js-ui";
 
 class Form extends Views.Base {
   constructor(opts = {}) {
-    super(opts);
+    super();
     this.user = opts.user;
   }
 

@@ -41,7 +41,7 @@ const renderArticle = (article, update = false) => {
 
 class Show extends Views.Base {
   constructor(opts = {}) {
-    super(opts);
+    super();
     this.newComment = opts.comment;
   }
 

@@ -50,8 +50,8 @@ const createArticleReceivedSignal = article => {
 };
 
 class Show extends Views.Base {
-  constructor(opts = {}) {
-    super(opts);
+  constructor() {
+    super();
     this.article = null;
   }
 
