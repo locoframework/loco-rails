@@ -17,8 +17,8 @@ class Rooms extends Controllers.Base {
 
   async show() {
     this.callbacks["receivedMessage"] = receivedMessage;
-    Show(helpers.params().id);
-    const resp = await Member.all({ roomId: helpers.params().id });
+    Show(helpers.params.id);
+    const resp = await Member.all({ roomId: helpers.params.id });
     renderMembers(resp.resources);
   }
 }

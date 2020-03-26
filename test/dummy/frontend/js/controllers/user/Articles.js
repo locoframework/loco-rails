@@ -24,7 +24,7 @@ class Articles extends Controllers.Base {
   }
 
   async index() {
-    if (helpers.params().message === "deleted") {
+    if (helpers.params.message === "deleted") {
       const flash = new FlashView({ alert: "Article has been deleted." });
       flash.render();
     }
@@ -50,22 +50,22 @@ class Articles extends Controllers.Base {
 
   async edit() {
     const view = new FormView();
-    view.renderComments(helpers.params().id);
-    const article = await Article.find(helpers.params().id);
+    view.renderComments(helpers.params.id);
+    const article = await Article.find(helpers.params.id);
     view.render(article);
   }
 
   async _renderArticle() {
-    const article = await Article.find(helpers.params().id);
+    const article = await Article.find(helpers.params.id);
     store.dispatch(setArticles([article]));
     new ShowView().render(article);
   }
 
   async _renderComments() {
-    const resp = await Comment.all({ articleId: helpers.params().id });
-    store.dispatch(setComments(resp.resources, helpers.params().id));
+    const resp = await Comment.all({ articleId: helpers.params.id });
+    store.dispatch(setComments(resp.resources, helpers.params.id));
     render(
-      <CommentList articleId={helpers.params().id} comments={resp.resources} />,
+      <CommentList articleId={helpers.params.id} comments={resp.resources} />,
       document.getElementById("comments")
     );
   }

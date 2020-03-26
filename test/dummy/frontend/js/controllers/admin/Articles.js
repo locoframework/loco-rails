@@ -29,13 +29,13 @@ class Articles extends Controllers.Base {
   }
 
   async _renderArticle(view) {
-    const article = await Article.find(helpers.params().id);
+    const article = await Article.find(helpers.params.id);
     view.render(article);
     new Form().render(article);
   }
 
   async _renderComment(view) {
-    const resp = await Comment.all({ articleId: helpers.params().id });
+    const resp = await Comment.all({ articleId: helpers.params.id });
     view.renderComments(resp.resources);
   }
 }

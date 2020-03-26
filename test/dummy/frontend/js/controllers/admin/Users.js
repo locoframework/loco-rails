@@ -21,12 +21,12 @@ class Users extends Controllers.Base {
   }
 
   async show() {
-    const user = await User.find(helpers.params().id);
+    const user = await User.find(helpers.params.id);
     new Show({ user: user }).render();
   }
 
   edit() {
-    const view = new Form({ user: new User({ id: helpers.params().id }) });
+    const view = new Form({ user: new User({ id: helpers.params.id }) });
     view.render();
   }
 }
