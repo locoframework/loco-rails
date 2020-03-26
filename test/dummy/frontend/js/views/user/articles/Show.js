@@ -1,4 +1,4 @@
-import { subscribe, Views } from "loco-js";
+import { subscribe } from "loco-js";
 
 import FlashView from "views/shared/Flash";
 
@@ -49,9 +49,8 @@ const createArticleReceivedSignal = article => {
   };
 };
 
-class Show extends Views.Base {
+class Show {
   constructor() {
-    super();
     this.article = null;
   }
 

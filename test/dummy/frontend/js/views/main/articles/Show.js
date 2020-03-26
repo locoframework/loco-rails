@@ -1,4 +1,4 @@
-import { subscribe, Views } from "loco-js";
+import { subscribe } from "loco-js";
 import { simpleFormat } from "helpers/text";
 import DateService from "services/Date";
 import { UI } from "loco-js-ui";
@@ -39,9 +39,8 @@ const renderArticle = (article, update = false) => {
   textEl.insertAdjacentHTML("beforeend", text);
 };
 
-class Show extends Views.Base {
+class Show {
   constructor(opts = {}) {
-    super();
     this.newComment = opts.comment;
   }
 

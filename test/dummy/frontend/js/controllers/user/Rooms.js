@@ -1,4 +1,4 @@
-import { Controllers } from "loco-js";
+import { helpers, Controllers } from "loco-js";
 
 import Member from "models/room/Member";
 
@@ -17,8 +17,8 @@ class Rooms extends Controllers.Base {
 
   async show() {
     this.callbacks["receivedMessage"] = receivedMessage;
-    Show(this.params.id);
-    const resp = await Member.all({ roomId: this.params.id });
+    Show(helpers.params().id);
+    const resp = await Member.all({ roomId: helpers.params().id });
     renderMembers(resp.resources);
   }
 }

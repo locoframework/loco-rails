@@ -1,4 +1,4 @@
-import { subscribe, Views } from "loco-js";
+import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
 import User from "models/User";
@@ -24,7 +24,7 @@ const receivedSignal = signal => {
   }
 };
 
-class UserRegistrationForm extends Views.Base {
+class UserRegistrationForm {
   render() {
     const form = new UI.Form({
       for: new User(),

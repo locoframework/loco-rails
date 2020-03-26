@@ -1,6 +1,6 @@
 import React from "react";
 import { render as renderElement } from "react-dom";
-import { Controllers } from "loco-js";
+import { helpers, Controllers } from "loco-js";
 
 import { setUsers } from "actions";
 import store from "store";
@@ -21,12 +21,12 @@ class Users extends Controllers.Base {
   }
 
   async show() {
-    const user = await User.find(this.params.id);
+    const user = await User.find(helpers.params().id);
     new Show({ user: user }).render();
   }
 
   edit() {
-    const view = new Form({ user: new User({ id: this.params.id }) });
+    const view = new Form({ user: new User({ id: helpers.params().id }) });
     view.render();
   }
 }

@@ -1,9 +1,7 @@
-import { Views } from "loco-js";
 import { UI } from "loco-js-ui";
 
-class Form extends Views.Base {
+class Form {
   constructor(opts = {}) {
-    super();
     this.user = opts.user;
   }
 

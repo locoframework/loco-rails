@@ -1,9 +1,9 @@
-import { Env, Views } from "loco-js";
+import { Env } from "loco-js";
 import { UI } from "loco-js-ui";
 
 import CommentModel from "models/article/Comment";
 
-class Form extends Views.Base {
+class Form {
   render(opts = {}) {
     const form = new UI.Form({
       for: new CommentModel({ id: opts.commentId, resource: "admin" }),

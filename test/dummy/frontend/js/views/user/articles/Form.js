@@ -1,6 +1,6 @@
 import React from "react";
 import { render as renderElement } from "react-dom";
-import { subscribe, Views } from "loco-js";
+import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
 import { addArticles, setComments } from "actions";
@@ -58,7 +58,7 @@ const handleApplyingChanges = form => {
   }
 };
 
-class Form extends Views.Base {
+class Form {
   render(article) {
     store.dispatch(addArticles([article]));
     subscribe({ to: article, with: createReceivedSignal(article) });

@@ -1,6 +1,6 @@
 import React from "react";
 import { render as renderElement } from "react-dom";
-import { subscribe, Views } from "loco-js";
+import { subscribe } from "loco-js";
 
 import CommentList from "components/admin/CommentList";
 
@@ -21,7 +21,7 @@ const createReceivedSignal = article => {
   };
 };
 
-class Edit extends Views.Base {
+class Edit {
   render(article) {
     subscribe({ to: article, with: createReceivedSignal(article) });
     renderArticle(article);
