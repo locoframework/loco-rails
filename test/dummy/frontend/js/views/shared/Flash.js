@@ -4,10 +4,10 @@ const resetNode = node => {
   node.classList.remove("warning");
 };
 
-const setMsg = (flash, msg, node) => {
-  if (flash[msg] == null) return;
+const setMsg = (opts, msg, node) => {
+  if (opts[msg] == null) return;
   node.classList.add(msg);
-  document.querySelector(".flash p").textContent = flash[msg];
+  document.querySelector(".flash p").textContent = opts[msg];
 };
 
 const hideAfterTime = (time = 4000) => {
@@ -16,23 +16,13 @@ const hideAfterTime = (time = 4000) => {
   }, time);
 };
 
-class Flash {
-  constructor(opts = {}) {
-    this.notice = opts.notice;
-    this.alert = opts.alert;
-    this.warning = opts.warning;
-    this.hide = opts.hide;
-  }
-
-  render() {
-    const node = document.querySelector(".flash");
-    resetNode(node);
-    setMsg(this, "notice", node);
-    setMsg(this, "alert", node);
-    setMsg(this, "warning", node);
-    node.classList.remove("none"); // slideDown initially
-    if (this.hide) hideAfterTime();
-  }
-}
-
-export default Flash;
+export default (opts = {}) => {
+  const { hide } = opts;
+  const node = document.querySelector(".flash");
+  resetNode(node);
+  setMsg(opts, "notice", node);
+  setMsg(opts, "alert", node);
+  setMsg(opts, "warning", node);
+  node.classList.remove("none"); // slideDown initially
+  if (hide) hideAfterTime();
+};

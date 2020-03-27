@@ -2,7 +2,7 @@ import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
 import User from "models/User";
-import Flash from "views/shared/Flash";
+import renderFlash from "views/shared/Flash";
 
 const confirming = () => {
   document.getElementById(
@@ -39,8 +39,7 @@ class UserRegistrationForm {
     document.querySelector("form").style.display = "none";
     document.getElementById("sign_in_paragraph").classList.remove("none");
     document.getElementById("verification_info").classList.remove("none");
-    const flash = new Flash({ notice: data.notice });
-    flash.render();
+    renderFlash({ notice: data.notice });
   }
 }
 

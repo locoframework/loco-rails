@@ -5,7 +5,7 @@ import { helpers, Controllers } from "loco-js";
 import { setArticles, setComments } from "actions";
 import store from "store";
 
-import FlashView from "views/shared/Flash";
+import renderFlash from "views/shared/Flash";
 import ShowView from "views/user/articles/Show";
 import FormView from "views/user/articles/Form";
 
@@ -31,17 +31,14 @@ const renderComments = async () => {
 };
 
 const onArticleDestroyed = res => {
-  const flash = new FlashView();
-  if (res.success) flash.notice = res.notice;
-  else flash.alert = res.alert;
-  flash.render();
+  if (res.success) renderFlash({ notice: res.notice });
+  else renderFlash({ alert: res.alert });
 };
 
 class Articles extends Controllers.Base {
   async index() {
     if (helpers.params.message === "deleted") {
-      const flash = new FlashView({ alert: "Article has been deleted." });
-      flash.render();
+      renderFlash({ alert: "Article has been deleted." });
     }
     const resp = await Article.get("all");
     store.dispatch(setArticles(resp.resources));

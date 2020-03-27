@@ -3,7 +3,7 @@ import { simpleFormat } from "helpers/text";
 import DateService from "services/Date";
 import { UI } from "loco-js-ui";
 
-import Flash from "views/shared/Flash";
+import renderFlash from "views/shared/Flash";
 
 const createArticleReceivedSignal = article => {
   return async function(signal) {
@@ -11,8 +11,7 @@ const createArticleReceivedSignal = article => {
       case "updating": {
         const txt =
           "Author is currently editing article. Be aware of possible changes.";
-        const flash = new Flash({ warning: txt });
-        flash.render();
+        renderFlash({ warning: txt });
         break;
       }
       case "updated":

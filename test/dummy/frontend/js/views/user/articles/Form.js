@@ -8,7 +8,7 @@ import store from "store";
 
 import Comment from "models/article/Comment";
 
-import FlashView from "views/shared/Flash";
+import renderFlash from "views/shared/Flash";
 
 import CommentList from "containers/user/CommentList";
 
@@ -29,10 +29,9 @@ const createReceivedSignal = article => {
         if (
           document.querySelector("h1").getAttribute("data-mark") !== data.mark
         ) {
-          const flash = new FlashView({
+          renderFlash({
             warning: "Uuups someone else started editing this article."
           });
-          flash.render();
         }
         break;
       case "updated":

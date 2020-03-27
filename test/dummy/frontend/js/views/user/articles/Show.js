@@ -1,6 +1,6 @@
 import { subscribe } from "loco-js";
 
-import FlashView from "views/shared/Flash";
+import renderFlash from "views/shared/Flash";
 
 const updateEditLink = id => {
   const href = document.getElementById("edit_link").getAttribute("href");
@@ -21,8 +21,7 @@ const handlePublishing = article => {
           "<span>Published!</span>";
       } catch (err) {
         document.getElementById("publish_article").textContent = "Publish";
-        const flash = new FlashView({ alert: "Connection error!" });
-        flash.render();
+        renderFlash({ alert: "Connection error!" });
       }
     });
 };
