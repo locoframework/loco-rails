@@ -18,8 +18,8 @@ import CommentList from "containers/user/CommentList";
 class Articles extends Controllers.Base {
   onArticleDestroyed(res) {
     const flash = new FlashView();
-    if (res.success) flash.setNotice(res.notice);
-    else flash.setAlert(res.alert);
+    if (res.success) flash.notice = res.notice;
+    else flash.alert = res.alert;
     flash.render();
   }
 
