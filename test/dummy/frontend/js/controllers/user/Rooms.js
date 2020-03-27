@@ -3,7 +3,7 @@ import { helpers, Controllers } from "loco-js";
 import Member from "models/room/Member";
 
 import List from "views/user/rooms/List";
-import Show, { renderMembers, receivedMessage } from "views/user/rooms/Show";
+import Show from "views/user/rooms/Show";
 
 class Rooms extends Controllers.Base {
   constructor() {
@@ -16,10 +16,10 @@ class Rooms extends Controllers.Base {
   }
 
   async show() {
-    this.callbacks["receivedMessage"] = receivedMessage;
-    Show(helpers.params.id);
+    this.callbacks["receivedMessage"] = Show.receivedMessage;
+    Show.render(helpers.params.id);
     const resp = await Member.all({ roomId: helpers.params.id });
-    renderMembers(resp.resources);
+    Show.renderMembers(resp.resources);
   }
 }
 

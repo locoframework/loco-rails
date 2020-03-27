@@ -41,22 +41,22 @@ const handleSendingMessage = roomId => {
     });
 };
 
-const renderMembers = members => {
-  for (const member of members) {
-    memberJoined(member);
+export default {
+  render: roomId => {
+    subscribe({ to: Room, with: createReceivedSignal(roomId) });
+    handleSendingMessage(roomId);
+  },
+
+  renderMembers: members => {
+    for (const member of members) {
+      memberJoined(member);
+    }
+  },
+
+  receivedMessage: (message, author) => {
+    const renderedMessage = `<p><b>${author}</b>: ${message}</p>`;
+    document
+      .getElementById("messages")
+      .insertAdjacentHTML("beforeend", renderedMessage);
   }
 };
-
-const receivedMessage = (message, author) => {
-  const renderedMessage = `<p><b>${author}</b>: ${message}</p>`;
-  document
-    .getElementById("messages")
-    .insertAdjacentHTML("beforeend", renderedMessage);
-};
-
-export default roomId => {
-  subscribe({ to: Room, with: createReceivedSignal(roomId) });
-  handleSendingMessage(roomId);
-};
-
-export { renderMembers, receivedMessage };
