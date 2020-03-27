@@ -15,14 +15,29 @@ import Comment from "models/article/Comment";
 import ArticleList from "containers/user/ArticleList";
 import CommentList from "containers/user/CommentList";
 
-class Articles extends Controllers.Base {
-  onArticleDestroyed(res) {
-    const flash = new FlashView();
-    if (res.success) flash.notice = res.notice;
-    else flash.alert = res.alert;
-    flash.render();
-  }
+const renderArticle = async () => {
+  const article = await Article.find(helpers.params.id);
+  store.dispatch(setArticles([article]));
+  ShowView(article);
+};
 
+const renderComments = async () => {
+  const resp = await Comment.all({ articleId: helpers.params.id });
+  store.dispatch(setComments(resp.resources, helpers.params.id));
+  render(
+    <CommentList articleId={helpers.params.id} comments={resp.resources} />,
+    document.getElementById("comments")
+  );
+};
+
+const onArticleDestroyed = res => {
+  const flash = new FlashView();
+  if (res.success) flash.notice = res.notice;
+  else flash.alert = res.alert;
+  flash.render();
+};
+
+class Articles extends Controllers.Base {
   async index() {
     if (helpers.params.message === "deleted") {
       const flash = new FlashView({ alert: "Article has been deleted." });
@@ -33,41 +48,25 @@ class Articles extends Controllers.Base {
     render(
       <ArticleList
         articles={resp.resources}
-        onArticleDestroyed={this.onArticleDestroyed}
+        onArticleDestroyed={onArticleDestroyed}
       />,
       document.getElementById("article_list")
     );
   }
 
-  async show() {
-    this._renderArticle();
-    this._renderComments();
+  show() {
+    renderArticle();
+    renderComments();
   }
 
   new() {
-    new FormView().render(new Article());
+    FormView.render(new Article());
   }
 
   async edit() {
-    const view = new FormView();
-    view.renderComments(helpers.params.id);
+    FormView.renderComments(helpers.params.id);
     const article = await Article.find(helpers.params.id);
-    view.render(article);
-  }
-
-  async _renderArticle() {
-    const article = await Article.find(helpers.params.id);
-    store.dispatch(setArticles([article]));
-    new ShowView().render(article);
-  }
-
-  async _renderComments() {
-    const resp = await Comment.all({ articleId: helpers.params.id });
-    store.dispatch(setComments(resp.resources, helpers.params.id));
-    render(
-      <CommentList articleId={helpers.params.id} comments={resp.resources} />,
-      document.getElementById("comments")
-    );
+    FormView.render(article);
   }
 }
 

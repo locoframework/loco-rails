@@ -49,20 +49,10 @@ const createArticleReceivedSignal = article => {
   };
 };
 
-class Show {
-  constructor() {
-    this.article = null;
-  }
-
-  render(article = null) {
-    if (this.article === null) {
-      this.article = article;
-      subscribe({ to: article, with: createArticleReceivedSignal(article) });
-      handlePublishing(article);
-      updateEditLink(article.id);
-    }
-    renderArticle(this.article);
-  }
-}
-
-export default Show;
+export default article => {
+  if (article === null) return;
+  subscribe({ to: article, with: createArticleReceivedSignal(article) });
+  handlePublishing(article);
+  updateEditLink(article.id);
+  renderArticle(article);
+};

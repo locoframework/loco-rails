@@ -58,16 +58,16 @@ const handleApplyingChanges = form => {
   }
 };
 
-class Form {
-  render(article) {
+export default {
+  render: article => {
     store.dispatch(addArticles([article]));
     subscribe({ to: article, with: createReceivedSignal(article) });
     const form = new UI.Form({ for: article });
     form.render();
     handleApplyingChanges(form);
-  }
+  },
 
-  async renderComments(articleId) {
+  renderComments: async articleId => {
     const resp = await Comment.all({ articleId: articleId });
     store.dispatch(setComments(resp.resources, articleId));
     renderElement(
@@ -79,6 +79,4 @@ class Form {
       document.getElementById("comments")
     );
   }
-}
-
-export default Form;
+};
