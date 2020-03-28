@@ -16,7 +16,7 @@ init({
       document.querySelector("body").getAttribute("data-rails-env") !== "test"
     )
       return;
-    Env.loco.getWire().setPollingTime(1000);
+    Env.loco.wire.setPollingTime(1000);
   }
 });
 
