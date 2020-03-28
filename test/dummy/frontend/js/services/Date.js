@@ -1,7 +1,7 @@
-import { Env, I18n } from "loco-js";
+import { getLocale, I18n } from "loco-js";
 
 class Date {
-  constructor(date, locale = Env.loco.getLocale()) {
+  constructor(date, locale = getLocale()) {
     this.date = date;
     this.skope = I18n[locale].date;
   }
