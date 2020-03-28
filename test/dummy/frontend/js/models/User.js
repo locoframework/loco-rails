@@ -45,16 +45,8 @@ class User extends Models.Base {
     }
   };
 
-  static receivedSignal(signal) {
-    console.log(`User.receivedSignal: ${signal}`);
-  }
-
   constructor(data) {
     super(data);
-  }
-
-  receivedSignal(signal) {
-    console.log(`User#receivedSignal: ${signal}`);
   }
 }
 

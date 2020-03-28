@@ -39,10 +39,9 @@ const receivedSignal = (signal, data) => {
       memberLeft(data.room_id);
       break;
     case "Room created": {
-      const renderedRoom = renderRoom(data.room);
       document
         .getElementById("rooms_list")
-        .insertAdjacentHTML("beforeend", renderedRoom);
+        .insertAdjacentHTML("beforeend", renderRoom(data.room));
       break;
     }
     case "Room destroyed": {
