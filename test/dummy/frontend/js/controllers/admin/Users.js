@@ -7,8 +7,8 @@ import store from "store";
 
 import User from "models/User";
 import UserList from "containers/admin/UserList";
-import Show from "views/admin/users/Show";
-import Form from "views/admin/users/Form";
+import renderUser from "views/admin/users/Show";
+import renderForm from "views/admin/users/Form";
 
 class Users extends Controllers.Base {
   async index() {
@@ -22,12 +22,11 @@ class Users extends Controllers.Base {
 
   async show() {
     const user = await User.find(helpers.params.id);
-    new Show({ user: user }).render();
+    renderUser(user);
   }
 
   edit() {
-    const view = new Form({ user: new User({ id: helpers.params.id }) });
-    view.render();
+    renderForm(new User({ id: helpers.params.id }));
   }
 }
 

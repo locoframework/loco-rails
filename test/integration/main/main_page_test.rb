@@ -74,6 +74,7 @@ module Main
       create_zbig_articles
       create_jane_articles
       visit '/'
+      sleep 0.1
       click_link 'Load more…'
       assert page.has_content? 'Configuring Rails Components'
     end
