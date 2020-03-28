@@ -7,10 +7,21 @@ import store from "store";
 
 import Article from "models/Article";
 import Comment from "models/article/Comment";
-import Edit from "views/admin/articles/Edit";
-import Form from "views/admin/articles/Form";
+import EditView from "views/admin/articles/Edit";
+import renderForm from "views/admin/articles/Form";
 
 import ArticleList from "containers/admin/ArticleList";
+
+const renderArticle = async () => {
+  const article = await Article.find(helpers.params.id);
+  EditView.render(article);
+  renderForm(article);
+};
+
+const renderComment = async () => {
+  const resp = await Comment.all({ articleId: helpers.params.id });
+  EditView.renderComments(resp.resources);
+};
 
 class Articles extends Controllers.Base {
   async published() {
@@ -23,20 +34,8 @@ class Articles extends Controllers.Base {
   }
 
   async edit() {
-    const editView = new Edit();
-    this._renderArticle(editView);
-    this._renderComment(editView);
-  }
-
-  async _renderArticle(view) {
-    const article = await Article.find(helpers.params.id);
-    view.render(article);
-    new Form().render(article);
-  }
-
-  async _renderComment(view) {
-    const resp = await Comment.all({ articleId: helpers.params.id });
-    view.renderComments(resp.resources);
+    renderArticle();
+    renderComment();
   }
 }
 

@@ -21,18 +21,16 @@ const createReceivedSignal = article => {
   };
 };
 
-class Edit {
-  render(article) {
+export default {
+  render: article => {
     subscribe({ to: article, with: createReceivedSignal(article) });
     renderArticle(article);
-  }
+  },
 
-  renderComments(comments) {
+  renderComments: comments => {
     renderElement(
       <CommentList comments={comments} />,
       document.getElementById("comments")
     );
   }
-}
-
-export default Edit;
+};
