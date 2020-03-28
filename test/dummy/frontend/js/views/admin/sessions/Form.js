@@ -1,18 +1,11 @@
 import { UI } from "loco-js-ui";
 
-class Form {
-  render() {
-    const form = new UI.Form({
-      id: "sign_in_admin",
-      delegator: this,
-      callbackSuccess: "_signedIn"
-    });
-    form.render();
-  }
+const signedIn = () => (window.location.href = "/admin");
 
-  _signedIn() {
-    window.location.href = "/admin";
-  }
-}
-
-export default Form;
+export default () => {
+  const form = new UI.Form({
+    id: "sign_in_admin",
+    callbackSuccess: signedIn
+  });
+  form.render();
+};

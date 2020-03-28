@@ -24,23 +24,18 @@ const receivedSignal = signal => {
   }
 };
 
-class UserRegistrationForm {
-  render() {
-    const form = new UI.Form({
-      for: new User(),
-      delegator: this,
-      callbackSuccess: "_created"
-    });
-    form.render();
-  }
+const created = data => {
+  subscribe({ to: new User({ id: data.id }), with: receivedSignal });
+  document.querySelector("form").style.display = "none";
+  document.getElementById("sign_in_paragraph").classList.remove("none");
+  document.getElementById("verification_info").classList.remove("none");
+  renderFlash({ notice: data.notice });
+};
 
-  _created(data) {
-    subscribe({ to: new User({ id: data.id }), with: receivedSignal });
-    document.querySelector("form").style.display = "none";
-    document.getElementById("sign_in_paragraph").classList.remove("none");
-    document.getElementById("verification_info").classList.remove("none");
-    renderFlash({ notice: data.notice });
-  }
-}
-
-export default UserRegistrationForm;
+export default () => {
+  const form = new UI.Form({
+    for: new User(),
+    callbackSuccess: created
+  });
+  form.render();
+};

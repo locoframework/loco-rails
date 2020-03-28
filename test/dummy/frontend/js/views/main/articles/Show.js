@@ -38,20 +38,16 @@ const renderArticle = (article, update = false) => {
   textEl.insertAdjacentHTML("beforeend", text);
 };
 
-class Show {
-  constructor(opts = {}) {
-    this.newComment = opts.comment;
-  }
+const renderForm = comment => {
+  const form = new UI.Form({
+    for: comment,
+    initObj: true,
+    id: "new_comment"
+  });
+  form.render();
+};
 
-  render() {
-    const form = new UI.Form({
-      for: this.newComment,
-      initObj: true,
-      id: "new_comment"
-    });
-    form.render();
-  }
-}
-
-export default Show;
-export { renderArticle };
+export default {
+  renderArticle,
+  renderForm
+};
