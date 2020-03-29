@@ -35,7 +35,12 @@ class User
       find('#message').native.send_keys :return
       perform_enqueued_jobs
       assert page.has_content? 'zbig: Hello Jane!'
-      emit_to HubFinder.new(@room).find, signal: 'message', message: 'Hi zbig!', author: 'jane'
+      payload = { signal: 'message', message: 'Hi zbig!', author: 'jane' }
+      idempotency_key = emit_to HubFinder.new(@room).find, payload
+      emit_to HubFinder.new(@room).find, payload.merge(idempotency_key: idempotency_key)
+      emit_to HubFinder.new(@room).find, payload.merge(idempotency_key: idempotency_key)
+      sleep 0.1
+      assert_equal 2, page.all('p.msg').count
       assert page.has_content? 'jane: Hi zbig!'
     end
 

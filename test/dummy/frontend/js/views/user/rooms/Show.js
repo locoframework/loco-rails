@@ -54,7 +54,7 @@ export default {
   },
 
   receivedMessage: (message, author) => {
-    const renderedMessage = `<p><b>${author}</b>: ${message}</p>`;
+    const renderedMessage = `<p class="msg"><b>${author}</b>: ${message}</p>`;
     document
       .getElementById("messages")
       .insertAdjacentHTML("beforeend", renderedMessage);
