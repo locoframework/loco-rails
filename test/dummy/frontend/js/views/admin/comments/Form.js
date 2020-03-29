@@ -1,4 +1,3 @@
-import { Env } from "loco-js";
 import { UI } from "loco-js-ui";
 
 import CommentModel from "models/article/Comment";
@@ -12,5 +11,5 @@ export default (opts = {}) => {
   form.render();
 
   // only for testing purpose
-  Env.test = { commentFormObj: form.getObj() };
+  window.test = { commentFormObj: form.getObj() };
 };

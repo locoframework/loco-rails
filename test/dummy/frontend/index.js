@@ -9,8 +9,8 @@ import "controllers";
 import "models";
 
 // for testing purposes only
-import { Channels, Env } from "loco-js";
+import { getWire, Channels } from "loco-js";
 window.test = {
-  Channels,
-  Env
+  getWire,
+  Channels
 };

@@ -22,17 +22,17 @@ class Admin
     test "should init js Comment's object based on form" do
       sleep 0.1
       assert_equal 'Ryan',
-                   page.evaluate_script(%(window.test.Env.test['commentFormObj']['author']))
+                   page.evaluate_script(%(window.test['commentFormObj']['author']))
       assert_equal 'Some nice thoughts dude',
-                   page.evaluate_script(%(window.test.Env.test['commentFormObj']['text']))
+                   page.evaluate_script(%(window.test['commentFormObj']['text']))
       assert_equal false,
-                   page.evaluate_script(%(window.test.Env.test['commentFormObj']['pinned']))
+                   page.evaluate_script(%(window.test['commentFormObj']['pinned']))
       assert_equal 3,
-                   page.evaluate_script(%(window.test.Env.test['commentFormObj']['adminRate']))
+                   page.evaluate_script(%(window.test['commentFormObj']['adminRate']))
       assert_equal 0,
-                   page.evaluate_script(%(window.test.Env.test['commentFormObj']['emotion']))
+                   page.evaluate_script(%(window.test['commentFormObj']['emotion']))
       assert_equal articles(:one).id,
-                   page.evaluate_script(%(window.test.Env.test['commentFormObj']['articleId']))
+                   page.evaluate_script(%(window.test['commentFormObj']['articleId']))
     end
   end
 end
