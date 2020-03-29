@@ -14,4 +14,9 @@ require 'loco/ws_connected_resources_manager'
 require 'loco/ws_connection_storage'
 
 module Loco
+  module_function
+
+  def configure(opts = {})
+    Config.configure(opts)
+  end
 end
