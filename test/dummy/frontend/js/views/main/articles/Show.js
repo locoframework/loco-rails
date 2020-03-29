@@ -14,10 +14,10 @@ const createArticleReceivedSignal = article => {
         renderFlash({ warning: txt });
         break;
       }
-      case "updated":
-        await article.reload();
-        article.applyChanges();
-        renderArticle(article, true);
+      case "updated": {
+        const reloadedArticle = await article.reload();
+        renderArticle(reloadedArticle, true);
+      }
     }
   };
 };

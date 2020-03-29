@@ -78,9 +78,8 @@ const commentUpdated = async ({ article_id: articleId, id }) => {
     parentId: articleId
   });
   if (!comment) return;
-  await comment.reload();
-  comment.applyChanges();
-  store.dispatch(updateComment(new Comment({ ...comment }), articleId, index));
+  const reloadedComment = await comment.reload();
+  store.dispatch(updateComment(reloadedComment, articleId, index));
 };
 
 const pingSignal = () => {

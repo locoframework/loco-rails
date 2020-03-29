@@ -13,10 +13,10 @@ const renderArticle = article => {
 const createReceivedSignal = article => {
   return async function(signal) {
     switch (signal) {
-      case "updated":
-        await article.reload();
-        article.applyChanges();
-        renderArticle(article);
+      case "updated": {
+        const reloadedArticle = await article.reload();
+        renderArticle(reloadedArticle);
+      }
     }
   };
 };
