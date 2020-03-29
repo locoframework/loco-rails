@@ -45,9 +45,9 @@ module Loco
     end
 
     def permissions
-      loco_permissions.compact.map do |o|
-        [o.class.name.downcase.to_sym, o]
-      end.to_h
+      loco_permissions.compact.index_by do |o|
+        o.class.name.downcase.to_sym
+      end
     end
 
     def update_connections
