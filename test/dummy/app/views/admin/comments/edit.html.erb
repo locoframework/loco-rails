@@ -4,11 +4,13 @@
   <p data-attr="author">
     <%= f.label :author %> <br>
     <%= f.text_field :author %>
+    <span class="errors" data-for="author"></span>
   </p>
 
   <p data-attr="text">
     <%= f.label :text %> <br>
     <%= f.text_area :text %>
+    <span class="errors" data-for="text"></span>
   </p>
 
   <div data-attr="article_id">
@@ -30,5 +32,5 @@
     <%= f.radio_button :emotion, 1 %> <%= f.label 'emotion_1', 'Positive', class: 'margin-right-tiny' %>
   </div>
 
-  <p><%= f.submit %> or <%= link_to "back", edit_admin_article_url(@article) %></p>
+  <p><%= f.submit data: { disable_with: false } %> or <%= link_to "back", edit_admin_article_url(@article) %></p>
 <% end %>
