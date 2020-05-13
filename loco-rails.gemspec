@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'bcrypt', '~> 3.1.12'
   s.add_development_dependency 'capybara', '~> 3.28.0'
   s.add_development_dependency 'database_cleaner', '~> 1.7.0'
-  s.add_development_dependency 'jbuilder', '~> 2.9.1'
+  s.add_development_dependency 'jbuilder', '~> 2.10.0'
   s.add_development_dependency 'listen', '>= 3.1.5', '< 3.2'
   s.add_development_dependency 'mysql2', '~> 0.5.2'
   s.add_development_dependency 'puma', '~> 4.2'

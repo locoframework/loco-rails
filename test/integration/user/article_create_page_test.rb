@@ -12,6 +12,7 @@ class User
     end
 
     test 'should create article' do
+      sleep 0.1
       click_on 'New Article'
       try_add_invalid_article
       assert page.has_content? "can't be blank"
