@@ -35,5 +35,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'rubocop-rails'
   s.add_development_dependency 'selenium-webdriver', '~> 3.142'
+  s.add_development_dependency 'source_maps_fixer'
+  s.add_development_dependency 'sprockets', '~> 3.7.2'
   s.add_development_dependency 'will_paginate', '~> 3.1.8'
 end

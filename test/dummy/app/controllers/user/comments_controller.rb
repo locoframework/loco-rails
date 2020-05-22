@@ -21,6 +21,7 @@ class User
 
     def update
       render(:edit) && return unless @comment.update comment_params
+
       emit @comment, :updated, data: { article_id: @article.id }
       respond_to do |f|
         f.json { render json: { ok: true, id: @comment.id } }
