@@ -1,6 +1,6 @@
 import { subscribe } from "loco-js";
 
-import Room from "models/User";
+import Room from "models/Room";
 
 const memberJoined = roomId => {
   const node = membersNode(roomId);
