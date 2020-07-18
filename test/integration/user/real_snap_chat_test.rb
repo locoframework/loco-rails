@@ -35,7 +35,7 @@ class User
       find('#message').native.send_keys :return
       perform_enqueued_jobs
       assert page.has_content? 'zbig: Hello Jane!'
-      payload = { signal: 'message', message: 'Hi zbig!', author: 'jane' }
+      payload = { type: 'NEW_MESSAGE', message: 'Hi zbig!', author: 'jane' }
       idempotency_key = emit_to HubFinder.new(@room).find, payload
       emit_to HubFinder.new(@room).find, payload.merge(idempotency_key: idempotency_key)
       emit_to HubFinder.new(@room).find, payload.merge(idempotency_key: idempotency_key)

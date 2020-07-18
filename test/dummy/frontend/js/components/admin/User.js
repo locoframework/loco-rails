@@ -7,7 +7,7 @@ import UserModel from "models/User";
 const User = ({ user }) => {
   const ping = (e, userId) => {
     e.preventDefault();
-    emit({ signal: "ping", user_id: userId });
+    emit({ type: "PING", user_id: userId });
   };
 
   return (

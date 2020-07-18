@@ -97,11 +97,11 @@ const getCallbackForReceivedMessage = () => {
 };
 
 export default async data => {
-  switch (data.signal) {
-    case "ping":
+  switch (data.type) {
+    case "PING":
       pingSignal();
       break;
-    case "message":
+    case "NEW_MESSAGE":
       getCallbackForReceivedMessage()(data.message, data.author);
       break;
     case "Article created":

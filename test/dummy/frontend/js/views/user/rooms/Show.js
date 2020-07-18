@@ -33,7 +33,7 @@ const handleSendingMessage = roomId => {
       if (event.keyCode !== 13) return;
       event.preventDefault();
       emit({
-        signal: "message",
+        type: "NEW_MESSAGE",
         txt: event.target.value,
         room_id: roomId
       });
