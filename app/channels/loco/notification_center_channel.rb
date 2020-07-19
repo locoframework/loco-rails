@@ -21,7 +21,7 @@ module Loco
 
     def receive(data)
       update_connections if data['loco'] && data['loco']['connection_check']
-      NotificationCenter.new.received_signal permissions, data
+      NotificationCenter.new.received_message permissions, data
     end
 
     protected

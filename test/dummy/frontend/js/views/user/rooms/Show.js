@@ -12,9 +12,9 @@ const memberLeft = member => {
   node.parentNode.removeChild(node);
 };
 
-const createReceivedSignal = roomId => {
-  return function(signal, data) {
-    switch (signal) {
+const createReceivedMessage = roomId => {
+  return function(type, data) {
+    switch (type) {
       case "Room member_joined":
         if (data.room_id !== roomId) return;
         memberJoined(data.member);
@@ -43,7 +43,7 @@ const handleSendingMessage = roomId => {
 
 export default {
   render: roomId => {
-    subscribe({ to: Room, with: createReceivedSignal(roomId) });
+    subscribe({ to: Room, with: createReceivedMessage(roomId) });
     handleSendingMessage(roomId);
   },
 

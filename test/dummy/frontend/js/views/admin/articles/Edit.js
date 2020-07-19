@@ -10,9 +10,9 @@ const renderArticle = article => {
   document.getElementById("article_text").textContent = article.content;
 };
 
-const createReceivedSignal = article => {
-  return async function(signal) {
-    switch (signal) {
+const createReceivedMessage = article => {
+  return async function(type) {
+    switch (type) {
       case "updated": {
         const reloadedArticle = await article.reload();
         renderArticle(reloadedArticle);
@@ -23,7 +23,7 @@ const createReceivedSignal = article => {
 
 export default {
   render: article => {
-    subscribe({ to: article, with: createReceivedSignal(article) });
+    subscribe({ to: article, with: createReceivedMessage(article) });
     renderArticle(article);
   },
 

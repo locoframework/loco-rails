@@ -22,9 +22,9 @@ const displayChanges = article => {
   }
 };
 
-const createReceivedSignal = article => {
-  return async function(signal, data) {
-    switch (signal) {
+const createReceivedMessage = article => {
+  return async function(type, data) {
+    switch (type) {
       case "updating":
         if (
           document.querySelector("h1").getAttribute("data-mark") !== data.mark
@@ -60,7 +60,7 @@ const handleApplyingChanges = form => {
 export default {
   render: article => {
     store.dispatch(addArticles([article]));
-    subscribe({ to: article, with: createReceivedSignal(article) });
+    subscribe({ to: article, with: createReceivedMessage(article) });
     const form = new UI.Form({ for: article });
     form.render();
     handleApplyingChanges(form);

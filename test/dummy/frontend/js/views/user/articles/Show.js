@@ -34,9 +34,9 @@ const renderArticle = article => {
   else if (node) node.style.display = "";
 };
 
-const createArticleReceivedSignal = article => {
-  return async function(signal) {
-    switch (signal) {
+const createArticleReceivedMessage = article => {
+  return async function(type) {
+    switch (type) {
       case "updated":
         await article.reload();
         article.applyChanges();
@@ -50,7 +50,7 @@ const createArticleReceivedSignal = article => {
 
 export default article => {
   if (article === null) return;
-  subscribe({ to: article, with: createArticleReceivedSignal(article) });
+  subscribe({ to: article, with: createArticleReceivedMessage(article) });
   handlePublishing(article);
   updateEditLink(article.id);
   renderArticle(article);

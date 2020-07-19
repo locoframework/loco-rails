@@ -82,7 +82,7 @@ const commentUpdated = async ({ article_id: articleId, id }) => {
   store.dispatch(updateComment(reloadedComment, articleId, index));
 };
 
-const pingSignal = () => {
+const ping = () => {
   if (Env.namespaceController.constructor !== UserController) return;
   alert("Ping!");
 };
@@ -99,7 +99,7 @@ const getCallbackForReceivedMessage = () => {
 export default async data => {
   switch (data.type) {
     case "PING":
-      pingSignal();
+      ping();
       break;
     case "NEW_MESSAGE":
       getCallbackForReceivedMessage()(data.message, data.author);

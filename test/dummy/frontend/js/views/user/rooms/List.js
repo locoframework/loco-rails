@@ -30,8 +30,8 @@ const renderRoom = room => {
   `;
 };
 
-const receivedSignal = (signal, data) => {
-  switch (signal) {
+const receivedMessage = (type, data) => {
+  switch (type) {
     case "Room member_joined":
       memberJoined(data.room_id);
       break;
@@ -52,5 +52,5 @@ const receivedSignal = (signal, data) => {
 };
 
 export default function() {
-  subscribe({ to: Room, with: receivedSignal });
+  subscribe({ to: Room, with: receivedMessage });
 }

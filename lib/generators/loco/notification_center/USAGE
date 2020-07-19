@@ -1,5 +1,5 @@
 Description:
-    Creates a notification center where you can receive signals sent by JS clients through WebSockets.
+    Creates a notification center where you can receive messages sent by JS clients through WebSockets.
 
 Example:
     rails generate loco:notification_center

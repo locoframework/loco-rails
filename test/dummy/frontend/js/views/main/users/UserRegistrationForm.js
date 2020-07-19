@@ -14,8 +14,8 @@ const confirmed = () => {
   window.location.href = "/user/sessions/new?event=confirmed";
 };
 
-const receivedSignal = signal => {
-  switch (signal) {
+const receivedMessage = type => {
+  switch (type) {
     case "confirming":
       confirming();
       break;
@@ -25,7 +25,7 @@ const receivedSignal = signal => {
 };
 
 const created = data => {
-  subscribe({ to: new User({ id: data.id }), with: receivedSignal });
+  subscribe({ to: new User({ id: data.id }), with: receivedMessage });
   document.querySelector("form").style.display = "none";
   document.getElementById("sign_in_paragraph").classList.remove("none");
   document.getElementById("verification_info").classList.remove("none");

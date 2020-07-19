@@ -4,8 +4,8 @@ module Loco
   class NotificationCenter
     include Emitter
 
-    def received_signal(permissions, data)
-      # handle signals here
+    def received_message(permissions, data)
+      # handle messages here
     end
   end
 end

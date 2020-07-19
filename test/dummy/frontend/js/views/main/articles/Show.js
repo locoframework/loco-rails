@@ -5,9 +5,9 @@ import { UI } from "loco-js-ui";
 
 import renderFlash from "views/shared/Flash";
 
-const createArticleReceivedSignal = article => {
-  return async function(signal) {
-    switch (signal) {
+const createArticleReceivedMessage = article => {
+  return async function(type) {
+    switch (type) {
       case "updating": {
         const txt =
           "Author is currently editing article. Be aware of possible changes.";
@@ -24,7 +24,7 @@ const createArticleReceivedSignal = article => {
 
 const renderArticle = (article, update = false) => {
   if (update === false) {
-    subscribe({ to: article, with: createArticleReceivedSignal(article) });
+    subscribe({ to: article, with: createArticleReceivedMessage(article) });
   }
   document.getElementById("title").textContent = article.title;
   document.getElementById("author").textContent = article.author;

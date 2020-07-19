@@ -4,8 +4,8 @@ module Loco
   class NotificationCenter
     include Emitter
 
-    def received_signal(permissions, data)
-      return unless (res = validate_signal(data['type'], permissions, data))
+    def received_message(permissions, data)
+      return unless (res = validate_message(data['type'], permissions, data))
 
       case data['type']
       when 'PING'
@@ -20,7 +20,7 @@ module Loco
 
     protected
 
-    def validate_signal(name, permissions, data = {})
+    def validate_message(name, permissions, data)
       case name
       when 'PING'
         return false if permissions[:admin].nil?
