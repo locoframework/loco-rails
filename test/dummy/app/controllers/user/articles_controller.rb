@@ -42,7 +42,7 @@ class User
     def create
       @article = current_user.articles.new article_params
       success = @article.save
-      emit(@article, :created, for: [current_user]) if success
+      emit(@article, :created, for: current_user) if success
       html_json_response success, @article,
                          notice_json: CREATE_NOTICE,
                          notice_html: CREATE_NOTICE,
@@ -61,7 +61,7 @@ class User
     def publish
       if @article.publish
         emit @article, :published, data: { id: @article.id }
-        emit @article, :updated, for: [current_user]
+        emit @article, :updated, for: current_user
         render json: { success: true, status: 200 }
       else
         render json: { success: false, status: 400, errors: @article.errors }
@@ -70,7 +70,7 @@ class User
 
     def destroy
       success = @article.destroy
-      emit(@article, :destroyed, for: [current_user]) if success
+      emit(@article, :destroyed, for: current_user) if success
       respond_to do |format|
         format.html do
           flash[success ? :notice : :alert] = success ? DESTROY_NOTICE : DESTROY_ALERT
