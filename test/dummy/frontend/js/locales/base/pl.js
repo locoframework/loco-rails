@@ -1,9 +1,11 @@
-import { I18n, Utils } from "loco-js";
+import { I18n } from "loco-js";
+
+const lastChar = s => s[s.length - 1];
 
 I18n.pl = {
   variants: {
     few(i) {
-      const num = parseInt(Utils.String.last(String(i)));
+      const num = parseInt(lastChar(String(i)));
       [2, 3, 4].indexOf(num) !== -1 &&
         !(String(i).length === 2 && String(i)[0] === "1");
     }
