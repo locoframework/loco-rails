@@ -4,7 +4,7 @@
 
 # 🧐 What is Loco-Rails?
 
-**Loco-Rails** is a [Rails engine](http://guides.rubyonrails.org/engines.html) from the technical point of view. Conceptually, it is a framework that works on a top of [Rails](http://rubyonrails.org) and consists of 2 parts: front-end and back-end. They are called [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, respectively. Both parts cooperate with each other.
+**Loco-Rails** is a [Rails engine](http://guides.rubyonrails.org/engines.html) from the technical point of view. Conceptually, it is a framework that works on a top of [Rails](http://rubyonrails.org) and consists of 2 parts: front-end and back-end. They are called [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, respectively. Both parts cooperate.
 
 This is how it can be visualized:
 
@@ -13,16 +13,20 @@ Loco Framework
 |
 |--- Loco-Rails (back-end part)
 |       |
-|       |--- Loco-Rails-Core (logical structure for JS / can be used separately with Loco-JS)
+|       |--- Loco-Rails-Core (logical structure for JS / can be used separately with Loco-JS-Core)
 |
-|--- Loco-JS (front-end part / can be used separately)
+|--- Loco-JS (front-end part)
+        |
+        |--- Loco-JS-Core (logical structure for JS / can be used separately)
         |
         |--- Loco-JS-Model (model part / can be used separately)
         |
-        |--- other parts of Loco-JS
+        |--- other built-in parts of Loco-JS
+
+        Loco-JS-UI - connects models with UI elements (a separate library)
 ```
 
-Following sections contain more detailed description of its internals and API.
+The following sections contain a more detailed description of its internals and API.
 
 # ⛑ But how is Loco supposed to help?
 
