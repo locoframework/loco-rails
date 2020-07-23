@@ -16,12 +16,12 @@
   "author": "Zbigniew Humeniuk <hello@artofcode.co>",
   "license": "MIT",
   "dependencies": {
-    "loco-js": "^3.2.4",
     "@babel/polyfill": "^7.8.7",
     "@rails/actioncable": "^6.0.2",
     "@rails/ujs": "^6.0.2",
     "core-js": "^3.6.4",
     "immer": "^4.0.2",
+    "loco-js": "^4.0.0",
     "loco-js-ui": "^0.1.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
