@@ -30,13 +30,12 @@ The following sections contain a more detailed description of its internals and 
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing logical structure for a JavaScript code (along with base classes for models, controllers and views). You exactly know where to start, when looking for a JavaScript code that runs current page ([**Loco-Rails-Core**](https://github.com/locoframework/loco-rails-core) along with [**Loco-JS**](https://github.com/locoframework/loco-js))
-* you have models that protect from sending invalid data to the API endpoints. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
-* you can easily assign a model to a form what will enrich this form with fields' validation ([**Loco-JS**](https://github.com/locoframework/loco-js))
-* you can connect models with controllers and views on the front-end. And they will be notified about every change made to a corresponding model on the server side. This change will be emitted as a signal to the front-end code. And signal is just a fancy name for a JS object (**Loco**)
-* it allows you to send messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
-* respects permissions (you can send messages only to specified, signed in on the server models _e.g. given admin or user_) (**Loco**)
-* solves other common problems
+* by providing a logical structure for a JavaScript code along with a base class for controllers. You exactly know where to start looking for a JavaScript code that runs a current page ([**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/))
+* you have models that protect API endpoints from sending invalid data. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
+* you can easily assign a model to a form enriching this form with fields' validation ([**Loco-JS-UI**](https://github.com/locoframework/loco-js-ui/))
+* you can subscribe to a model or a collection of models on the front-end by passing a function. Front-end and back-end models can be connected. This function is called when a notification for a given model is sent on the server-side. (**Loco**)
+* it allows sending messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
+* it respects permissions. You can filter out sent messages if a sender is not signed in as a given resource, _for example, a given admin or user_) (**Loco**)
 
 # 🚨 Other, more specific problems that Loco solves
 
