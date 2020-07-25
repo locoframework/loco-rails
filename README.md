@@ -41,121 +41,96 @@ The following sections contain a more detailed description of its internals and 
 
 ## Current state everywhere
 
-Let's assume, that we have 2 browsers open on the page with a list of articles.
+Let's assume, 2 users are navigating to a chat room page containing a list of chat members. This is a regular request-response application without technics like AJAX polling and WebSockets.
 
-|  Browser A | Browser B |
+|  User A | User B |
 |---|---|
-| edit article 1 | ----- |
-| new version of article 1 is visible | old version of article 1 is visible |
-| ----- | refresh page |
-| new version of article 1 is visible | new version of article 1 is visible |
+| is joining a chat |---|
+| --- | is joining a chat and is seeing User A who joined before |
+| is not seeing User B on the list of chat members | is seeing User A and User B as chat members |
+| **is refreshing a page** | is seeing User A and User B as chat members |
+| is seeing User A and User B as chat members | is seeing User A and User B as chat members |
 
-So, you have to constantly refresh the page to get the current list of articles. Or you need to provide, as a developer, a _"live"_ functionality through AJAX or WebSockets. This requires a lot of unnecessary work / code for every element of your app like this one. It should be much easier. And by easier, I mean ~1 significant line of code on the server and front-end side.  
-With Loco you can solve this problem like this:
+So, you have to constantly refresh a page to get the current list of chat members. Or you need to provide a _"live"_ functionality through AJAX or WebSockets. This requires a lot of unnecessary work/code for every element of your app like this. It should be much easier. And by easier, I mean ~1 significant line of code on the back-end and front-end side. Look for the `emit` method on the back-end and `subscribe` function on the front-end.
 
 ```ruby
-# app/controllers/user/articles_controller.rb
+# app/controllers/user/rooms_controller.rb
 
-class User::ArticlesController < UserController
-  def update
-    if @article.update article_params
-      emit @article, :updated  # this 1 line on the server side emits a notification
-                               # to all JavaScript objects that are connected
-                               # with this particular instance of Article model
-                               # or with the all instances of Article
-      # ...
+class User
+  class RoomsController < UserController
+    def join
+      @hub.add_member current_user
+      emit @room, :member_joined, data: {
+        room_id: @room.id,
+        member: {
+          id: current_user.id,
+          username: current_user.username
+        }
+      }
+      redirect_to user_room_url(@room)
     end
   end
 end
 ```
 
-This is how the front-end version of Article model can look like. If they share the same name, you can consider them as _"connected"_. Otherwise, you need to specify the mapping. For all the options, look at the Loco-JS-Model [documentation](https://github.com/locoframework/loco-js-model).
+Below is how the front-end version of `Room` model can look like. If they share the same name, you can consider them as _"connected"_. Otherwise, you need to specify the mapping. For all the options, look at the Loco-JS-Model [documentation](https://github.com/locoframework/loco-js-model).
 
 ```javascript
-// frontend/javascripts/models/Article.js
+// frontend/js/models/Room.js
 
 import { Models } from "loco-js";
 
-class Article extends Models.Base {
-  static identity = "Article";
+class Room extends Models.Base {
+  static identity = "Room";
 
-  static resources = {
-    url: "/user/articles"
-  };
-
-  static attributes = {
-    title: {
-      type: "String",
-      validations: {
-        presence: true,
-      }
-    },
-    content: {
-      type: "String",
-      validations: {
-        presence: true,
-      }
-    }
-  };
-
-  constructor(data = {}) {
+  constructor(data) {
     super(data);
   }
 }
 
-export default Article;
+export default Room;
 ```
-Below is an example of a view that renders always up-to-date list of articles.
+
+Below is an example of a view that always renders an up-to-date list of chat members.
+
 
 ```javascript
-// frontend/javascripts/views/main/pages/ArticleList.js
+// frontend/js/views/user/rooms/Show.js
 
-import { Views } from "loco-js";
+import { subscribe } from "loco-js";
 
-import Article from "models/Article";
+import Room from "models/Room";
 
-class ArticleList extends Views.Base {
-  // ...
-  
-  render(articles) {
-    this.renderArticles(articles);
-    this.connectWith([Article]); // this line means: call "receivedSignal" method for every
-                                 // signal emitted from the back-end and related to
-                                 // any instance of Article model. This is because of Article
-                                 // models on the back-end and front-end are "connected"
-  }
+const memberJoined = member => {
+  const li = `<li id='user_${member.id}'>${member.username}</li>`;
+  document.getElementById("members").insertAdjacentHTML("beforeend", li);
+};
 
-  receivedSignal(signal, data) {
-    switch (signal) {
-      case "Article updated":
-        // Loco-JS-Model delivers methods for fetching resources
-        Article.find({id: data.id}).then(article => this.renderArticle(article));
-      break;
-      default:
+const createReceivedMessage = roomId => {
+  return function(type, data) {
+    switch (type) {
+      case "Room member_joined":
+        if (data.room_id !== roomId) return;
+        memberJoined(data.member);
+        break;
+    }
+  };
+};
+
+export default {
+  render: roomId => {
+    subscribe({ to: Room, with: createReceivedMessage(roomId) });
+  },
+
+  renderMembers: members => {
+    for (const member of members) {
+      memberJoined(member);
     }
   }
-}
-
-export default ArticleList;
+};
 ```
 
-This is just the tip of the iceberg, look at [Loco-JS](https://github.com/locoframework/loco-js) and [Loco-JS-Model](https://github.com/locoframework/loco-js-model) documentations for more.
-
-# 🎪 Demo (ver. 1.0)
-
-[![Loco: demo](http://img.youtube.com/vi/05iJNyIKZZU/0.jpg)](http://www.youtube.com/watch?v=05iJNyIKZZU)
-
-# 🦕 Origins
-
-**Loco** framework was created back in 2016. The main reason for it was a need to make my life easier as a full-stack developer.
-I was using [Coffeescript](http://coffeescript.org) on the front-end back then and [Ruby on Rails](http://rubyonrails.org) on the back-end.
-
-I still use **Rails** but my front-end toolbox has changed a lot. Now, I work with modern goodies such as **ES6**, [Webpack](https://webpack.js.org), [Babel](https://babeljs.io), [React](https://reactjs.org), [Redux](https://redux.js.org)... and [**Loco-JS**](https://github.com/locoframework/loco-js) obviously :)
-
-**Loco-Rails** enriches Ruby on Rails. It's a functionality layer that works on top of Rails to simplify communication between front-end na back-end code. It is a concept that utilizes good parts of Rails to make this communication straightforward.
-
-But [**Loco-JS**](https://github.com/locoframework/loco-js) can be used as a standalone library to structure a JavaScript code, for example.  
-[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/) can be used without Rails as well and in cooperation with other modern tools such as React and Redux. You have to follow only a few rules of formatting JSON responses from the server.
+This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locoframework/loco-js) and [Loco-JS-Model](https://github.com/locoframework/loco-js-model) documentation for more.
 
 # 🤝 Dependencies
 
