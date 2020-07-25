@@ -136,14 +136,14 @@ This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locofr
 
 **Loco-JS**
 
-* 🎊 no external strict dependencies. 🎉 But check out its [_"soft dependencies"_](https://github.com/locoframework/loco-js#-dependencies)❗️
+* 🎊 no strict external dependencies. 🎉 But check out its [_"soft dependencies"_](https://github.com/locoframework/loco-js#-dependencies)❗️
 
 **Loco-Rails**
 
-* [Loco-Rails-Core](https://github.com/locoframework/loco-rails-core) - Rails plugin that has been extracted from Loco-Rails so it could be used as a stand-alone lib. It provides a logical structure for JavaScript code that corresponds with Rails` controllers and their actions that handle a given request. Loco-Rails-Core requires [Loco-JS](https://github.com/locoframework/loco-js) to work.
+* [Loco-Rails-Core](https://github.com/locoframework/loco-rails-core) - Rails plugin that has been extracted from Loco-Rails so it could be used as a stand-alone lib. It provides a logical structure for JavaScript code that corresponds with Rails` controllers and their actions that handle a given request. Loco-Rails-Core requires [Loco-JS-Core](https://github.com/locoframework/loco-js-core) to work.
 * modern Ruby (tested on >= 2.3.0)
 * Rails 5
-* [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - Loco-Rails stores informations about WebSocket connections in Redis. It is not required if you don't want to use ActionCable or you use Rails in development environment. In the last case - Loco-Rails uses in-process data store or Redis (if available).
+* [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - Loco-Rails stores information about WebSocket connections in Redis. It is not required if you don't want to use ActionCable, or you use Rails in the development environment. In the last case - Loco-Rails uses an in-process data store or Redis (if available).
 
 # 📥 Installation
 
