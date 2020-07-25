@@ -147,9 +147,9 @@ This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locofr
 
 # 📥 Installation
 
-To have Loco fully functional you have to install both: back-end and front-end parts.
+To have Loco fully functional, you have to install both: back-end and front-end parts.
 
-1️⃣ Loco-Rails works with Rails 4.2 onwards. You can add it to your Gemfile with:
+1️⃣ Loco-Rails works with Rails 5 onwards. You can add it to your Gemfile with:
 
 ```ruby
 gem 'loco-rails'
@@ -171,14 +171,12 @@ $ npm install loco-js --save
 
 Familiarize yourself with the [proper sections](https://github.com/locoframework/loco-js#-installation) from the [Loco-JS documentation](https://github.com/locoframework/loco-js) on how to set up everything on the front-end side.
 
-_Look inside `test/dummy/` to see how to configure npm with Rails._
-
-_Additionally, you can look at how to add Loco framework to the [**existing project**🔥](https://github.com/artofcodelabs/rails-modern-front-end). [This commit](https://github.com/artofcodelabs/rails-modern-front-end/commit/1d584893031b68bb9d29c5f2c8dbd1a423957a5b) is significant._
+_Look inside `test/dummy/` to check a recommended setup with the [webpack](https://webpack.js.org)._
 
 Loco-Rails and Loco-JS both use Semantic Versioning (MAJOR.MINOR.PATCH).  
-It is required to keep the MAJOR version number the same between Loco-Rails and Loco-JS to keep compatibility.
+It is required to keep the MAJOR version number the same between Loco-Rails and Loco-JS to maintain compatibility.
 
-Some features may require an upgrade of MINOR version both for front-end and back-end parts so check this out reading Changelogs and follow our [Twitter](https://twitter.com/artofcode_co).
+Some features may require an upgrade of MINOR version both for front-end and back-end parts. Check Changelogs and follow our [Twitter](https://twitter.com/artofcode_co) to be notified.
 
 # ⚙️ Configuration
 
