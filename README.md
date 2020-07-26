@@ -343,6 +343,12 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 ## Major releases 🎙
 
+### 4.0 _(2020-07-26)_
+
+* **Breaking changes**:
+    * `received_signal` instance method of `NotificationCenter` has been renamed to `received_message`
+    * `Loco.configure` initialization method requires a block
+
 ### 3.0
 
 * Loco-JS and Loco-JS-Model are no longer distributed with Loco-Rails and have to be installed using `npm`
