@@ -266,9 +266,9 @@ end
 
 This method emits a direct message to recipients. Direct messages are sent only via WebSocket connection and are not persisted in a DB.
 
-⚠️ It utilizes _ActionCable_ under the hood. It is an additional layer on top that simplifies the work with WebSockets. You can use _ActionCable_ in a standard way and _Loco-way_ side by side. If you choose to stick to Loco only - you will never have to create `ApplicationCable::Channel`s. Just remember that Loco places `ActiveJob`s into the `:loco` queue.
+⚠️ It utilizes _ActionCable_ under the hood. You can use _ActionCable_ in a standard way and _Loco-way_ side by side. If you choose to stick to Loco only - you will never have to create `ApplicationCable::Channel`s. Remember that Loco places `ActiveJob`s into the `:loco` queue.
 
-If you want to send a message to a group of recipients, persist them and have an ability to add / remove members - an entity called **Communication Hub** may be handy.
+If you want to send a message to a group of recipients, persist this group, and have an ability to add/remove members - an entity called **Communication Hub** may be handy.
 
 #### Communication Hub
 
