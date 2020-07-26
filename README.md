@@ -213,9 +213,9 @@ If you want to use a `low-level` interface without including a module, look insi
 
 ### `emit`
 
-This method emits a notification that informs recipients about an event that occurred on the given resource e.g. _post was updated_, _ticket was validated_... If a WebSocket connection is established - a message is sent this way. If not - it's delivered via AJAX polling. Switching between available method is done automatically.
+This method emits a notification that informs recipients about an event that occurred on the given resource - e.g., _the post was updated_, _the ticket was validated_. If a WebSocket connection is established - a message is sent this way. If not - it's delivered via AJAX polling. Switching between an available method is done automatically.
 
-Notifications are stored in the *loco_notifications* table in the database. One of the advantages of saving messages in a DB is - **when client loses connection with the server and restores it after a certain time - he will get all not received notifications** 👏. Unless you delete them before, of course.
+Notifications are stored in the *loco_notifications* table in the database. One of the advantages of saving messages in a DB is that **when the client loses connection with the server and restores it after a certain time - he will get all not received notifications** 👏 unless you delete them before, of course.
 
 Example:
 
@@ -223,22 +223,22 @@ Example:
 include Loco::Emitter
 
 receivers = [article.user, Admin, 'a54e1ef01cb9']
-data = {foo: 'bar'}
+data = { foo: 'bar' }
 
-emit article, :confirmed, for: receivers, data: data
+emit(article, :confirmed, to: receivers, data: data)
 ```
 
 Arguments:
 
-1. a resource that emits an event
+1. a resource this event relates to
 2. a name of an event that occurred (Symbol/String). Default values are:
-	* **:created** - when created\_at == updated\_at
-	* **:updated** - when updated\_at > created\_at
+	* **:created** - when `created_at == updated_at`
+	* **:updated** - when `updated_at > created_at`
 3. a hash with relevant keys:
-	* **:for** - message's recipients. It can be a single object or an array of objects. Instances of models, their classes and strings are accepted. If a recipient is a class, then given notification is addressed to all instances of this class that are currently signed in. If a receiver is a string (token), then clients who have subscribed to this token on the front-end side, will receive notifications. They can do this by invoking this code: `Env.loco.getWire().setToken("<token>");`
-	* **:data** - additional data, serialized to JSON, that are transmitted along with the notification
+	* **:to** - message's recipients. It can be a single object or an array of objects. Instances of models, their classes, and strings are accepted. If a recipient is a class, then given notification is addressed to all instances of this class currently signed in. If a receiver is a string (token), clients will receive notifications who have subscribed to this token on the front-end side. They can do this by invoking this code: `getWire().token = "<token>";`
+	* **:data** - additional data, serialized to JSON, transmitted along with the notification
 
-⚠️ If you are wondering how to receive those notifications on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-connectivity) of Loco-JS [README](https://github.com/locoframework/loco-js).
+⚠️ If you wonder how to receive those notifications on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-receiving-messages) of Loco-JS [README](https://github.com/locoframework/loco-js).
 
 #### Garbage collection
 
