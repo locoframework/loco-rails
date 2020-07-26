@@ -207,9 +207,9 @@ If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Ex
 ## Emitting messages 📡
 
 1. include `Loco::Emitter` module inside any class
-2. use `emit` or `emit_to` methods provided by this module to emit various types of messages 
+2. use `emit` or `emit_to` methods provided by this module to send a different type of messages 
 
-If you want to use `low-level` interface without including a module, just look inside the source code of [`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb).
+If you want to use a `low-level` interface without including a module, look inside the source code of [`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb).
 
 ### `emit`
 
