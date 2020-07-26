@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'database_cleaner', '~> 1.7.0'
   s.add_development_dependency 'jbuilder', '~> 2.10.0'
   s.add_development_dependency 'listen', '>= 3.1.5', '< 3.2'
-  s.add_development_dependency 'mysql2', '~> 0.5.2'
+  s.add_development_dependency 'mysql2', '~> 0.5.3'
   s.add_development_dependency 'puma', '~> 4.2'
   s.add_development_dependency 'redis', '~> 4.1.2'
   s.add_development_dependency 'rubocop'
