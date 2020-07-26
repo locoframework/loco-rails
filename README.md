@@ -319,17 +319,17 @@ Arguments:
 
 ## Notification Center 🛰
 
-You can send messages over WebSocket connection from the browser to the server using `Env.loco.emit({})`. These messages can be received on the back-end by the `Loco::NotificationCenter` class located in *app/services/loco/notification_center.rb*
+You can send messages over a WebSocket connection from the browser to the server using the `emit` function. These messages can be received on the back-end by the `Loco::NotificationCenter` class located in *app/services/loco/notification_center.rb*
 
-This class is generated when you run `loco:install` generator.
+`loco:install` generator generates this class.
 
 The `received_message` instance method is called automatically for each message sent by front-end clients. 2 arguments are passed:
 
-1. a hash with resources that are able to sign-in to your app. You define them as `loco_permissions` inside `ApplicationCable::Connection` class. The keys of this hash are lowercase class names of signed-in resources and the values are the instances themselves.
+1. a hash with resources that can sign in to your app. You define them as `loco_permissions` inside `ApplicationCable::Connection` class. The keys of this hash are lowercase class names of signed-in resources, and the values are the instances themselves.
 
 2. a hash with sent data
 
-You can look at the working example [here](https://github.com/artofcodelabs/rails-modern-front-end/commit/1d584893031b68bb9d29c5f2c8dbd1a423957a5b#diff-32aaf7d5c1f91a074cc09737ab1c402b).
+You can look at the working example [here](https://github.com/locoframework/loco-rails/blob/master/test/dummy/app/services/loco/notification_center.rb).
 
 # 👩🏽‍🔬 Tests
 
