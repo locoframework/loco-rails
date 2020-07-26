@@ -27,7 +27,7 @@ class Admin
       connection = Connection.for_obj(@user).last
       return if connection.nil?
 
-      emit @user, :confirming, for: connection.token
+      emit @user, :confirming, to: connection.token
     end
 
     def update

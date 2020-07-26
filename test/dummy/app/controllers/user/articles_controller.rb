@@ -36,13 +36,13 @@ class User
     def edit
       @mark = Time.current.to_f.to_s
       emit @article, :updating, data: { mark: @mark },
-                                for: [@article.published? ? :all : current_user]
+                                to: [@article.published? ? :all : current_user]
     end
 
     def create
       @article = current_user.articles.new article_params
       success = @article.save
-      emit(@article, :created, for: current_user) if success
+      emit(@article, :created, to: current_user) if success
       html_json_response success, @article,
                          notice_json: CREATE_NOTICE,
                          notice_html: CREATE_NOTICE,
@@ -51,7 +51,7 @@ class User
 
     def update
       success = @article.update article_params
-      emit(@article, :updated, for: [@article.published? ? :all : current_user]) if success
+      emit(@article, :updated, to: [@article.published? ? :all : current_user]) if success
       html_json_response success, @article,
                          notice_json: 'Article updated!',
                          notice_html: 'Article was successfully updated.',
@@ -61,7 +61,7 @@ class User
     def publish
       if @article.publish
         emit @article, :published, data: { id: @article.id }
-        emit @article, :updated, for: current_user
+        emit @article, :updated, to: current_user
         render json: { success: true, status: 200 }
       else
         render json: { success: false, status: 400, errors: @article.errors }
@@ -70,7 +70,7 @@ class User
 
     def destroy
       success = @article.destroy
-      emit(@article, :destroyed, for: current_user) if success
+      emit(@article, :destroyed, to: current_user) if success
       respond_to do |format|
         format.html do
           flash[success ? :notice : :alert] = success ? DESTROY_NOTICE : DESTROY_ALERT

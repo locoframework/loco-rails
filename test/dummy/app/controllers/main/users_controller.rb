@@ -10,7 +10,7 @@ module Main
       user = User.new user_params
       if user.save
         token = SecureRandom.hex 10
-        emit user, :created, for: Admin
+        emit user, :created, to: Admin
         Connection.create! obj: user, token: token
         success_response_for_create user, token
       else
