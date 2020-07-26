@@ -10,7 +10,7 @@ module Loco
       end
 
       test 'should set max_size via Loco::Config' do
-        Loco::Config.configure notifications_size: 1000
+        Loco.configure { |c| c.notifications_size = 1000 }
         assert_equal 1000, Notification::Fetcher.new(synced_at: 3.seconds.ago.iso8601(6))
                                                 .max_size
       end

@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Services } from "loco-js";
+import DateService from "services/Date";
 
 import ArticleModel from "models/Article";
 
 function Article({ article }) {
-  const date = new Services.Date(article.publishedAt).toString("short");
+  const date = new DateService(article.publishedAt).toString("short");
 
   return (
     <article id={`article_${article.id}`}>

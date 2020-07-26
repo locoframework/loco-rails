@@ -9,8 +9,9 @@ module Loco
 
     def emit
       uuids.each do |uuid|
-        NotificationCenterChannel.broadcast_to uuid, @data
+        NotificationCenterChannel.broadcast_to(uuid, payload)
       end
+      @data[:loco][:idempotency_key]
     end
 
     private
@@ -31,6 +32,13 @@ module Loco
       hub.raw_members.map do |m|
         WsConnectionManager.new(m).connected_uuids
       end.flatten.uniq
+    end
+
+    def payload
+      @data[:loco] ||= {}
+      @data[:loco][:idempotency_key] ||= @data[:idempotency_key] || SecureRandom.hex
+      @data.delete(:idempotency_key)
+      @data
     end
   end
 end

@@ -1,12 +1,11 @@
 import React from "react";
 import { render } from "react-dom";
-import { Controllers } from "loco-js";
+import { helpers, Controllers } from "loco-js";
 
 import { setArticles, setComments } from "actions";
 import store from "store";
 
-import UserLayout from "views/layouts/User";
-import FlashView from "views/shared/Flash";
+import renderFlash from "views/shared/Flash";
 import ShowView from "views/user/articles/Show";
 import FormView from "views/user/articles/Form";
 
@@ -16,63 +15,55 @@ import Comment from "models/article/Comment";
 import ArticleList from "containers/user/ArticleList";
 import CommentList from "containers/user/CommentList";
 
+const renderArticle = async () => {
+  const article = await Article.find(helpers.params.id);
+  store.dispatch(setArticles([article]));
+  ShowView(article);
+};
+
+const renderComments = async () => {
+  const resp = await Comment.all({ articleId: helpers.params.id });
+  store.dispatch(setComments(resp.resources, helpers.params.id));
+  render(
+    <CommentList articleId={helpers.params.id} comments={resp.resources} />,
+    document.getElementById("comments")
+  );
+};
+
+const onArticleDestroyed = res => {
+  if (res.success) renderFlash({ notice: res.notice });
+  else renderFlash({ alert: res.alert });
+};
+
 class Articles extends Controllers.Base {
-  initialize() {
-    this.layout = new UserLayout();
-  }
-
-  onArticleDestroyed(res) {
-    const flash = new FlashView();
-    if (res.success) flash.setNotice(res.notice);
-    else flash.setAlert(res.alert);
-    flash.render();
-  }
-
   async index() {
-    if (this.params.message === "deleted") {
-      const flash = new FlashView({ alert: "Article has been deleted." });
-      flash.render();
+    if (helpers.params.message === "deleted") {
+      renderFlash({ alert: "Article has been deleted." });
     }
     const resp = await Article.get("all");
     store.dispatch(setArticles(resp.resources));
     render(
       <ArticleList
         articles={resp.resources}
-        onArticleDestroyed={this.onArticleDestroyed}
+        onArticleDestroyed={onArticleDestroyed}
       />,
       document.getElementById("article_list")
     );
   }
 
-  async show() {
-    this._renderArticle();
-    this._renderComments();
+  show() {
+    renderArticle();
+    renderComments();
   }
 
   new() {
-    new FormView().render(new Article());
+    FormView.render(new Article());
   }
 
   async edit() {
-    const view = new FormView();
-    view.renderComments(this.params.id);
-    const article = await Article.find(this.params.id);
-    view.render(article);
-  }
-
-  async _renderArticle() {
-    const article = await Article.find(this.params.id);
-    store.dispatch(setArticles([article]));
-    new ShowView().render(article);
-  }
-
-  async _renderComments() {
-    const resp = await Comment.all({ articleId: this.params.id });
-    store.dispatch(setComments(resp.resources, this.params.id));
-    render(
-      <CommentList articleId={this.params.id} comments={resp.resources} />,
-      document.getElementById("comments")
-    );
+    FormView.renderComments(helpers.params.id);
+    const article = await Article.find(helpers.params.id);
+    FormView.render(article);
   }
 }
 

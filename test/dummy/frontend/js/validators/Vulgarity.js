@@ -1,4 +1,4 @@
-import { Env, I18n, Validators } from "loco-js";
+import { getLocale, I18n, Validators } from "loco-js";
 
 class Vulgarity extends Validators.Base {
   static identity = "Vulgarity";
@@ -25,12 +25,12 @@ class Vulgarity extends Validators.Base {
   }
 
   _addErrorMessage() {
-    const message = I18n[Env.loco.getLocale()].errors.messages.vulgarity;
+    const message = I18n[getLocale()].errors.messages.vulgarity;
     this.obj.addErrorMessage(message, { for: this.attr });
   }
 
   _getVulgarWord() {
-    switch (Env.loco.getLocale()) {
+    switch (getLocale()) {
       case "pl":
         return "kurwa";
       case "en":

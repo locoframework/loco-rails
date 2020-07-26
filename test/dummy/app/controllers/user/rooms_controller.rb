@@ -39,7 +39,7 @@ class User
           username: current_user.username
         }
       }
-      redirect_to user_room_url(id: params[:id])
+      redirect_to user_room_url(@room)
     end
 
     def leave

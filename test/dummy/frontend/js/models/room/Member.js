@@ -8,10 +8,6 @@ class Member extends Models.Base {
     paginate: { per: 100 }
   };
 
-  static attributes = {};
-
-  static validate = [];
-
   constructor(data) {
     super(data);
   }

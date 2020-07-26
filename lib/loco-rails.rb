@@ -14,4 +14,12 @@ require 'loco/ws_connected_resources_manager'
 require 'loco/ws_connection_storage'
 
 module Loco
+  module_function
+
+  def configure
+    Config::CONFIGURATION.new.tap do |config|
+      yield config
+      Config.configure config
+    end
+  end
 end

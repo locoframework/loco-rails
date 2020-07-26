@@ -10,6 +10,7 @@ class Admin
       admin = Admin.find_by email: params[:email]
       auth_failed && return if admin.nil?
       auth_failed && return unless admin.authenticate params[:password]
+
       auth_succeeded(admin)
     end
 

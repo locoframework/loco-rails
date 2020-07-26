@@ -1,14 +1,14 @@
 import React from "react";
 import { render as renderElement } from "react-dom";
-import { Controllers } from "loco-js";
+import { helpers, Controllers } from "loco-js";
 
 import { setUsers } from "actions";
 import store from "store";
 
 import User from "models/User";
 import UserList from "containers/admin/UserList";
-import Show from "views/admin/users/Show";
-import Form from "views/admin/users/Form";
+import renderUser from "views/admin/users/Show";
+import renderForm from "views/admin/users/Form";
 
 class Users extends Controllers.Base {
   async index() {
@@ -21,13 +21,12 @@ class Users extends Controllers.Base {
   }
 
   async show() {
-    const user = await User.find(this.params.id);
-    new Show({ user: user }).render();
+    const user = await User.find(helpers.params.id);
+    renderUser(user);
   }
 
   edit() {
-    const view = new Form({ user: new User({ id: this.params.id }) });
-    view.render();
+    renderForm(new User({ id: helpers.params.id }));
   }
 }
 

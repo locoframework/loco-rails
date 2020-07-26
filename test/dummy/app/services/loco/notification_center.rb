@@ -4,15 +4,15 @@ module Loco
   class NotificationCenter
     include Emitter
 
-    def received_signal(permissions, data)
-      return unless (res = validate_signal(data['signal'], permissions, data))
+    def received_message(permissions, data)
+      return unless (res = validate_message(data['type'], permissions, data))
 
-      case data['signal']
-      when 'ping'
-        emit_to res[:user], signal: 'ping'
-      when 'message'
+      case data['type']
+      when 'PING'
+        emit_to res[:user], type: 'PING'
+      when 'NEW_MESSAGE'
         emit_to res[:hub],
-                signal: 'message',
+                type: 'NEW_MESSAGE',
                 message: data['txt'],
                 author: permissions[:user].username
       end
@@ -20,14 +20,14 @@ module Loco
 
     protected
 
-    def validate_signal(name, permissions, data = {})
+    def validate_message(name, permissions, data)
       case name
-      when 'ping'
+      when 'PING'
         return false if permissions[:admin].nil?
 
         user = User.new id: data['user_id']
         { user: user }
-      when 'message'
+      when 'NEW_MESSAGE'
         return false if permissions[:user].nil?
         return false unless (hub = find_room(data['room_id']))
 

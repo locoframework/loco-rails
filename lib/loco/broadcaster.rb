@@ -15,15 +15,6 @@ module Loco
       @conn_res_manager = WsConnectedResourcesManager.new @recipients.compact
     end
 
-    def signals
-      notifications
-    end
-
-    def prepare
-      init_notifications if notifications.empty?
-      prepare_notifications
-    end
-
     def emit
       init_notifications if notifications.empty?
       send_notifications
@@ -45,10 +36,6 @@ module Loco
           data: data
         )
       end
-    end
-
-    def prepare_notifications
-      notifications.each(&:prepare)
     end
 
     def send_notifications

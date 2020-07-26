@@ -1,22 +1,11 @@
-import { UI, Views } from "loco-js";
+import { UI } from "loco-js-ui";
 
-class Form extends Views.Base {
-  constructor(opts = {}) {
-    super(opts);
-  }
+const signedIn = () => (window.location.href = "/admin");
 
-  render() {
-    const form = new UI.Form({
-      id: "sign_in_admin",
-      delegator: this,
-      callbackSuccess: "_signedIn"
-    });
-    form.render();
-  }
-
-  _signedIn() {
-    window.location.href = "/admin";
-  }
-}
-
-export default Form;
+export default () => {
+  const form = new UI.Form({
+    id: "sign_in_admin",
+    callbackSuccess: signedIn
+  });
+  form.render();
+};
