@@ -185,19 +185,19 @@ Some features may require an upgrade of MINOR version both for front-end and bac
 ```ruby
 # frozen_string_literal: true
 
-Loco::Config.configure(
-  silence_logger: false,        # false by default
-  notifications_size: 100,      # 100 by default
-  app_name: "loco_#{Rails.env}" # your app's name (required for namespacing)
-)
+Loco.configure do |c|
+  c.silence_logger = false          # false by default
+  c.notifications_size = 10         # 100 by default
+  c.app_name = "loco_#{Rails.env}"  # your app's name (required for namespacing)
+end
 ```
 
 Where:
 
-* notifications_size - max number of notifications / signals returned from the server at once
-* app_size - used as key's prefix to store info about current WebSocket connections in Redis or a memory
+* notifications_size - max number of notifications returned from the server at once
+* app_name - used as key's prefix to store info about current WebSocket connections in Redis or memory
 
-In a production environment - you'd probably prefer not to store all the data needed for Loco-Rails to work in a memory, but in Redis, which is shared between app servers.  
+In a production environment - it's better not to store all the data Loco-Rails needs to work in memory. A better option is Redis, which is shared between app servers.  
 If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Except that, you can specify Redis instance directly using `redis_instance: Redis.new(your_config)`.
 
 2️⃣ Browse all generated files and customize them according to the comments.
