@@ -337,7 +337,7 @@ You can look at the working example [here](https://github.com/locoframework/loco
 $ bin/rails test
 ```
 
-Integration tests are powered by Capybara. Capybara is cool but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately. It definitely helps to keep focus on the browser's window that runs integration tests on macOS.
+Capybara powers integration tests. Capybara is cool, but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately. It helps to keep the focus on the browser's window that runs integration tests on macOS.
 
 # 📈 Changelog
 
