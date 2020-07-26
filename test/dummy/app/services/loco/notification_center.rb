@@ -9,7 +9,7 @@ module Loco
 
       case data['type']
       when 'PING'
-        emit_to res[:user], type: 'ping'
+        emit_to res[:user], type: 'PING'
       when 'NEW_MESSAGE'
         emit_to res[:hub],
                 type: 'NEW_MESSAGE',
