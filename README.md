@@ -204,18 +204,18 @@ If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Ex
 
 # 🎮 Usage
 
-## Emitting signals 📡
+## Emitting messages 📡
 
 1. include `Loco::Emitter` module inside any class
-2. use `emit` or `emit_to` methods that this module provides to emit various types of signals 
+2. use `emit` or `emit_to` methods provided by this module to emit various types of messages 
 
 If you want to use `low-level` interface without including a module, just look inside the source code of [`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb).
 
 ### `emit`
 
-This method emits a signal that informs recipients about an event that occurred on the given resource e.g. _post was updated_, _ticket was validated_... If a WebSocket connection is established - the signal is sent this way. If not - it's delivered via AJAX polling. Switching between available method is done automatically.
+This method emits a notification that informs recipients about an event that occurred on the given resource e.g. _post was updated_, _ticket was validated_... If a WebSocket connection is established - a message is sent this way. If not - it's delivered via AJAX polling. Switching between available method is done automatically.
 
-Signals are stored in the *loco_notifications* table in the database. One of the advantages of saving signals in a DB is - **when client loses connection with the server and restores it after a certain time - he will get all not received notifications** 👏. Unless you delete them before, of course.
+Notifications are stored in the *loco_notifications* table in the database. One of the advantages of saving messages in a DB is - **when client loses connection with the server and restores it after a certain time - he will get all not received notifications** 👏. Unless you delete them before, of course.
 
 Example:
 
@@ -231,14 +231,14 @@ emit article, :confirmed, for: receivers, data: data
 Arguments:
 
 1. a resource that emits an event
-2. a name of an event that occurred (Symbol / String). Default values are:
+2. a name of an event that occurred (Symbol/String). Default values are:
 	* **:created** - when created\_at == updated\_at
 	* **:updated** - when updated\_at > created\_at
 3. a hash with relevant keys:
-	* **:for** - signal's recipients. It can be a single object or an array of objects. Instances of models, their classes and strings are accepted. If a recipient is a class, then given signal is addressed to all instances of this class that are currently signed in. If a receiver is a string (token), then clients who have subscribed to this token on the front-end side, will receive notifications. They can do this by invoking this code: `Env.loco.getWire().setToken("<token>");`
+	* **:for** - message's recipients. It can be a single object or an array of objects. Instances of models, their classes and strings are accepted. If a recipient is a class, then given notification is addressed to all instances of this class that are currently signed in. If a receiver is a string (token), then clients who have subscribed to this token on the front-end side, will receive notifications. They can do this by invoking this code: `Env.loco.getWire().setToken("<token>");`
 	* **:data** - additional data, serialized to JSON, that are transmitted along with the notification
 
-⚠️ If you are wondering how to receive those signals on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-connectivity) of Loco-JS [README](https://github.com/locoframework/loco-js).
+⚠️ If you are wondering how to receive those notifications on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-connectivity) of Loco-JS [README](https://github.com/locoframework/loco-js).
 
 #### Garbage collection
 
@@ -266,7 +266,7 @@ end
 
 ### `emit_to`
 
-This method emits a signal that is a direct message to recipients. Direct messages are sent only via WebSocket connection and are not persisted in a DB.
+This method emits a direct message to recipients. Direct messages are sent only via WebSocket connection and are not persisted in a DB.
 
 ⚠️ It utilizes _ActionCable_ under the hood. It is an additional layer on top that simplifies the work with WebSockets. You can use _ActionCable_ in a standard way and _Loco-way_ side by side. If you choose to stick to Loco only - you will never have to create `ApplicationCable::Channel`s. Just remember that Loco places `ActiveJob`s into the `:loco` queue.
 
@@ -302,12 +302,12 @@ Example:
 ```ruby
 include Loco::Emitter
 
-hub1 = get_hub 'room_1'
-admin = Admin.find 1
+hub1 = Hub.get('room_1')
+admin = Admin.find(1)
 
-data = {signal: 'message', message: 'Hi all!', author: 'system'}
+data = { type: 'NEW_MESSAGE', message: 'Hi all!', author: 'system' }
 
-emit_to [hub1, admin], data
+emit_to([hub1, admin], data)
 ```
 
 Arguments:
@@ -315,7 +315,7 @@ Arguments:
 1. recipients - single object or an array of objects. ActiveRecord instances and Communication Hubs are allowed.
 2. data - a hash serialized to JSON during sending.
 
-⚠️ Check out the [proper section](https://github.com/locoframework/loco-js#-line) of Loco-JS [README](https://github.com/locoframework/loco-js) about receiving those signals on the front-end.
+⚠️ Check out the [proper section](https://github.com/locoframework/loco-js#-receiving-messages) of Loco-JS [README](https://github.com/locoframework/loco-js) about receiving those messages on the front-end.
 
 # 🚛 Receiving notifications sent over WebSockets
 
@@ -325,7 +325,7 @@ You can send messages over WebSocket connection from the browser to the server u
 
 This class is generated when you run `loco:install` generator.
 
-The `received_signal` instance method is called automatically for each message sent by front-end clients. 2 arguments are passed:
+The `received_message` instance method is called automatically for each message sent by front-end clients. 2 arguments are passed:
 
 1. a hash with resources that are able to sign-in to your app. You define them as `loco_permissions` inside `ApplicationCable::Connection` class. The keys of this hash are lowercase class names of signed-in resources and the values are the instances themselves.
 
@@ -372,7 +372,7 @@ Integration tests are powered by Capybara. Capybara is cool but sometimes random
 
 * Communication Hubs - create *virtual rooms*, add members and `emit_to` these hubs messages using WebSockets. All in 2 lines of code!
 
-* now `emit` uses WebSocket connection by default (if available). But it can automatically switch to AJAX polling in case of unavailability. And all the signals will be delivered, even those that were sent during this lack of a connection. 👏 If you use `ActionCable` solely and you lost connection to the server, then all the messages that were sent in the meantime are gone 😭.
+* now `emit` uses WebSocket connection by default (if available). But it can automatically switch to AJAX polling in case of unavailability. And all the notifications will be delivered, even those that were sent during this lack of a connection. 👏 If you use `ActionCable` solely and you lost connection to the server, then all the messages that were sent in the meantime are gone 😭.
 
 🔥 Only version 3 is under support and development.
 
