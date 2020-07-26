@@ -272,23 +272,23 @@ If you want to send a message to a group of recipients, persist this group, and 
 
 #### Communication Hub
 
-You can treat it like a virtual room where you can add / remove members.  
+You can treat it like a virtual room where you can add/remove members.  
 It works over WebSockets only with the `emit_to` method.
 
-Methods for managing hubs such as `add_hub`, `get_hub`, `del_hub` are also included in [`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb) module.
+[`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb) module also includes methods for managing hubs such as `add_hub`, `get_hub`, `del_hub`.
 
 Details:
 
-* `add_hub(name, members = [])` - creates and then returns an instance of `Loco::Hub` with given name and members passed as a 2nd argument. In a typical use case - members should be an array of _ActiveRecord_ instances.
+* `add_hub(name, members = [])` - creates and returns an instance of `Loco::Hub` with a given name and members passed as a 2nd argument. In a typical use case - members should be an array of _ActiveRecord_ instances.
 
-* `get_hub(name)` - returns an instance of `Loco::Hub` with a given name that was created before. If hub does not exist - returns `nil`.
+* `get_hub(name)` - returns an instance of `Loco::Hub` with a given name or `nil` if a hub does not exist.
 
-* `del_hub(name)` - destroys an instance of `Loco::Hub` with a given name if exists.
+* `del_hub(name)` - destroys an instance of `Loco::Hub` with a given name if it exists.
 
 Important instance methods of `Loco::Hub`:
 
 * `name`
-* `members` - returns hub's members. Members are stored in an informative, shortened form inside Redis / in-process storage, so be aware that this method performs calls to DB to fetch all members.
+* `members` - returns the hub's members. Members are stored in an informative, shortened form inside Redis / in-process storage. Be aware that this method performs calls to DB to fetch all members.
 * `raw_members` - returns hub's members in the shortened form as they are stored: `"{class}:{id}"`
 * `add_member(member)`
 * `del_member(member)`
@@ -310,10 +310,10 @@ emit_to([hub1, admin], data)
 
 Arguments:
 
-1. recipients - single object or an array of objects. ActiveRecord instances and Communication Hubs are allowed.
+1. recipients - a single object or an array of objects. ActiveRecord instances and Communication Hubs are allowed.
 2. data - a hash serialized to JSON during sending.
 
-⚠️ Check out the [proper section](https://github.com/locoframework/loco-js#-receiving-messages) of Loco-JS [README](https://github.com/locoframework/loco-js) about receiving those messages on the front-end.
+⚠️ Check out the [proper section](https://github.com/locoframework/loco-js#-receiving-messages) of Loco-JS [README](https://github.com/locoframework/loco-js) about receiving these messages on the front-end.
 
 # 🚛 Receiving notifications sent over WebSockets
 
@@ -334,7 +334,7 @@ You can look at the working example [here](https://github.com/artofcodelabs/rail
 # 👩🏽‍🔬 Tests
 
 ```bash
-bin/rails test
+$ bin/rails test
 ```
 
 Integration tests are powered by Capybara. Capybara is cool but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately. It definitely helps to keep focus on the browser's window that runs integration tests on macOS.
