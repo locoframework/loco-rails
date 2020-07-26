@@ -242,7 +242,7 @@ Arguments:
 
 #### Garbage collection
 
-When you emit a lot of notifications, you obviously create a lot of records in the database. In this way, your **loco_notifications** table may soon become very big. You must periodically delete old records. Below is a rather naive approach, but it works.
+When you emit a lot of notifications, you create a lot of records in the database. This way, your **loco_notifications** table may soon become very big. You must periodically delete old records. Below is a somewhat naive approach, but it works.
 
 ```ruby
 # frozen_string_literal: true
@@ -256,9 +256,7 @@ class GarbageCollectorJob < ApplicationJob
 
   def perform
     Loco::Notification.where('created_at < ?', 1.hour.ago)
-                      .find_in_batches do |batch|
-                        batch.each(&:destroy)
-                      end
+                      .find_each(&:destroy)
   end
 end
 
