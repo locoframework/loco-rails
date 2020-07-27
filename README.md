@@ -343,6 +343,10 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 ## Major releases 🎙
 
+### 4.1 _(2020-07-27)_
+
+* Loco-JS-Core has been updated to v0.2
+
 ### 4.0 _(2020-07-26)_
 
 * **Breaking changes**:
@@ -378,7 +382,7 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 * now `emit` uses WebSocket connection by default (if available). But it can automatically switch to AJAX polling in case of unavailability. And all the notifications will be delivered, even those that were sent during this lack of a connection. 👏 If you use `ActionCable` solely and you lost connection to the server, then all the messages that were sent in the meantime are gone 😭.
 
-🔥 Only version 3 is under support and development.
+🔥 Only version 4 is under support and development.
 
 Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
 
