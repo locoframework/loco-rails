@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <%= render 'layouts/head' %>
-<%= content_tag :body, loco_body_data.merge(style: body_styles) do %>
+<%= content_tag :body, loco_body_data.merge(style: body_styles, 'data-rails-env' => Rails.env) do %>
   <%= render 'layouts/flash', name: '', msg: '' %>
   <% flash.each do |name, msg| %>
     <%= render 'layouts/flash', name: name, msg: msg %>
