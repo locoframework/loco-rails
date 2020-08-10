@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
-import { helpers, Controllers } from "loco-js";
+import { helpers } from "loco-js";
 
 import { setArticles } from "actions";
 import store from "store";
@@ -23,7 +23,7 @@ const renderComment = async () => {
   EditView.renderComments(resp.resources);
 };
 
-class Articles extends Controllers.Base {
+class Articles {
   async published() {
     const resp = await Article.get("published");
     store.dispatch(setArticles(resp.resources));

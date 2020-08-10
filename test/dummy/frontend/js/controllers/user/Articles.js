@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
-import { helpers, Controllers } from "loco-js";
+import { helpers } from "loco-js";
 
 import { setArticles, setComments } from "actions";
 import store from "store";
@@ -35,7 +35,7 @@ const onArticleDestroyed = res => {
   else renderFlash({ alert: res.alert });
 };
 
-class Articles extends Controllers.Base {
+class Articles {
   async index() {
     if (helpers.params.message === "deleted") {
       renderFlash({ alert: "Article has been deleted." });

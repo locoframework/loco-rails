@@ -1,8 +1,8 @@
-import { helpers, Controllers } from "loco-js";
+import { helpers } from "loco-js";
 
 import renderForm from "views/admin/comments/Form";
 
-class Comments extends Controllers.Base {
+class Comments {
   edit() {
     renderForm({ commentId: helpers.params.id });
   }

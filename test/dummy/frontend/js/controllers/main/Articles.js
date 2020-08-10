@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
-import { helpers, Controllers } from "loco-js";
+import { helpers } from "loco-js";
 
 import { setArticles, setComments } from "actions";
 import store from "store";
@@ -35,7 +35,7 @@ const renderComments = async () => {
   );
 };
 
-class Articles extends Controllers.Base {
+class Articles {
   async show() {
     const newComment = new Comment({ articleId: helpers.params.id });
     ShowView.renderForm(newComment);

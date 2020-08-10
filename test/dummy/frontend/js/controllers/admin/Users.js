@@ -1,6 +1,6 @@
 import React from "react";
 import { render as renderElement } from "react-dom";
-import { helpers, Controllers } from "loco-js";
+import { helpers } from "loco-js";
 
 import { setUsers } from "actions";
 import store from "store";
@@ -10,7 +10,7 @@ import UserList from "containers/admin/UserList";
 import renderUser from "views/admin/users/Show";
 import renderForm from "views/admin/users/Form";
 
-class Users extends Controllers.Base {
+class Users {
   async index() {
     const resp = await User.get("all");
     store.dispatch(setUsers(resp.resources));

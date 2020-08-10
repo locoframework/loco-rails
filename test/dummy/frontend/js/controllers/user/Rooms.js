@@ -1,13 +1,12 @@
-import { helpers, Controllers } from "loco-js";
+import { helpers } from "loco-js";
 
 import Member from "models/room/Member";
 
 import List from "views/user/rooms/List";
 import Show from "views/user/rooms/Show";
 
-class Rooms extends Controllers.Base {
+class Rooms {
   constructor() {
-    super();
     this.callbacks = {};
   }
 
