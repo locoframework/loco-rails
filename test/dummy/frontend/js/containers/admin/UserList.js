@@ -14,7 +14,7 @@ function UserList(props) {
     return () => {
       unsubscribe();
     };
-  });
+  }, []);
 
   const list = users.map(user => <User key={`user_${user.id}`} user={user} />);
 

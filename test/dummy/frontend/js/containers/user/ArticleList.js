@@ -16,7 +16,7 @@ function ArticleList(props) {
     return () => {
       unsubscribe();
     };
-  });
+  }, []);
 
   const list = articles.map(article => (
     <Article

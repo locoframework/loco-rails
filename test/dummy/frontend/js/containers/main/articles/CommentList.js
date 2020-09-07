@@ -18,7 +18,7 @@ function CommentList(props) {
     return () => {
       unsubscribe();
     };
-  });
+  }, []);
 
   const list = comments.map(comment => (
     <Comment key={comment.id} comment={comment} />

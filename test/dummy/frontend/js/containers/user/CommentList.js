@@ -19,7 +19,7 @@ function CommentList(props) {
     return () => {
       unsubscribe();
     };
-  });
+  }, []);
 
   if (comments.length === 0) return <p>No comments.</p>;
 

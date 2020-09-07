@@ -16,7 +16,7 @@ function CommentsNumber(props) {
     return () => {
       unsubscribe();
     };
-  });
+  }, []);
 
   return <>{`${comments.length} comment${comments.length === 1 ? "" : "s"}`}</>;
 }
