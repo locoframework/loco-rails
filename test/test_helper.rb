@@ -6,6 +6,7 @@ ActiveRecord::Migrator.migrations_paths = [File.expand_path('../test/dummy/db/mi
 ActiveRecord::Migrator.migrations_paths << File.expand_path('../db/migrate', __dir__)
 require 'rails/test_help'
 require 'capybara/rails'
+require 'selenium/webdriver'
 require 'database_cleaner'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
@@ -17,7 +18,12 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
 end
 
 Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new app, browser: :chrome
+  options = Selenium::WebDriver::Chrome::Options.new(
+    args: [].tap do |arr|
+      arr << 'headless' unless ENV['HEADLESS'] =~ /^(false|no|0)$/i
+    end
+  )
+  Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
 Capybara.javascript_driver = :chrome
