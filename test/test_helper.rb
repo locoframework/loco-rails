@@ -5,6 +5,7 @@ require File.expand_path('../test/dummy/config/environment.rb', __dir__)
 ActiveRecord::Migrator.migrations_paths = [File.expand_path('../test/dummy/db/migrate', __dir__)]
 ActiveRecord::Migrator.migrations_paths << File.expand_path('../db/migrate', __dir__)
 require 'rails/test_help'
+require 'minitest/spec'
 require 'capybara/rails'
 require 'selenium/webdriver'
 require 'database_cleaner'
@@ -38,6 +39,8 @@ DatabaseCleaner.strategy = :truncation, { except: %w[ar_internal_metadata] }
 
 module ActiveSupport
   class TestCase
+    extend MiniTest::Spec::DSL
+
     self.use_transactional_tests = false
 
     fixtures :all

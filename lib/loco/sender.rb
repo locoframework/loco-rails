@@ -11,7 +11,7 @@ module Loco
       uuids.each do |uuid|
         NotificationCenterChannel.broadcast_to(uuid, payload)
       end
-      @data[:loco][:idempotency_key]
+      payload[:loco][:idempotency_key]
     end
 
     private
