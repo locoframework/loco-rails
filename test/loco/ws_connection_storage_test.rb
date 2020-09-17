@@ -17,7 +17,7 @@ module Loco
     describe '#del' do
       it do
         Loco::WsConnectionStorage.current.del('foo')
-        assert_equal({}, Loco::WsConnectionStorage.current.storage)
+        assert_nil Loco::WsConnectionStorage.current.get('foo')
       end
     end
   end
