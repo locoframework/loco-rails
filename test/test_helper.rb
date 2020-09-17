@@ -58,3 +58,5 @@ end
 class IT < ActionDispatch::IntegrationTest
   include Capybara::DSL
 end
+
+TC = ActiveSupport::TestCase

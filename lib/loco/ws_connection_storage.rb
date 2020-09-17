@@ -21,7 +21,7 @@ module Loco
       when Hash
         storage[proper_key(key)]
       else
-        storage.get proper_key(key)
+        storage.get(proper_key(key))
       end
     end
 
@@ -30,16 +30,16 @@ module Loco
       when Hash
         storage[proper_key(key)] = val
       else
-        storage.set proper_key(key), val
+        storage.set(proper_key(key), val)
       end
     end
 
     def del(key)
       case @storage
       when Hash
-        storage.delete proper_key(key)
+        storage.delete(proper_key(key))
       else
-        storage.del proper_key(key)
+        storage.del(proper_key(key))
       end
     end
 
