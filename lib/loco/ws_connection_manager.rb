@@ -13,20 +13,20 @@ module Loco
     end
 
     def connected?(uuid)
-      connected_uuids.include? uuid
+      connected_uuids.include?(uuid)
     end
 
     def connected_uuids
-      data.find_all { |_, v| v.is_a? String }.to_h.keys
+      data.find_all { |_, v| v.is_a?(String) }.to_h.keys
     end
 
     def add(uuid)
-      update uuid
+      update(uuid)
       check_connections
     end
 
     def del(uuid)
-      save(data.tap { |h| h.delete uuid })
+      save(data.tap { |h| h.delete(uuid) })
       check_connections
     end
 
@@ -35,16 +35,16 @@ module Loco
     end
 
     def destroy
-      WsConnectionStorage.current.del identifier
+      WsConnectionStorage.current.del(identifier)
     end
 
     protected
 
     def data
-      serialized_uuids = WsConnectionStorage.current.get identifier
+      serialized_uuids = WsConnectionStorage.current.get(identifier)
       return {} if serialized_uuids.blank?
 
-      JSON.parse serialized_uuids
+      JSON.parse(serialized_uuids)
     end
 
     def uuids
@@ -52,23 +52,23 @@ module Loco
     end
 
     def save(hash)
-      WsConnectionStorage.current.set identifier, hash.to_json
+      WsConnectionStorage.current.set(identifier, hash.to_json)
     end
 
     def check_connections
       hash = data.to_a.map do |arr|
-        uuid, val = check_connection arr.first, arr.last
+        uuid, val = check_connection(arr.first, arr.last)
         [uuid, val]
       end.to_h.compact
-      save hash
+      save(hash)
     end
 
     def check_connection(uuid, val)
       case val
       when String
-        val = check_connection_str uuid, val
+        val = check_connection_str(uuid, val)
       when Hash
-        uuid, val = check_connection_hash uuid, val
+        uuid, val = check_connection_hash(uuid, val)
       end
       [uuid, val]
     end
