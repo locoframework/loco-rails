@@ -10,13 +10,6 @@ module Loco
       @subject = @described_class.new(@user)
     end
 
-    describe '#identifier' do
-      it 'returns a correct format of identifier' do
-        assert_equal "user:#{@user.id}", @subject.identifier
-        assert_equal 'foo', @described_class.new('foo').identifier
-      end
-    end
-
     describe '#add' do
       it 'returns a correct structure' do
         uuid = SecureRandom.uuid
@@ -24,6 +17,22 @@ module Loco
           @subject.add(uuid)
         end
         assert @subject.connected?(uuid)
+      end
+    end
+
+    describe '#connected_uuids' do
+      it 'returns connected UUIDs for a given resource' do
+        WsConnectionStorage.instance.del(@subject.identifier)
+        uuid = SecureRandom.uuid
+        @subject.add(uuid)
+        assert_equal [uuid], @subject.connected_uuids
+      end
+    end
+
+    describe '#identifier' do
+      it 'returns a correct format of an identifier' do
+        assert_equal "user:#{@user.id}", @subject.identifier
+        assert_equal 'foo', @described_class.new('foo').identifier
       end
     end
   end
