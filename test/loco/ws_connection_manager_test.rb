@@ -19,11 +19,11 @@ module Loco
 
     describe '#add' do
       it 'returns a correct structure' do
-        random = SecureRandom.uuid
-        expected = { random => '2020-01-01T00:00:00.000000Z' }
+        uuid = SecureRandom.uuid
         travel_to Time.utc(2020) do
-          assert_equal expected, JSON.parse(@subject.add(random))
+          @subject.add(uuid)
         end
+        assert @subject.connected?(uuid)
       end
     end
   end
