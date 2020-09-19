@@ -4,6 +4,7 @@ module Loco
   class WsConnectionManager
     def initialize(resource)
       @resource = resource
+      @connections_to_be_checked = []
     end
 
     def identifier
@@ -61,6 +62,7 @@ module Loco
         [uuid, val]
       end.to_h.compact
       save(hash)
+      run_connections_check_process
     end
 
     def check_connection(uuid, val)
@@ -76,7 +78,7 @@ module Loco
     def check_connection_str(uuid, val)
       return val if Time.zone.parse(val) >= 3.minutes.ago
 
-      SenderJob.perform_later uuid, loco: { connection_check: true }
+      @connections_to_be_checked << uuid
       { 'check' => current_time }
     end
 
@@ -88,6 +90,15 @@ module Loco
 
     def current_time
       Time.current.iso8601(6)
+    end
+
+    def run_connections_check_process
+      return if @connections_to_be_checked.empty?
+
+      @connections_to_be_checked.each do |uuid|
+        SenderJob.perform_later(uuid, loco: { connection_check: true })
+      end
+      @connections_to_be_checked = []
     end
   end
 end

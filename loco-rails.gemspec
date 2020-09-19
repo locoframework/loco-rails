@@ -34,6 +34,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mysql2', '~> 0.5.3'
   s.add_development_dependency 'puma', '~> 4.3.6'
   s.add_development_dependency 'redis', '~> 4.2.2'
+  s.add_development_dependency 'rspec-expectations', '~> 3.9.2'
+  s.add_development_dependency 'rspec-mocks', '~> 3.9.1'
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'rubocop-rails'
   s.add_development_dependency 'selenium-webdriver', '~> 3.142'
