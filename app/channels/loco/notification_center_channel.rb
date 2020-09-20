@@ -15,13 +15,14 @@ module Loco
       loco_permissions.each do |resource|
         next if resource.nil? || resource.is_a?(String)
 
-        UuidJob.perform_later serialize_resource(resource), @uuid, 'del'
+        UuidJob.perform_later(Jobs::ResourceSerializer.serialize(resource), @uuid, 'del')
       end
     end
 
     def receive(data)
       update_connections if data['loco'] && data['loco']['connection_check']
-      NotificationCenter.new.received_message permissions, data
+      indexed_permissions = PermissionsPresenter.indexed(loco_permissions)
+      NotificationCenter.new.received_message indexed_permissions, data
     end
 
     protected
@@ -33,7 +34,7 @@ module Loco
           stream_for_resource resource
           SenderJob.perform_later @uuid, loco: { uuid: @uuid }
         else
-          UuidJob.perform_later serialize_resource(resource), @uuid, 'add'
+          UuidJob.perform_later(Jobs::ResourceSerializer.serialize(resource), @uuid, 'add')
           stream_for_resource resource
         end
       end
@@ -44,22 +45,12 @@ module Loco
       stream_from "loco:notification_center:#{identifier}"
     end
 
-    def permissions
-      loco_permissions.compact.index_by do |o|
-        o.class.name.downcase.to_sym
-      end
-    end
-
     def update_connections
-      permissions.each do |key, val|
+      PermissionsPresenter.indexed(loco_permissions).each do |key, val|
         next if key == :string
 
-        UuidJob.perform_later serialize_resource(val), @uuid, 'update'
+        UuidJob.perform_later(Jobs::ResourceSerializer.serialize(val), @uuid, 'update')
       end
-    end
-
-    def serialize_resource(resource)
-      { 'class' => resource.class.name, 'id' => resource.id }
     end
   end
 end

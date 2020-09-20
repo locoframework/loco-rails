@@ -5,7 +5,7 @@ module Loco
     queue_as :loco
 
     def perform(serialized_resource, uuid, action)
-      ws_conn_manager = init_ws_conn_manager serialized_resource
+      ws_conn_manager = init_ws_conn_manager(serialized_resource)
       return unless ws_conn_manager
 
       case action
@@ -37,12 +37,8 @@ module Loco
       WsConnectedResourcesManager.add ws_conn_manager.identifier
     end
 
-    def deserialize_resource(hash)
-      hash['class'].constantize.find_by id: hash['id']
-    end
-
     def init_ws_conn_manager(serialized_resource)
-      resource = deserialize_resource serialized_resource
+      resource = Jobs::ResourceSerializer.deserialize(serialized_resource)
       return unless resource
 
       WsConnectionManager.new resource

@@ -29,6 +29,7 @@ module Loco
         expect(SenderJob).to receive(:perform_later).with(uuid, loco: { connection_check: true })
         travel_to(time + (3 * 60 + 1).seconds) { @subject.add(SecureRandom.uuid) }
         assert_equal({ 'check' => '2020-01-01T11:33:01.000000Z' }, @subject.send(:data)[uuid])
+        assert_equal 3, @subject.send(:data).keys.size
       end
     end
 
