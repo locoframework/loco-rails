@@ -6,7 +6,7 @@ module Loco
   module Jobs
     class ResourceSerializerTest < TC
       before do
-        @user = users(:user_zbig)
+        @user = users(:zbig)
         @product = { 'class' => 'User', 'id' => @user.id }
       end
 

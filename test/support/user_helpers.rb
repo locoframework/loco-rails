@@ -22,7 +22,7 @@ module UserHelpers
       a.text = 'Lorem Ipsum II' * 8
       a.save!
     end
-    emit articles(name), :updated, for: [users(:user_zbig)]
+    emit articles(name), :updated, for: [users(:zbig)]
   end
 
   def destroy_article(name)

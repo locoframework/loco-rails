@@ -5,7 +5,7 @@ require 'test_helper'
 module Loco
   class WsConnectionManagerTest < TCWithMocks
     before do
-      @user = users(:user_zbig)
+      @user = users(:zbig)
       @described_class = Loco::WsConnectionManager
       @subject = @described_class.new(@user)
     end

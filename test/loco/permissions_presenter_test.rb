@@ -7,8 +7,8 @@ module Loco
     describe '#indexed' do
       it do
         uuid = SecureRandom.uuid
-        res = PermissionsPresenter.indexed([uuid, users(:user_zbig), nil, admins(:one)])
-        expected = { string: uuid, user: users(:user_zbig), admin: admins(:one) }
+        res = PermissionsPresenter.indexed([uuid, users(:zbig), nil, admins(:one)])
+        expected = { string: uuid, user: users(:zbig), admin: admins(:one) }
         assert_equal expected, res
       end
     end

@@ -23,14 +23,14 @@ class User
     end
 
     test "should show room's members" do
-      join_room users(:user_jane), @room
+      join_room users(:jane), @room
       assert page.has_content? 'zbig'
       assert page.has_content? 'jane'
     end
 
     test 'should send messages' do
       perform_enqueued_jobs
-      join_room users(:user_jane), @room
+      join_room users(:jane), @room
       fill_in 'message', with: 'Hello Jane!'
       find('#message').native.send_keys :return
       perform_enqueued_jobs
@@ -47,7 +47,7 @@ class User
     test 'should show info about joining room after returning from disconnection' do
       go_disconnected
       sleep 0.1
-      join_room users(:user_jane), @room
+      join_room users(:jane), @room
       go_connected
       assert page.has_content? 'jane'
     end
