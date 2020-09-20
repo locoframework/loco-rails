@@ -12,5 +12,11 @@ module Loco
         assert_equal expected, res
       end
     end
+
+    describe 'signed_in' do
+      it do
+        assert_equal [users(:zbig)], PermissionsPresenter.signed_in([nil, users(:zbig)])
+      end
+    end
   end
 end
