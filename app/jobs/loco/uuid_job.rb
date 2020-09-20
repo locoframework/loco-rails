@@ -10,38 +10,38 @@ module Loco
 
       case action
       when 'add'
-        add ws_conn_manager, uuid
+        add(ws_conn_manager, uuid)
       when 'del'
-        del ws_conn_manager, uuid
+        del(ws_conn_manager, uuid)
       when 'update'
-        update ws_conn_manager, uuid
+        update(ws_conn_manager, uuid)
       end
     end
 
     protected
 
     def add(ws_conn_manager, uuid)
-      ws_conn_manager.add uuid
-      WsConnectedResourcesManager.add ws_conn_manager.identifier
+      ws_conn_manager.add(uuid)
+      WsConnectedResourcesManager.add(ws_conn_manager.identifier)
     end
 
     def del(ws_conn_manager, uuid)
-      ws_conn_manager.del uuid
+      ws_conn_manager.del(uuid)
       return if ws_conn_manager.connected_uuids.any?
 
-      WsConnectedResourcesManager.del ws_conn_manager.identifier
+      WsConnectedResourcesManager.del(ws_conn_manager.identifier)
     end
 
     def update(ws_conn_manager, uuid)
-      ws_conn_manager.update uuid
-      WsConnectedResourcesManager.add ws_conn_manager.identifier
+      ws_conn_manager.update(uuid)
+      WsConnectedResourcesManager.add(ws_conn_manager.identifier)
     end
 
     def init_ws_conn_manager(serialized_resource)
       resource = Jobs::ResourceSerializer.deserialize(serialized_resource)
       return unless resource
 
-      WsConnectionManager.new resource
+      WsConnectionManager.new(resource)
     end
   end
 end

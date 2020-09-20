@@ -8,7 +8,7 @@ module Loco
       stream_for_resources
       return if PermissionsPresenter.signed_in(loco_permissions).size > 1
 
-      SenderJob.perform_later @uuid, loco: { start_ajax_polling: true }
+      SenderJob.perform_later(@uuid, loco: { start_ajax_polling: true })
     end
 
     def unsubscribed
@@ -22,20 +22,20 @@ module Loco
     def receive(data)
       update_connections if data['loco'] && data['loco']['connection_check']
       indexed_permissions = PermissionsPresenter.indexed(loco_permissions)
-      NotificationCenter.new.received_message indexed_permissions, data
+      NotificationCenter.new.received_message(indexed_permissions, data)
     end
 
     protected
 
     def stream_for_resources
       PermissionsPresenter.signed_in(loco_permissions).each do |resource|
-        if resource.is_a? String
+        if resource.is_a?(String)
           @uuid = resource
-          stream_for_resource resource
-          SenderJob.perform_later @uuid, loco: { uuid: @uuid }
+          stream_for_resource(resource)
+          SenderJob.perform_later(@uuid, loco: { uuid: @uuid })
         else
           UuidJob.perform_later(Jobs::ResourceSerializer.serialize(resource), @uuid, 'add')
-          stream_for_resource resource
+          stream_for_resource(resource)
         end
       end
     end

@@ -4,10 +4,13 @@ require 'test_helper'
 
 module Loco
   class WsConnectionManagerTest < TCWithMocks
+    include WsHelpers
+
     before do
       @user = users(:zbig)
       @described_class = Loco::WsConnectionManager
       @subject = @described_class.new(@user)
+      reset_connections(@user)
     end
 
     describe '#add' do
@@ -20,7 +23,6 @@ module Loco
       end
 
       it 'checks connections' do
-        reset
         uuid = SecureRandom.uuid
         time = Time.utc(2020, 0o1, 0o1, 11, 30)
         travel_to(time) { @subject.add(uuid) }
@@ -35,7 +37,6 @@ module Loco
 
     describe '#connected_uuids' do
       it 'returns connected UUIDs for a given resource' do
-        reset
         uuid = SecureRandom.uuid
         @subject.add(uuid)
         assert_equal [uuid], @subject.connected_uuids
@@ -47,12 +48,6 @@ module Loco
         assert_equal "user:#{@user.id}", @subject.identifier
         assert_equal 'foo', @described_class.new('foo').identifier
       end
-    end
-
-    private
-
-    def reset
-      WsConnectionStorage.instance.del(@subject.identifier)
     end
   end
 end

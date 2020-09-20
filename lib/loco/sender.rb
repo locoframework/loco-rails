@@ -20,15 +20,9 @@ module Loco
       @recipients.map do |r|
         case r
         when String then r
-        when Hub then recipients_from_hub(r)
+        when Hub then r.connected_uuids
         else WsConnectionManager.new(r).connected_uuids
         end
-      end.flatten.uniq
-    end
-
-    def recipients_from_hub(hub)
-      hub.raw_members.map do |m|
-        WsConnectionManager.new(m).connected_uuids
       end.flatten.uniq
     end
 
