@@ -4,6 +4,14 @@ require 'test_helper'
 
 module Loco
   class SenderTest < TCWithMocks
+    describe 'initialization' do
+      it 'does not mutate a passed payload' do
+        payload = { foo: 'bar' }
+        Sender.new('foobarbaz', payload).emit
+        assert_equal({ foo: 'bar' }, payload)
+      end
+    end
+
     describe '#emit' do
       it 'returns idempotency_key' do
         key = SecureRandom.hex

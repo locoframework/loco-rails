@@ -4,14 +4,14 @@ module Loco
   class Sender
     def initialize(recipient, data = {})
       @recipients = [*recipient]
-      @data = data
+      @payload = modify(data.clone)
     end
 
     def emit
       uuids.each do |uuid|
-        NotificationCenterChannel.broadcast_to(uuid, payload)
+        NotificationCenterChannel.broadcast_to(uuid, @payload)
       end
-      payload[:loco][:idempotency_key]
+      @payload[:loco][:idempotency_key]
     end
 
     private
@@ -26,11 +26,11 @@ module Loco
       end.flatten.uniq
     end
 
-    def payload
-      @data[:loco] ||= {}
-      @data[:loco][:idempotency_key] ||= @data[:idempotency_key] || SecureRandom.hex
-      @data.delete(:idempotency_key)
-      @data
+    def modify(data)
+      data[:loco] ||= {}
+      data[:loco][:idempotency_key] ||= data[:idempotency_key] || SecureRandom.hex
+      data.delete(:idempotency_key)
+      data
     end
   end
 end
