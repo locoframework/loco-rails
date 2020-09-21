@@ -4,18 +4,16 @@ require 'test_helper'
 
 module Loco
   class SenderTest < TCWithMocks
-    describe 'initialization' do
+    describe '.call' do
       it 'does not mutate a passed payload' do
         payload = { foo: 'bar' }
-        Sender.new('foobarbaz', payload).emit
+        Sender.call('foobarbaz', payload)
         assert_equal({ foo: 'bar' }, payload)
       end
-    end
 
-    describe '#emit' do
       it 'returns idempotency_key' do
         key = SecureRandom.hex
-        assert_equal key, Sender.new(users(:zbig), { idempotency_key: key }).emit
+        assert_equal key, Sender.call(users(:zbig), { idempotency_key: key })
       end
 
       it 'sends a passed idempotency key' do
@@ -23,7 +21,7 @@ module Loco
         key = SecureRandom.hex
         payload = { loco: { idempotency_key: key } }
         expect(NotificationCenterChannel).to receive(:broadcast_to).with(uuid, payload)
-        Sender.new(uuid, { idempotency_key: key }).emit
+        Sender.call(uuid, { idempotency_key: key })
       end
 
       it 'sends a generated idempotency key' do
@@ -31,7 +29,7 @@ module Loco
         expect(SecureRandom).to receive(:hex) { 'foobarbaz' }
         payload = { loco: { idempotency_key: 'foobarbaz' } }
         expect(NotificationCenterChannel).to receive(:broadcast_to).with(uuid, payload)
-        Sender.new(uuid, {}).emit
+        Sender.call(uuid, {})
       end
     end
   end

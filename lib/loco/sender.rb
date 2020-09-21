@@ -2,35 +2,34 @@
 
 module Loco
   class Sender
-    def initialize(recipient, data = {})
-      @recipients = [*recipient]
-      @payload = modify(data.clone)
-    end
-
-    def emit
-      uuids.each do |uuid|
-        NotificationCenterChannel.broadcast_to(uuid, @payload)
-      end
-      @payload[:loco][:idempotency_key]
-    end
-
-    private
-
-    def uuids
-      @recipients.map do |r|
-        case r
-        when String then r
-        when Hub then r.connected_uuids
-        else WsConnectionManager.new(r).connected_uuids
+    class << self
+      def call(recipient, payload = {})
+        payload = with_idempotency_key(payload)
+        uuids([*recipient]).each do |uuid|
+          NotificationCenterChannel.broadcast_to(uuid, payload)
         end
-      end.flatten.uniq
-    end
+        payload[:loco][:idempotency_key]
+      end
 
-    def modify(data)
-      data[:loco] ||= {}
-      data[:loco][:idempotency_key] ||= data[:idempotency_key] || SecureRandom.hex
-      data.delete(:idempotency_key)
-      data
+      private
+
+      def uuids(recipients)
+        recipients.map do |r|
+          case r
+          when String then r
+          when Hub then r.connected_uuids
+          else WsConnectionManager.new(r).connected_uuids
+          end
+        end.flatten.uniq
+      end
+
+      def with_idempotency_key(hash)
+        hash = hash.clone
+        hash[:loco] ||= {}
+        hash[:loco][:idempotency_key] ||= hash[:idempotency_key] || SecureRandom.hex
+        hash.delete(:idempotency_key)
+        hash
+      end
     end
   end
 end
