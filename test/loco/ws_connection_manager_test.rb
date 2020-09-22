@@ -52,6 +52,10 @@ module Loco
       end
     end
 
+    describe '#del' do
+      # tested in 'checking connections'
+    end
+
     describe '#identifier' do
       it 'returns a correct format of an identifier' do
         assert_equal "user:#{@user.id}", @subject.identifier

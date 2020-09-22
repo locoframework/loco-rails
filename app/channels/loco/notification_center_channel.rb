@@ -46,9 +46,7 @@ module Loco
     end
 
     def update_connections
-      PermissionsPresenter.indexed(loco_permissions).each do |key, val|
-        next if key == :string
-
+      PermissionsPresenter.indexed(loco_permissions, except: :uuid).each do |_key, val|
         UuidJob.perform_later(Jobs::ResourceSerializer.serialize(val), @uuid, 'update')
       end
     end
