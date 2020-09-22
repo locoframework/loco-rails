@@ -12,9 +12,7 @@ module Loco
     end
 
     def unsubscribed
-      loco_permissions.each do |resource|
-        next if resource.nil? || resource.is_a?(String)
-
+      PermissionsPresenter.signed_in(loco_permissions, except: :uuid).each do |resource|
         UuidJob.perform_later(Jobs::ResourceSerializer.serialize(resource), @uuid, 'del')
       end
     end

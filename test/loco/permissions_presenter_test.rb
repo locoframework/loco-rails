@@ -15,7 +15,7 @@ module Loco
         assert_equal expected, res
       end
 
-      it 'does not return string if expect: uuid is passed' do
+      it 'does not return string if except: uuid is passed' do
         loco_permissions = [@uuid, users(:zbig), nil, admins(:one)]
         res = PermissionsPresenter.indexed(loco_permissions, except: :uuid)
         expected = { user: users(:zbig), admin: admins(:one) }
@@ -24,8 +24,13 @@ module Loco
     end
 
     describe 'signed_in' do
-      it do
+      it 'acts as compact' do
         assert_equal [users(:zbig)], PermissionsPresenter.signed_in([nil, users(:zbig)])
+      end
+
+      it 'accepts except: uuid' do
+        permissions = [nil, users(:zbig), 'foo']
+        assert_equal [users(:zbig)], PermissionsPresenter.signed_in(permissions, except: :uuid)
       end
     end
   end

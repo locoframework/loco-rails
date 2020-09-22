@@ -15,8 +15,13 @@ module Loco
       end
     end
 
-    def signed_in(loco_permissions)
-      loco_permissions.compact
+    def signed_in(loco_permissions, opts = {})
+      arr = loco_permissions.compact
+      if opts[:except] == :uuid
+        arr.reject { |e| e.is_a?(String) }
+      else
+        arr
+      end
     end
   end
 end

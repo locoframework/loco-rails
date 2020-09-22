@@ -13,7 +13,7 @@ require 'loco/sender'
 require 'loco/ws_connection_manager'
 require 'loco/ws_connected_resources_manager'
 require 'loco/ws_connection_storage'
-require 'loco/jobs/resource_serializer'
+require 'loco/jobs/concerns/resource_serializer'
 
 module Loco
   module Jobs
