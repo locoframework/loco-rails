@@ -15,11 +15,11 @@ module Loco
     end
 
     def get_hub(name)
-      Hub.get name
+      Hub.get(name)
     end
 
     def del_hub(name)
-      hub = Hub.get name
+      hub = Hub.get(name)
       return false if hub.nil?
 
       hub.destroy
