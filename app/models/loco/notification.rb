@@ -31,9 +31,9 @@ module Loco
       return if val.nil?
       return if val == :all
 
-      if val.is_a? String
+      if val.is_a?(String)
         self.recipient_token = val
-      elsif val.instance_of? Class
+      elsif val.instance_of?(Class)
         self.recipient_class = val.to_s
       else
         self.recipient_class = val.class.name
@@ -46,7 +46,7 @@ module Loco
       return unless regular_recipient?
       return class_recipient unless recipient_id
 
-      obj_recipient opts[:shallow]
+      obj_recipient(opts[:shallow])
     end
 
     def prepare
@@ -70,9 +70,9 @@ module Loco
 
     def obj_recipient(shallow = false)
       if shallow
-        recipient_class.constantize.new id: recipient_id
+        recipient_class.constantize.new(id: recipient_id)
       else
-        recipient_class.constantize.find recipient_id
+        recipient_class.constantize.find(recipient_id)
       end
     end
 
