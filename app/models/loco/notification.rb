@@ -2,6 +2,9 @@
 
 module Loco
   class Notification < ApplicationRecord
+    FOR_OBJ_SQL_TMPL = 'recipient_class = ? AND recipient_id = ?'
+    FOR_CLASS_SQL_TMPL = 'recipient_class = ? AND recipient_id IS NULL'
+
     attr_reader :obj
 
     serialize :data, JSON
