@@ -47,7 +47,6 @@ module Loco
     def recipient(opts = {})
       return recipient_token if recipient_token
       return unless regular_recipient?
-      return class_recipient unless recipient_id
 
       obj_recipient(shallow: opts[:shallow])
     end
