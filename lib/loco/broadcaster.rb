@@ -2,88 +2,72 @@
 
 module Loco
   class Broadcaster
-    def initialize
-      @notifications = []
-      @sent_via_ws = 0
-    end
-
     def emit(obj, event, recipients:, payload: nil)
-      init_notifications(obj, event, recipients, payload)
-      send_notifications(WsConnectedResourcesManager.new(recipients.compact))
-      if notify_about_xhr_notifications?
-        notify_about_xhr_notifications
+      notifications = init_notifications(obj, event, recipients, payload)
+      conn_res_manager = WsConnectedResourcesManager.new(recipients.compact)
+      sent = send_notifications(notifications, conn_res_manager)
+      if sent < notifications.size
+        notify_about_xhr_notifications(notifications_recipients(notifications))
       else
-        set_sync_time_via_ws
+        sync_time_via_ws(notifications)
       end
     end
 
     private
 
     def init_notifications(obj, event, recipients, payload)
-      @notification = []
-      recipients.each do |recipient|
-        @notifications << Notification.new(
-          obj: obj,
-          event: event,
-          recipient: recipient,
-          data: payload
-        )
+      recipients.map do |recipient|
+        Notification.new(obj: obj, event: event, recipient: recipient, data: payload)
       end
     end
 
-    def send_notifications(conn_res_manager)
-      @notifications.each do |notification|
+    def send_notifications(notifications, conn_res_manager)
+      notifications.inject(0) do |sent, notification|
         notification.save!
-        next if notification.recipient_id.nil?
+        next(0) if notification.recipient_id.nil?
 
         shallow_recipient = notification.recipient(shallow: true)
-        next unless conn_res_manager.connected?(shallow_recipient)
+        next(0) unless conn_res_manager.connected?(shallow_recipient)
 
         send_via_ws(notification)
+        sent + 1
       end
     end
 
     def send_via_ws(notification)
       recipient = notification.recipient(shallow: true)
       SenderJob.perform_later(recipient, { loco: { notification: notification.compact } })
-      @sent_via_ws += 1
     end
 
-    def notify_about_xhr_notifications?
-      @sent_via_ws < @notifications.size
-    end
-
-    def notify_about_xhr_notifications
-      uuids = []
-      fetch_identifiers.each do |ident|
+    def notify_about_xhr_notifications(shallow_recipients)
+      fetch_identifiers(shallow_recipients).inject([]) do |uuids, ident|
         Loco::WsConnectionManager.new(ident).connected_uuids.each do |uuid|
-          next if uuids.include?(uuid)
+          next(uuids) if uuids.include?(uuid)
 
-          uuids << uuid
           SenderJob.perform_later(uuid, loco: { xhr_notifications: true })
+          uuids << uuid
         end
       end
     end
 
-    def set_sync_time_via_ws
-      sync_time = @notifications.last.created_at.iso8601(6)
-      @notifications.each do |notification|
+    def sync_time_via_ws(notifications)
+      sync_time = notifications.last.created_at.iso8601(6)
+      notifications.each do |notification|
         recipient = notification.recipient(shallow: true)
         SenderJob.perform_later(recipient, loco: { sync_time: sync_time })
       end
     end
 
-    def notifications_recipients
-      @notifications
+    def notifications_recipients(notifications)
+      notifications
         .map { |n| n.recipient(shallow: true) }
         .map { |o| o.instance_of?(Class) ? o.to_s.downcase : nil }
     end
 
-    def fetch_identifiers
-      recipients = notifications_recipients
-      uniq_recipients = recipients.compact.uniq
+    def fetch_identifiers(shallow_recipients)
+      uniq_recipients = shallow_recipients.compact.uniq
       WsConnectedResourcesManager.identifiers.find_all do |str|
-        if recipients.include?(nil)
+        if shallow_recipients.include?(nil)
           true
         else
           uniq_recipients.include?(str.split(':').first)
