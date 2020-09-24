@@ -5,7 +5,7 @@ module Loco
     class << self
       def call(recipient, payload = {})
         payload = with_idempotency_key(payload)
-        uuids([*recipient]).each do |uuid|
+        uuids(Array(recipient)).each do |uuid|
           NotificationCenterChannel.broadcast_to(uuid, payload)
         end
         payload[:loco][:idempotency_key]

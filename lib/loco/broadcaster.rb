@@ -6,7 +6,7 @@ module Loco
       recipient_key = opts[:for] ? :for : :to
       @obj = obj
       @event = event
-      @recipients = opts[recipient_key] ? [*opts[recipient_key]] : [nil]
+      @recipients = opts[recipient_key] ? Array(opts[recipient_key]) : [nil]
       @data = opts[:data]
       @notifications = []
       @sent_via_ws = 0

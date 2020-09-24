@@ -1,6 +1,7 @@
 require: rubocop-rails
 
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 2.6
   Exclude:
     - node_modules/**/*

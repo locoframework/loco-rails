@@ -49,7 +49,7 @@ module Loco
       return unless regular_recipient?
       return class_recipient unless recipient_id
 
-      obj_recipient(opts[:shallow])
+      obj_recipient(shallow: opts[:shallow])
     end
 
     def prepare
@@ -71,7 +71,7 @@ module Loco
       recipient_class.constantize
     end
 
-    def obj_recipient(shallow = false)
+    def obj_recipient(shallow: false)
       if shallow
         recipient_class.constantize.new(id: recipient_id)
       else

@@ -20,12 +20,8 @@ class Article < ApplicationRecord
   before_update :calculate_admin_review_time
 
   class << self
-    def published(state = true)
-      if state
-        where.not published_at: nil
-      else
-        where published_at: nil
-      end
+    def published
+      where.not(published_at: nil)
     end
   end
 
@@ -51,7 +47,7 @@ class Article < ApplicationRecord
     changed? ? save : nil
   end
 
-  def destroy(force = false)
+  def destroy(force: false)
     return false if published? && !force
 
     super()
