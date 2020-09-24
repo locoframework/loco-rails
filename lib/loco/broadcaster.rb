@@ -2,20 +2,17 @@
 
 module Loco
   class Broadcaster
-    def initialize(obj, event = nil, opts = {})
-      recipient_key = opts[:for] ? :for : :to
+    def initialize(obj, event = nil, payload = nil)
       @obj = obj
       @event = event
-      @recipients = opts[recipient_key] ? Array(opts[recipient_key]) : [nil]
-      @data = opts[:data]
+      @data = payload
       @notifications = []
       @sent_via_ws = 0
-      @conn_res_manager = WsConnectedResourcesManager.new(@recipients.compact)
     end
 
-    def emit
-      init_notifications if @notifications.empty?
-      send_notifications
+    def emit(recipients)
+      init_notifications(recipients)
+      send_notifications(WsConnectedResourcesManager.new(recipients.compact))
       if notify_about_xhr_notifications?
         notify_about_xhr_notifications
       else
@@ -25,8 +22,9 @@ module Loco
 
     private
 
-    def init_notifications
-      @recipients.each do |recipient|
+    def init_notifications(recipients)
+      @notification = []
+      recipients.each do |recipient|
         @notifications << Notification.new(
           obj: @obj,
           event: @event,
@@ -36,13 +34,13 @@ module Loco
       end
     end
 
-    def send_notifications
+    def send_notifications(conn_res_manager)
       @notifications.each do |notification|
         notification.save!
         next if notification.recipient_id.nil?
 
         shallow_recipient = notification.recipient(shallow: true)
-        next unless @conn_res_manager.connected?(shallow_recipient)
+        next unless conn_res_manager.connected?(shallow_recipient)
 
         send_via_ws(notification)
       end
