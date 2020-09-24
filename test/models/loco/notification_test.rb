@@ -17,5 +17,9 @@ module Loco
         assert_nil Notification.new(recipient: User).recipient
       end
     end
+
+    describe '#recipient=' do
+      # described by #recipient
+    end
   end
 end
