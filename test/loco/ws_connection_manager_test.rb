@@ -10,7 +10,6 @@ module Loco
       @user = users(:zbig)
       @described_class = Loco::WsConnectionManager
       @subject = @described_class.new(@user)
-      reset_connections(@user)
     end
 
     describe 'checking connections' do

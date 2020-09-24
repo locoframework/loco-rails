@@ -9,10 +9,10 @@ module Loco
 
     class << self
       def identifiers
-        val = WsConnectionStorage.current.get key
+        val = WsConnectionStorage.current.get(key)
         return [] if val.blank?
 
-        JSON.parse val
+        JSON.parse(val)
       end
 
       def add(identifier)
@@ -42,7 +42,7 @@ module Loco
       @resources.each do |resource|
         next if WsConnectionManager.new(resource).connected_uuids.empty?
 
-        add resource
+        add(resource)
       end
       @connected_resources || []
     end

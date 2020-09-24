@@ -7,11 +7,6 @@ module Loco
     include WsHelpers
 
     describe '#connected_uuids' do
-      before do
-        reset_connections(users(:zbig))
-        reset_connections(users(:jane))
-      end
-
       it do
         uuid = SecureRandom.uuid
         create_connection(users(:jane), uuid)

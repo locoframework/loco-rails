@@ -48,6 +48,7 @@ module ActiveSupport
     fixtures :all
 
     def setup
+      Loco::WsConnectionStorage.current.storage.flushdb
       DatabaseCleaner.start
     end
 
