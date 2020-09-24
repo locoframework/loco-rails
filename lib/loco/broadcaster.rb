@@ -2,16 +2,13 @@
 
 module Loco
   class Broadcaster
-    def initialize(obj, event = nil, payload = nil)
-      @obj = obj
-      @event = event
-      @data = payload
+    def initialize
       @notifications = []
       @sent_via_ws = 0
     end
 
-    def emit(recipients)
-      init_notifications(recipients)
+    def emit(obj, event, recipients:, payload: nil)
+      init_notifications(obj, event, recipients, payload)
       send_notifications(WsConnectedResourcesManager.new(recipients.compact))
       if notify_about_xhr_notifications?
         notify_about_xhr_notifications
@@ -22,14 +19,14 @@ module Loco
 
     private
 
-    def init_notifications(recipients)
+    def init_notifications(obj, event, recipients, payload)
       @notification = []
       recipients.each do |recipient|
         @notifications << Notification.new(
-          obj: @obj,
-          event: @event,
+          obj: obj,
+          event: event,
           recipient: recipient,
-          data: @data
+          data: payload
         )
       end
     end
