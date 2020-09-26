@@ -15,7 +15,7 @@ module Loco
 
       it 'can emit to all' do
         expect(SenderJob).to receive(:perform_later).exactly(3).times
-        Broadcaster.call(articles(:two), :updated, recipients: [nil])
+        Broadcaster.call(articles(:two), :updated)
       end
 
       it 'can emit to a class of objects' do

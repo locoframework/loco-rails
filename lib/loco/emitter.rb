@@ -3,12 +3,11 @@
 module Loco
   module Emitter
     def emit(obj, event = nil, opts = {})
-      recipient_key = opts[:for] ? :for : :to
       Broadcaster.call(
         obj,
         event,
         payload: opts[:data],
-        recipients: opts[recipient_key] ? Array(opts[recipient_key]) : [nil]  # TODO: ???
+        recipients: opts[opts[:for] ? :for : :to]
       )
     end
 

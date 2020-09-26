@@ -3,12 +3,14 @@
 module Loco
   class Broadcaster
     class << self
-      def call(obj, event, recipients:, payload: nil)
+      def call(obj, event, recipients: nil, payload: nil)
+        recipients = [nil] if recipients.nil?
+        recipients = Array(recipients) unless recipients.is_a?(Array)
         new.emit(obj, event, recipients: recipients, payload: payload)
       end
     end
 
-    def emit(obj, event, recipients:, payload: nil)
+    def emit(obj, event, recipients:, payload:)
       notifications = init_notifications(obj, event, recipients, payload)
       conn_res_manager = WsConnectedResourcesManager.new(recipients.compact)
       sent = send_notifications(notifications, conn_res_manager)
