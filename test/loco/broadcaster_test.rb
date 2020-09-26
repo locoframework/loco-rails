@@ -7,10 +7,18 @@ module Loco
     include WsHelpers
 
     describe '#emit' do
-      it 'can emit to a class of objects' do
+      before do
         create_connection(users(:zbig))
         create_connection(users(:jane))
         create_connection(admins(:one))
+      end
+
+      it 'can emit to all' do
+        expect(SenderJob).to receive(:perform_later).exactly(3).times
+        Broadcaster.call(articles(:two), :updated, recipients: [nil])
+      end
+
+      it 'can emit to a class of objects' do
         mgr = WsConnectionManager.new(admins(:one))
         loco_params = { loco: { xhr_notifications: true } }
         expect(SenderJob).to receive(:perform_later).with(mgr.connected_uuids.first, loco_params)
