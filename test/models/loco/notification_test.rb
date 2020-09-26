@@ -14,7 +14,7 @@ module Loco
         recipient = Notification.new(recipient: @user).recipient(shallow: true)
         assert_equal User.new(id: @user.id), recipient
         assert_equal @user, Notification.new(recipient: @user).recipient
-        assert_nil Notification.new(recipient: User).recipient
+        assert_equal User, Notification.new(recipient: User).recipient
       end
     end
 

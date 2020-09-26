@@ -44,11 +44,14 @@ module Loco
       end
     end
 
-    def recipient(opts = {})
-      return recipient_token if recipient_token
-      return unless regular_recipient?
-
-      obj_recipient(shallow: opts[:shallow])
+    def recipient(shallow: false)
+      if !recipient_token.nil?
+        recipient_token
+      elsif regular_recipient?
+        init_recipient(shallow)
+      elsif !recipient_class.nil?
+        recipient_class.constantize
+      end
     end
 
     def prepare
@@ -63,14 +66,10 @@ module Loco
     private
 
     def regular_recipient?
-      recipient_class && recipient_id
+      !recipient_class.nil? && !recipient_id.nil?
     end
 
-    def class_recipient
-      recipient_class.constantize
-    end
-
-    def obj_recipient(shallow: false)
+    def init_recipient(shallow)
       if shallow
         recipient_class.constantize.new(id: recipient_id)
       else
