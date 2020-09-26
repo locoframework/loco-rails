@@ -54,11 +54,6 @@ module Loco
       end
     end
 
-    def prepare
-      set_event
-      set_data
-    end
-
     def compact
       [obj_class, obj_id, event, data]
     end
@@ -77,26 +72,31 @@ module Loco
       end
     end
 
-    def set_event
-      return if event.present?
-      return if obj.instance_of? Class
-
-      if obj.new_record?
-        self.event = 'creating'
-      else
-        set_event_for_persisted_obj
-      end
+    def prepare
+      set_event
+      set_data
     end
 
-    def set_event_for_persisted_obj
-      self.event = obj.created_at == obj.updated_at ? 'created' : 'updated'
+    def set_event
+      return if event.present?
+      return if obj.instance_of?(Class)
+
+      self.event = if obj.new_record?
+                     'creating'
+                   else
+                     event_for_persisted_obj
+                   end
+    end
+
+    def event_for_persisted_obj
+      obj.created_at == obj.updated_at ? 'created' : 'updated'
     end
 
     def set_data
       self.data ||= {}
       return if obj.nil?
 
-      self.data.merge!(id: obj.id)
+      self.data = data.merge(id: obj.id)
     end
   end
 end
