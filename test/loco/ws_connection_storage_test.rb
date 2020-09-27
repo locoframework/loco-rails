@@ -5,19 +5,20 @@ require 'test_helper'
 module Loco
   class WsConnectionStorageTest < TC
     before do
-      Loco::WsConnectionStorage.current.set('foo', 'bar')
+      @storage = WsConnectionStorage.current
+      @storage.set('foo', 'bar')
     end
 
     describe '#get' do
       it do
-        assert_equal 'bar', Loco::WsConnectionStorage.current.get('foo')
+        assert_equal 'bar', @storage.get('foo')
       end
     end
 
     describe '#del' do
       it do
-        Loco::WsConnectionStorage.current.del('foo')
-        assert_nil Loco::WsConnectionStorage.current.get('foo')
+        @storage.del('foo')
+        assert_nil @storage.get('foo')
       end
     end
   end
