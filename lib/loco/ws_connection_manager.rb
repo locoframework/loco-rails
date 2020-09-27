@@ -8,9 +8,11 @@ module Loco
     end
 
     def identifier
-      return @resource if @resource.is_a?(String)
-
-      "#{@resource.class.name.downcase}:#{@resource.id}"
+      case @resource
+      when String then @resource
+      when Class then @resource.name.downcase
+      else "#{@resource.class.name.downcase}:#{@resource.id}"
+      end
     end
 
     def connected?(uuid)

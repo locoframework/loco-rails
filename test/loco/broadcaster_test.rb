@@ -12,6 +12,7 @@ module Loco
         create_connection(users(:jane))
         create_connection(admins(:one))
         create_connection(admins(:one))
+        @loco_params = { loco: { xhr_notifications: true } }
       end
 
       it 'can emit to all' do
@@ -21,9 +22,8 @@ module Loco
 
       it 'can emit to a class of objects' do
         mgr = WsConnectionManager.new(admins(:one))
-        loco_params = { loco: { xhr_notifications: true } }
-        expect(SenderJob).to receive(:perform_later).with(mgr.connected_uuids.first, loco_params)
-        expect(SenderJob).to receive(:perform_later).with(mgr.connected_uuids.last, loco_params)
+        expect(SenderJob).to receive(:perform_later).with(mgr.connected_uuids[0], @loco_params)
+        expect(SenderJob).to receive(:perform_later).with(mgr.connected_uuids.last, @loco_params)
         Broadcaster.call(articles(:one), :created, recipients: [Admin])
         assert_equal 1, Notification.where(Notification::FOR_CLASS_SQL_TMPL, 'Admin').count
       end

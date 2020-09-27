@@ -2,11 +2,6 @@
 
 module Loco
   class WsConnectedResourcesManager
-    def initialize(resources)
-      @resources = resources
-      @connected_resources = nil
-    end
-
     class << self
       def identifiers
         val = WsConnectionStorage.current.get(key)
@@ -17,23 +12,28 @@ module Loco
 
       def add(identifier)
         ids = identifiers
-        return if ids.include? identifier
+        return if ids.include?(identifier)
 
         ids << identifier
-        WsConnectionStorage.current.set key, ids.to_json
+        WsConnectionStorage.current.set(key, ids.to_json)
       end
 
       def del(identifier)
         ids = identifiers
-        return unless ids.include? identifier
+        return unless ids.include?(identifier)
 
-        ids.delete identifier
-        WsConnectionStorage.current.set key, ids.to_json
+        ids.delete(identifier)
+        WsConnectionStorage.current.set(key, ids.to_json)
       end
 
       def key
         'loco:conn_ids'
       end
+    end
+
+    def initialize(resources)
+      @resources = resources
+      @connected_resources = nil
     end
 
     def connected_resources
@@ -50,7 +50,7 @@ module Loco
     def connected?(resource)
       connected_resources.map do |res|
         WsConnectionManager.new(res).identifier
-      end.include? WsConnectionManager.new(resource).identifier
+      end.include?(WsConnectionManager.new(resource).identifier)
     end
 
     private
