@@ -16,12 +16,20 @@ module Loco
       @storage = Config.redis_instance
     end
 
-    def get(key)
-      storage.get(proper_key(key))
+    def get(key, hkey = nil)
+      if !hkey.nil?
+        storage.hget(proper_key(key), hkey)
+      else
+        storage.get(proper_key(key))
+      end
     end
 
     def set(key, val)
-      storage.set(proper_key(key), val)
+      if val.is_a?(Hash)
+        storage.hset(proper_key(key), val)
+      else
+        storage.set(proper_key(key), val)
+      end
     end
 
     def del(key)

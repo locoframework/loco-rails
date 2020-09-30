@@ -21,5 +21,12 @@ module Loco
         assert_nil @storage.get('foo')
       end
     end
+
+    describe '#set' do
+      it 'can set a hash value' do
+        @storage.set('foo1', 'bar' => 'buz')
+        assert_equal 'buz', @storage.get('foo1', 'bar')
+      end
+    end
   end
 end
