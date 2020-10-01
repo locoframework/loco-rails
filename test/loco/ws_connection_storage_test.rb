@@ -23,9 +23,19 @@ module Loco
     end
 
     describe '#set' do
+      it 'updates a value' do
+        @storage.set('foo', 'baz')
+        assert_equal 'baz', @storage.get('foo')
+      end
+
       it 'can set a hash value' do
         @storage.set('foo1', 'bar' => 'buz')
         assert_equal 'buz', @storage.get('foo1', 'bar')
+      end
+
+      it 'can update a hash value' do
+        @storage.set('foo1', 'bar' => 'new_buz')
+        assert_equal 'new_buz', @storage.get('foo1', 'bar')
       end
     end
   end
