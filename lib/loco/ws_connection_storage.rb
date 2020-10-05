@@ -36,6 +36,13 @@ module Loco
       storage.del(proper_key(key))
     end
 
+    def find(match:)
+      storage.scan_each(match: "#{proper_key('')}#{match}").each do |key|
+        ext_key = key.sub(proper_key(''), '')
+        yield(ext_key, get(ext_key))
+      end
+    end
+
     private
 
     def proper_key(key)

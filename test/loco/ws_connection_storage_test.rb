@@ -44,5 +44,21 @@ module Loco
         assert_equal 'new_buz', @storage.get('foo1', 'bar')
       end
     end
+
+    describe '#find' do
+      before do
+        @storage.set('user:159163583', 'UUID#1')
+        @storage.set('user:980204181', 'UUID#2')
+        @storage.set('admin:980190962', 'UUID#3')
+        @storage.set('admin:880190960', 'UUID#4')
+        @storage.set('comment:980190961', 'UUID#5')
+      end
+
+      it 'accepts pattern' do
+        res = {}
+        @storage.find(match: 'admin:*') { |k, v| res[k] = v }
+        assert_equal({ 'admin:980190962' => 'UUID#3', 'admin:880190960' => 'UUID#4' }, res)
+      end
+    end
   end
 end
