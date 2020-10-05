@@ -47,17 +47,17 @@ module Loco
 
     describe '#find' do
       before do
-        @storage.set('user:159163583', 'UUID#1')
-        @storage.set('user:980204181', 'UUID#2')
-        @storage.set('admin:980190962', 'UUID#3')
-        @storage.set('admin:880190960', 'UUID#4')
-        @storage.set('comment:980190961', 'UUID#5')
+        @storage.set('user:159163583', 'UUID#1' => '12345')
+        @storage.set('user:980204181', 'UUID#2' => '22345')
+        @storage.set('admin:980190962', 'UUID#3' => '32345')
+        @storage.set('admin:880190960', 'UUID#4' => '42345')
+        @storage.set('comment:980190961', 'UUID#5' => '52345')
       end
 
       it 'accepts pattern' do
         res = {}
         @storage.find(match: 'admin:*') { |k, v| res[k] = v }
-        assert_equal({ 'admin:980190962' => 'UUID#3', 'admin:880190960' => 'UUID#4' }, res)
+        assert_equal({ 'UUID#3' => '32345', 'UUID#4' => '42345' }, res)
       end
     end
   end
