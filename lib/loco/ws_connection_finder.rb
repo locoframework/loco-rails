@@ -4,13 +4,13 @@ module Loco
   module WsConnectionFinder
     module_function
 
-    def call(resources)
+    def call(resources, &block)
       storage = WsConnectionStorage.current
       resources.each do |resource|
         if resource.is_a?(Class)
-          storage.find(match: "#{resource.name.downcase}:*") { |_, v| yield(v) }
+          storage.scan(match: "#{resource.name.downcase}:*", &block)
         else
-          yield(storage.get("#{resource.class.name.downcase}:#{resource.id}"))
+          storage.scan_hash("#{resource.class.name.downcase}:#{resource.id}", &block)
         end
       end
     end

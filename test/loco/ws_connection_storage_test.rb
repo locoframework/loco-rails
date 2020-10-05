@@ -45,7 +45,7 @@ module Loco
       end
     end
 
-    describe '#find' do
+    describe '#scan' do
       before do
         @storage.set('user:159163583', 'UUID#1' => '12345')
         @storage.set('user:980204181', 'UUID#2' => '22345')
@@ -56,7 +56,7 @@ module Loco
 
       it 'accepts pattern' do
         res = {}
-        @storage.find(match: 'admin:*') { |k, v| res[k] = v }
+        @storage.scan(match: 'admin:*') { |k, v| res[k] = v }
         assert_equal({ 'UUID#3' => '32345', 'UUID#4' => '42345' }, res)
       end
     end

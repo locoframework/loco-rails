@@ -36,10 +36,14 @@ module Loco
       storage.del(proper_key(key))
     end
 
-    def find(match:, &block)
+    def scan(match:, &block)
       storage.scan_each(match: "#{proper_key('')}#{match}").each do |key|
         storage.hscan_each(key, &block)
       end
+    end
+
+    def scan_hash(key, &block)
+      storage.hscan_each(proper_key(key), &block)
     end
 
     private
