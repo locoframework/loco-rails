@@ -23,6 +23,7 @@ module Loco
 
       def del(ws_conn_manager, uuid)
         ws_conn_manager.del(uuid)
+        # TODO: connected_uuids has been deleted
         return if ws_conn_manager.connected_uuids.any?
 
         WsConnectedResourcesManager.del(ws_conn_manager.identifier)

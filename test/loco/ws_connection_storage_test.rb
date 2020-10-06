@@ -65,8 +65,7 @@ module Loco
 
     describe '#hlen' do
       before do
-        @storage.set('user:159163583', 'UUID#1' => '12345')
-        @storage.set('user:159163583', 'UUID#2' => '22345')
+        @storage.set('user:159163583', 'UUID#1' => '12345', 'UUID#2' => '22345')
       end
 
       it do
