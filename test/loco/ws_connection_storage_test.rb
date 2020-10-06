@@ -26,6 +26,13 @@ module Loco
         @storage.del('foo1')
         assert_nil @storage.get('foo1')
       end
+
+      it "deletes a hash's key" do
+        @storage.set('foo1', 'bar' => 'buz', 'baz' => 'faz')
+        @storage.del('foo1', 'bar')
+        assert_nil @storage.get('foo1', 'bar')
+        assert_equal 'faz', @storage.get('foo1', 'baz')
+      end
     end
 
     describe '#set' do

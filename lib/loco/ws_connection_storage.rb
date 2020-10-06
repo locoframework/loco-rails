@@ -32,8 +32,12 @@ module Loco
       end
     end
 
-    def del(key)
-      storage.del(proper_key(key))
+    def del(key, hkey = nil)
+      if !hkey.nil?
+        storage.hdel(proper_key(key), hkey)
+      else
+        storage.del(proper_key(key))
+      end
     end
 
     def scan(match:, &block)
