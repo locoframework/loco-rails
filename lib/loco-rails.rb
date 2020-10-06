@@ -14,6 +14,7 @@ require 'loco/uuid_manager'
 require 'loco/ws_connection_manager'
 require 'loco/ws_connected_resources_manager'
 require 'loco/ws_connection_finder'
+require 'loco/ws_connection_identifier'
 require 'loco/ws_connection_storage'
 require 'loco/jobs/concerns/resource_serializer'
 

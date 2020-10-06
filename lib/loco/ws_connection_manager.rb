@@ -8,19 +8,11 @@ module Loco
     end
 
     def identifier
-      case @resource
-      when String then @resource
-      when Class then @resource.name.downcase
-      else "#{@resource.class.name.downcase}:#{@resource.id}"
-      end
+      WsConnectionIdentifier.call(@resource)
     end
 
     def connected?(uuid)
-      connected_uuids.include?(uuid)
-    end
-
-    def connected_uuids
-      data.find_all { |_, v| v.is_a?(String) }.to_h.keys
+      !WsConnectionStorage.current.get(identifier, uuid).nil?
     end
 
     def add(uuid)
@@ -55,7 +47,7 @@ module Loco
     end
 
     def save(hash)
-      WsConnectionStorage.current.set(identifier, hash.to_json)
+      WsConnectionStorage.current.set(identifier, hash)
     end
 
     def check_connections

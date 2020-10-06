@@ -43,14 +43,6 @@ module Loco
       end
     end
 
-    describe '#connected_uuids' do
-      it 'returns connected UUIDs for a given resource' do
-        uuid = SecureRandom.uuid
-        @subject.add(uuid)
-        assert_equal [uuid], @subject.connected_uuids
-      end
-    end
-
     describe '#del' do
       # tested in 'checking connections'
     end

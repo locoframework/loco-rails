@@ -8,9 +8,9 @@ module Loco
       storage = WsConnectionStorage.current
       resources.each do |resource|
         if resource.is_a?(Class)
-          storage.scan(match: "#{resource.name.downcase}:*", &block)
+          storage.scan(match: "#{WsConnectionIdentifier.call(resource)}:*", &block)
         else
-          storage.scan_hash("#{resource.class.name.downcase}:#{resource.id}", &block)
+          storage.scan_hash(WsConnectionIdentifier.call(resource), &block)
         end
       end
     end
