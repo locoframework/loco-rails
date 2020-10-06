@@ -46,6 +46,10 @@ module Loco
       storage.hscan_each(proper_key(key), &block)
     end
 
+    def hlen(key)
+      storage.hlen(proper_key(key))
+    end
+
     private
 
     def proper_key(key)

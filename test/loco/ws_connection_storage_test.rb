@@ -62,5 +62,16 @@ module Loco
         assert_equal({ 'UUID#3' => '32345', 'UUID#4' => '42345' }, res)
       end
     end
+
+    describe '#hlen' do
+      before do
+        @storage.set('user:159163583', 'UUID#1' => '12345')
+        @storage.set('user:159163583', 'UUID#2' => '22345')
+      end
+
+      it do
+        assert_equal 2, @storage.hlen('user:159163583')
+      end
+    end
   end
 end
