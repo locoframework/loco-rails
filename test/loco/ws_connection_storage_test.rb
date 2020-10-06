@@ -36,7 +36,9 @@ module Loco
 
       it 'can set a hash value' do
         @storage.set('foo1', 'bar' => 'buz')
+        @storage.set('foo1', 'fuz' => 'faz')
         assert_equal 'buz', @storage.get('foo1', 'bar')
+        assert_equal 'faz', @storage.get('foo1', 'fuz')
       end
 
       it 'can update a hash value' do
