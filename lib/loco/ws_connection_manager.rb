@@ -26,7 +26,7 @@ module Loco
     end
 
     def update(uuid)
-      save(data.tap { |h| h[uuid] = current_time })
+      WsConnectionStorage.current.set(identifier, uuid => current_time)
     end
 
     def destroy
