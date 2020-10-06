@@ -13,7 +13,7 @@ module Loco
       @storage.set('comment:980190961', 'UUID#5' => '52345')
     end
 
-    describe '#find' do
+    describe '#call' do
       it do
         res = []
         WsConnectionFinder.call([users(:zbig), Admin]) { |uuid, _| res << uuid }
