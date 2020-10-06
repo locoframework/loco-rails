@@ -4,7 +4,6 @@ module Loco
   class WsConnectionManager
     def initialize(resource)
       @resource = resource
-      @connections_to_be_checked = []
     end
 
     def identifier
@@ -21,7 +20,7 @@ module Loco
     end
 
     def del(uuid)
-      save(data.tap { |h| h.delete(uuid) })
+      WsConnectionStorage.current.del(identifier, uuid)
       check_connections
     end
 
@@ -35,15 +34,8 @@ module Loco
 
     protected
 
-    def data
-      serialized_uuids = WsConnectionStorage.current.get(identifier)
-      return {} if serialized_uuids.blank?
-
-      JSON.parse(serialized_uuids)
-    end
-
-    def uuids
-      data.keys
+    def current_time
+      Time.current.iso8601(6)
     end
 
     def save(hash)
@@ -51,48 +43,16 @@ module Loco
     end
 
     def check_connections
-      hash = data.to_a.map do |arr|
-        uuid, val = check_connection(arr.first, arr.last)
-        [uuid, val]
-      end.to_h.compact
-      save(hash)
-      run_connections_check_process
-    end
+      uuids_to_check = []
+      WsConnectionStorage.current.scan_hash(identifier) do |uuid, time|
+        next if time == ''
 
-    def check_connection(uuid, val)
-      case val
-      when String
-        val = check_connection_str(uuid, val)
-      when Hash
-        uuid, val = check_connection_hash(uuid, val)
+        uuids_to_check << uuid if Time.zone.parse(time) < 3.minutes.ago
       end
-      [uuid, val]
-    end
-
-    def check_connection_str(uuid, val)
-      return val if Time.zone.parse(val) >= 3.minutes.ago
-
-      @connections_to_be_checked << uuid
-      { 'check' => current_time }
-    end
-
-    def check_connection_hash(uuid, val)
-      return [uuid, val] if Time.zone.parse(val['check']) >= 5.seconds.ago
-
-      [nil, nil]
-    end
-
-    def current_time
-      Time.current.iso8601(6)
-    end
-
-    def run_connections_check_process
-      return if @connections_to_be_checked.empty?
-
-      @connections_to_be_checked.each do |uuid|
+      uuids_to_check.each do |uuid|
+        WsConnectionStorage.current.set(identifier, uuid => '')
         SenderJob.perform_later(uuid, loco: { connection_check: true })
       end
-      @connections_to_be_checked = []
     end
   end
 end
