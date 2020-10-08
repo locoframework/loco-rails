@@ -4,7 +4,17 @@ require 'test_helper'
 
 module Loco
   class SenderTest < TCWithMocks
+    include WsHelpers
+
     describe '.call' do
+      it 'sends payload via WS to recipients' do
+        create_connection(users(:zbig), 'u12345')
+        payload = { loco: { idempotency_key: 'foobarbaz' } }
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('random_uuid', payload)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('u12345', payload)
+        Sender.call([users(:zbig), 'random_uuid'], { idempotency_key: 'foobarbaz' })
+      end
+
       it 'does not mutate a passed payload' do
         payload = { foo: 'bar' }
         Sender.call('foobarbaz', payload)
