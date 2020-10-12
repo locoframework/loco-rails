@@ -6,8 +6,12 @@ module Loco
 
     def call(resources, &block)
       storage = WsConnectionStorage.current
+      resources = Array(resources) unless resources.is_a?(Array)
       resources.each do |resource|
-        if resource.is_a?(Class)
+        case resource
+        when :all
+          storage.scan(match: '*', &block)
+        when Class
           storage.scan(match: "#{WsConnectionIdentifier.call(resource)}:*", &block)
         else
           storage.scan_hash(WsConnectionIdentifier.call(resource), &block)

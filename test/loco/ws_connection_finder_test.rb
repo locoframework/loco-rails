@@ -14,10 +14,18 @@ module Loco
     end
 
     describe '#call' do
-      it do
-        res = []
-        WsConnectionFinder.call([users(:zbig), Admin]) { |uuid, _| res << uuid }
-        assert_equal(['UUID#1', 'UUID#3', 'UUID#4'], res.sort)
+      before do
+        @res = []
+      end
+
+      it 'finds connections of defined resources' do
+        WsConnectionFinder.call([users(:zbig), Admin]) { |uuid, _| @res << uuid }
+        assert_equal(['UUID#1', 'UUID#3', 'UUID#4'], @res.sort)
+      end
+
+      it 'returns all UUIDs' do
+        WsConnectionFinder.call(:all) { |uuid, _| @res << uuid }
+        assert_equal(['UUID#1', 'UUID#2', 'UUID#3', 'UUID#4', 'UUID#5'], @res.sort)
       end
     end
   end
