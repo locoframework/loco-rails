@@ -11,8 +11,8 @@ module Loco
       )
     end
 
-    def emit_to(recipient, data)
-      Sender.call(recipient, data)
+    def emit_to(recipient_s, data)
+      Sender.call(recipient_s, data)
     end
 
     def add_hub(name, members = [])

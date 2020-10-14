@@ -41,6 +41,13 @@ module Loco
         expect(NotificationCenterChannel).to receive(:broadcast_to).with(uuid, payload)
         Sender.call(uuid, {})
       end
+
+      it 'accepts a hash with token' do
+        create_connection('random-token', 'u12345')
+        payload = { loco: { idempotency_key: 'foobarbaz' } }
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('u12345', payload)
+        Sender.call({ 'token' => 'random-token' }, { idempotency_key: 'foobarbaz' })
+      end
     end
   end
 end
