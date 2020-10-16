@@ -16,7 +16,12 @@ module Loco
       end
 
       it 'can emit to all' do
-        expect(SenderJob).to receive(:perform_later).exactly(4).times
+        compact_resp = ['Article', 666, 'updated', { 'id' => 666 }]
+        allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(compact_resp)
+        time = Time.current
+        allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(time)
+        expect(SenderJob).to receive(:perform_later).with(:all, loco: { notification: compact_resp })
+        expect(SenderJob).to receive(:perform_later).with(:all, loco: { sync_time: time.iso8601(6) })
         Broadcaster.call(articles(:two), :updated)
       end
 
