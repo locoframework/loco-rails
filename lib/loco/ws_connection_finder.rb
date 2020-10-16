@@ -6,7 +6,7 @@ module Loco
 
     def call(resources, &block)
       storage = WsConnectionStorage.current
-      resources = Array(resources) unless resources.is_a?(Array)
+      resources = [resources] unless resources.is_a?(Array)
       resources.each do |resource|
         case resource
         when :all

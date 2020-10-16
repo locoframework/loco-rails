@@ -58,6 +58,9 @@ Rails/ApplicationJob:
   Exclude:
     - app/jobs/loco/*
 
+Style/ArrayCoercion:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
