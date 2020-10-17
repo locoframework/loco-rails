@@ -4,7 +4,12 @@ module Loco
   class Broadcaster
     class << self
       def call(obj, event, recipients: nil, payload: nil)
-        new.emit(obj, event, recipients: process_recipients(recipients), payload: payload)
+        processed_recips = process_recipients(recipients)
+        init_notifications(obj, event, processed_recips, payload).each do |recipient, notification|
+          sync_time = notification.created_at.iso8601(6)
+          SenderJob.perform_later(recipient, loco: { notification: notification.compact })
+          SenderJob.perform_later(recipient, loco: { sync_time: sync_time })
+        end
       end
 
       private
@@ -16,30 +21,20 @@ module Loco
         recipients = [:all] if recipients.include?(:all)
         recipients
       end
-    end
 
-    def emit(obj, event, recipients:, payload:)
-      init_notifications(obj, event, recipients, payload).each do |recipient, notification|
-        sync_time = notification.created_at.iso8601(6)
-        SenderJob.perform_later(recipient, loco: { notification: notification.compact })
-        SenderJob.perform_later(recipient, loco: { sync_time: sync_time })
+      def init_notifications(obj, event, recipients, payload)
+        recipients.each_with_object({}) do |recipient, hash|
+          key = keify_recipient(recipient)
+          hash[key] = Notification.create!(obj: obj, event: event, recipient: recipient, data: payload)
+        end
       end
-    end
 
-    private
-
-    def init_notifications(obj, event, recipients, payload)
-      recipients.each_with_object({}) do |recipient, hash|
-        key = keify_recipient(recipient)
-        hash[key] = Notification.create!(obj: obj, event: event, recipient: recipient, data: payload)
-      end
-    end
-
-    def keify_recipient(recipient)
-      case recipient
-      when String then { 'token' => recipient }
-      when Class then { 'class' => recipient.name }
-      else recipient
+      def keify_recipient(recipient)
+        case recipient
+        when String then { 'token' => recipient }
+        when Class then { 'class' => recipient.name }
+        else recipient
+        end
       end
     end
   end
