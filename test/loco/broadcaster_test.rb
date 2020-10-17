@@ -26,9 +26,13 @@ module Loco
       end
 
       it 'can emit to a class of objects' do
-        mgr = WsConnectionManager.new(admins(:one))
-        expect(SenderJob).to receive(:perform_later).with(mgr.connected_uuids[0], @loco_params)
-        expect(SenderJob).to receive(:perform_later).with(mgr.connected_uuids.last, @loco_params)
+        compact_resp = ['Article', 666, 'updated', { 'id' => 666 }]
+        allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(compact_resp)
+        time = Time.current
+        allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(time)
+        rec = { 'class' => 'Admin' }
+        expect(SenderJob).to receive(:perform_later).with(rec, loco: { notification: compact_resp })
+        expect(SenderJob).to receive(:perform_later).with(rec, loco: { sync_time: time.iso8601(6) })
         Broadcaster.call(articles(:one), :created, recipients: [Admin])
         assert_equal 1, Notification.where(Notification::FOR_CLASS_SQL_TMPL, 'Admin').count
       end
