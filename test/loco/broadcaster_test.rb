@@ -6,35 +6,44 @@ module Loco
   class BroadcasterTest < TCWithMocks
     include WsHelpers
 
+    COMPACT_OBJ = ['Article', 666, 'updated', { 'id' => 666 }].freeze
+    PAYLOAD = { loco: { notification: COMPACT_OBJ } }.freeze
+
     describe '#emit' do
       before do
         create_connection(users(:zbig))
         create_connection(users(:jane))
         create_connection(admins(:one))
         create_connection(admins(:one))
-        @loco_params = { loco: { xhr_notifications: true } }
+        @time = Time.current
+        @sync_time_payload = { loco: { sync_time: @time.iso8601(6) } }
       end
 
       it 'can emit to all' do
-        compact_resp = ['Article', 666, 'updated', { 'id' => 666 }]
-        allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(compact_resp)
-        time = Time.current
-        allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(time)
-        expect(SenderJob).to receive(:perform_later).with(:all, loco: { notification: compact_resp })
-        expect(SenderJob).to receive(:perform_later).with(:all, loco: { sync_time: time.iso8601(6) })
+        allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(COMPACT_OBJ)
+        allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
+        expect(SenderJob).to receive(:perform_later).with(:all, PAYLOAD)
+        expect(SenderJob).to receive(:perform_later).with(:all, @sync_time_payload)
         Broadcaster.call(articles(:two), :updated)
       end
 
       it 'can emit to a class of objects' do
-        compact_resp = ['Article', 666, 'updated', { 'id' => 666 }]
-        allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(compact_resp)
-        time = Time.current
-        allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(time)
-        rec = { 'class' => 'Admin' }
-        expect(SenderJob).to receive(:perform_later).with(rec, loco: { notification: compact_resp })
-        expect(SenderJob).to receive(:perform_later).with(rec, loco: { sync_time: time.iso8601(6) })
+        allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(COMPACT_OBJ)
+        allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
+        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, PAYLOAD)
+        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, @sync_time_payload)
         Broadcaster.call(articles(:one), :created, recipients: [Admin])
         assert_equal 1, Notification.where(Notification::FOR_CLASS_SQL_TMPL, 'Admin').count
+      end
+
+      it 'can emit to a class of objects and a specific resource at the same time' do
+        allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(COMPACT_OBJ)
+        allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
+        expect(SenderJob).to receive(:perform_later).with(users(:jane), PAYLOAD)
+        expect(SenderJob).to receive(:perform_later).with(users(:jane), @sync_time_payload)
+        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, PAYLOAD)
+        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, @sync_time_payload)
+        Broadcaster.call(articles(:one), :created, recipients: [Admin, users(:jane)])
       end
     end
   end
