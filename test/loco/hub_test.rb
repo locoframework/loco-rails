@@ -6,6 +6,14 @@ module Loco
   class HubTest < TC
     include WsHelpers
 
+    describe '#add_member' do
+      it 'returns members' do
+        hub = Hub.new('foobar', [users(:zbig)])
+        hub.add_member(users(:jane))
+        assert_equal [users(:zbig), users(:jane)], hub.members
+      end
+    end
+
     describe '#connected_uuids' do
       it do
         uuid = SecureRandom.uuid
