@@ -41,6 +41,14 @@ module Loco
       end
     end
 
+    describe '#include?' do
+      it do
+        hub = Hub.new('foobar', [users(:zbig)])
+        assert hub.include?(users(:zbig))
+        assert_equal hub.include?(users(:jane)), false
+      end
+    end
+
     describe '#members' do
       it 'returns members' do
         hub = Hub.new('foobar', [users(:zbig), users(:jane)])
