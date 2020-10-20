@@ -31,6 +31,16 @@ module Loco
       end
     end
 
+    describe '#destroy' do
+      it 'destroys' do
+        hub = Hub.new('foobar', [users(:zbig), users(:jane)])
+        hub.save
+        assert_equal 'foobar', Hub.get('foobar').name
+        hub.destroy
+        assert_nil Hub.get('foobar')
+      end
+    end
+
     describe '#members' do
       it 'returns members' do
         hub = Hub.new('foobar', [users(:zbig), users(:jane)])
@@ -43,6 +53,10 @@ module Loco
         hub = Hub.new('foobar', [users(:zbig), users(:jane)])
         assert_equal 'foobar', hub.name
       end
+    end
+
+    describe '#save' do
+      # tested in #destroy
     end
   end
 end
