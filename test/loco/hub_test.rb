@@ -14,5 +14,19 @@ module Loco
         assert_equal [uuid], hub.connected_uuids
       end
     end
+
+    describe '#members' do
+      it 'returns members' do
+        hub = Hub.new('foobar', [users(:zbig), users(:jane)])
+        assert_equal [users(:zbig), users(:jane)], hub.members
+      end
+    end
+
+    describe '#name' do
+      it 'returns a name' do
+        hub = Hub.new('foobar', [users(:zbig), users(:jane)])
+        assert_equal 'foobar', hub.name
+      end
+    end
   end
 end
