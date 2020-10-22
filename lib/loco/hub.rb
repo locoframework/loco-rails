@@ -26,18 +26,18 @@ module Loco
 
     def add_member(member)
       serialized = serialize(member)
-      return raw_members if raw_members.include?(serialized)
+      return @raw_members if @raw_members.include?(serialized)
 
-      raw_members << serialized
+      @raw_members << serialized
       save
-      raw_members
+      @raw_members
     end
 
     def del_member(member)
       serialized = serialize(member)
-      return nil unless raw_members.include?(serialized)
+      return nil unless @raw_members.include?(serialized)
 
-      raw_members.delete(serialized)
+      @raw_members.delete(serialized)
       save
       serialized
     end
@@ -48,25 +48,25 @@ module Loco
     end
 
     def save
-      WsConnectionStorage.current.set(@name, raw_members.to_json)
+      WsConnectionStorage.current.set(@name, @raw_members.to_json)
       self
     end
 
     def include?(resource)
-      raw_members.include?(serialize(resource))
+      @raw_members.include?(serialize(resource))
     end
 
     def members
-      raw_members.map do |str|
+      @raw_members.map do |str|
         klass, id = str.split(':')
         klass.classify.constantize.find_by(id: id)
       end
     end
 
     def connected_uuids
-      raw_members.map do |m|
-        WsConnectionManager.new(m).connected_uuids
-      end.flatten.uniq
+      uuids = []
+      WsConnectionFinder.call(@raw_members) { |uuid, _| uuids << uuid }
+      uuids
     end
 
     private
