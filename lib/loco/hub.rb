@@ -2,7 +2,7 @@
 
 module Loco
   class Hub
-    PREFIX = 'loco:hub:'
+    PREFIX = 'hub:'
 
     attr_reader :raw_members
 
