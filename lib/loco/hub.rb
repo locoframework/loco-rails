@@ -58,7 +58,7 @@ module Loco
 
     def members
       @raw_members.map do |str|
-        _, klass, id = str.split(':')
+        klass, id = str.split(':')
         klass.classify.constantize.find_by(id: id)
       end
     end
@@ -72,7 +72,9 @@ module Loco
     private
 
     def serialize(member)
-      WsConnectionManager.new(member).identifier
+      return member if member.is_a?(String)
+
+      "#{member.class.name.downcase}:#{member.id}"
     end
   end
 end

@@ -8,7 +8,7 @@ module Loco
 
     before do
       @user = users(:zbig)
-      @identifier = "user:#{@user.id}"
+      @identifier = "h:user:#{@user.id}"
       @storage = WsConnectionStorage.current
       @described_class = Loco::WsConnectionManager
       @subject = @described_class.new(@user)
@@ -51,8 +51,8 @@ module Loco
 
     describe '#identifier' do
       it 'returns a correct format of an identifier' do
-        assert_equal "user:#{@user.id}", @subject.identifier
-        assert_equal 'foo', @described_class.new('foo').identifier
+        assert_equal "h:user:#{@user.id}", @subject.identifier
+        assert_equal 'h:foo', @described_class.new('foo').identifier
       end
     end
   end

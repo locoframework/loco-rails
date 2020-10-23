@@ -6,6 +6,7 @@ module Loco
       @resource = resource
     end
 
+    # TODO: delete after replacing all calls with a direct call to WsConnectionIdentifier.call
     def identifier
       WsConnectionIdentifier.call(@resource)
     end
