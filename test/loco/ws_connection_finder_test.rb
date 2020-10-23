@@ -4,14 +4,16 @@ require 'test_helper'
 
 module Loco
   class WsConnectionFinderTest < TC
+    include WsHelpers
+
     before do
+      create_connection(users(:zbig), 'UUID#1')
+      create_connection(users(:jane), 'UUID#2')
+      create_connection(admins(:one), 'UUID#3')
+      create_connection(admins(:two), 'UUID#4')
       @storage = WsConnectionStorage.current
-      @storage.set("user:#{users(:zbig).id}", 'UUID#1' => '12345')
-      @storage.set("user:#{users(:jane).id}", 'UUID#2' => '22345')
-      @storage.set("admin:#{admins(:one).id}", 'UUID#3' => '32345')
-      @storage.set("admin:#{admins(:two).id}", 'UUID#4' => '42345')
-      @storage.set('comment:980190961', 'UUID#5' => '52345')
-      @storage.set('random-token', 'UUID#6' => '62345')
+      @storage.set('h:comment:980190961', 'UUID#5' => '52345')
+      @storage.set('h:random-token', 'UUID#6' => '62345')
     end
 
     describe '#call' do
