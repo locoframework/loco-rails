@@ -11,9 +11,8 @@ module Loco
       create_connection(users(:jane), 'UUID#2')
       create_connection(admins(:one), 'UUID#3')
       create_connection(admins(:two), 'UUID#4')
-      @storage = WsConnectionStorage.current
-      @storage.set('h:comment:980190961', 'UUID#5' => '52345')
-      @storage.set('h:random-token', 'UUID#6' => '62345')
+      create_connection('comment:980190961', 'UUID#5')
+      create_connection('random-token', 'UUID#6')
     end
 
     describe '#call' do
