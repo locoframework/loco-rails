@@ -58,7 +58,7 @@ module Loco
 
     def members
       @raw_members.map do |str|
-        klass, id = str.split(':')
+        _, klass, id = str.split(':')
         klass.classify.constantize.find_by(id: id)
       end
     end
