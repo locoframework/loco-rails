@@ -13,6 +13,7 @@ module Loco
       create_connection(admins(:two), 'UUID#4')
       create_connection('comment:980190961', 'UUID#5')
       create_connection('random-token', 'UUID#6')
+      Hub.new('foobar', [users(:zbig), users(:jane)]).save
     end
 
     describe '#call' do

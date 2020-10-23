@@ -6,9 +6,9 @@ module Loco
 
     def call(resource)
       case resource
-      when String then resource
-      when Class then resource.name.downcase
-      else "#{resource.class.name.downcase}:#{resource.id}"
+      when String then "h:#{resource}"
+      when Class then "h:#{resource.name.downcase}"
+      else "h:#{resource.class.name.downcase}:#{resource.id}"
       end
     end
   end
