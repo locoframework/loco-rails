@@ -6,11 +6,6 @@ module Loco
       @resource = resource
     end
 
-    # TODO: delete after replacing all calls with a direct call to WsConnectionIdentifier.call
-    def identifier
-      WsConnectionIdentifier.call(@resource)
-    end
-
     def connected?(uuid)
       !WsConnectionStorage.current.get(identifier, uuid).nil?
     end
@@ -33,7 +28,12 @@ module Loco
       WsConnectionStorage.current.del(identifier)
     end
 
-    protected
+    private
+
+    # TODO: delete after replacing all calls with a direct call to WsConnectionIdentifier.call
+    def identifier
+      WsConnectionIdentifier.call(@resource)
+    end
 
     def current_time
       Time.current.iso8601(6)

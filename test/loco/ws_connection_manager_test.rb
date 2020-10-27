@@ -49,10 +49,10 @@ module Loco
       # tested in 'checking connections'
     end
 
-    describe '#identifier' do
+    describe 'private #identifier' do
       it 'returns a correct format of an identifier' do
-        assert_equal "h:user:#{@user.id}", @subject.identifier
-        assert_equal 'h:foo', @described_class.new('foo').identifier
+        assert_equal "h:user:#{@user.id}", @subject.send(:identifier)
+        assert_equal 'h:foo', @described_class.new('foo').send(:identifier)
       end
     end
   end

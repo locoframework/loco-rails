@@ -39,7 +39,7 @@ module Loco
     end
 
     def stream_for_resource(resource)
-      identifier = WsConnectionManager.new(resource).identifier
+      identifier = WsConnectionIdentifier.call(resource)
       stream_from "loco:notification_center:#{identifier}"
     end
 
