@@ -33,14 +33,12 @@ module Loco
           SenderJob.perform_later(@uuid, loco: { uuid: @uuid })
         else
           perform_uuid_job(resource, 'add')
-          stream_for_resource(resource)
         end
       end
     end
 
     def stream_for_resource(resource)
-      identifier = WsConnectionIdentifier.call(resource)
-      stream_from "loco:notification_center:#{identifier}"
+      stream_from "loco:notification_center:#{resource}"
     end
 
     def update_connections
