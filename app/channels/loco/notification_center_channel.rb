@@ -5,8 +5,9 @@ module Loco
     def subscribed
       return unless loco_permissions.is_a?(Array)
 
-      stream_for_resources
-      return if PermissionsPresenter.signed_in(loco_permissions).size > 1
+      signed_in_resources = PermissionsPresenter.signed_in(loco_permissions)
+      stream_for_resources(signed_in_resources)
+      return if signed_in_resources.size > 1
 
       SenderJob.perform_later(@uuid, loco: { start_ajax_polling: true })
     end
@@ -25,8 +26,8 @@ module Loco
 
     protected
 
-    def stream_for_resources
-      PermissionsPresenter.signed_in(loco_permissions).each do |resource|
+    def stream_for_resources(resources)
+      resources.each do |resource|
         if resource.is_a?(String)
           @uuid = resource
           stream_for_resource(resource)
