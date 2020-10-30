@@ -14,7 +14,7 @@ module Loco
 
     def unsubscribed
       PermissionsPresenter.signed_in(loco_permissions, except: :uuid).each do |resource|
-        perform_uuid_job(resource, 'del')
+        manage_uuids(resource, 'del')
       end
     end
 
@@ -33,7 +33,7 @@ module Loco
           stream_for_resource(resource)
           SenderJob.perform_later(@uuid, loco: { uuid: @uuid })
         else
-          perform_uuid_job(resource, 'add')
+          manage_uuids(resource, 'add')
         end
       end
     end
@@ -44,12 +44,12 @@ module Loco
 
     def update_connections
       PermissionsPresenter.indexed(loco_permissions, except: :uuid).each do |_key, val|
-        perform_uuid_job(val, 'update')
+        manage_uuids(val, 'update')
       end
     end
 
-    def perform_uuid_job(resource, action)
-      UuidJob.perform_later(Jobs::ResourceSerializer.serialize(resource), @uuid, action)
+    def manage_uuids(resource, action)
+      WsConnectionManager.new(resource).public_send(action, @uuid)
     end
   end
 end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# TODO: to module funtions
 module Loco
   class WsConnectionManager
     def initialize(resource)
