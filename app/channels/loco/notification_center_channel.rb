@@ -6,10 +6,16 @@ module Loco
       return unless loco_permissions.is_a?(Array)
 
       signed_in_resources = PermissionsPresenter.signed_in(loco_permissions)
-      stream_for_resources(signed_in_resources)
-      return if signed_in_resources.size > 1
+      @uuid = signed_in_resources[0]
+      return unless @uuid.is_a?(String)
 
-      SenderJob.perform_later(@uuid, loco: { start_ajax_polling: true })
+      stream_from("loco:notification_center:#{@uuid}")
+      SenderJob.perform_later(@uuid, loco: { uuid: @uuid })
+
+      return if signed_in_resources[1..].empty?
+
+      signed_in_resources[1..].each { |resource| manage_uuids(resource, 'add') }
+      # SenderJob.perform_later(@uuid, loco: { start_ajax_polling: true })
     end
 
     def unsubscribed
@@ -25,22 +31,6 @@ module Loco
     end
 
     protected
-
-    def stream_for_resources(resources)
-      resources.each do |resource|
-        if resource.is_a?(String)
-          @uuid = resource
-          stream_for_resource(resource)
-          SenderJob.perform_later(@uuid, loco: { uuid: @uuid })
-        else
-          manage_uuids(resource, 'add')
-        end
-      end
-    end
-
-    def stream_for_resource(resource)
-      stream_from "loco:notification_center:#{resource}"
-    end
 
     def update_connections
       PermissionsPresenter.indexed(loco_permissions, except: :uuid).each do |_key, val|
