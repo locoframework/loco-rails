@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: to module funtions
 module Loco
   class WsConnectionManager
     def initialize(resource)
@@ -31,7 +30,6 @@ module Loco
 
     private
 
-    # TODO: delete after replacing all calls with a direct call to WsConnectionIdentifier.call
     def identifier
       WsConnectionIdentifier.call(@resource)
     end

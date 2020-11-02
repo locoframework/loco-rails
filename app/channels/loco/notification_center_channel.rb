@@ -24,7 +24,7 @@ module Loco
     end
 
     def receive(data)
-      update_connections if data['loco'] && data['loco']['connection_check']
+      update_connections if data.dig('loco', 'connection_check')
       indexed_permissions = PermissionsPresenter.indexed(loco_permissions)
       NotificationCenter.new.received_message(indexed_permissions, data)
     end
