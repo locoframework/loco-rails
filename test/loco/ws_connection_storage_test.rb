@@ -79,5 +79,24 @@ module Loco
         assert_equal 2, @storage.hlen('user:159163583')
       end
     end
+
+    describe 'sets' do
+      before do
+        @raw = @storage.storage
+      end
+
+      it 'works on a lower level' do
+        @raw.sadd('sample-set', %w[foo bar])
+        @raw.sadd('sample-set', 'bar')
+        assert_equal %w[bar foo], @raw.smembers('sample-set')
+        assert @raw.sismember('sample-set', 'foo')
+        @raw.srem('sample-set', 'foo')
+        assert_equal 1, @raw.scard('sample-set')
+        assert @raw.exists?('sample-set')
+        @raw.srem('sample-set', 'bar')
+        assert_equal 'none', @raw.type('sample-set')
+        assert_equal false, @raw.exists?('sample-set')
+      end
+    end
   end
 end
