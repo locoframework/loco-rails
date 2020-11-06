@@ -4,10 +4,10 @@ module Loco
   class Sender
     class << self
       def call(recipient_s, payload = {})
-        # flatten.uniq - test it!
+        # TODO: flatten.uniq - test it!
         payload = with_idempotency_key(payload)
-        recipient_s = [recipient_s] unless recipient_s.is_a?(Array)
-        recipient_s.each do |recipient|
+        recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
+        recipients.each do |recipient|
           case recipient
           when String then NotificationCenterChannel.broadcast_to(recipient, payload)
           when Hash then process_hash(recipient, payload)
