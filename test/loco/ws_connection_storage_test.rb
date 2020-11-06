@@ -98,5 +98,25 @@ module Loco
         assert_equal false, @raw.exists?('sample-set')
       end
     end
+
+    describe 'lists' do
+      before do
+        @raw = @storage.storage
+      end
+
+      it 'works on a lower level' do
+        @raw.rpush('sample-list', 'foo')
+        assert_equal 'foo', @raw.lindex('sample-list', 0)
+        @raw.rpushx('sample-list', 'bar')
+        assert_equal 2, @raw.llen('sample-list')
+        @raw.lset('sample-list', 1, 'baz')
+        assert_equal %w[foo baz], @raw.lrange('sample-list', 0, 1)
+        @raw.lrem('sample-list', 1, 'foo')
+        assert_equal 'baz', @raw.lindex('sample-list', 0)
+        @raw.lrem('sample-list', 1, 'baz')
+        assert_equal 'none', @raw.type('sample-set')
+        assert_equal false, @raw.exists?('sample-set')
+      end
+    end
   end
 end
