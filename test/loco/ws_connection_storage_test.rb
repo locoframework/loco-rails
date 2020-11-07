@@ -7,6 +7,7 @@ module Loco
     before do
       @storage = WsConnectionStorage.current
       @storage.set('foo', 'bar')
+      @raw = @storage.storage
     end
 
     describe '#get' do
@@ -81,10 +82,6 @@ module Loco
     end
 
     describe 'sets' do
-      before do
-        @raw = @storage.storage
-      end
-
       it 'works on a lower level' do
         @raw.sadd('sample-set', %w[foo bar])
         @raw.sadd('sample-set', 'bar')
@@ -100,10 +97,6 @@ module Loco
     end
 
     describe 'lists' do
-      before do
-        @raw = @storage.storage
-      end
-
       it 'works on a lower level' do
         @raw.rpush('sample-list', 'foo')
         assert_equal 'foo', @raw.lindex('sample-list', 0)
