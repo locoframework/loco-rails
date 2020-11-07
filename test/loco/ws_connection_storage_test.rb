@@ -57,7 +57,7 @@ module Loco
 
     describe '#scan' do
       before do
-        @storage.set('user:159163583', 'UUID#1' => '12345')
+        @storage.set('key1', 'UUID#1' => '12345')
         @storage.set('user:980204181', 'UUID#2' => '22345')
         @storage.set('admin:980190962', 'UUID#3' => '32345')
         @storage.set('admin:880190960', 'UUID#4' => '42345')
@@ -73,11 +73,11 @@ module Loco
 
     describe '#hlen' do
       before do
-        @storage.set('user:159163583', 'UUID#1' => '12345', 'UUID#2' => '22345')
+        @storage.set('key1', 'UUID#1' => '12345', 'UUID#2' => '22345')
       end
 
       it do
-        assert_equal 2, @storage.hlen('user:159163583')
+        assert_equal 2, @storage.hlen('key1')
       end
     end
 
@@ -93,6 +93,12 @@ module Loco
         @raw.srem('sample-set', 'bar')
         assert_equal 'none', @raw.type('sample-set')
         assert_equal false, @raw.exists?('sample-set')
+      end
+
+      it 'works via the public interface' do
+        @storage.add('key1', %w[foo bar])
+        @storage.add('key1', 'bar')
+        assert_equal %w[bar foo], @storage.members('key1')
       end
     end
 

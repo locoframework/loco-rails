@@ -54,6 +54,14 @@ module Loco
       storage.hlen(proper_key(key))
     end
 
+    def add(key, val)
+      storage.sadd(proper_key(key), val)
+    end
+
+    def members(key)
+      storage.smembers(proper_key(key))
+    end
+
     private
 
     def proper_key(key)
