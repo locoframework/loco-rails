@@ -81,6 +81,15 @@ module Loco
       end
     end
 
+    describe '#rem' do
+      it do
+        @storage.add('key1', 'UUID#1')
+        assert @storage.member?('key1', 'UUID#1')
+        @storage.rem('key1', 'UUID#1')
+        assert_equal false, @storage.member?('key1', 'UUID#1')
+      end
+    end
+
     describe 'sets' do
       it 'works on a lower level' do
         @raw.sadd('sample-set', %w[foo bar])

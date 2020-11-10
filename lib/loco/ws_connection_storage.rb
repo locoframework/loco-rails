@@ -24,11 +24,11 @@ module Loco
       end
     end
 
-    def set(key, val)
+    def set(key, val, opts = {})
       if val.is_a?(Hash)
         storage.hset(proper_key(key), val)
       else
-        storage.set(proper_key(key), val)
+        storage.set(proper_key(key), val, ex: opts[:ex])
       end
     end
 
@@ -60,6 +60,10 @@ module Loco
 
     def members(key)
       storage.smembers(proper_key(key))
+    end
+
+    def member?(key, val)
+      storage.sismember(proper_key(key), val)
     end
 
     private

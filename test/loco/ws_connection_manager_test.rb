@@ -8,7 +8,7 @@ module Loco
 
     before do
       @user = users(:zbig)
-      @identifier = "h:user:#{@user.id}"
+      @identifier = WsConnectionIdentifier.call(@user)
       @storage = WsConnectionStorage.current
       @described_class = Loco::WsConnectionManager
       @subject = @described_class.new(@user)
@@ -16,9 +16,9 @@ module Loco
 
     describe 'checking connections' do
       it 'is run after add and del' do
-        uuid1 = SecureRandom.uuid
-        uuid2 = SecureRandom.uuid
-        uuid3 = SecureRandom.uuid
+        uuid1 = 'uuid1'
+        uuid2 = 'uuid2'
+        uuid3 = 'uuid3'
         time = Time.utc(2020, 0o1, 0o1, 11, 30)
         travel_to(time) { @subject.add(uuid1) }
         travel_to(time + (3 * 60 - 1).seconds) { @subject.add(uuid2) }
