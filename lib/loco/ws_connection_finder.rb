@@ -10,11 +10,11 @@ module Loco
       resources.each do |resource|
         case resource
         when :all
-          storage.scan(match: 'h:*', &block)
+          storage.scan(all: true, &block)
         when Class
           storage.scan(match: "#{WsConnectionIdentifier.call(resource)}:*", &block)
         else
-          storage.scan_hash(WsConnectionIdentifier.call(resource), &block)
+          storage.members(WsConnectionIdentifier.call(resource)).each(&block)
         end
       end
     end

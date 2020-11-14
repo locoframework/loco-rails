@@ -7,6 +7,7 @@ module Loco
     before do
       @storage = WsConnectionStorage.current
       @storage.set('foo', 'bar')
+      @raw = @storage.storage
     end
 
     describe '#get' do
@@ -56,27 +57,72 @@ module Loco
 
     describe '#scan' do
       before do
-        @storage.set('user:159163583', 'UUID#1' => '12345')
-        @storage.set('user:980204181', 'UUID#2' => '22345')
-        @storage.set('admin:980190962', 'UUID#3' => '32345')
-        @storage.set('admin:880190960', 'UUID#4' => '42345')
-        @storage.set('comment:980190961', 'UUID#5' => '52345')
+        @storage.add('key1', 'UUID#1')
+        @storage.add('key31', 'UUID#3')
+        @storage.add('key32', 'UUID#4')
+        @storage.add('key2', 'UUID#2')
       end
 
       it 'accepts pattern' do
-        res = {}
-        @storage.scan(match: 'admin:*') { |k, v| res[k] = v }
-        assert_equal({ 'UUID#3' => '32345', 'UUID#4' => '42345' }, res)
+        res = []
+        @storage.scan(match: 'key3*') { |v| res << v }
+        assert_equal(['UUID#3', 'UUID#4'], res)
       end
     end
 
     describe '#hlen' do
       before do
-        @storage.set('user:159163583', 'UUID#1' => '12345', 'UUID#2' => '22345')
+        @storage.set('key1', 'UUID#1' => '12345', 'UUID#2' => '22345')
       end
 
       it do
-        assert_equal 2, @storage.hlen('user:159163583')
+        assert_equal 2, @storage.hlen('key1')
+      end
+    end
+
+    describe '#rem' do
+      it do
+        @storage.add('key1', 'UUID#1')
+        assert @storage.member?('key1', 'UUID#1')
+        @storage.rem('key1', 'UUID#1')
+        assert_equal false, @storage.member?('key1', 'UUID#1')
+      end
+    end
+
+    describe 'sets' do
+      it 'works on a lower level' do
+        @raw.sadd('sample-set', %w[foo bar])
+        @raw.sadd('sample-set', 'bar')
+        assert_equal %w[bar foo], @raw.smembers('sample-set').sort
+        assert @raw.sismember('sample-set', 'foo')
+        @raw.srem('sample-set', 'foo')
+        assert_equal 1, @raw.scard('sample-set')
+        assert @raw.exists?('sample-set')
+        @raw.srem('sample-set', 'bar')
+        assert_equal 'none', @raw.type('sample-set')
+        assert_equal false, @raw.exists?('sample-set')
+      end
+
+      it 'works via the public interface' do
+        @storage.add('key1', %w[foo bar])
+        @storage.add('key1', 'bar')
+        assert_equal %w[bar foo], @storage.members('key1').sort
+      end
+    end
+
+    describe 'lists' do
+      it 'works on a lower level' do
+        @raw.rpush('sample-list', 'foo')
+        assert_equal 'foo', @raw.lindex('sample-list', 0)
+        @raw.rpushx('sample-list', 'bar')
+        assert_equal 2, @raw.llen('sample-list')
+        @raw.lset('sample-list', 1, 'baz')
+        assert_equal %w[foo baz], @raw.lrange('sample-list', 0, 1)
+        @raw.lrem('sample-list', 1, 'foo')
+        assert_equal 'baz', @raw.lindex('sample-list', 0)
+        @raw.lrem('sample-list', 1, 'baz')
+        assert_equal 'none', @raw.type('sample-set')
+        assert_equal false, @raw.exists?('sample-set')
       end
     end
   end
