@@ -15,44 +15,66 @@ module Loco
     end
 
     describe 'checking connections' do
+      before do
+        @payload = { loco: { connection_check: true } }
+        @org_expiration = WsConnectionManager::EXPIRATION
+        WsConnectionManager::EXPIRATION = 1
+      end
+
+      after do
+        WsConnectionManager::EXPIRATION = @org_expiration
+      end
+
       it 'is run after add and del' do
-        uuid1 = 'uuid1'
-        uuid2 = 'uuid2'
-        uuid3 = 'uuid3'
-        time = Time.utc(2020, 0o1, 0o1, 11, 30)
-        travel_to(time) { @subject.add(uuid1) }
-        travel_to(time + (3 * 60 - 1).seconds) { @subject.add(uuid2) }
-        assert_equal '2020-01-01T11:30:00.000000Z', @storage.get(@identifier, uuid1)
+        uuid1 = 'UUID#1'
+        uuid2 = 'UUID#2'
+        uuid3 = 'UUID#3'
+        @subject.add(uuid1)
+        @subject.add(uuid2)
+        assert_equal 'ok', @storage.get(uuid1)
 
-        payload = { loco: { connection_check: true } }
-        expect(SenderJob).to receive(:perform_later).with(uuid1, payload)
-        travel_to(time + (3 * 60 + 1).seconds) { @subject.add(uuid3) }
-        assert_equal('', @storage.get(@identifier, uuid1))
-        assert_equal 3, @storage.hlen(@identifier)
+        expect(SenderJob).to receive(:perform_later).with(uuid1, @payload)
+        expect(SenderJob).to receive(:perform_later).with(uuid2, @payload)
+        sleep 2
+        @subject.add(uuid3)
+        assert_equal('verification', @storage.get(uuid2))
+        assert_equal 3, @storage.members(@identifier).size
 
-        travel_to(time + (3 * 60 + 1 + 6).seconds) { @subject.del(uuid2) }
-        assert_equal('2020-01-01T11:33:01.000000Z', @storage.get(@identifier, uuid3))
+        @subject.del(uuid2)
+        assert_equal('verification', @storage.get(uuid1))
+        assert_nil @storage.get(uuid2)
+        assert_equal 'ok', @storage.get(uuid3)
       end
     end
 
     describe '#add' do
       it 'adds UUID and it is considered connected' do
-        uuid = SecureRandom.uuid
-        travel_to Time.utc(2020) do
-          @subject.add(uuid)
-        end
-        assert @subject.connected?(uuid)
+        @subject.add('uuid1')
+        assert @subject.connected?('uuid1')
       end
     end
 
     describe '#del' do
-      # tested in 'checking connections'
+      it do
+        @subject.add('uuid1')
+        @subject.del('uuid1')
+        assert_equal false, @subject.connected?('uuid1')
+      end
+    end
+
+    describe '#update' do
+      it do
+        @subject.add('uuid1')
+        @storage.set('h:uuid1', 'tmp-state')
+        @subject.update('uuid1')
+        assert @subject.connected?('uuid1')
+      end
     end
 
     describe 'private #identifier' do
       it 'returns a correct format of an identifier' do
-        assert_equal "h:user:#{@user.id}", @subject.send(:identifier)
-        assert_equal 'h:foo', @described_class.new('foo').send(:identifier)
+        assert_equal "user:#{@user.id}", @subject.send(:identifier)
+        assert_equal 'foo', @described_class.new('foo').send(:identifier)
       end
     end
   end

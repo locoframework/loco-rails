@@ -2,30 +2,34 @@
 
 module Loco
   class WsConnectionManager
+    EXPIRATION = 60 * 3
+    VERIFICATION_STATUS = 'verification'
+
     def initialize(resource)
       @resource = resource
     end
 
     def connected?(uuid)
-      !WsConnectionStorage.current.get(identifier, uuid).nil?
+      @connection_status = WsConnectionStorage.current.get(uuid)
+      @connection_status == 'ok'
     end
 
     def add(uuid)
-      update(uuid)
-      check_connections
+      WsConnectionStorage.current.add(identifier, uuid)
+      WsConnectionStorage.current.add("uuid:#{uuid}", identifier)
+      WsConnectionStorage.current.set(uuid, 'ok', ex: EXPIRATION)
+      check_connections(skip: uuid)
     end
 
     def del(uuid)
-      WsConnectionStorage.current.del(identifier, uuid)
+      WsConnectionStorage.current.rem(identifier, uuid)
+      WsConnectionStorage.current.rem("uuid:#{uuid}", identifier)
+      WsConnectionStorage.current.del(uuid)
       check_connections
     end
 
     def update(uuid)
-      WsConnectionStorage.current.set(identifier, uuid => current_time)
-    end
-
-    def destroy
-      WsConnectionStorage.current.del(identifier)
+      WsConnectionStorage.current.set(uuid, 'ok', ex: EXPIRATION)
     end
 
     private
@@ -42,16 +46,15 @@ module Loco
       WsConnectionStorage.current.set(identifier, hash)
     end
 
-    def check_connections
-      uuids_to_check = []
-      WsConnectionStorage.current.scan_hash(identifier) do |uuid, time|
-        next if time == ''
+    def check_connections(skip: nil)
+      WsConnectionStorage.current.members(identifier).each do |uuid|
+        next if uuid == skip
+        next if connected?(uuid)
+        next if @connection_status == VERIFICATION_STATUS
 
-        uuids_to_check << uuid if Time.zone.parse(time) < 3.minutes.ago
-      end
-      uuids_to_check.each do |uuid|
-        WsConnectionStorage.current.set(identifier, uuid => '')
+        WsConnectionStorage.current.set(uuid, VERIFICATION_STATUS)
         SenderJob.perform_later(uuid, loco: { connection_check: true })
+        # TODO: trigger a job to delete an unverified uuid
       end
     end
   end
