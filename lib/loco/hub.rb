@@ -5,6 +5,10 @@ module Loco
     PREFIX = 'hub:'
 
     class << self
+      def set(name, members)
+        new(name, members)
+      end
+
       def get(name)
         return nil if WsConnectionStorage.current.type("s:#{full_name(name)}") != 'set'
 

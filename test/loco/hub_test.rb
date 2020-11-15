@@ -8,7 +8,7 @@ module Loco
 
     describe '#add_member' do
       it 'returns members' do
-        hub = Hub.new('foobar', [users(:zbig)])
+        hub = Hub.set('foobar', [users(:zbig)])
         hub.add_member(users(:jane))
         assert_equal [users(:jane), users(:zbig)], hub.members
       end
@@ -17,14 +17,14 @@ module Loco
     describe '#connected_uuids' do
       it do
         create_connection(users(:jane), 'UUID1')
-        hub = Hub.new('foobar', [users(:zbig), users(:jane)])
+        hub = Hub.set('foobar', [users(:zbig), users(:jane)])
         assert_equal ['UUID1'], hub.connected_uuids
       end
     end
 
     describe '#del_member' do
       it 'returns members' do
-        hub = Hub.new('foobar', [users(:zbig), users(:jane)])
+        hub = Hub.set('foobar', [users(:zbig), users(:jane)])
         hub.del_member(users(:jane))
         assert_equal [users(:zbig)], hub.members
       end
@@ -32,7 +32,7 @@ module Loco
 
     describe '#destroy' do
       it 'destroys' do
-        hub = Hub.new('foobar', [users(:zbig), users(:jane)])
+        hub = Hub.set('foobar', [users(:zbig), users(:jane)])
         assert_equal 'foobar', Hub.get('foobar').name
         hub.destroy
         assert_nil Hub.get('foobar')
@@ -41,7 +41,7 @@ module Loco
 
     describe '#include?' do
       it do
-        hub = Hub.new('foobar', [users(:zbig)])
+        hub = Hub.set('foobar', [users(:zbig)])
         assert hub.include?(users(:zbig))
         assert_equal hub.include?(users(:jane)), false
       end
@@ -49,14 +49,14 @@ module Loco
 
     describe '#members' do
       it 'returns members' do
-        hub = Hub.new('foobar', [users(:zbig), users(:jane)])
+        hub = Hub.set('foobar', [users(:zbig), users(:jane)])
         assert_equal [users(:jane), users(:zbig)], hub.members
       end
     end
 
     describe '#name' do
       it 'returns a name' do
-        hub = Hub.new('foobar', [users(:zbig), users(:jane)])
+        hub = Hub.set('foobar', [users(:zbig), users(:jane)])
         assert_equal 'foobar', hub.name
       end
     end
