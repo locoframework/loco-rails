@@ -11,10 +11,7 @@ module Loco
       stream_from("loco:notification_center:#{@uuid}")
       SenderJob.perform_later(@uuid, loco: { uuid: @uuid })
 
-      # TODO: return if signed_in_resources.empty?
-
       signed_in_resources.each { |resource| WsConnectionManager.new(resource).add(@uuid) }
-      # TODO: SenderJob.perform_later(@uuid, loco: { start_ajax_polling: true })
     end
 
     def unsubscribed
