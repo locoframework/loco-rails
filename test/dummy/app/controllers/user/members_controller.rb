@@ -11,7 +11,7 @@ class User
     protected
 
     def find_room
-      @room = Room.find params[:room_id]
+      @room = Room.find(params[:room_id])
     end
   end
 end

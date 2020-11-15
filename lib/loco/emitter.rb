@@ -16,7 +16,7 @@ module Loco
     end
 
     def add_hub(name, members = [])
-      Hub.new(name, members).save
+      Hub.new(name, members)
     end
 
     def get_hub(name)

@@ -16,6 +16,14 @@ module Loco
       @storage = Config.redis_instance
     end
 
+    def type(key)
+      storage.type(proper_key(key))
+    end
+
+    def exists?(key)
+      storage.exists?(proper_key(key))
+    end
+
     def get(key, hkey = nil)
       if !hkey.nil?
         storage.hget(proper_key("h:#{key}"), hkey)
