@@ -26,7 +26,11 @@ module Loco
     end
 
     def name
-      @name.split(PREFIX).last
+      full_name.split(PREFIX).last
+    end
+
+    def full_name
+      @name
     end
 
     def add_member(member)
@@ -56,12 +60,6 @@ module Loco
         klass, id = serialized.split(':')
         klass.classify.constantize.find_by(id: id)
       end
-    end
-
-    def connected_uuids
-      WsConnectionStorage.current.members(@name).map do |serialized|
-        WsConnectionStorage.current.members(serialized)
-      end.flatten.uniq
     end
   end
 end

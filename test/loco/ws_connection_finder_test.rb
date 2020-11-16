@@ -35,6 +35,11 @@ module Loco
         WsConnectionFinder.call('random-token') { |uuid| @res << uuid }
         assert_equal(['UUID#6'], @res)
       end
+
+      it 'finds connections for a Hub' do
+        WsConnectionFinder.call(Hub.get('foobar')) { |uuid| @res << uuid }
+        assert_equal(['UUID#2', 'UUID#1'], @res)
+      end
     end
   end
 end

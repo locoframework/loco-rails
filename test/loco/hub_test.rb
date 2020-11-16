@@ -14,14 +14,6 @@ module Loco
       end
     end
 
-    describe '#connected_uuids' do
-      it do
-        create_connection(users(:jane), 'UUID1')
-        hub = Hub.set('foobar', [users(:zbig), users(:jane)])
-        assert_equal ['UUID1'], hub.connected_uuids
-      end
-    end
-
     describe '#del_member' do
       it 'returns members' do
         hub = Hub.set('foobar', [users(:zbig), users(:jane)])
