@@ -4,8 +4,6 @@ require 'test_helper'
 
 module Loco
   class HubTest < TC
-    include WsHelpers
-
     describe '#add_member' do
       it 'returns members' do
         hub = Hub.set('foobar', [users(:zbig)])

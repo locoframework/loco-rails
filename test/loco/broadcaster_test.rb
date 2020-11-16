@@ -11,10 +11,7 @@ module Loco
 
     describe '#emit' do
       before do
-        create_connection(users(:zbig))
-        create_connection(users(:jane))
-        create_connection(admins(:one))
-        create_connection(admins(:one))
+        setup_connections
         @time = Time.current
         @sync_time_payload = { loco: { sync_time: @time.iso8601(6) } }
       end

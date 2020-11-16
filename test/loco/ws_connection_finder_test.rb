@@ -7,13 +7,7 @@ module Loco
     include WsHelpers
 
     before do
-      create_connection(users(:zbig), 'UUID#1')
-      create_connection(users(:jane), 'UUID#2')
-      create_connection(admins(:one), 'UUID#3')
-      create_connection(admins(:two), 'UUID#4')
-      create_connection('comment:980190961', 'UUID#5')
-      create_connection('random-token', 'UUID#6')
-      Hub.set('foobar', [users(:zbig), users(:jane)])
+      setup_connections
     end
 
     describe '#call' do
@@ -23,12 +17,12 @@ module Loco
 
       it 'finds connections of defined resources' do
         WsConnectionFinder.call([users(:zbig), Admin]) { |uuid| @res << uuid }
-        assert_equal(['UUID#1', 'UUID#3', 'UUID#4'], @res.sort)
+        assert_equal(['UUID#1', 'UUID#3', 'UUID#3.1', 'UUID#4'], @res.sort)
       end
 
       it 'returns all UUIDs if :all is passed' do
         WsConnectionFinder.call(:all) { |uuid| @res << uuid }
-        assert_equal(['UUID#1', 'UUID#2', 'UUID#3', 'UUID#4', 'UUID#5', 'UUID#6'], @res.sort)
+        assert_equal(%w[UUID#1 UUID#2 UUID#3 UUID#3.1 UUID#4 UUID#5 UUID#6], @res.sort)
       end
 
       it 'supports string as an argument' do

@@ -4,8 +4,6 @@ require 'test_helper'
 
 module Loco
   class WsConnectionManagerTest < TCWithMocks
-    include WsHelpers
-
     before do
       @user = users(:zbig)
       @identifier = WsConnectionIdentifier.call(@user)

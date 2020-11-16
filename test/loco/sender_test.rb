@@ -8,13 +8,13 @@ module Loco
 
     describe '.call' do
       before do
+        setup_connections
         @payload = { loco: { idempotency_key: 'foobarbaz' } }
       end
 
       it 'sends payload via WS to recipients' do
-        create_connection(users(:zbig), 'u12345')
         expect(NotificationCenterChannel).to receive(:broadcast_to).with('random_uuid', @payload)
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('u12345', @payload)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#1', @payload)
         Sender.call([users(:zbig), 'random_uuid'], { idempotency_key: 'foobarbaz' })
       end
 
@@ -43,16 +43,14 @@ module Loco
       end
 
       it 'accepts a hash with token' do
-        create_connection('random-token', 'u12345')
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('u12345', @payload)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#6', @payload)
         Sender.call({ 'token' => 'random-token' }, { idempotency_key: 'foobarbaz' })
       end
 
       it 'accepts a hash with class' do
-        create_connection(admins(:one), 'u12345')
-        create_connection(admins(:two), 'u22345')
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('u12345', @payload)
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('u22345', @payload)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#3', @payload)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#3.1', @payload)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#4', @payload)
         Sender.call({ 'class' => 'Admin' }, { idempotency_key: 'foobarbaz' })
       end
     end
