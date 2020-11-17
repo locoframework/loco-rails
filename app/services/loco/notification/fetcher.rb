@@ -12,7 +12,7 @@ module Loco
         max_size: nil
       )
         @synced_at = synced_at
-        @permissions = permissions
+        @permissions = permissions.compact
         @recipient_token = recipient_token
         @notifications = nil
         @max_size = max_size || Loco::Config.notifications_size
@@ -60,13 +60,7 @@ module Loco
       end
 
       def notifications_behind_permissions
-        notifications = []
-        @permissions.each do |resource|
-          next unless resource
-
-          notifications += notification_for_resource(resource)
-        end
-        notifications
+        @permissions.inject([]) { |arr, resource| arr + notification_for_resource(resource) }
       end
 
       def notifications_behind_token

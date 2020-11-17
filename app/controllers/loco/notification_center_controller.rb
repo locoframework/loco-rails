@@ -21,7 +21,7 @@ module Loco
         render json: [[], Time.current.iso8601(6)]
         return
       end
-      fetcher = Notification::Fetcher.new notif_fetcher_args
+      fetcher = Notification::Fetcher.new(notif_fetcher_args)
       render json: [
         fetcher.formatted_notifications,
         fetcher.next_sync_time.iso8601(6)
@@ -37,7 +37,7 @@ module Loco
     end
 
     def permissions
-      return [] unless defined? loco_permissions
+      return [] unless defined?(loco_permissions)
       return loco_permissions if params[:uuid].blank?
 
       process_loco_permissions
@@ -46,8 +46,7 @@ module Loco
     def process_loco_permissions
       resources_to_del = []
       resources_to_add = []
-      loco_permissions.each do |resource|
-        next if resource.nil?
+      loco_permissions.compact.each do |resource|
         next unless WsConnectionManager.new(resource).connected?(params[:uuid])
 
         resources_to_del << resource
