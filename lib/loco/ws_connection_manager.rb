@@ -10,14 +10,13 @@ module Loco
     end
 
     def connected?(uuid)
-      @connection_status = WsConnectionStorage.current.get(uuid)
-      @connection_status == 'ok'
+      WsConnectionStorage.current.member?(identifier, uuid)
     end
 
     def add(uuid)
       WsConnectionStorage.current.add(identifier, uuid)
       WsConnectionStorage.current.add("uuid:#{uuid}", identifier)
-      WsConnectionStorage.current.set(uuid, 'ok', ex: EXPIRATION)
+      update(uuid)
       check_connections(skip: uuid)
     end
 
@@ -38,19 +37,10 @@ module Loco
       WsConnectionIdentifier.call(@resource)
     end
 
-    def current_time
-      Time.current.iso8601(6)
-    end
-
-    def save(hash)
-      WsConnectionStorage.current.set(identifier, hash)
-    end
-
     def check_connections(skip: nil)
       WsConnectionStorage.current.members(identifier).each do |uuid|
         next if uuid == skip
-        next if connected?(uuid)
-        next if @connection_status == VERIFICATION_STATUS
+        next if ['ok', VERIFICATION_STATUS].include?(WsConnectionStorage.current.get(uuid))
 
         WsConnectionStorage.current.set(uuid, VERIFICATION_STATUS)
         SenderJob.perform_later(uuid, loco: { connection_check: true })

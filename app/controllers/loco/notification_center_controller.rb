@@ -48,9 +48,7 @@ module Loco
       resources_to_add = []
       loco_permissions.each do |resource|
         next if resource.nil?
-
-        ws_conn_manager = WsConnectionManager.new resource
-        next unless ws_conn_manager.connected?(params[:uuid])
+        next unless WsConnectionManager.new(resource).connected?(params[:uuid])
 
         resources_to_del << resource
         resources_to_add << resource.class

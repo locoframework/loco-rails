@@ -32,7 +32,7 @@ module Loco
 
       it 'finds connections for a Hub' do
         WsConnectionFinder.call(Hub.get('foobar')) { |uuid| @res << uuid }
-        assert_equal(['UUID#2', 'UUID#1'], @res)
+        assert_equal(['UUID#2', 'UUID#1'].sort, @res.sort)
       end
     end
   end

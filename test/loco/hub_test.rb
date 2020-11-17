@@ -8,7 +8,8 @@ module Loco
       it 'returns members' do
         hub = Hub.set('foobar', [users(:zbig)])
         hub.add_member(users(:jane))
-        assert_equal [users(:jane), users(:zbig)], hub.members
+        assert_equal 2, hub.members.size
+        assert_equal [users(:jane), users(:zbig)].to_set, hub.members.to_set
       end
     end
 
@@ -40,7 +41,8 @@ module Loco
     describe '#members' do
       it 'returns members' do
         hub = Hub.set('foobar', [users(:zbig), users(:jane)])
-        assert_equal [users(:jane), users(:zbig)], hub.members
+        assert_equal 2, hub.members.size
+        assert_equal [users(:jane), users(:zbig)].to_set, hub.members.to_set
       end
     end
 
