@@ -48,7 +48,7 @@ module Loco
     describe '#add' do
       it 'adds UUID and it is considered connected' do
         @subject.add('uuid1')
-        assert_equal 'ok', @subject.send(:connection_status, 'uuid1')
+        assert_equal 'ok', WsConnectionStorage.current.get('uuid1')
       end
     end
 
@@ -56,7 +56,7 @@ module Loco
       it do
         @subject.add('uuid1')
         @subject.del('uuid1')
-        assert_nil @subject.send(:connection_status, 'uuid1')
+        assert_nil WsConnectionStorage.current.get('uuid1')
       end
     end
 
@@ -65,7 +65,7 @@ module Loco
         @subject.add('uuid1')
         @storage.set('h:uuid1', 'tmp-state')
         @subject.update('uuid1')
-        assert @subject.send(:connection_status, 'uuid1')
+        assert_equal 'ok', WsConnectionStorage.current.get('uuid1')
       end
     end
 

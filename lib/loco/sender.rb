@@ -4,7 +4,6 @@ module Loco
   class Sender
     class << self
       def call(recipient_s, payload = {})
-        # TODO: flatten.uniq - test it!
         payload = with_idempotency_key(payload)
         recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
         recipients.each do |recipient|
