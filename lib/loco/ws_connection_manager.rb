@@ -9,10 +9,6 @@ module Loco
       @resource = resource
     end
 
-    def connected?(uuid)
-      WsConnectionStorage.current.member?(identifier, uuid)
-    end
-
     def add(uuid)
       WsConnectionStorage.current.add(identifier, uuid)
       WsConnectionStorage.current.add("uuid:#{uuid}", identifier)
@@ -37,10 +33,14 @@ module Loco
       WsConnectionIdentifier.call(@resource)
     end
 
+    def connection_status(uuid)
+      WsConnectionStorage.current.get(uuid)
+    end
+
     def check_connections(skip: nil)
       WsConnectionStorage.current.members(identifier).each do |uuid|
         next if uuid == skip
-        next if ['ok', VERIFICATION_STATUS].include?(WsConnectionStorage.current.get(uuid))
+        next if ['ok', VERIFICATION_STATUS].include?(connection_status(uuid))
 
         WsConnectionStorage.current.set(uuid, VERIFICATION_STATUS)
         SenderJob.perform_later(uuid, loco: { connection_check: true })

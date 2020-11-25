@@ -38,21 +38,8 @@ module Loco
 
     def permissions
       return [] unless defined?(loco_permissions)
-      return loco_permissions if params[:uuid].blank?
 
-      process_loco_permissions
-    end
-
-    def process_loco_permissions
-      resources_to_del = []
-      resources_to_add = []
-      loco_permissions.compact.each do |resource|
-        next unless WsConnectionManager.new(resource).connected?(params[:uuid])
-
-        resources_to_del << resource
-        resources_to_add << resource.class
-      end
-      loco_permissions - resources_to_del + resources_to_add.uniq
+      loco_permissions
     end
   end
 end
