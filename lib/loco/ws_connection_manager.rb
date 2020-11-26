@@ -4,8 +4,12 @@ module Loco
   class WsConnectionManager
     EXPIRATION = 60 * 3
 
-    def initialize(resource)
-      @resource = resource
+    def initialize(resource, opts = {})
+      if opts[:identifier]
+        @identifier = resource
+      else
+        @resource = resource
+      end
     end
 
     def add(uuid)
@@ -15,11 +19,11 @@ module Loco
       WsConnectionChecker.call(identifier, skip: uuid)
     end
 
-    def del(uuid)
+    def del(uuid, skip_checker: false)
       WsConnectionStorage.current.rem(identifier, uuid)
       WsConnectionStorage.current.rem("uuid:#{uuid}", identifier)
       WsConnectionStorage.current.del(uuid)
-      WsConnectionChecker.call(identifier)
+      WsConnectionChecker.call(identifier) unless skip_checker
     end
 
     def update(uuid)
@@ -29,7 +33,7 @@ module Loco
     private
 
     def identifier
-      WsConnectionIdentifier.call(@resource)
+      @identifier ||= WsConnectionIdentifier.call(@resource)
     end
   end
 end

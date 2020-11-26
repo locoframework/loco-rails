@@ -12,6 +12,12 @@ module Loco
       @subject = @described_class.new(@user)
     end
 
+    describe 'initialization' do
+      it 'can accept an identifier' do
+        assert_equal 'foo', @described_class.new('foo', identifier: true).send(:identifier)
+      end
+    end
+
     describe 'checking connections' do
       before do
         @payload = { loco: { connection_check: true } }
@@ -53,10 +59,20 @@ module Loco
     end
 
     describe '#del' do
-      it do
+      it 'deletes a key' do
         @subject.add('uuid1')
         @subject.del('uuid1')
         assert_nil WsConnectionStorage.current.get('uuid1')
+      end
+
+      it 'calls out a checker' do
+        expect(WsConnectionChecker).to receive(:call).with("user:#{@user.id}")
+        @subject.del('uuid1')
+      end
+
+      it 'can skip triggering a checker"' do
+        expect(WsConnectionChecker).to_not receive(:call)
+        @subject.del('uuid1', skip_checker: true)
       end
     end
 

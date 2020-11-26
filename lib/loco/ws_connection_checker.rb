@@ -13,7 +13,7 @@ module Loco
 
         WsConnectionStorage.current.set(uuid, VERIFICATION_STATUS)
         SenderJob.perform_later(uuid, loco: { connection_check: true })
-        CleanerJob.set(wait: 5.seconds).perform_later(uuid)
+        CleanerJob.set(wait: 5.seconds).perform_later(identifier, uuid)
       end
     end
   end

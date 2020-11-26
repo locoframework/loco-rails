@@ -4,8 +4,8 @@ module Loco
   class CleanerJob < ActiveJob::Base
     queue_as :loco
 
-    def perform(uuid)
-      WsConnectionCleaner.call(uuid)
+    def perform(identifier, uuid)
+      WsConnectionCleaner.call(identifier, uuid)
     end
   end
 end
