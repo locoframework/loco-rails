@@ -13,7 +13,7 @@ module Loco
 
         WsConnectionStorage.current.set(uuid, VERIFICATION_STATUS)
         SenderJob.perform_later(uuid, loco: { connection_check: true })
-        # TODO: trigger a job to delete an unverified uuid
+        CleanerJob.set(wait: 5.seconds).perform_later(uuid)
       end
     end
   end
