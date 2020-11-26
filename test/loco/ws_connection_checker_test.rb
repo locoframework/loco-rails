@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Loco
-  class WsConnectionCheckerTest < TC
+  class WsConnectionCheckerTest < TCWithMocks
     include WsHelpers
 
     before do
@@ -25,6 +25,11 @@ module Loco
         WsConnectionChecker.call(WsConnectionIdentifier.call(admins(:one)))
         assert_equal 'ok', WsConnectionStorage.current.get('UUID#3')
       end
+
+      it 'does not trigger a background job' do
+        expect(SenderJob).to_not receive(:perform_later)
+        WsConnectionChecker.call(WsConnectionIdentifier.call(admins(:one)))
+      end
     end
 
     describe 'a connections status is nil' do
@@ -33,7 +38,12 @@ module Loco
         assert_nil WsConnectionStorage.current.get('UUID#3')
       end
 
-      it 'changes a status to "verification"' do
+      it 'changes a status to "verification" and triggers a background job' do
+        expect(SenderJob).to receive(:perform_later).with('UUID#3', loco: { connection_check: true })
+        WsConnectionChecker.call(WsConnectionIdentifier.call(admins(:one)))
+        assert_equal 'verification', WsConnectionStorage.current.get('UUID#3')
+
+        expect(SenderJob).to_not receive(:perform_later)
         WsConnectionChecker.call(WsConnectionIdentifier.call(admins(:one)))
         assert_equal 'verification', WsConnectionStorage.current.get('UUID#3')
       end
