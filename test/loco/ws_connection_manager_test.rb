@@ -16,11 +16,11 @@ module Loco
       before do
         @payload = { loco: { connection_check: true } }
         @org_expiration = WsConnectionManager::EXPIRATION
-        WsConnectionManager::EXPIRATION = 1
+        Kernel.silence_warnings { WsConnectionManager::EXPIRATION = 1 }
       end
 
       after do
-        WsConnectionManager::EXPIRATION = @org_expiration
+        Kernel.silence_warnings { WsConnectionManager::EXPIRATION = @org_expiration }
       end
 
       it 'is run after add and del' do

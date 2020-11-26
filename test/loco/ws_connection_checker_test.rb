@@ -8,12 +8,12 @@ module Loco
 
     before do
       @org_expiration = WsConnectionManager::EXPIRATION
-      WsConnectionManager::EXPIRATION = 1
+      Kernel.silence_warnings { WsConnectionManager::EXPIRATION = 1 }
       create_connection(admins(:one), 'UUID#3')
     end
 
     after do
-      WsConnectionManager::EXPIRATION = @org_expiration
+      Kernel.silence_warnings { WsConnectionManager::EXPIRATION = @org_expiration }
     end
 
     it do
