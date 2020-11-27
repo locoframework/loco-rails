@@ -1,5 +1,12 @@
 <p class="text_right">
-  <%= link_to "Sign in", new_user_session_url %> | <%= link_to "Sign up", new_user_url %>
+  <% if current_user %>
+    <%= link_to "User panel", '/user' %>
+  <% else %>
+    <%= link_to "Sign in", new_user_session_url %> | <%= link_to "Sign up", new_user_url %>
+  <% end %>
+  <% if current_admin %>
+    | <%= link_to "Admin panel", '/admin' %>
+  <% end %>
 </p>
 
 <section id="articles"></section>

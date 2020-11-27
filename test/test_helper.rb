@@ -77,6 +77,10 @@ end
 
 class IT < ActionDispatch::IntegrationTest
   include Capybara::DSL
+
+  def after_teardown
+    Capybara.reset_session!
+  end
 end
 
 TC = ActiveSupport::TestCase
