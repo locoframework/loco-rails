@@ -9,8 +9,7 @@ module Loco
       return unless @uuid.is_a?(String)
 
       stream_from("loco:notification_center:#{@uuid}")
-      SenderJob.perform_later(@uuid, loco: { uuid: @uuid })
-
+      broadcast_to(@uuid, loco: { uuid: @uuid })
       signed_in_resources.each { |resource| WsConnectionManager.new(resource).add(@uuid) }
     end
 
