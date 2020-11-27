@@ -21,19 +21,10 @@ module Loco
         render json: [[], Time.current.iso8601(6)]
         return
       end
-      fetcher = Notification::Fetcher.new(notif_fetcher_args)
-      render json: [
-        fetcher.formatted_notifications,
-        fetcher.next_sync_time.iso8601(6)
-      ]
-    end
-
-    def notif_fetcher_args
-      {
-        synced_at: params[:synced_at],
-        permissions: permissions,
-        recipient_token: params[:token]
-      }
+      fetcher = Notification::Fetcher.new({ synced_at: params[:synced_at],
+                                            permissions: permissions,
+                                            recipient_token: params[:token] })
+      render json: [fetcher.formatted_notifications, fetcher.next_sync_time.iso8601(6)]
     end
 
     def permissions

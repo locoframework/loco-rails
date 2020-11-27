@@ -5,17 +5,12 @@ module Loco
     class Fetcher
       attr_accessor :max_size
 
-      def initialize(
-        synced_at:,
-        permissions: [],
-        recipient_token: nil,
-        max_size: nil
-      )
-        @synced_at = synced_at
-        @permissions = permissions.compact
-        @recipient_token = recipient_token
+      def initialize(opts)
+        @synced_at = opts[:synced_at]
+        @permissions = (opts[:permissions] || []).compact
+        @recipient_token = opts[:recipient_token]
         @notifications = nil
-        @max_size = max_size || Loco::Config.notifications_size
+        @max_size = opts[:max_size] || Loco::Config.notifications_size
       end
 
       def formatted_notifications
