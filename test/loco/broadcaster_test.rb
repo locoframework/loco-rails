@@ -21,7 +21,7 @@ module Loco
         allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
         expect(SenderJob).to receive(:perform_later).with(:all, PAYLOAD)
         expect(SenderJob).to receive(:perform_later).with(:all, @sync_time_payload)
-        Broadcaster.call(articles(:two), :updated)
+        Broadcaster.(articles(:two), :updated)
       end
 
       it 'can emit to a class of objects' do
@@ -29,7 +29,7 @@ module Loco
         allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
         expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, PAYLOAD)
         expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, @sync_time_payload)
-        Broadcaster.call(articles(:one), :created, recipients: [Admin])
+        Broadcaster.(articles(:one), :created, recipients: [Admin])
         assert_equal 1, Notification.where(Notification::FOR_CLASS_SQL_TMPL, 'Admin').count
       end
 
@@ -40,7 +40,7 @@ module Loco
         expect(SenderJob).to receive(:perform_later).with(users(:jane), @sync_time_payload)
         expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, PAYLOAD)
         expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, @sync_time_payload)
-        Broadcaster.call(articles(:one), :created, recipients: [Admin, users(:jane)])
+        Broadcaster.(articles(:one), :created, recipients: [Admin, users(:jane)])
       end
     end
   end

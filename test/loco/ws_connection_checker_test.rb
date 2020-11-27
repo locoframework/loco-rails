@@ -22,20 +22,20 @@ module Loco
       end
 
       it 'does not change the status' do
-        WsConnectionChecker.call(WsConnectionIdentifier.call(admins(:one)))
+        WsConnectionChecker.(WsConnectionIdentifier.(admins(:one)))
         assert_equal 'ok', WsConnectionStorage.current.get('UUID#3')
       end
 
       it 'does not trigger background jobs' do
         expect(SenderJob).to_not receive(:perform_later)
         expect(CleanerJob).to_not receive(:set)
-        WsConnectionChecker.call(WsConnectionIdentifier.call(admins(:one)))
+        WsConnectionChecker.(WsConnectionIdentifier.(admins(:one)))
       end
     end
 
     describe 'a connections status is nil' do
       before do
-        @identifier = WsConnectionIdentifier.call(admins(:one))
+        @identifier = WsConnectionIdentifier.(admins(:one))
         sleep(2)
         assert_nil WsConnectionStorage.current.get('UUID#3')
       end
@@ -45,11 +45,11 @@ module Loco
         cleaner_job = double('cleaner_job')
         expect(CleanerJob).to receive(:set).with(wait: 5.seconds) { cleaner_job }
         expect(cleaner_job).to receive(:perform_later).with(@identifier, 'UUID#3')
-        WsConnectionChecker.call(@identifier)
+        WsConnectionChecker.(@identifier)
         assert_equal 'verification', WsConnectionStorage.current.get('UUID#3')
 
         expect(SenderJob).to_not receive(:perform_later)
-        WsConnectionChecker.call(@identifier)
+        WsConnectionChecker.(@identifier)
         assert_equal 'verification', WsConnectionStorage.current.get('UUID#3')
       end
     end

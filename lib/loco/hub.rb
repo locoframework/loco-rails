@@ -34,11 +34,11 @@ module Loco
     end
 
     def add_member(member)
-      WsConnectionStorage.current.add(@name, WsConnectionIdentifier.call(member))
+      WsConnectionStorage.current.add(@name, WsConnectionIdentifier.(member))
     end
 
     def del_member(member)
-      WsConnectionStorage.current.rem(@name, WsConnectionIdentifier.call(member))
+      WsConnectionStorage.current.rem(@name, WsConnectionIdentifier.(member))
     end
 
     def destroy
@@ -48,7 +48,7 @@ module Loco
     end
 
     def include?(resource)
-      WsConnectionStorage.current.member?(@name, WsConnectionIdentifier.call(resource))
+      WsConnectionStorage.current.member?(@name, WsConnectionIdentifier.(resource))
     end
 
     def raw_members

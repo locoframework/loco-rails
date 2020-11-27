@@ -19,19 +19,19 @@ module Loco
       create_connection(admins(:one), 'UUID#3')
       sleep(1)
       create_connection(admins(:one), 'UUID#3.1')
-      WsConnectionChecker.call(identifier)
-      WsConnectionCleaner.call(identifier, 'UUID#3.1')
+      WsConnectionChecker.(identifier)
+      WsConnectionCleaner.(identifier, 'UUID#3.1')
       assert_equal 'ok', WsConnectionStorage.current.get('UUID#3.1')
       manager = double('ws_conn_manager')
       expect(WsConnectionManager).to receive(:new).with(identifier, identifier: true) { manager }
       expect(manager).to receive(:del).with('UUID#3', skip_checker: true)
-      WsConnectionCleaner.call(identifier, 'UUID#3')
+      WsConnectionCleaner.(identifier, 'UUID#3')
     end
 
     private
 
     def identifier
-      WsConnectionIdentifier.call(admins(:one))
+      WsConnectionIdentifier.(admins(:one))
     end
   end
 end

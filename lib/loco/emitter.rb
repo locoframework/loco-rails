@@ -3,7 +3,7 @@
 module Loco
   module Emitter
     def emit(obj, event = nil, opts = {})
-      Broadcaster.call(
+      Broadcaster.(
         obj,
         event,
         payload: opts[:data],
@@ -12,7 +12,7 @@ module Loco
     end
 
     def emit_to(recipient_s, data)
-      Sender.call(recipient_s, data)
+      Sender.(recipient_s, data)
     end
 
     def add_hub(name, members = [])

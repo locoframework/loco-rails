@@ -6,7 +6,7 @@ module Loco
   class WsConnectionManagerTest < TCWithMocks
     before do
       @user = users(:zbig)
-      @identifier = WsConnectionIdentifier.call(@user)
+      @identifier = WsConnectionIdentifier.(@user)
       @storage = WsConnectionStorage.current
       @described_class = Loco::WsConnectionManager
       @subject = @described_class.new(@user)

@@ -11,9 +11,9 @@ module Loco
           when :all then storage.scan(all: true, &block)
           when Hub then search_the_hub(resource, &block)
           when Class
-            storage.scan(match: "#{WsConnectionIdentifier.call(resource)}:*", &block)
+            storage.scan(match: "#{WsConnectionIdentifier.(resource)}:*", &block)
           else
-            storage.members(WsConnectionIdentifier.call(resource)).each(&block)
+            storage.members(WsConnectionIdentifier.(resource)).each(&block)
           end
         end
       end

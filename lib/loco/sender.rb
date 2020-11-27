@@ -35,7 +35,7 @@ module Loco
       end
 
       def broadcast_to(recipient, payload)
-        WsConnectionFinder.call(recipient) do |uuid|
+        WsConnectionFinder.(recipient) do |uuid|
           NotificationCenterChannel.broadcast_to(uuid, payload)
         end
       end

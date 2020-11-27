@@ -16,14 +16,14 @@ module Loco
       WsConnectionStorage.current.add(identifier, uuid)
       WsConnectionStorage.current.add("uuid:#{uuid}", identifier)
       update(uuid)
-      WsConnectionChecker.call(identifier, skip: uuid)
+      WsConnectionChecker.(identifier, skip: uuid)
     end
 
     def del(uuid, skip_checker: false)
       WsConnectionStorage.current.rem(identifier, uuid)
       WsConnectionStorage.current.rem("uuid:#{uuid}", identifier)
       WsConnectionStorage.current.del(uuid)
-      WsConnectionChecker.call(identifier) unless skip_checker
+      WsConnectionChecker.(identifier) unless skip_checker
     end
 
     def update(uuid)
@@ -33,7 +33,7 @@ module Loco
     private
 
     def identifier
-      @identifier ||= WsConnectionIdentifier.call(@resource)
+      @identifier ||= WsConnectionIdentifier.(@resource)
     end
   end
 end

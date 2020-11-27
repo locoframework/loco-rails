@@ -16,22 +16,22 @@ module Loco
       end
 
       it 'finds connections of defined resources' do
-        WsConnectionFinder.call([users(:zbig), Admin]) { |uuid| @res << uuid }
+        WsConnectionFinder.([users(:zbig), Admin]) { |uuid| @res << uuid }
         assert_equal(['UUID#1', 'UUID#3', 'UUID#3.1', 'UUID#4'], @res.sort)
       end
 
       it 'returns all UUIDs if :all is passed' do
-        WsConnectionFinder.call(:all) { |uuid| @res << uuid }
+        WsConnectionFinder.(:all) { |uuid| @res << uuid }
         assert_equal(%w[UUID#1 UUID#2 UUID#3 UUID#3.1 UUID#4 UUID#5 UUID#6], @res.sort)
       end
 
       it 'supports string as an argument' do
-        WsConnectionFinder.call('random-token') { |uuid| @res << uuid }
+        WsConnectionFinder.('random-token') { |uuid| @res << uuid }
         assert_equal(['UUID#6'], @res)
       end
 
       it 'finds connections for a Hub' do
-        WsConnectionFinder.call(Hub.get('foobar')) { |uuid| @res << uuid }
+        WsConnectionFinder.(Hub.get('foobar')) { |uuid| @res << uuid }
         assert_equal(['UUID#2', 'UUID#1'].sort, @res.sort)
       end
     end

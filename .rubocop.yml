@@ -71,6 +71,9 @@ Style/FrozenStringLiteralComment:
     - lib/generators/loco/file_injector/templates/application_controller.rb
     - lib/generators/loco/file_injector/templates/connection.rb
 
+Style/LambdaCall:
+  Enabled: false
+
 Style/MixinUsage:
   Enabled: true
   Exclude:

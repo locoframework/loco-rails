@@ -5,7 +5,7 @@ module Loco
     queue_as :loco
 
     def perform(identifier, uuid)
-      WsConnectionCleaner.call(identifier, uuid)
+      WsConnectionCleaner.(identifier, uuid)
     end
   end
 end
