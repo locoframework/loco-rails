@@ -12,7 +12,7 @@ module Loco
         next if ['ok', VERIFICATION_STATUS].include?(WsConnectionStorage.current.get(uuid))
 
         WsConnectionStorage.current.set(uuid, VERIFICATION_STATUS)
-        SenderJob.perform_later(uuid, loco: { connection_check: true })
+        Sender.call(uuid, loco: { connection_check: true })
         CleanerJob.set(wait: 5.seconds).perform_later(identifier, uuid)
       end
     end

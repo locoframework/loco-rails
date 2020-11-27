@@ -37,8 +37,8 @@ module Loco
         @subject.add(uuid2)
         assert_equal 'ok', @storage.get(uuid1)
 
-        expect(SenderJob).to receive(:perform_later).with(uuid1, @payload)
-        expect(SenderJob).to receive(:perform_later).with(uuid2, @payload)
+        expect(Sender).to receive(:call).with(uuid1, @payload)
+        expect(Sender).to receive(:call).with(uuid2, @payload)
         sleep 2
         @subject.add(uuid3)
         assert_equal('verification', @storage.get(uuid2))
