@@ -5,6 +5,7 @@ module ApplicationCable
     identified_by :loco_permissions
 
     def connect
+      reject_unauthorized_connection unless current_user || current_admin
       self.loco_permissions = [SecureRandom.uuid, current_user, current_admin]
       logger.add_tags('AC', (loco_permissions.map { |e| e.try(:id) || '-' }))
     end
