@@ -5,6 +5,7 @@ module Loco
     class << self
       def call(obj, event, recipients: nil, payload: nil)
         processed_recips = process_recipients(recipients)
+        payload[:loco] = { idempotency_key: SecureRandom.hex } if payload
         init_notifications(obj, event, processed_recips, payload).each do |recipient, notification|
           sync_time = notification.created_at.iso8601(6)
           SenderJob.perform_later(recipient, loco: { notification: notification.compact })

@@ -18,8 +18,8 @@ module Loco
 
       private
 
-      def with_idempotency_key(hash)
-        hash = hash.clone
+      def with_idempotency_key(payload)
+        hash = payload.clone
         hash[:loco] ||= {}
         hash[:loco][:idempotency_key] ||= hash[:idempotency_key] || SecureRandom.hex
         hash.delete(:idempotency_key)

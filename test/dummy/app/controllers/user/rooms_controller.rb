@@ -19,7 +19,7 @@ class User
     def create
       @room = Room.new params_room
       if @room.save
-        emit @room, :created, data: { room: { id: @room.id, name: @room.name } }
+        emit @room, :created, payload: { room: { id: @room.id, name: @room.name } }
         redirect_to user_rooms_path, notice: 'Room has been created'
       else
         render :new
@@ -32,7 +32,7 @@ class User
 
     def join
       @hub.add_member current_user
-      emit @room, :member_joined, data: {
+      emit @room, :member_joined, payload: {
         room_id: @room.id,
         member: {
           id: current_user.id,
@@ -44,7 +44,7 @@ class User
 
     def leave
       @hub.del_member current_user
-      emit @room, :member_left, data: {
+      emit @room, :member_left, payload: {
         room_id: @room.id,
         member: { id: current_user.id }
       }
@@ -58,7 +58,7 @@ class User
       end
       del_hub @hub
       @room.destroy
-      emit @room, :destroyed, data: { room_id: @room.id }
+      emit @room, :destroyed, payload: { room_id: @room.id }
       redirect_to user_rooms_path, notice: 'Room has been deleted'
     end
 

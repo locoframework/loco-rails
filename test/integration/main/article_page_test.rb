@@ -126,6 +126,7 @@ module Main
         a.save!
       end
       emit articles(name), :updated, for: [:all]
+      perform_enqueued_jobs
     end
   end
 end

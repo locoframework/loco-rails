@@ -25,6 +25,7 @@ class User
       sleep 0.5
       articles(:two).publish
       emit articles(:two), :updated, for: [users(:zbig)]
+      perform_enqueued_jobs
       within "#article_#{articles(:two).id} td.published" do
         assert page.has_content? 'yes'
       end
@@ -71,6 +72,7 @@ class User
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' * 2
       ).tap(&:save!)
       emit article, :created, for: [users(user_name)]
+      perform_enqueued_jobs
       article
     end
 
@@ -78,6 +80,7 @@ class User
       articles(name).tap do |article|
         article.destroy
         emit article, :destroyed, for: [users(:zbig)]
+        perform_enqueued_jobs
       end
     end
   end

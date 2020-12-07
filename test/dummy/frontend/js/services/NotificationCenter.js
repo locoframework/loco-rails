@@ -65,8 +65,13 @@ const commentCreated = async ({ article_id: articleId, id }) => {
   }
   const [article] = findArticle(store.getState(), articleId);
   if (!article) return;
-  const comment = await Comment.find(findParams);
+  // Idempotency / TODO: remove when real idempotency
+  let [comment] = findComment(store.getState(), id, { parentId: articleId });
+  if (comment !== null) return;
+  comment = await Comment.find(findParams);
+  if (comment === null) return;
   store.dispatch(addComments([comment], articleId));
+  commentsChanged({ article_id: articleId }, 1);
 };
 
 const commentDestroyed = ({ article_id: articleId, id }) => {
@@ -114,7 +119,6 @@ export default async data => {
       articleUpdated(data.payload);
       break;
     case "Article.Comment created":
-      commentsChanged(data.payload, 1);
       commentCreated(data.payload);
       break;
     case "Article.Comment destroyed":

@@ -6,7 +6,7 @@ module Loco
       Broadcaster.(
         obj,
         event,
-        payload: opts[:data],
+        payload: opts[:payload] || opts[:data],
         recipients: opts[opts[:for] ? :for : :to]
       )
     end
