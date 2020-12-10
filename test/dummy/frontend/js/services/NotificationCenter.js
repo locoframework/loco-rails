@@ -65,10 +65,7 @@ const commentCreated = async ({ article_id: articleId, id }) => {
   }
   const [article] = findArticle(store.getState(), articleId);
   if (!article) return;
-  // Idempotency / TODO: remove when real idempotency
-  let [comment] = findComment(store.getState(), id, { parentId: articleId });
-  if (comment !== null) return;
-  comment = await Comment.find(findParams);
+  const comment = await Comment.find(findParams);
   if (comment === null) return;
   store.dispatch(addComments([comment], articleId));
   commentsChanged({ article_id: articleId }, 1);
