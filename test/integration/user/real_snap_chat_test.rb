@@ -29,7 +29,6 @@ class User
     end
 
     test 'should send messages' do
-      perform_enqueued_jobs
       join_room users(:jane), @room
       fill_in 'message', with: 'Hello Jane!'
       find('#message').native.send_keys :return

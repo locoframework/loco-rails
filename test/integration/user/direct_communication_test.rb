@@ -14,9 +14,7 @@ class User
 
     test 'should show an alert' do
       sleep 0.1
-      perform_enqueued_jobs
       emit_to users(:zbig), type: 'PING'
-      perform_enqueued_jobs
       sleep 0.1
       assert_equal 'Ping!', page.driver.browser.switch_to.alert.text
       page.driver.browser.switch_to.alert.accept
