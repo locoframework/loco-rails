@@ -7,7 +7,6 @@ init({
   cable: createConsumer(),
   notificationCenter: NotificationCenter,
   notifications: {
-    enable: true,
     log: true,
     size: 10
   },
