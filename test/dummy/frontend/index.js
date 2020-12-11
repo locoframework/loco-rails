@@ -6,7 +6,6 @@ import "initializers/loco";
 import "validators";
 import "locales";
 import "controllers";
-import "models";
 
 // for testing purposes only
 import { getLine, getWire } from "loco-js";
