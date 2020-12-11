@@ -6,11 +6,8 @@ import Member from "./room/Member";
 import Room from "./Room";
 import User from "./User";
 
-Object.assign(Article, { Comment });
-Object.assign(Room, { Member });
-
 Object.assign(Models, {
-  Article,
-  Room,
+  Article: Object.assign(Article, { Comment }),
+  Room: Object.assign(Room, { Member }),
   User
 });
