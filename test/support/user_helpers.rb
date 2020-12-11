@@ -23,14 +23,12 @@ module UserHelpers
       a.save!
     end
     emit articles(name), :updated, for: [users(:zbig)]
-    perform_enqueued_jobs
   end
 
   def destroy_article(name)
     article = articles name
     article.destroy
     emit article, :destroyed, for: [article.user]
-    perform_enqueued_jobs
   end
 
   def join_room(user, room)

@@ -20,7 +20,6 @@ class User
       emit articles(:two), :updating,
            data: { mark: Time.current.to_f.to_s },
            for: [users(:zbig)]
-      perform_enqueued_jobs
       assert page.has_content? 'Uuups someone else started editing this article.'
     end
 

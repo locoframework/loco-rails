@@ -6,12 +6,7 @@ module Loco
       def call(obj, event, recipients: nil, payload: nil)
         payload ||= {}
         payload[:loco] = { idempotency_key: SecureRandom.hex }
-        processed_recips = process_recipients(recipients)
-        init_notifications(obj, event, processed_recips, payload).each do |recipient, notification|
-          sync_time = notification.created_at.iso8601(6)
-          SenderJob.perform_later(recipient, loco: { notification: notification.compact })
-          SenderJob.perform_later(recipient, loco: { sync_time: sync_time })
-        end
+        send_notifications(obj, event, process_recipients(recipients), payload)
       end
 
       private
@@ -24,10 +19,16 @@ module Loco
         recipients
       end
 
-      def init_notifications(obj, event, recipients, payload)
-        recipients.each_with_object({}) do |recipient, hash|
-          key = keify_recipient(recipient)
-          hash[key] = Notification.create!(obj: obj, event: event, recipient: recipient, data: payload)
+      def send_notifications(obj, event, recipients, payload)
+        recipients.each do |recipient|
+          notification = Notification.create!(
+            obj: obj,
+            event: event,
+            recipient: recipient,
+            data: payload
+          )
+          sync_time = notification.created_at.iso8601(6)
+          send_notification(keify_recipient(recipient), notification, sync_time)
         end
       end
 
@@ -36,6 +37,16 @@ module Loco
         when String then { 'token' => recipient }
         when Class then { 'class' => recipient.name }
         else recipient
+        end
+      end
+
+      def send_notification(recipient, notification, sync_time)
+        if notification.recipient_id
+          Sender.(recipient, loco: { notification: notification.compact })
+          Sender.(recipient, loco: { sync_time: sync_time })
+        else
+          SenderJob.perform_later(recipient, loco: { notification: notification.compact })
+          SenderJob.perform_later(recipient, loco: { sync_time: sync_time })
         end
       end
     end
