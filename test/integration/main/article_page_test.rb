@@ -98,6 +98,7 @@ module Main
         assert_not page.has_content? '(edited)'
       end
       update_article :one
+      sleep 0.1
       within '#title' do
         assert page.has_content? '(edited)'
       end
