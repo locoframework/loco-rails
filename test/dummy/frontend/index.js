@@ -3,7 +3,7 @@ import "global.css";
 
 import "initializers/rails";
 import "initializers/loco";
-import "validators";
+import "validators/Vulgarity";
 import "locales";
 
 // for testing purposes only

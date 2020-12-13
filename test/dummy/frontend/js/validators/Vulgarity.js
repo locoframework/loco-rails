@@ -1,6 +1,6 @@
 import { getLocale, I18n, Validators } from "loco-js";
 
-class Vulgarity extends Validators.Base {
+Validators.Vulgarity = class extends Validators.Base {
   static identity = "Vulgarity";
 
   constructor() {
@@ -37,6 +37,4 @@ class Vulgarity extends Validators.Base {
         return "fuck";
     }
   }
-}
-
-export default Vulgarity;
+};
