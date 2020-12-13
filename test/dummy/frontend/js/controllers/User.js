@@ -4,9 +4,7 @@ import Rooms from "./user/Rooms";
 
 class User extends App {}
 
-Object.assign(User, {
-  Articles,
-  Rooms
-});
+User.Articles = Articles;
+User.Rooms = Rooms;
 
 export default User;

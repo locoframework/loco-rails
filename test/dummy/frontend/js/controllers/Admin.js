@@ -10,11 +10,9 @@ class Admin extends App {
   }
 }
 
-Object.assign(Admin, {
-  Articles,
-  Comments,
-  Sessions,
-  Users
-});
+Admin.Articles = Articles;
+Admin.Comments = Comments;
+Admin.Sessions = Sessions;
+Admin.Users = Users;
 
 export default Admin;
