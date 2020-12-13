@@ -1,9 +1,4 @@
-import {
-  getWire,
-  connector as locoConnector,
-  init,
-  Controllers
-} from "loco-js";
+import { getWire, connector as locoConnector, init } from "loco-js";
 import { connect as connectUI } from "loco-js-ui";
 import { createConsumer } from "@rails/actioncable";
 
@@ -14,12 +9,9 @@ import Member from "models/room/Member";
 import Room from "models/Room";
 import User from "models/User";
 
-import Disconnection from "controllers/concerns/Disconnection";
 import Admin from "controllers/Admin";
 import Main from "controllers/Main";
 import UserController from "controllers/User";
-
-Object.assign(Controllers.Base.prototype, Disconnection);
 
 Article.Comment = Comment;
 Room.Member = Member;
