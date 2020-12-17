@@ -20,7 +20,7 @@ module Loco
 
     describe 'checking connections' do
       before do
-        @payload = { loco: { connection_check: true } }
+        @payload = { loco: { ping: true } }
         @org_expiration = WsConnectionManager::EXPIRATION
         Kernel.silence_warnings { WsConnectionManager::EXPIRATION = 1 }
       end

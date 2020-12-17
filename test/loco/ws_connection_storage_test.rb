@@ -66,7 +66,7 @@ module Loco
       it 'accepts pattern' do
         res = []
         @storage.scan(match: 'key3*') { |v| res << v }
-        assert_equal(['UUID#3', 'UUID#4'], res)
+        assert_equal(['UUID#3', 'UUID#4'], res.sort)
       end
     end
 

@@ -41,7 +41,7 @@ module Loco
       end
 
       it 'changes a status to "verification" and triggers background jobs' do
-        expect(Sender).to receive(:call).with('UUID#3', loco: { connection_check: true })
+        expect(Sender).to receive(:call).with('UUID#3', loco: { ping: true })
         cleaner_job = double('cleaner_job')
         expect(CleanerJob).to receive(:set).with(wait: 5.seconds) { cleaner_job }
         expect(cleaner_job).to receive(:perform_later).with(@identifier, 'UUID#3')
