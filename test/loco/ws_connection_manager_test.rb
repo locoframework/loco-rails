@@ -31,23 +31,11 @@ module Loco
 
       it 'is run after add and del' do
         uuid1 = 'UUID#1'
-        uuid2 = 'UUID#2'
-        uuid3 = 'UUID#3'
+        expect(WsConnectionChecker).to receive(:call).with(@identifier, skip: uuid1)
         @subject.add(uuid1)
-        @subject.add(uuid2)
         assert_equal 'ok', @storage.get(uuid1)
-
-        expect(Sender).to receive(:call).with(uuid1, @payload)
-        expect(Sender).to receive(:call).with(uuid2, @payload)
-        sleep 2
-        @subject.add(uuid3)
-        assert_equal('verification', @storage.get(uuid2))
-        assert_equal 3, @storage.members(@identifier).size
-
-        @subject.del(uuid2)
-        assert_equal('verification', @storage.get(uuid1))
-        assert_nil @storage.get(uuid2)
-        assert_equal 'ok', @storage.get(uuid3)
+        expect(WsConnectionChecker).to receive(:call).with(@identifier)
+        @subject.del(uuid1)
       end
     end
 

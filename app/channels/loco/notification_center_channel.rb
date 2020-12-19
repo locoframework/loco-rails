@@ -20,7 +20,10 @@ module Loco
     end
 
     def receive(payload)
-      broadcast_to(@uuid, loco: { ping: true }) if payload.dig('loco', 'pong')
+      if payload.dig('loco', 'pong')
+        update_connections
+        broadcast_to(@uuid, loco: { ping: true })
+      end
       return if payload.keys == ['loco']
 
       indexed_permissions = PermissionsPresenter.indexed(loco_permissions)
@@ -29,7 +32,6 @@ module Loco
 
     protected
 
-    # TODO: unused
     def update_connections
       PermissionsPresenter.indexed(loco_permissions, except: :uuid).each do |_, resource|
         WsConnectionManager.new(resource).update(@uuid)
