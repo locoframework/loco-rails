@@ -6,14 +6,7 @@ module Loco
       def call(recipient_s, payload = {})
         payload = with_idempotency_key(payload)
         recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
-        recipients.each do |recipient|
-          case recipient
-          when String then NotificationCenterChannel.broadcast_to(recipient, payload)
-          when Hash then process_hash(recipient, payload)
-          else broadcast_to(recipient, payload)
-          end
-        end
-        payload[:loco][:idempotency_key]
+        new.(recipients, payload)
       end
 
       private
@@ -25,20 +18,44 @@ module Loco
         hash.delete(:idempotency_key)
         hash
       end
+    end
 
-      def process_hash(recipient, payload)
-        if recipient.key?('token')
-          broadcast_to(recipient['token'], payload)
-        elsif recipient.key?('class')
-          broadcast_to(recipient['class'].constantize, payload)
+    def initialize
+      @uuids = []
+    end
+
+    def call(recipients, payload)
+      recipients.each do |recipient|
+        case recipient
+        when String then broadcast_to(recipient, payload)
+        when Hash then process_hash(recipient, payload)
+        else find_and_broadcast_to(recipient, payload)
         end
       end
+      payload[:loco][:idempotency_key]
+    end
 
-      def broadcast_to(recipient, payload)
-        WsConnectionFinder.(recipient) do |uuid|
-          NotificationCenterChannel.broadcast_to(uuid, payload)
-        end
+    private
+
+    def process_hash(recipient, payload)
+      if recipient.key?('token')
+        find_and_broadcast_to(recipient['token'], payload)
+      elsif recipient.key?('class')
+        find_and_broadcast_to(recipient['class'].constantize, payload)
       end
+    end
+
+    def find_and_broadcast_to(recipient, payload)
+      WsConnectionFinder.(recipient) do |uuid|
+        broadcast_to(uuid, payload)
+      end
+    end
+
+    def broadcast_to(uuid, payload)
+      return if @uuids.include?(uuid)
+
+      @uuids << uuid
+      NotificationCenterChannel.broadcast_to(uuid, payload)
     end
   end
 end

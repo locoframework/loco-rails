@@ -53,6 +53,13 @@ module Loco
         expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#4', @payload)
         Sender.({ 'class' => 'Admin' }, { idempotency_key: 'foobarbaz' })
       end
+
+      it 'sends to a given UUID only once' do
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#1', @payload).once
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#2', @payload).once
+
+        Sender.([users(:zbig), User], @payload)
+      end
     end
   end
 end
