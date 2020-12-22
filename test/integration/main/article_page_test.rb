@@ -75,7 +75,7 @@ module Main
         assert_not page.has_content? 'Some nice thoughts dude (edited)'
       end
       update_comment comment
-      sleep 0.1
+      sleep 0.5
       within 'section#comments' do
         assert page.has_content? 'Some nice thoughts dude (edited)'
       end
