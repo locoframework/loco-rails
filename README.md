@@ -348,6 +348,8 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 * **Breaking changes**:
     * Redis is required in dev env too when you use ActionCable
+    * internal data structures in Redis have changed. Running `FLUSHDB` is recommended
+
 ### 4.1 _(2020-07-27)_
 
 * Loco-JS-Core has been updated to v0.2
