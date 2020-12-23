@@ -1,10 +1,10 @@
 one:
   title: A Guide to Testing Rails Applications
   text: "Testing support was woven into the Rails fabric from the beginning. Just about every Rails application interacts heavily with a database and, as a result, your tests will need a database to interact with as well. To write efficient tests, you'll need to understand how to set up this database and populate it with sample data."
-  user: user_zbig
+  user: zbig
   published_at: <%= 1.day.ago.strftime('%F %T') %>
 
 two:
   title: What is Active Record?
   text: "Active Record is the M in MVC - the model - which is the layer of the system responsible for representing business data and logic. Active Record facilitates the creation and use of business objects whose data requires persistent storage to a database. It is an implementation of the Active Record pattern which itself is a description of an Object Relational Mapping system."
-  user: user_zbig
+  user: zbig

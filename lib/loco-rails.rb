@@ -8,9 +8,12 @@ require 'loco/emitter'
 require 'loco/engine'
 require 'loco/helpers'
 require 'loco/hub'
+require 'loco/permissions_presenter'
 require 'loco/sender'
+require 'loco/ws_connection_checker'
 require 'loco/ws_connection_manager'
-require 'loco/ws_connected_resources_manager'
+require 'loco/ws_connection_finder'
+require 'loco/ws_connection_identifier'
 require 'loco/ws_connection_storage'
 
 module Loco

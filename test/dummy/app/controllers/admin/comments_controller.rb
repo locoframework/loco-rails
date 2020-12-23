@@ -21,7 +21,7 @@ class Admin
 
     def update
       if @comment.update comment_params
-        emit @comment, :updated, data: { article_id: @article.id }
+        emit @comment, :updated, payload: { article_id: @article.id }
         render json: {
           success: true,
           status: 200,

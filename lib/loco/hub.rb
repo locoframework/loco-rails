@@ -2,71 +2,64 @@
 
 module Loco
   class Hub
-    PREFIX = 'loco:hub:'
-
-    attr_reader :raw_members
-
-    def initialize(name, members = [])
-      @name = "#{PREFIX}#{name}"
-      @raw_members = members.map { |m| serialize m }
-    end
+    PREFIX = 'hub:'
 
     class << self
-      def get(name)
-        hub = WsConnectionStorage.current.get "#{PREFIX}#{name}"
-        return nil if hub.blank?
-
-        new name, JSON.parse(hub)
+      def set(name, members)
+        new(name, members)
       end
+
+      def get(name)
+        return nil if WsConnectionStorage.current.type("s:#{full_name(name)}") != 'set'
+
+        new(name)
+      end
+
+      def full_name(val)
+        "#{PREFIX}#{val}"
+      end
+    end
+
+    def initialize(name, members = [])
+      @name = self.class.full_name(name)
+      members.map { |member| add_member(member) }
     end
 
     def name
-      @name.split(PREFIX).last
+      full_name.split(PREFIX).last
+    end
+
+    def full_name
+      @name
     end
 
     def add_member(member)
-      serialized = serialize member
-      return raw_members if raw_members.include? serialized
-
-      raw_members << serialized
-      save
-      raw_members
+      WsConnectionStorage.current.add(@name, WsConnectionIdentifier.(member))
     end
 
     def del_member(member)
-      serialized = serialize member
-      return nil unless raw_members.include? serialized
-
-      raw_members.delete serialized
-      save
-      serialized
+      WsConnectionStorage.current.rem(@name, WsConnectionIdentifier.(member))
     end
 
     def destroy
-      WsConnectionStorage.current.del @name
-      true
-    end
-
-    def save
-      WsConnectionStorage.current.set @name, raw_members.to_json
-      self
-    end
-
-    def include?(resource)
-      raw_members.include? serialize(resource)
-    end
-
-    def members
-      raw_members.map do |str|
-        klass, id = str.split ':'
-        klass.classify.constantize.find_by id: id
+      WsConnectionStorage.current.members(@name).each do |member|
+        WsConnectionStorage.current.rem(@name, member)
       end
     end
 
-    private
+    def include?(resource)
+      WsConnectionStorage.current.member?(@name, WsConnectionIdentifier.(resource))
+    end
 
-    def serialize(member)
-      WsConnectionManager.new(member).identifier
+    def raw_members
+      WsConnectionStorage.current.members(@name)
+    end
+
+    def members
+      raw_members.map do |serialized|
+        klass, id = serialized.split(':')
+        klass.classify.constantize.find_by(id: id)
+      end
     end
   end
 end

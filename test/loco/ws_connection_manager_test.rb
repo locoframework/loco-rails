@@ -3,36 +3,80 @@
 require 'test_helper'
 
 module Loco
-  class WsConnectionManagerTest < TC
+  class WsConnectionManagerTest < TCWithMocks
     before do
-      @user = users(:user_zbig)
+      @user = users(:zbig)
+      @identifier = WsConnectionIdentifier.(@user)
+      @storage = WsConnectionStorage.current
       @described_class = Loco::WsConnectionManager
       @subject = @described_class.new(@user)
     end
 
+    describe 'initialization' do
+      it 'can accept an identifier' do
+        assert_equal 'foo', @described_class.new('foo', identifier: true).send(:identifier)
+      end
+    end
+
+    describe 'checking connections' do
+      before do
+        @payload = { loco: { ping: true } }
+        @org_expiration = WsConnectionManager::EXPIRATION
+        Kernel.silence_warnings { WsConnectionManager::EXPIRATION = 1 }
+      end
+
+      after do
+        Kernel.silence_warnings { WsConnectionManager::EXPIRATION = @org_expiration }
+      end
+
+      it 'is run after add and del' do
+        uuid1 = 'UUID#1'
+        expect(WsConnectionChecker).to receive(:call).with(@identifier, skip: uuid1)
+        @subject.add(uuid1)
+        assert_equal 'ok', @storage.get(uuid1)
+        expect(WsConnectionChecker).to receive(:call).with(@identifier)
+        @subject.del(uuid1)
+      end
+    end
+
     describe '#add' do
-      it 'returns a correct structure' do
-        uuid = SecureRandom.uuid
-        travel_to Time.utc(2020) do
-          @subject.add(uuid)
-        end
-        assert @subject.connected?(uuid)
+      it 'adds UUID and it is considered connected' do
+        @subject.add('uuid1')
+        assert_equal 'ok', WsConnectionStorage.current.get('uuid1')
       end
     end
 
-    describe '#connected_uuids' do
-      it 'returns connected UUIDs for a given resource' do
-        WsConnectionStorage.instance.del(@subject.identifier)
-        uuid = SecureRandom.uuid
-        @subject.add(uuid)
-        assert_equal [uuid], @subject.connected_uuids
+    describe '#del' do
+      it 'deletes a key' do
+        @subject.add('uuid1')
+        @subject.del('uuid1')
+        assert_nil WsConnectionStorage.current.get('uuid1')
+      end
+
+      it 'calls out a checker' do
+        expect(WsConnectionChecker).to receive(:call).with("user:#{@user.id}")
+        @subject.del('uuid1')
+      end
+
+      it 'can skip triggering a checker"' do
+        expect(WsConnectionChecker).to_not receive(:call)
+        @subject.del('uuid1', skip_checker: true)
       end
     end
 
-    describe '#identifier' do
+    describe '#update' do
+      it do
+        @subject.add('uuid1')
+        @storage.set('h:uuid1', 'tmp-state')
+        @subject.update('uuid1')
+        assert_equal 'ok', WsConnectionStorage.current.get('uuid1')
+      end
+    end
+
+    describe 'private #identifier' do
       it 'returns a correct format of an identifier' do
-        assert_equal "user:#{@user.id}", @subject.identifier
-        assert_equal 'foo', @described_class.new('foo').identifier
+        assert_equal "user:#{@user.id}", @subject.send(:identifier)
+        assert_equal 'foo', @described_class.new('foo').send(:identifier)
       end
     end
   end

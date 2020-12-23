@@ -15,7 +15,7 @@ class User
 
     test 'should auto update the list to include a recently added article' do
       sleep 0.5
-      create_article_for :user_zbig
+      create_article_for :zbig
       assert page.has_content? 'Article #1'
       assert page.has_content? 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
     end
@@ -24,7 +24,7 @@ class User
       visit '/user/articles'
       sleep 0.5
       articles(:two).publish
-      emit articles(:two), :updated, for: [users(:user_zbig)]
+      emit articles(:two), :updated, for: [users(:zbig)]
       within "#article_#{articles(:two).id} td.published" do
         assert page.has_content? 'yes'
       end
@@ -77,7 +77,7 @@ class User
     def destroy_article(name)
       articles(name).tap do |article|
         article.destroy
-        emit article, :destroyed, for: [users(:user_zbig)]
+        emit article, :destroyed, for: [users(:zbig)]
       end
     end
   end

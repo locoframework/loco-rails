@@ -10,6 +10,9 @@ import {
 export default produce((draft = {}, action) => {
   switch (action.type) {
     case ADD_COMMENTS:
+      if (draft[action.articleId] === undefined) {
+        draft[action.articleId] = [];
+      }
       draft[action.articleId] = draft[action.articleId].concat(action.comments);
       break;
     case REMOVE_COMMENT:

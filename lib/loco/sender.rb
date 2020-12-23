@@ -2,41 +2,60 @@
 
 module Loco
   class Sender
-    def initialize(recipient, data = {})
-      @recipients = [*recipient]
-      @data = data
+    class << self
+      def call(recipient_s, payload = {})
+        payload = with_idempotency_key(payload)
+        recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
+        new.(recipients, payload)
+      end
+
+      private
+
+      def with_idempotency_key(payload)
+        hash = payload.clone
+        hash[:loco] ||= {}
+        hash[:loco][:idempotency_key] ||= hash[:idempotency_key] || SecureRandom.hex
+        hash.delete(:idempotency_key)
+        hash
+      end
     end
 
-    def emit
-      uuids.each do |uuid|
-        NotificationCenterChannel.broadcast_to(uuid, payload)
+    def initialize
+      @uuids = []
+    end
+
+    def call(recipients, payload)
+      recipients.each do |recipient|
+        case recipient
+        when String then broadcast_to(recipient, payload)
+        when Hash then process_hash(recipient, payload)
+        else find_and_broadcast_to(recipient, payload)
+        end
       end
       payload[:loco][:idempotency_key]
     end
 
     private
 
-    def uuids
-      @recipients.map do |r|
-        case r
-        when String then r
-        when Hub then recipients_from_hub(r)
-        else WsConnectionManager.new(r).connected_uuids
-        end
-      end.flatten.uniq
+    def process_hash(recipient, payload)
+      if recipient.key?('token')
+        find_and_broadcast_to(recipient['token'], payload)
+      elsif recipient.key?('class')
+        find_and_broadcast_to(recipient['class'].constantize, payload)
+      end
     end
 
-    def recipients_from_hub(hub)
-      hub.raw_members.map do |m|
-        WsConnectionManager.new(m).connected_uuids
-      end.flatten.uniq
+    def find_and_broadcast_to(recipient, payload)
+      WsConnectionFinder.(recipient) do |uuid|
+        broadcast_to(uuid, payload)
+      end
     end
 
-    def payload
-      @data[:loco] ||= {}
-      @data[:loco][:idempotency_key] ||= @data[:idempotency_key] || SecureRandom.hex
-      @data.delete(:idempotency_key)
-      @data
+    def broadcast_to(uuid, payload)
+      return if @uuids.include?(uuid)
+
+      @uuids << uuid
+      NotificationCenterChannel.broadcast_to(uuid, payload)
     end
   end
 end

@@ -19,7 +19,7 @@ class User
       sleep 0.1
       emit articles(:two), :updating,
            data: { mark: Time.current.to_f.to_s },
-           for: [users(:user_zbig)]
+           for: [users(:zbig)]
       assert page.has_content? 'Uuups someone else started editing this article.'
     end
 

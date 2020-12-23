@@ -5,17 +5,12 @@ module Loco
     class Fetcher
       attr_accessor :max_size
 
-      def initialize(
-        synced_at:,
-        permissions: [],
-        recipient_token: nil,
-        max_size: nil
-      )
-        @synced_at = synced_at
-        @permissions = permissions
-        @recipient_token = recipient_token
+      def initialize(opts)
+        @synced_at = opts[:synced_at]
+        @permissions = (opts[:permissions] || []).compact
+        @recipient_token = opts[:recipient_token]
         @notifications = nil
-        @max_size = max_size || Loco::Config.notifications_size
+        @max_size = opts[:max_size] || Loco::Config.notifications_size
       end
 
       def formatted_notifications
@@ -56,17 +51,11 @@ module Loco
           recipient_class: nil,
           recipient_id: nil,
           recipient_token: nil
-        ).first max_size
+        ).first(max_size)
       end
 
       def notifications_behind_permissions
-        notifications = []
-        @permissions.each do |resource|
-          next unless resource
-
-          notifications += notification_for_resource resource
-        end
-        notifications
+        @permissions.inject([]) { |arr, resource| arr + notification_for_resource(resource) }
       end
 
       def notifications_behind_token
@@ -74,15 +63,13 @@ module Loco
       end
 
       def notification_for_resource(resource)
-        if resource.instance_of? Class
-          sql = 'recipient_class = ? AND recipient_id IS NULL'
-          return default_scope.where(sql, resource.to_s).first max_size
+        if resource.instance_of?(Class)
+          return default_scope.where(Notification::FOR_CLASS_SQL_TMPL, resource.to_s)
+                              .first(max_size)
         end
         klass = resource.class.name
-        cond1 = '(recipient_class = ? AND recipient_id = ?)'
-        cond2 = '(recipient_class = ? AND recipient_id IS NULL)'
-        sql = "#{cond1} OR #{cond2}"
-        default_scope.where(sql, klass, resource.id, klass).first max_size
+        sql = "(#{Notification::FOR_OBJ_SQL_TMPL}) OR (#{Notification::FOR_CLASS_SQL_TMPL})"
+        default_scope.where(sql, klass, resource.id, klass).first(max_size)
       end
     end
   end

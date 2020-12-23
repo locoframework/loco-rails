@@ -75,7 +75,7 @@ module Main
         assert_not page.has_content? 'Some nice thoughts dude (edited)'
       end
       update_comment comment
-      sleep 0.1
+      sleep 0.5
       within 'section#comments' do
         assert page.has_content? 'Some nice thoughts dude (edited)'
       end
@@ -98,6 +98,7 @@ module Main
         assert_not page.has_content? '(edited)'
       end
       update_article :one
+      sleep 0.1
       within '#title' do
         assert page.has_content? '(edited)'
       end
@@ -126,6 +127,7 @@ module Main
         a.save!
       end
       emit articles(name), :updated, for: [:all]
+      perform_enqueued_jobs
     end
   end
 end

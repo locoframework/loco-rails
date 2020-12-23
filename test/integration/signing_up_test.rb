@@ -12,6 +12,7 @@ class SigningUpTest < IT
     admin_went_to_user_edit_page
     assert page.has_content?('Your account is just verified...')
     admin_confirmed_user
+    sleep 0.5
     assert page.has_content?('Your account has been verified. You can sign in now.')
   end
 

@@ -3,10 +3,8 @@ import "global.css";
 
 import "initializers/rails";
 import "initializers/loco";
-import "validators";
+import "validators/Vulgarity";
 import "locales";
-import "controllers";
-import "models";
 
 // for testing purposes only
 import { getLine, getWire } from "loco-js";

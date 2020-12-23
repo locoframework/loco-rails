@@ -1,10 +1,10 @@
-user_zbig:
+zbig:
   username: zbig
   email: zbigniew.humeniuk@example.com
   password_digest: <%= BCrypt::Password.create("secret", cost: 4) %>
   confirmed_at: <%= 7.days.ago.strftime('%F %T') %>
 
-user_jane:
+jane:
   username: jane
   email: jane@example.com
   password_digest: <%= BCrypt::Password.create("secret", cost: 4) %>

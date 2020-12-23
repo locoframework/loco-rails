@@ -2,6 +2,9 @@
 
 module Loco
   class Notification < ApplicationRecord
+    FOR_OBJ_SQL_TMPL = 'recipient_class = ? AND recipient_id = ?'
+    FOR_CLASS_SQL_TMPL = 'recipient_class = ? AND recipient_id IS NULL'
+
     attr_reader :obj
 
     serialize :data, JSON
@@ -31,9 +34,9 @@ module Loco
       return if val.nil?
       return if val == :all
 
-      if val.is_a? String
+      if val.is_a?(String)
         self.recipient_token = val
-      elsif val.instance_of? Class
+      elsif val.instance_of?(Class)
         self.recipient_class = val.to_s
       else
         self.recipient_class = val.class.name
@@ -41,17 +44,14 @@ module Loco
       end
     end
 
-    def recipient(opts = {})
-      return recipient_token if recipient_token
-      return unless regular_recipient?
-      return class_recipient unless recipient_id
-
-      obj_recipient opts[:shallow]
-    end
-
-    def prepare
-      set_event
-      set_data
+    def recipient(shallow: false)
+      if !recipient_token.nil?
+        recipient_token
+      elsif regular_recipient?
+        init_recipient(shallow)
+      elsif !recipient_class.nil?
+        recipient_class.constantize
+      end
     end
 
     def compact
@@ -61,41 +61,42 @@ module Loco
     private
 
     def regular_recipient?
-      recipient_class && recipient_id
+      !recipient_class.nil? && !recipient_id.nil?
     end
 
-    def class_recipient
-      recipient_class.constantize
-    end
-
-    def obj_recipient(shallow = false)
+    def init_recipient(shallow)
       if shallow
-        recipient_class.constantize.new id: recipient_id
+        recipient_class.constantize.new(id: recipient_id)
       else
-        recipient_class.constantize.find recipient_id
+        recipient_class.constantize.find(recipient_id)
       end
+    end
+
+    def prepare
+      set_event
+      set_data
     end
 
     def set_event
       return if event.present?
-      return if obj.instance_of? Class
+      return if obj.instance_of?(Class)
 
-      if obj.new_record?
-        self.event = 'creating'
-      else
-        set_event_for_persisted_obj
-      end
+      self.event = if obj.new_record?
+                     'creating'
+                   else
+                     event_for_persisted_obj
+                   end
     end
 
-    def set_event_for_persisted_obj
-      self.event = obj.created_at == obj.updated_at ? 'created' : 'updated'
+    def event_for_persisted_obj
+      obj.created_at == obj.updated_at ? 'created' : 'updated'
     end
 
     def set_data
       self.data ||= {}
       return if obj.nil?
 
-      self.data.merge!(id: obj.id)
+      self.data = data.merge(id: obj.id)
     end
   end
 end

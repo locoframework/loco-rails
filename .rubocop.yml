@@ -1,6 +1,7 @@
 require: rubocop-rails
 
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 2.6
   Exclude:
     - node_modules/**/*
@@ -19,7 +20,7 @@ Layout/InitialIndentation:
 
 Layout/LineLength:
   Enabled: true
-  Max: 97
+  Max: 103
   Exclude:
     - test/dummy/config/environments/production.rb
 
@@ -33,11 +34,13 @@ Metrics/BlockLength:
   Exclude:
     - loco-rails.gemspec
     - test/dummy/config/routes.rb
+    - test/loco/*
 
 Metrics/ClassLength:
   Enabled: true
   Exclude:
     - test/integration/**/*
+    - test/loco/**/*
 
 Metrics/MethodLength:
   Enabled: true
@@ -56,6 +59,9 @@ Rails/ApplicationJob:
   Exclude:
     - app/jobs/loco/*
 
+Style/ArrayCoercion:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
@@ -64,6 +70,9 @@ Style/FrozenStringLiteralComment:
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
     - lib/generators/loco/file_injector/templates/connection.rb
+
+Style/LambdaCall:
+  Enabled: false
 
 Style/MixinUsage:
   Enabled: true

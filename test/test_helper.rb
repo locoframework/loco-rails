@@ -9,6 +9,8 @@ require 'minitest/spec'
 require 'capybara/rails'
 require 'selenium/webdriver'
 require 'database_cleaner'
+require 'rspec/mocks'
+require 'rspec/expectations'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
@@ -46,6 +48,7 @@ module ActiveSupport
     fixtures :all
 
     def setup
+      Loco::WsConnectionStorage.current.storage.flushdb
       DatabaseCleaner.start
     end
 
@@ -55,8 +58,29 @@ module ActiveSupport
   end
 end
 
+class TCWithMocks < ActiveSupport::TestCase
+  include ::RSpec::Mocks::ExampleMethods
+  include ::RSpec::Matchers
+
+  def before_setup
+    ::RSpec::Mocks.setup
+    super
+  end
+
+  def after_teardown
+    super
+    ::RSpec::Mocks.verify
+  ensure
+    ::RSpec::Mocks.teardown
+  end
+end
+
 class IT < ActionDispatch::IntegrationTest
   include Capybara::DSL
+
+  def after_teardown
+    Capybara.reset_session!
+  end
 end
 
 TC = ActiveSupport::TestCase

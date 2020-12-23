@@ -16,7 +16,7 @@ module Main
     def create
       comment = Comment.new comment_params
       if comment.save
-        emit comment, :created, data: { article_id: comment.article_id }
+        emit comment, :created, payload: { article_id: comment.article_id }
         success_response(201, 'Your comment has been posted!')
       else
         failure_response(400, comment.errors)

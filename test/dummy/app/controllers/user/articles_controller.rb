@@ -35,7 +35,7 @@ class User
 
     def edit
       @mark = Time.current.to_f.to_s
-      emit @article, :updating, data: { mark: @mark },
+      emit @article, :updating, payload: { mark: @mark },
                                 to: [@article.published? ? :all : current_user]
     end
 
@@ -60,7 +60,7 @@ class User
 
     def publish
       if @article.publish
-        emit @article, :published, data: { id: @article.id }
+        emit @article, :published, payload: { id: @article.id }
         emit @article, :updated, to: current_user
         render json: { success: true, status: 200 }
       else

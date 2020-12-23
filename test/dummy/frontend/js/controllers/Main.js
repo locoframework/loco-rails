@@ -1,19 +1,16 @@
-import { Controllers } from "loco-js";
-
+import App from "./App";
 import Articles from "./main/Articles";
 import Pages from "./main/Pages";
 import Users from "./main/Users";
 
-class Main extends Controllers.Base {
+class Main extends App {
   initialize() {
     this.setScope("main");
   }
 }
 
-Object.assign(Main, {
-  Articles,
-  Pages,
-  Users
-});
+Main.Articles = Articles;
+Main.Pages = Pages;
+Main.Users = Users;
 
 export default Main;
