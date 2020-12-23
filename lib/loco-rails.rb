@@ -17,9 +17,6 @@ require 'loco/ws_connection_identifier'
 require 'loco/ws_connection_storage'
 
 module Loco
-  module Jobs
-  end
-
   module_function
 
   def configure

@@ -60,7 +60,7 @@ class User
   class RoomsController < UserController
     def join
       @hub.add_member current_user
-      emit @room, :member_joined, data: {
+      emit @room, :member_joined, payload: {
         room_id: @room.id,
         member: {
           id: current_user.id,
@@ -225,7 +225,7 @@ include Loco::Emitter
 receivers = [article.user, Admin, 'a54e1ef01cb9']
 data = { foo: 'bar' }
 
-emit(article, :confirmed, to: receivers, data: data)
+emit(article, :confirmed, to: receivers, payload: data)
 ```
 
 Arguments:
@@ -342,6 +342,10 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 # 📈 Changelog
 
 ## Major releases 🎙
+
+### 5.0 _(2020-12-23)_
+
+* `connection.rb` template has been modified
 
 ### 4.1 _(2020-07-27)_
 

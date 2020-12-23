@@ -4,7 +4,6 @@ module Loco
   module WsConnectionChecker
     module_function
 
-    # TODO: is skip needed?
     def call(identifier, skip: nil)
       WsConnectionStorage.current.members(identifier).each do |uuid|
         next if uuid == skip
