@@ -143,7 +143,7 @@ This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locofr
 * [Loco-Rails-Core](https://github.com/locoframework/loco-rails-core) - Rails plugin that has been extracted from Loco-Rails so it could be used as a stand-alone lib. It provides a logical structure for JavaScript code that corresponds with Rails` controllers and their actions that handle a given request. Loco-Rails-Core requires [Loco-JS-Core](https://github.com/locoframework/loco-js-core) to work.
 * modern Ruby (tested on >= 2.3.0)
 * Rails 5
-* [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - Loco-Rails stores information about WebSocket connections in Redis. It is not required if you don't want to use ActionCable, or you use Rails in the development environment. In the last case - Loco-Rails uses an in-process data store or Redis (if available).
+* [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - Loco-Rails stores information about WebSocket connections in Redis. It is not required if you don't want to use ActionCable.
 
 # 📥 Installation
 
@@ -195,9 +195,8 @@ end
 Where:
 
 * notifications_size - max number of notifications returned from the server at once
-* app_name - used as key's prefix to store info about current WebSocket connections in Redis or memory
-
-In a production environment - it's better not to store all the data Loco-Rails needs to work in memory. A better option is Redis, which is shared between app servers.  
+* app_name - used as key's prefix to store info about current WebSocket connections in Redis
+  
 If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Except that, you can specify Redis instance directly using `redis_instance: Redis.new(your_config)`.
 
 2️⃣ Browse all generated files and customize them according to the comments.
@@ -288,7 +287,7 @@ Details:
 Important instance methods of `Loco::Hub`:
 
 * `name`
-* `members` - returns the hub's members. Members are stored in an informative, shortened form inside Redis / in-process storage. Be aware that this method performs calls to DB to fetch all members.
+* `members` - returns the hub's members. Members are stored in an informative, shortened form inside Redis. Be aware that this method performs calls to DB to fetch all members.
 * `raw_members` - returns hub's members in the shortened form as they are stored: `"{class}:{id}"`
 * `add_member(member)`
 * `del_member(member)`
@@ -347,6 +346,8 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 * `connection.rb` template has been modified
 
+* **Breaking changes**:
+    * Redis is required in dev env too when you use ActionCable
 ### 4.1 _(2020-07-27)_
 
 * Loco-JS-Core has been updated to v0.2
