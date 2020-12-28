@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'capybara', '~> 3.33.0'
   s.add_development_dependency 'database_cleaner', '~> 1.8.5'
   s.add_development_dependency 'jbuilder', '~> 2.10.1'
-  s.add_development_dependency 'listen', '~> 3.2.1'
+  s.add_development_dependency 'listen', '~> 3.3.3'
   s.add_development_dependency 'mysql2', '~> 0.5.3'
   s.add_development_dependency 'puma', '~> 4.3.6'
   s.add_development_dependency 'redis', '~> 4.2.2'
