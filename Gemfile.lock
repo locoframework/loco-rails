@@ -117,7 +117,7 @@ GEM
     parser (3.0.1.1)
       ast (~> 2.4.1)
     public_suffix (4.0.6)
-    puma (4.3.7)
+    puma (5.3.1)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -214,7 +214,7 @@ DEPENDENCIES
   listen (~> 3.3.3)
   loco-rails!
   mysql2 (~> 0.5.3)
-  puma (~> 4.3.6)
+  puma (~> 5.3.1)
   redis (~> 4.2.2)
   rspec-expectations (~> 3.9.2)
   rspec-mocks (~> 3.9.1)
