@@ -20,7 +20,7 @@
     "@rails/actioncable": "^6.1.0",
     "@rails/ujs": "^6.1.0",
     "core-js": "^3.8.1",
-    "immer": "^9.0.2",
+    "immer": "^9.0.6",
     "loco-js": "^5.0.0",
     "loco-js-ui": "^0.1.2",
     "prop-types": "^15.7.2",
