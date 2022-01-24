@@ -333,6 +333,9 @@ You can look at the working example [here](https://github.com/locoframework/loco
 # 👩🏽‍🔬 Tests
 
 ```bash
+$ bundle install
+$ docker-compose up
+$ bin/rails db:create
 $ bin/rails test
 ```
 
