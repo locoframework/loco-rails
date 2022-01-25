@@ -4,7 +4,7 @@ const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const postCssOptions = require("./postcss.config.js");
+const postcssOptions = require("./postcss.config.js");
 
 module.exports = {
   resolve: {
@@ -19,15 +19,24 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
       {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
           "css-loader",
-          { loader: "postcss-loader", options: postCssOptions }
-        ]
-      }
+          {
+            loader: "postcss-loader",
+            options: { postcssOptions: postcssOptions },
+          },
+        ],
+      },
     ]
   },
   plugins: [
@@ -41,22 +50,20 @@ module.exports = {
       cacheGroups: {
         commons: {
           chunks: "initial",
+          name: "commons",
           minChunks: 2,
-          maxInitialRequests: 5, // The default limit is too small to showcase the effect
-          minSize: 0 // This is example is too small to create commons chunks
+          minSize: 5000, // The default is too small to create commons chunks
         },
         vendor: {
           test: /node_modules/,
-          chunks: "initial",
+          chunks: "all",
           name: "vendor",
-          priority: 10,
-          enforce: true
-        }
-      }
-    }
+        },
+      },
+    },
   },
   output: {
-    filename: "[name].js",
-    path: path.resolve(__dirname, "test/dummy/app/assets/bundles")
+    path: path.resolve(__dirname, "test/dummy/app/assets/bundles"),
+    publicPath: "/assets/",
   }
 };
