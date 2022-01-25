@@ -30,7 +30,7 @@ class User
     end
 
     test 'should allow to update fields in order to have updated values' do
-      sleep 0.1
+      sleep 1
       update_article :two
       within "div[data-attr='title']" do
         click_link 'apply changes'
