@@ -2,7 +2,7 @@ require: rubocop-rails
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
   Exclude:
     - node_modules/**/*
     - test/dummy/db/schema.rb
@@ -17,12 +17,6 @@ Layout/InitialIndentation:
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
     - lib/generators/loco/file_injector/templates/connection.rb
-
-Layout/LineLength:
-  Enabled: true
-  Max: 103
-  Exclude:
-    - test/dummy/config/environments/production.rb
 
 Layout/TrailingEmptyLines:
   Enabled: true

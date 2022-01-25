@@ -18,7 +18,7 @@ class Admin
 
     def show
       @article = Article.includes(:user).find params[:id]
-      @abbr = params[:abbr].present? ? true : false
+      @abbr = params[:abbr].present?
     end
 
     def edit

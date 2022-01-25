@@ -24,7 +24,7 @@ class User
         format.html { render }
         format.json do
           set_article
-          @abbr = params[:abbr].present? ? true : false
+          @abbr = params[:abbr].present?
         end
       end
     end

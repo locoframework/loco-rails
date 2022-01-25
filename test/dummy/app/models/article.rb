@@ -75,7 +75,7 @@ class Article < ApplicationRecord
   def calculate_admin_review_time
     return if admin_review_started_at.nil?
 
-    val = (Time.now.to_f * 1000 - admin_review_started_at.to_f) / 1000
+    val = ((Time.now.to_f * 1000) - admin_review_started_at.to_f) / 1000
     self.admin_review_time = val.round 2
   end
 end

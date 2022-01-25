@@ -25,10 +25,10 @@ module Loco
     end
 
     def get(key, hkey = nil)
-      if !hkey.nil?
-        storage.hget(proper_key("h:#{key}"), hkey)
-      else
+      if hkey.nil?
         storage.get(proper_key("k:#{key}"))
+      else
+        storage.hget(proper_key("h:#{key}"), hkey)
       end
     end
 
@@ -41,10 +41,10 @@ module Loco
     end
 
     def del(key, hkey = nil)
-      if !hkey.nil?
-        storage.hdel(proper_key("h:#{key}"), hkey)
-      else
+      if hkey.nil?
         storage.del(proper_key("k:#{key}"))
+      else
+        storage.hdel(proper_key("h:#{key}"), hkey)
       end
     end
 

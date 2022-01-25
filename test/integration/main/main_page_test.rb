@@ -9,18 +9,18 @@ module Main
 
     ARTICLE_TEXTS = {
       one: 'Why do we need associations between models? Because they make common ' \
-        'operations simpler and easier in your code. For example, consider a simple Rails ' \
-        'application that includes a model for customers and a model for orders.',
+           'operations simpler and easier in your code. For example, consider a simple Rails ' \
+           'application that includes a model for customers and a model for orders.',
       two: 'Forms in web applications are an essential interface for user input. ' \
-        'However, form markup can quickly become tedious to write and maintain because ' \
-        'of the need to handle form control naming and its numerous attributes.',
+           'However, form markup can quickly become tedious to write and maintain because ' \
+           'of the need to handle form control naming and its numerous attributes.',
       three: 'Active Support is the Ruby on Rails component responsible for providing Ruby ' \
-        'language extensions, utilities, and other transversal stuff.',
+             'language extensions, utilities, and other transversal stuff.',
       four: 'In general, the work of configuring Rails means configuring the ' \
-        'components of  Rails, as well as configuring Rails itself. The configuration ' \
-        'file config/application.rb and environment-specific configuration files (such as ' \
-        'config/environments/production.rb) allow you to specify the various settings ' \
-        'that you want to pass down to all of the components.'
+            'components of  Rails, as well as configuring Rails itself. The configuration ' \
+            'file config/application.rb and environment-specific configuration files (such as ' \
+            'config/environments/production.rb) allow you to specify the various settings ' \
+            'that you want to pass down to all of the components.'
     }.freeze
 
     def setup
