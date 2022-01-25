@@ -22,17 +22,17 @@ init({
   controllers: {
     Admin,
     Main,
-    User: UserController
+    User: UserController,
   },
   models: {
     Article,
     Room,
-    User
+    User,
   },
   notificationCenter: NotificationCenter,
   notifications: {
     log: true,
-    size: 10
+    size: 10,
   },
   postInit: () => {
     if (
@@ -40,7 +40,7 @@ init({
     )
       return;
     getWire().setPollingTime(1000);
-  }
+  },
 });
 
 connectUI(locoConnector);

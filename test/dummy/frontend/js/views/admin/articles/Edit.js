@@ -4,14 +4,14 @@ import { subscribe } from "loco-js";
 
 import CommentList from "components/admin/CommentList";
 
-const renderArticle = article => {
+const renderArticle = (article) => {
   document.getElementById("article_author").textContent = article.author;
   document.getElementById("article_title").textContent = article.title;
   document.getElementById("article_text").textContent = article.content;
 };
 
-const createReceivedMessage = article => {
-  return async function(type) {
+const createReceivedMessage = (article) => {
+  return async function (type) {
     switch (type) {
       case "updated": {
         const reloadedArticle = await article.reload();
@@ -22,15 +22,15 @@ const createReceivedMessage = article => {
 };
 
 export default {
-  render: article => {
+  render: (article) => {
     subscribe({ to: article, with: createReceivedMessage(article) });
     renderArticle(article);
   },
 
-  renderComments: comments => {
+  renderComments: (comments) => {
     renderElement(
       <CommentList comments={comments} />,
       document.getElementById("comments")
     );
-  }
+  },
 };

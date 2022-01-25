@@ -16,13 +16,15 @@ function UserList(props) {
     };
   }, []);
 
-  const list = users.map(user => <User key={`user_${user.id}`} user={user} />);
+  const list = users.map((user) => (
+    <User key={`user_${user.id}`} user={user} />
+  ));
 
   return <>{list}</>;
 }
 
 UserList.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.instanceOf(UserModel)).isRequired
+  users: PropTypes.arrayOf(PropTypes.instanceOf(UserModel)).isRequired,
 };
 
 export default UserList;

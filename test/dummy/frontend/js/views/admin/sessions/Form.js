@@ -5,7 +5,7 @@ const signedIn = () => (window.location.href = "/admin");
 export default () => {
   const form = new UI.Form({
     id: "sign_in_admin",
-    callbackSuccess: signedIn
+    callbackSuccess: signedIn,
   });
   form.render();
 };

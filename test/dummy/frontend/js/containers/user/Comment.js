@@ -12,7 +12,7 @@ function Comment({ comment, isAdmin = false }) {
 
   const createdAt = new DateService(comment.createdAt).strftime("%d %b %y");
 
-  const handleApproving = async e => {
+  const handleApproving = async (e) => {
     e.preventDefault();
     setApproving(true);
     comment.approved = true;
@@ -90,7 +90,7 @@ function Comment({ comment, isAdmin = false }) {
 
 Comment.propTypes = {
   comment: PropTypes.instanceOf(CommentModel).isRequired,
-  isAdmin: PropTypes.bool
+  isAdmin: PropTypes.bool,
 };
 
 export default Comment;

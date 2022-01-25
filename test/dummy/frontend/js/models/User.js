@@ -6,8 +6,8 @@ class User extends Models.Base {
   static resources = {
     url: "/users",
     admin: {
-      url: "/admin/users"
-    }
+      url: "/admin/users",
+    },
   };
 
   static paginate = { per: 10 };
@@ -16,33 +16,33 @@ class User extends Models.Base {
     email: {
       validations: {
         presence: true,
-        format: { with: /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i }
-      }
+        format: { with: /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i },
+      },
     },
     username: {
       validations: {
         presence: true,
-        format: { with: /^[a-z][a-z0-9_-]*$/i }
-      }
+        format: { with: /^[a-z][a-z0-9_-]*$/i },
+      },
     },
     password: {
       validations: {
         presence: { on: "create" },
-        confirmation: true
-      }
+        confirmation: true,
+      },
     },
     passwordConfirmation: {
-      remoteName: "password_confirmation"
+      remoteName: "password_confirmation",
     },
     confirmed: {},
     createdAt: {
       type: "Date",
-      remoteName: "created_at"
+      remoteName: "created_at",
     },
     updatedAt: {
       type: "Date",
-      remoteName: "updated_at"
-    }
+      remoteName: "updated_at",
+    },
   };
 
   constructor(data) {

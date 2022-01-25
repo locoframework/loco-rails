@@ -26,7 +26,7 @@ const User = ({ user }) => {
           Delete
         </a>{" "}
         |{" "}
-        <a href="#" onClick={e => ping(e, user.id)}>
+        <a href="#" onClick={(e) => ping(e, user.id)}>
           Ping
         </a>
       </td>
@@ -35,7 +35,7 @@ const User = ({ user }) => {
 };
 
 User.propTypes = {
-  user: PropTypes.instanceOf(UserModel).isRequired
+  user: PropTypes.instanceOf(UserModel).isRequired,
 };
 
 export default User;

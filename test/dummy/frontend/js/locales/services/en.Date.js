@@ -4,7 +4,7 @@ I18n.en.date = {
   formats: {
     default: "%Y-%m-%d",
     short: "%b %d",
-    long: "%B %d, %Y"
+    long: "%B %d, %Y",
   },
   day_names: [
     "Sunday",
@@ -13,7 +13,7 @@ I18n.en.date = {
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday"
+    "Saturday",
   ],
   abbr_day_names: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   month_names: [
@@ -28,7 +28,7 @@ I18n.en.date = {
     "September",
     "October",
     "November",
-    "December"
+    "December",
   ],
   abbr_month_names: [
     "Jan",
@@ -42,6 +42,6 @@ I18n.en.date = {
     "Sep",
     "Oct",
     "Nov",
-    "Dec"
-  ]
+    "Dec",
+  ],
 };

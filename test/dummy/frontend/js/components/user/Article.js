@@ -7,7 +7,7 @@ import { removeArticle } from "actions";
 import store from "store";
 
 function Article({ article, onArticleDestroyed }) {
-  const handleDeletingArticle = async e => {
+  const handleDeletingArticle = async (e) => {
     e.preventDefault();
     if (!confirm("Are you sure?")) return;
     const data = await article.delete(null);
@@ -40,7 +40,7 @@ function Article({ article, onArticleDestroyed }) {
 
 Article.propTypes = {
   article: PropTypes.instanceOf(ArticleModel).isRequired,
-  onArticleDestroyed: PropTypes.func.isRequired
+  onArticleDestroyed: PropTypes.func.isRequired,
 };
 
 export default Article;

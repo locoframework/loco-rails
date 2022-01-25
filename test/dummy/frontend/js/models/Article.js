@@ -8,59 +8,59 @@ class Article extends Models.Base {
     paginate: { per: 5 },
     main: {
       url: "/articles",
-      paginate: { per: 3 }
+      paginate: { per: 3 },
     },
     admin: {
       url: "/admin/articles",
-      paginate: { per: 4 }
-    }
+      paginate: { per: 4 },
+    },
   };
 
   static attributes = {
     title: {
       validations: {
         presence: true,
-        length: { within: [3, 255] }
-      }
+        length: { within: [3, 255] },
+      },
     },
     content: {
       validations: {
         presence: true,
-        length: { minimum: 100 }
+        length: { minimum: 100 },
       },
-      remoteName: "text"
+      remoteName: "text",
     },
     createdAt: {
       type: "Date",
-      remoteName: "created_at"
+      remoteName: "created_at",
     },
     updatedAt: {
       type: "Date",
-      remoteName: "updated_at"
+      remoteName: "updated_at",
     },
     commentsCount: {
       type: "Int",
-      remoteName: "comments_count"
+      remoteName: "comments_count",
     },
     publishedAt: {
       type: "Date",
-      remoteName: "published_at"
+      remoteName: "published_at",
     },
     published: {},
     adminReview: {
-      remoteName: "admin_review"
+      remoteName: "admin_review",
     },
     adminRate: {
       type: "Int",
-      remoteName: "admin_rate"
+      remoteName: "admin_rate",
     },
     categoryId: {
       type: "Int",
-      remoteName: "category_id"
+      remoteName: "category_id",
     },
     adminReviewStartedAt: {
-      remoteName: "admin_review_started_at"
-    }
+      remoteName: "admin_review_started_at",
+    },
   };
 
   static validate = ["vulgarityLevel"];
@@ -76,7 +76,7 @@ class Article extends Models.Base {
       (this.content != null && /fuck/i.exec(this.content))
     )
       this.addErrorMessage("Article contains strong language.", {
-        for: "base"
+        for: "base",
       });
   }
 

@@ -28,7 +28,7 @@ function Article({ article }) {
 }
 
 Article.propTypes = {
-  article: PropTypes.instanceOf(ArticleModel).isRequired
+  article: PropTypes.instanceOf(ArticleModel).isRequired,
 };
 
 export default Article;

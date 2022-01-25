@@ -1,6 +1,6 @@
 import { I18n } from "loco-js";
 
-const lastChar = s => s[s.length - 1];
+const lastChar = (s) => s[s.length - 1];
 
 I18n.pl = {
   variants: {
@@ -8,7 +8,7 @@ I18n.pl = {
       const num = parseInt(lastChar(String(i)));
       [2, 3, 4].indexOf(num) !== -1 &&
         !(String(i).length === 2 && String(i)[0] === "1");
-    }
+    },
   },
   models: {},
   attributes: {},
@@ -18,15 +18,15 @@ I18n.pl = {
       success: "Sukces",
       errors: {
         connection: "Błąd z połączeniem",
-        invalid_data: "Nieprawidłowe dane"
-      }
-    }
+        invalid_data: "Nieprawidłowe dane",
+      },
+    },
   },
   date: {
     formats: {
       default: "%d-%m-%Y",
       short: "%d %b",
-      long: "%B %d, %Y"
+      long: "%B %d, %Y",
     },
     day_names: [
       "niedziela",
@@ -35,7 +35,7 @@ I18n.pl = {
       "środa",
       "czwartek",
       "piątek",
-      "sobota"
+      "sobota",
     ],
     abbr_day_names: ["nie", "pon", "wto", "śro", "czw", "pią", "sob"],
     month_names: [
@@ -50,7 +50,7 @@ I18n.pl = {
       "wrzesień",
       "październik",
       "listopad",
-      "grudzień"
+      "grudzień",
     ],
     abbr_month_names: [
       "sty",
@@ -64,8 +64,8 @@ I18n.pl = {
       "wrz",
       "paź",
       "lis",
-      "gru"
-    ]
+      "gru",
+    ],
   },
   errors: {
     messages: {
@@ -90,21 +90,21 @@ I18n.pl = {
         few: "jest za długie (maksymalnie %{count} znaki)",
         many: "jest za długie (maksymalnie %{count} znaków)",
         one: "jest za długie (maksymalnie jeden znak)",
-        other: "jest za długie (maksymalnie %{count} znaków)"
+        other: "jest za długie (maksymalnie %{count} znaków)",
       },
       too_short: {
         few: "jest za krótkie (przynajmniej %{count} znaki)",
         many: "jest za krótkie (przynajmniej %{count} znaków)",
         one: "jest za krótkie (przynajmniej jeden znak)",
-        other: "jest za krótkie (przynajmniej %{count} znaków)"
+        other: "jest za krótkie (przynajmniej %{count} znaków)",
       },
       wrong_length: {
         few: "ma nieprawidłową długość (powinna wynosić %{count} znaki)",
         many: "ma nieprawidłową długość (powinna wynosić %{count} znaków)",
         one: "ma nieprawidłową długość (powinna wynosić jeden znak)",
-        other: "ma nieprawidłową długość (powinna wynosić %{count} znaków)"
+        other: "ma nieprawidłową długość (powinna wynosić %{count} znaków)",
       },
-      other_than: "musi być inna niż %{count}"
-    }
-  }
+      other_than: "musi być inna niż %{count}",
+    },
+  },
 };

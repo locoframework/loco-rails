@@ -10,7 +10,7 @@ function CommentList({ comments }) {
   }
   return (
     <>
-      {comments.map(comment => (
+      {comments.map((comment) => (
         <Comment comment={comment} key={comment.id} />
       ))}
     </>
@@ -18,7 +18,7 @@ function CommentList({ comments }) {
 }
 
 CommentList.propTypes = {
-  comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired
+  comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired,
 };
 
 export default CommentList;

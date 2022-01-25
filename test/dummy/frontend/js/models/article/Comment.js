@@ -10,54 +10,54 @@ class Comment extends Models.Base {
     paginate: { per: 10 },
     main: {
       url: "/articles/:articleId/comments",
-      paginate: { per: 5, param: "page-num" }
+      paginate: { per: 5, param: "page-num" },
     },
     admin: {
       url: "/admin/articles/:articleId/comments",
-      paginate: { per: 5 }
-    }
+      paginate: { per: 5 },
+    },
   };
 
   static attributes = {
     author: {
       validations: {
-        presence: true
-      }
+        presence: true,
+      },
     },
     text: {
       validations: {
         presence: true,
-        vulgarity: true
-      }
+        vulgarity: true,
+      },
     },
     articleId: {
       type: "Int",
       validations: {
-        presence: true
+        presence: true,
       },
-      remoteName: "article_id"
+      remoteName: "article_id",
     },
     createdAt: {
       type: "Date",
-      remoteName: "created_at"
+      remoteName: "created_at",
     },
     updatedAt: {
       type: "Date",
-      remoteName: "updated_at"
+      remoteName: "updated_at",
     },
     emotion: {
-      type: "Int"
+      type: "Int",
     },
     pinned: {
-      type: "Boolean"
+      type: "Boolean",
     },
     adminRate: {
       type: "Int",
-      remoteName: "admin_rate"
+      remoteName: "admin_rate",
     },
     approved: {
-      type: "Boolean"
-    }
+      type: "Boolean",
+    },
   };
 
   constructor(data) {

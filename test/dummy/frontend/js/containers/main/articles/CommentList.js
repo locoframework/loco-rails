@@ -20,7 +20,7 @@ function CommentList(props) {
     };
   }, []);
 
-  const list = comments.map(comment => (
+  const list = comments.map((comment) => (
     <Comment key={comment.id} comment={comment} />
   ));
 
@@ -33,7 +33,7 @@ function CommentList(props) {
 
 CommentList.propTypes = {
   articleId: PropTypes.number.isRequired,
-  comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired
+  comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired,
 };
 
 export default CommentList;

@@ -11,11 +11,11 @@ module.exports = {
     modules: [
       path.join(__dirname, "test/dummy/frontend/css"),
       path.join(__dirname, "test/dummy/frontend/js"),
-      "node_modules"
-    ]
+      "node_modules",
+    ],
   },
   entry: {
-    application: "./test/dummy/frontend/index"
+    application: "./test/dummy/frontend/index",
   },
   module: {
     rules: [
@@ -37,13 +37,13 @@ module.exports = {
           },
         ],
       },
-    ]
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: "[name].css"
-    })
+      filename: "[name].css",
+    }),
   ],
   optimization: {
     splitChunks: {
@@ -65,5 +65,5 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "test/dummy/app/assets/bundles"),
     publicPath: "/assets/",
-  }
+  },
 };

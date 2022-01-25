@@ -7,7 +7,7 @@ import {
   addComments,
   prependUsers,
   removeComment,
-  updateComment
+  updateComment,
 } from "actions";
 import store from "store";
 import { findArticle, findComment } from "selectors/articles";
@@ -53,7 +53,7 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
   if (!article) return;
   const updatedArticle = new Article({
     ...article,
-    commentsCount: article.commentsCount + diff
+    commentsCount: article.commentsCount + diff,
   });
   store.dispatch(updateArticle(updatedArticle, index));
 };
@@ -77,7 +77,7 @@ const commentDestroyed = ({ article_id: articleId, id }) => {
 
 const commentUpdated = async ({ article_id: articleId, id }) => {
   const [comment, index] = findComment(store.getState(), id, {
-    parentId: articleId
+    parentId: articleId,
   });
   if (!comment) return;
   const reloadedComment = await comment.reload();
@@ -98,7 +98,7 @@ const getCallbackForReceivedMessage = () => {
   return Env.controller.callbacks["receivedMessage"];
 };
 
-export default async data => {
+export default async (data) => {
   switch (data.type) {
     case "PING":
       ping();

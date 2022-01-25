@@ -1,4 +1,4 @@
-const resetNode = node => {
+const resetNode = (node) => {
   node.classList.remove("notice");
   node.classList.remove("alert");
   node.classList.remove("warning");

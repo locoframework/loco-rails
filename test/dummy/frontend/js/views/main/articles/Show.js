@@ -5,8 +5,8 @@ import { UI } from "loco-js-ui";
 
 import renderFlash from "views/shared/Flash";
 
-const createArticleReceivedMessage = article => {
-  return async function(type) {
+const createArticleReceivedMessage = (article) => {
+  return async function (type) {
     switch (type) {
       case "updating": {
         const txt =
@@ -29,25 +29,24 @@ const renderArticle = (article, update = false) => {
   document.getElementById("title").textContent = article.title;
   document.getElementById("author").textContent = article.author;
   const dateService = new DateService(article.publishedAt);
-  document.getElementById("pub_date").textContent = dateService.toString(
-    "short"
-  );
+  document.getElementById("pub_date").textContent =
+    dateService.toString("short");
   const textEl = document.getElementById("text");
   textEl.innerHTML = "";
   const text = simpleFormat(article.content);
   textEl.insertAdjacentHTML("beforeend", text);
 };
 
-const renderForm = comment => {
+const renderForm = (comment) => {
   const form = new UI.Form({
     for: comment,
     initObj: true,
-    id: "new_comment"
+    id: "new_comment",
   });
   form.render();
 };
 
 export default {
   renderArticle,
-  renderForm
+  renderForm,
 };

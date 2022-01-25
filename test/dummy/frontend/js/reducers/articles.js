@@ -5,7 +5,7 @@ import {
   PREPEND_ARTICLES,
   REMOVE_ARTICLE,
   SET_ARTICLES,
-  UPDATE_ARTICLE
+  UPDATE_ARTICLE,
 } from "actions";
 
 export default produce((draft = [], action) => {
@@ -15,7 +15,7 @@ export default produce((draft = [], action) => {
     case PREPEND_ARTICLES:
       return action.articles.concat(draft);
     case REMOVE_ARTICLE:
-      return draft.filter(article => article.id !== action.id);
+      return draft.filter((article) => article.id !== action.id);
     case SET_ARTICLES:
       return action.articles;
     case UPDATE_ARTICLE:

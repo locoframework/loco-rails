@@ -10,5 +10,5 @@ import "locales";
 import { getLine, getWire } from "loco-js";
 window.test = {
   getLine,
-  getWire
+  getWire,
 };

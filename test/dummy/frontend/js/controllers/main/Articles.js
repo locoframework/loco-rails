@@ -22,7 +22,7 @@ const renderComments = async () => {
   const res = await Comment.get("count", { articleId: helpers.params.id });
   const comments = await Comment.all({
     articleId: helpers.params.id,
-    total: res.total
+    total: res.total,
   });
   store.dispatch(setComments(comments, helpers.params.id));
   render(

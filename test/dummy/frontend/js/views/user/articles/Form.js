@@ -12,7 +12,7 @@ import renderFlash from "views/shared/Flash";
 
 import CommentList from "containers/user/CommentList";
 
-const displayChanges = article => {
+const displayChanges = (article) => {
   for (const [attrib] of Object.entries(article.changes())) {
     const sel = document.querySelector(
       `a.apply_changes[data-for=${article.getAttrRemoteName(attrib)}]`
@@ -22,15 +22,15 @@ const displayChanges = article => {
   }
 };
 
-const createReceivedMessage = article => {
-  return async function(type, data) {
+const createReceivedMessage = (article) => {
+  return async function (type, data) {
     switch (type) {
       case "updating":
         if (
           document.querySelector("h1").getAttribute("data-mark") !== data.mark
         ) {
           renderFlash({
-            warning: "Uuups someone else started editing this article."
+            warning: "Uuups someone else started editing this article.",
           });
         }
         break;
@@ -44,9 +44,9 @@ const createReceivedMessage = article => {
   };
 };
 
-const handleApplyingChanges = form => {
+const handleApplyingChanges = (form) => {
   for (const sel of Array.from(document.querySelectorAll("a.apply_changes"))) {
-    sel.addEventListener("click", e => {
+    sel.addEventListener("click", (e) => {
       e.preventDefault();
       const article = form.getObj();
       const attrName = article.getAttrName(e.target.getAttribute("data-for"));
@@ -58,7 +58,7 @@ const handleApplyingChanges = form => {
 };
 
 export default {
-  render: article => {
+  render: (article) => {
     store.dispatch(addArticles([article]));
     subscribe({ to: article, with: createReceivedMessage(article) });
     const form = new UI.Form({ for: article });
@@ -66,7 +66,7 @@ export default {
     handleApplyingChanges(form);
   },
 
-  renderComments: async articleId => {
+  renderComments: async (articleId) => {
     const resp = await Comment.all({ articleId: articleId });
     store.dispatch(setComments(resp.resources, articleId));
     renderElement(
@@ -77,5 +77,5 @@ export default {
       />,
       document.getElementById("comments")
     );
-  }
+  },
 };

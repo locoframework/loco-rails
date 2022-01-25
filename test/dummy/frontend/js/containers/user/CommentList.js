@@ -23,7 +23,7 @@ function CommentList(props) {
 
   if (comments.length === 0) return <p>No comments.</p>;
 
-  const list = comments.map(comment => (
+  const list = comments.map((comment) => (
     <Comment key={comment.id} comment={comment} isAdmin={isAdmin} />
   ));
 
@@ -33,7 +33,7 @@ function CommentList(props) {
 CommentList.propTypes = {
   articleId: PropTypes.number.isRequired,
   isAdmin: PropTypes.bool,
-  comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired
+  comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired,
 };
 
 export default CommentList;

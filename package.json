@@ -2,8 +2,8 @@
   "private": true,
   "description": "Dummy app",
   "scripts": {
-    "lint": "eslint *.js test/dummy/frontend",
     "build": "webpack --mode=production --node-env=production -c webpack.prod.js --progress",
+    "lint": "eslint *.js test/dummy/frontend --fix",
     "lint-staged": "lint-staged",
     "start": "webpack -c webpack.dev.js --watch --progress",
     "test": "echo \"Error: no test specified\" && exit 1"

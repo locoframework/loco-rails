@@ -1,4 +1,4 @@
-export const simpleFormat = str => {
+export const simpleFormat = (str) => {
   str = str.replace(/\r\n?/, "\n");
   str = str.trim();
   if (str.length > 0) {
