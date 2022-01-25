@@ -2,13 +2,15 @@
 
 class User
   class RoomsController < UserController
+    RoomWithHub = Struct.new(:room, :hub)
+
     before_action :find_room, only: %i[show join leave destroy]
     before_action :find_hub, only: %i[join leave destroy]
 
     def index
       @rooms = Room.paginate page: params[:page], per_page: 10
       @rooms_with_hub = @rooms.map do |room|
-        OpenStruct.new room: room, hub: HubFinder.new(room).find
+        RoomWithHub.new(room, HubFinder.new(room).find)
       end
     end
 

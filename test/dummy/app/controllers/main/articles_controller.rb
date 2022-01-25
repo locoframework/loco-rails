@@ -14,7 +14,7 @@ module Main
       respond_to do |format|
         format.json do
           @article = Article.published.includes(:user).find params[:id]
-          @abbr = params[:abbr].present? ? true : false
+          @abbr = params[:abbr].present?
         end
         format.html { render }
       end

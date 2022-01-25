@@ -3,18 +3,15 @@
 class User
   class SessionsController < ApplicationController
     def new
-      if params[:event] == 'confirmed'
-        flash.now[:notice] = 'Your account has been verified. You can sign in now.'
-      end
+      flash.now[:notice] = 'Your account has been verified. You can sign in now.' if params[:event] == 'confirmed'
       render
     end
 
     def create
-      if (user = User.find_by email: params[:email]).nil?
-        auth_failed
-      elsif !user.confirmed?
+      user = User.find_by(email: params[:email])
+      if user && !user.confirmed?
         auth_failed 'Your account is waiting for confirmation.'
-      elsif !user.authenticate(params[:password])
+      elsif user.nil? || !user.authenticate(params[:password])
         auth_failed
       else
         auth_succeeded user

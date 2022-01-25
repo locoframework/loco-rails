@@ -52,7 +52,7 @@ class User
 
     def set_comment
       @comment = @article.comments.find_by(id: params[:id])
-      head 404 unless @comment
+      head :not_found unless @comment
     end
   end
 end

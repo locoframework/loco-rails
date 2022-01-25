@@ -86,6 +86,7 @@ module Main
       within 'section#comments' do
         assert page.has_content? 'Some nice thoughts dude'
       end
+      sleep 1
       destroy_comment comment
       sleep 1
       within 'section#comments' do

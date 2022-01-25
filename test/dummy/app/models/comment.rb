@@ -5,7 +5,6 @@ class Comment < ApplicationRecord
 
   validates :author, presence: true
   validates :text, presence: true
-  validates :article_id, presence: true
 
   after_initialize :set_defaults
 

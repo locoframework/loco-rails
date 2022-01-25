@@ -2,9 +2,8 @@
 
 Loco.configure do |c|
   db = case Rails.env
-       when 'development' then 2
+       when 'development', 'production' then 2
        when 'test' then 12
-       else 2
        end
   c.silence_logger = false          # false by default
   c.notifications_size = 10         # 100 by default

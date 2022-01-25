@@ -16,7 +16,7 @@ module CommonHelpers
 
   def update_value_attr_for(sel)
     script = "document.querySelector('#{sel}')" \
-      ".setAttribute('value', document.querySelector('#{sel}').value);"
+             ".setAttribute('value', document.querySelector('#{sel}').value);"
     page.execute_script script
   end
 
