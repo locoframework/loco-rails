@@ -14,6 +14,8 @@ import Admin from "controllers/Admin";
 import Main from "controllers/Main";
 import UserController from "controllers/User";
 
+import renderFlash from "views/shared/Flash";
+
 Article.Comment = Comment;
 Room.Member = Member;
 
@@ -33,6 +35,11 @@ const loco = init({
   notifications: {
     log: true,
     size: 10,
+    disconnectedForTooLong: () => {
+      const msg =
+        "You have been disconnected from the server for too long. Reload page!";
+      renderFlash({ alert: msg, hide: false });
+    },
   },
   postInit: () => {
     if (
