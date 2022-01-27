@@ -1,5 +1,6 @@
-import { emit, subscribe } from "loco-js";
+import { subscribe } from "loco-js";
 
+import loco from "initializers/loco";
 import Room from "models/Room";
 
 const memberJoined = (member) => {
@@ -32,7 +33,7 @@ const handleSendingMessage = (roomId) => {
     .addEventListener("keypress", (event) => {
       if (event.keyCode !== 13) return;
       event.preventDefault();
-      emit({
+      loco.emit({
         type: "NEW_MESSAGE",
         txt: event.target.value,
         room_id: roomId,

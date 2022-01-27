@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { emit } from "loco-js";
 
+import loco from "initializers/loco";
 import UserModel from "models/User";
 
 const User = ({ user }) => {
   const ping = (e, userId) => {
     e.preventDefault();
-    emit({ type: "PING", user_id: userId });
+    loco.emit({ type: "PING", user_id: userId });
   };
 
   return (

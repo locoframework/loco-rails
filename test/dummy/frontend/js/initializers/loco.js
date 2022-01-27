@@ -1,4 +1,4 @@
-import { getWire, connector as locoConnector, init } from "loco-js";
+import { createConnector, init } from "loco-js";
 import { connect as connectUI } from "loco-js-ui";
 import { createConsumer } from "@rails/actioncable";
 
@@ -17,7 +17,7 @@ import UserController from "controllers/User";
 Article.Comment = Comment;
 Room.Member = Member;
 
-init({
+const loco = init({
   cable: createConsumer(),
   controllers: {
     Admin,
@@ -39,8 +39,10 @@ init({
       document.querySelector("body").getAttribute("data-rails-env") !== "test"
     )
       return;
-    getWire().setPollingTime(1000);
+    loco.getWire().setPollingTime(1000);
   },
 });
 
-connectUI(locoConnector);
+connectUI(createConnector(loco));
+
+export default loco;
