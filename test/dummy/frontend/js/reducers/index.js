@@ -7,5 +7,5 @@ import users from "./users";
 export default combineReducers({
   articles,
   comments,
-  users
+  users,
 });

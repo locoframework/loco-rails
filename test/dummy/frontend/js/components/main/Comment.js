@@ -17,7 +17,7 @@ function Comment({ comment }) {
 }
 
 Comment.propTypes = {
-  comment: PropTypes.instanceOf(CommentModel).isRequired
+  comment: PropTypes.instanceOf(CommentModel).isRequired,
 };
 
 export default Comment;

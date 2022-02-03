@@ -30,7 +30,7 @@ const renderComments = async () => {
   );
 };
 
-const onArticleDestroyed = res => {
+const onArticleDestroyed = (res) => {
   if (res.success) renderFlash({ notice: res.notice });
   else renderFlash({ alert: res.alert });
 };

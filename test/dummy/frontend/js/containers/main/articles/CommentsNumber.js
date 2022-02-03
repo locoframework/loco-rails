@@ -23,7 +23,7 @@ function CommentsNumber(props) {
 
 CommentsNumber.propTypes = {
   articleId: PropTypes.number.isRequired,
-  comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired
+  comments: PropTypes.arrayOf(PropTypes.instanceOf(CommentModel)).isRequired,
 };
 
 export default CommentsNumber;

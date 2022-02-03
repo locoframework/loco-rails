@@ -1,8 +1,9 @@
-import App from "./App";
+import { Controllers } from "loco-js";
+
 import Articles from "./user/Articles";
 import Rooms from "./user/Rooms";
 
-class User extends App {}
+class User extends Controllers.Base {}
 
 User.Articles = Articles;
 User.Rooms = Rooms;

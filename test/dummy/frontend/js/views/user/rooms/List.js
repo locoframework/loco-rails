@@ -2,21 +2,21 @@ import { subscribe } from "loco-js";
 
 import Room from "models/Room";
 
-const memberJoined = roomId => {
+const memberJoined = (roomId) => {
   const node = membersNode(roomId);
   node.textContent = parseInt(node.text()) + 1;
 };
 
-const memberLeft = roomId => {
+const memberLeft = (roomId) => {
   const node = membersNode(roomId);
   node.textContent = parseInt(node.text()) - 1;
 };
 
-const membersNode = roomId => {
+const membersNode = (roomId) => {
   document.querySelector(`#room_${roomId} td.members`);
 };
 
-const renderRoom = room => {
+const renderRoom = (room) => {
   `
   <tr id='room_${room.id}'>
     <td>${room.name}</td>
@@ -51,6 +51,6 @@ const receivedMessage = (type, data) => {
   }
 };
 
-export default function() {
+export default function () {
   subscribe({ to: Room, with: receivedMessage });
 }

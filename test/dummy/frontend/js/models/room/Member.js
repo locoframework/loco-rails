@@ -5,7 +5,7 @@ class Member extends Models.Base {
 
   static resources = {
     url: "/user/rooms/:roomId/members",
-    paginate: { per: 100 }
+    paginate: { per: 100 },
   };
 
   constructor(data) {

@@ -6,7 +6,7 @@ export default (opts = {}) => {
   const form = new UI.Form({
     for: new CommentModel({ id: opts.commentId, resource: "admin" }),
     id: `edit_comment_${opts.commentId}`,
-    initObj: true
+    initObj: true,
   });
   form.render();
 

@@ -2,17 +2,17 @@ import { subscribe } from "loco-js";
 
 import renderFlash from "views/shared/Flash";
 
-const updateEditLink = id => {
+const updateEditLink = (id) => {
   const href = document.getElementById("edit_link").getAttribute("href");
   document
     .getElementById("edit_link")
     .setAttribute("href", href.replace("/0/", `/${id}/`));
 };
 
-const handlePublishing = article => {
+const handlePublishing = (article) => {
   document
     .getElementById("publish_article")
-    .addEventListener("click", async e => {
+    .addEventListener("click", async (e) => {
       e.preventDefault();
       e.target.textContent = "Publishing...";
       try {
@@ -26,7 +26,7 @@ const handlePublishing = article => {
     });
 };
 
-const renderArticle = article => {
+const renderArticle = (article) => {
   document.getElementById("article_title").textContent = article.title;
   document.getElementById("article_text").textContent = article.content;
   const node = document.getElementById("publish_article");
@@ -34,8 +34,8 @@ const renderArticle = article => {
   else if (node) node.style.display = "";
 };
 
-const createArticleReceivedMessage = article => {
-  return async function(type) {
+const createArticleReceivedMessage = (article) => {
+  return async function (type) {
     switch (type) {
       case "updated":
         await article.reload();
@@ -48,7 +48,7 @@ const createArticleReceivedMessage = article => {
   };
 };
 
-export default article => {
+export default (article) => {
   if (article === null) return;
   subscribe({ to: article, with: createArticleReceivedMessage(article) });
   handlePublishing(article);

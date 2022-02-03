@@ -22,13 +22,7 @@ class Date {
 
   strftime(str) {
     str = str.replace("%Y", this.date.getFullYear());
-    str = str.replace(
-      "%y",
-      this.date
-        .getFullYear()
-        .toString()
-        .substr(-2, 2)
-    );
+    str = str.replace("%y", this.date.getFullYear().toString().substr(-2, 2));
     let month = this.date.getMonth() + 1;
     month = month >= 10 ? month : `0${month}`;
     str = str.replace("%m", month);
