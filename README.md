@@ -345,6 +345,12 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 ## Major releases 🎙
 
+### 6.0 _(2022-02-03)_
+
+* Loco-Rails works with Rails 
+* it drops support for Ruby 2.6
+* test app uses Loco-JS v6 and Loco-JS-UI v6
+
 ### 5.0 _(2020-12-23)_
 
 * `connection.rb` template has been modified
