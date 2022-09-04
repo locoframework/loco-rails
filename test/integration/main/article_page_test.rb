@@ -4,7 +4,6 @@ require 'test_helper'
 
 module Main
   class ArticlePageTest < IT
-    include Loco::Emitter
     include CommonHelpers
 
     def setup
@@ -32,7 +31,7 @@ module Main
 
     test 'should show info about editing' do
       sleep 0.1
-      emit articles(:one), :updating, data: { mark: Time.current.to_f.to_s }
+      Loco.emit articles(:one), :updating, data: { mark: Time.current.to_f.to_s }
       content = 'Author is currently editing article. Be aware of possible changes.'
       assert page.has_content? content
     end
@@ -127,7 +126,7 @@ module Main
         a.text = "#{a.text} (edited)"
         a.save!
       end
-      emit articles(name), :updated, for: [:all]
+      Loco.emit articles(name), :updated, for: [:all]
       perform_enqueued_jobs
     end
   end

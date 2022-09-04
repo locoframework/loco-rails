@@ -4,7 +4,6 @@ require 'test_helper'
 
 class Admin
   class ArticlesListTest < IT
-    include Loco::Emitter
     include CommonHelpers
     include AdminHelpers
 

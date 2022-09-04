@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 class HubFinder
-  include Loco::Emitter
-
   def initialize(room)
     @room = room
   end
 
   def find
-    get_hub(name) || add_hub(name)
+    Loco.get_hub(name) || Loco.add_hub(name)
   end
 
   private

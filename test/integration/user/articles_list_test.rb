@@ -4,7 +4,6 @@ require 'test_helper'
 
 class User
   class ArticlesListTest < IT
-    include Loco::Emitter
     include CommonHelpers
     include UserHelpers
 
@@ -24,7 +23,7 @@ class User
       visit '/user/articles'
       sleep 0.5
       articles(:two).publish
-      emit articles(:two), :updated, for: [users(:zbig)]
+      Loco.emit articles(:two), :updated, for: [users(:zbig)]
       within "#article_#{articles(:two).id} td.published" do
         assert page.has_content? 'yes'
       end
@@ -70,14 +69,14 @@ class User
         title: 'Article #1',
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' * 2
       ).tap(&:save!)
-      emit article, :created, for: [users(user_name)]
+      Loco.emit article, :created, for: [users(user_name)]
       article
     end
 
     def destroy_article(name)
       articles(name).tap do |article|
         article.destroy
-        emit article, :destroyed, for: [users(:zbig)]
+        Loco.emit article, :destroyed, for: [users(:zbig)]
       end
     end
   end

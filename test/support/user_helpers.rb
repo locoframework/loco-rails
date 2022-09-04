@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 module UserHelpers
-  include Loco::Emitter
-
   def confirm_user(name)
     users(name).confirmed = true
     users(name).save!
@@ -22,18 +20,18 @@ module UserHelpers
       a.text = 'Lorem Ipsum II' * 8
       a.save!
     end
-    emit articles(name), :updated, for: [users(:zbig)]
+    Loco.emit articles(name), :updated, for: [users(:zbig)]
   end
 
   def destroy_article(name)
     article = articles name
     article.destroy
-    emit article, :destroyed, for: [article.user]
+    Loco.emit article, :destroyed, for: [article.user]
   end
 
   def join_room(user, room)
     HubFinder.new(room).find.add_member user
-    emit room, :member_joined, data: {
+    Loco.emit room, :member_joined, data: {
       room_id: room.id,
       member: {
         id: user.id,

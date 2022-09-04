@@ -3,8 +3,6 @@
 require 'test_helper'
 
 class SigningUpTest < IT
-  include Loco::Emitter
-
   test 'signing up user' do
     browse_to_sign_up_page
     fill_in_form
@@ -32,11 +30,11 @@ class SigningUpTest < IT
   end
 
   def admin_went_to_user_edit_page
-    emit user, :confirming, for: connection.token
+    Loco.emit user, :confirming, for: connection.token
   end
 
   def admin_confirmed_user
-    emit user, :confirmed, for: connection.token
+    Loco.emit user, :confirmed, for: connection.token
   end
 
   def user

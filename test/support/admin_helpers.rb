@@ -12,13 +12,13 @@ module AdminHelpers
     article.title = 'AGtTRA'
     article.text = 'TESTING_SUPPORT...' * 6
     article.save!
-    emit article, :updated, for: [:all]
+    Loco.emit article, :updated, for: [:all]
     perform_enqueued_jobs
   end
 
   def publish_article(article)
     article.publish
-    emit article, :published, data: { id: article.id }
+    Loco.emit article, :published, data: { id: article.id }
     perform_enqueued_jobs
   end
 end

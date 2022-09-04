@@ -4,7 +4,6 @@ require 'test_helper'
 
 class Admin
   class ReviewArticleTest < IT
-    include Loco::Emitter
     include AdminHelpers
 
     def setup

@@ -2,19 +2,17 @@
 
 module Loco
   class NotificationCenter
-    include Emitter
-
     def received_message(permissions, data)
       return unless (res = validate_message(data['type'], permissions, data))
 
       case data['type']
       when 'PING'
-        emit_to res[:user], type: 'PING'
+        Loco.emit_to res[:user], type: 'PING'
       when 'NEW_MESSAGE'
-        emit_to res[:hub],
-                type: 'NEW_MESSAGE',
-                message: data['txt'],
-                author: permissions[:user].username
+        Loco.emit_to res[:hub],
+                     type: 'NEW_MESSAGE',
+                     message: data['txt'],
+                     author: permissions[:user].username
       end
     end
 

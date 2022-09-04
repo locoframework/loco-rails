@@ -25,4 +25,32 @@ module Loco
       Config.configure config
     end
   end
+
+  def emit(obj, event = nil, opts = {})
+    Broadcaster.(
+      obj,
+      event,
+      payload: opts[:payload] || opts[:data],
+      recipients: opts[opts[:for] ? :for : :to]
+    )
+  end
+
+  def emit_to(recipient_s, data)
+    Sender.(recipient_s, data)
+  end
+
+  def add_hub(name, members = [])
+    Hub.set(name, members)
+  end
+
+  def get_hub(name)
+    Hub.get(name)
+  end
+
+  def del_hub(name)
+    hub = Hub.get(name)
+    return false if hub.nil?
+
+    hub.destroy
+  end
 end

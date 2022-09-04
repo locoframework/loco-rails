@@ -4,7 +4,6 @@ require 'test_helper'
 
 class User
   class ArticleShowPageTest < IT
-    include Loco::Emitter
     include CommonHelpers
     include UserHelpers
 

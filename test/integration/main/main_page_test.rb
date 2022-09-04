@@ -4,7 +4,6 @@ require 'test_helper'
 
 module Main
   class MainPageTest < IT
-    include Loco::Emitter
     include CommonHelpers
 
     ARTICLE_TEXTS = {
@@ -44,7 +43,7 @@ module Main
         a.title = 'AGtTRA'
         a.save!
       end
-      emit articles(:one), :updated, for: [:all]
+      Loco.emit articles(:one), :updated, for: [:all]
       assert page.has_content? 'AGtTRA'
     end
 
@@ -83,13 +82,13 @@ module Main
 
     def publish_article(name)
       articles(name).publish
-      emit articles(name), :published, data: { id: articles(name).id }
+      Loco.emit articles(name), :published, data: { id: articles(name).id }
       perform_enqueued_jobs
     end
 
     def destroy_comment(comment)
       comment.destroy
-      emit comment, :destroyed, data: { article_id: comment.article_id }
+      Loco.emit comment, :destroyed, data: { article_id: comment.article_id }
       perform_enqueued_jobs
     end
 

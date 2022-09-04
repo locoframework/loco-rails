@@ -1,33 +1,26 @@
 # frozen_string_literal: true
 
+# TODO: remove in next major release
 module Loco
   module Emitter
     def emit(obj, event = nil, opts = {})
-      Broadcaster.(
-        obj,
-        event,
-        payload: opts[:payload] || opts[:data],
-        recipients: opts[opts[:for] ? :for : :to]
-      )
+      Loco.emit(obj, event, opts)
     end
 
     def emit_to(recipient_s, data)
-      Sender.(recipient_s, data)
+      Loco.emit_to(recipient_s, data)
     end
 
     def add_hub(name, members = [])
-      Hub.set(name, members)
+      Loco.add_hub(name, members)
     end
 
     def get_hub(name)
-      Hub.get(name)
+      Loco.get_hub(name)
     end
 
     def del_hub(name)
-      hub = Hub.get(name)
-      return false if hub.nil?
-
-      hub.destroy
+      Loco.del_hub(name)
     end
   end
 end
