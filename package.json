@@ -21,7 +21,7 @@
     "@rails/ujs": "^7.0.1",
     "core-js": "^3.6.4",
     "immer": "^9.0.5",
-    "loco-js": "^6.0.0",
+    "loco-js": "^6.1.0",
     "loco-js-ui": "^6.0.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
