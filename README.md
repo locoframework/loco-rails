@@ -4,7 +4,7 @@
 
 # 🧐 What is Loco-Rails?
 
-**Loco-Rails** is a [Rails engine](http://guides.rubyonrails.org/engines.html) from the technical point of view. Conceptually, it is a framework that works on a top of [Rails](http://rubyonrails.org) and consists of 2 parts: front-end and back-end. They are called [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, respectively. Both parts cooperate.
+**Loco-Rails** is a [Rails engine](http://guides.rubyonrails.org/engines.html) from the technical point of view. Conceptually, it is a framework that works on top of [Rails](http://rubyonrails.org) and consists of 2 parts: front-end and back-end. They are called [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, respectively.
 
 This is how it can be visualized:
 
@@ -51,7 +51,7 @@ Let's assume, 2 users are navigating to a chat room page containing a list of ch
 | **is refreshing a page** | is seeing User A and User B as chat members |
 | is seeing User A and User B as chat members | is seeing User A and User B as chat members |
 
-So, you have to constantly refresh a page to get the current list of chat members. Or you need to provide a _"live"_ functionality through AJAX or WebSockets. This requires a lot of unnecessary work/code for every element of your app like this. It should be much easier. And by easier, I mean ~1 significant line of code on the back-end and front-end side. Look for the `emit` method on the back-end and `subscribe` function on the front-end.
+So, you have to constantly refresh a page to get the current list of chat members. Or you need to provide a _"live"_ functionality through AJAX or WebSockets. This requires a lot of unnecessary work/code for every element of your app like this. It should be much easier. And by easier, I mean ~1 significant line of code on the back-end and front-end side. Look for the `Loco.emit` method on the back-end and `subscribe` function on the front-end.
 
 ```ruby
 # app/controllers/user/rooms_controller.rb
@@ -60,7 +60,7 @@ class User
   class RoomsController < UserController
     def join
       @hub.add_member current_user
-      emit @room, :member_joined, payload: {
+      Loco.emit @room, :member_joined, payload: {
         room_id: @room.id,
         member: {
           id: current_user.id,
@@ -205,26 +205,21 @@ If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Ex
 
 ## Emitting messages 📡
 
-1. include `Loco::Emitter` module inside any class
-2. use `emit` or `emit_to` methods provided by this module to send a different type of messages 
+Use `Loco.emit` or `Loco.emit_to` module functions to send different types of messages.
 
-If you want to use a `low-level` interface without including a module, look inside the source code of [`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb).
+### `Loco.emit`
 
-### `emit`
-
-This method emits a notification that informs recipients about an event that occurred on the given resource - e.g., _the post was updated_, _the ticket was validated_. If a WebSocket connection is established - a message is sent this way. If not - it's delivered via AJAX polling. Switching between an available method is done automatically.
+This module function emits a notification that informs recipients about an event that occurred on the given resource - e.g., _the post was updated_, _the ticket was validated_. If a WebSocket connection is established - a message is sent this way. If not - it's delivered via AJAX polling. Switching between an available method is done automatically.
 
 Notifications are stored in the *loco_notifications* table in the database. One of the advantages of saving messages in a DB is that **when the client loses connection with the server and restores it after a certain time - he will get all not received notifications** 👏 unless you delete them before, of course.
 
 Example:
 
 ```ruby
-include Loco::Emitter
-
 receivers = [article.user, Admin, 'a54e1ef01cb9']
 data = { foo: 'bar' }
 
-emit(article, :confirmed, to: receivers, payload: data)
+Loco.emit(article, :confirmed, to: receivers, payload: data)
 ```
 
 Arguments:
@@ -261,9 +256,9 @@ end
 
 ```
 
-### `emit_to`
+### `Loco.emit_to`
 
-This method emits a direct message to recipients. Direct messages are sent only via WebSocket connection and are not persisted in a DB.
+This module function emits a direct message to recipients. Direct messages are sent only via a WebSocket connection and are not persisted in a DB.
 
 ⚠️ It utilizes _ActionCable_ under the hood. You can use _ActionCable_ in a standard way and _Loco-way_ side by side. If you choose to stick to Loco only - you will never have to create `ApplicationCable::Channel`s. Remember that Loco places `ActiveJob`s into the `:loco` queue.
 
@@ -272,9 +267,9 @@ If you want to send a message to a group of recipients, persist this group, and 
 #### Communication Hub
 
 You can treat it like a virtual room where you can add/remove members.  
-It works over WebSockets only with the `emit_to` method.
+It works over WebSockets only with the `emit_to` module function.
 
-[`Loco::Emitter`](https://github.com/locoframework/loco-rails/blob/master/lib/loco/emitter.rb) module also includes methods for managing hubs such as `add_hub`, `get_hub`, `del_hub`.
+`Loco` also provides hub management module functions such as `add_hub`, `get_hub`, `del_hub`.
 
 Details:
 
@@ -297,14 +292,12 @@ Important instance methods of `Loco::Hub`:
 Example:
 
 ```ruby
-include Loco::Emitter
-
 hub1 = Hub.get('room_1')
 admin = Admin.find(1)
 
 data = { type: 'NEW_MESSAGE', message: 'Hi all!', author: 'system' }
 
-emit_to([hub1, admin], data)
+Loco.emit_to([hub1, admin], data)
 ```
 
 Arguments:
