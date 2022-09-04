@@ -338,6 +338,11 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 ## Major releases 🎙
 
+### 6.1 _(2022-09-04)_
+
+* all `Loco::Emitter` methods are available as `Loco`'s `module_function`s
+* **Deprecation warning:** `Loco::Emitter` will be removed in Loco-Rails 7
+
 ### 6.0 _(2022-02-03)_
 
 * Loco-Rails works with Rails 7 and Ruby 3.1

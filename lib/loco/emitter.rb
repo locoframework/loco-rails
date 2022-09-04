@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# TODO: remove in next major release
+# TODO: remove in v7
 module Loco
   module Emitter
     def emit(obj, event = nil, opts = {})
