@@ -13,22 +13,9 @@ module Loco
       self.silence_logger = config.silence_logger if config.silence_logger
       self.notifications_size = config.notifications_size if config.notifications_size
       self.app_name = config.app_name if config.app_name
-      configure_redis config.redis_instance
+      self.redis_instance = config.redis_instance
     ensure
       true
-    end
-
-    def self.configure_redis(redis_instance)
-      if redis_instance
-        self.redis_instance = redis_instance
-        return
-      end
-      return unless defined? Redis
-
-      Redis.current.get 'random_redis_key'
-      self.redis_instance = Redis.current
-    rescue Redis::CannotConnectError
-      self.redis_instance = nil
     end
   end
 end

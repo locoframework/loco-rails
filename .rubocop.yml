@@ -2,7 +2,7 @@ require: rubocop-rails
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
   Exclude:
     - node_modules/**/*
     - test/dummy/db/schema.rb
@@ -52,6 +52,14 @@ Rails/ApplicationJob:
   Enabled: true
   Exclude:
     - app/jobs/loco/*
+
+Rails/ActionControllerFlashBeforeRender:
+  Enabled: true
+  Exclude:
+    - test/dummy/app/controllers/admin/sessions_controller.rb
+
+Rails/I18nLocaleTexts:
+  Enabled: false
 
 Style/ArrayCoercion:
   Enabled: false

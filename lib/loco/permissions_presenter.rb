@@ -9,7 +9,7 @@ module Loco
         o.class.name.downcase.to_sym
       end
       if opts[:except] == :uuid
-        h.reject { |k, _| k == :string }
+        h.except(:string)
       else
         h
       end

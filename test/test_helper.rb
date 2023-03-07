@@ -12,7 +12,7 @@ require 'database_cleaner'
 require 'rspec/mocks'
 require 'rspec/expectations'
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixture_path = File.expand_path('fixtures', __dir__)
@@ -23,7 +23,7 @@ end
 Capybara.register_driver :chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new(
     args: [].tap do |arr|
-      arr << 'headless' unless ENV['HEADLESS'] =~ /^(false|no|0)$/i
+      arr << 'headless' unless ENV.fetch('HEADLESS', nil) =~ /^(false|no|0)$/i
     end
   )
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
