@@ -1,3 +1,5 @@
+import "core-js/stable";
+
 import "scaffold.css";
 import "global.css";
 
