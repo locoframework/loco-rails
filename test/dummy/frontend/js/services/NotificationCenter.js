@@ -93,7 +93,8 @@ const getCallbackForReceivedMessage = () => {
   const nullCallback = () => {};
   if (loco.getEnv().namespaceController.constructor !== UserController)
     return nullCallback;
-  if (loco.getEnv().controller.constructor !== RoomsController) return nullCallback;
+  if (loco.getEnv().controller.constructor !== RoomsController)
+    return nullCallback;
   if (loco.getEnv().action !== "show") return nullCallback;
   return loco.getEnv().controller.callbacks["receivedMessage"];
 };

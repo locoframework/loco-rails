@@ -1,6 +1,7 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "node": true
   },
 
   "extends": [
@@ -9,10 +10,17 @@
     "prettier"
   ],
 
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
+
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
 
   "plugins": [
-    "prettier"
+    "prettier",
+    "react"
   ],
 
   "rules": {
