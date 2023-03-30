@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 3.0.0'
 
-  s.add_dependency 'loco-rails-core', '~> 0.2.0'
+  s.add_dependency 'loco-rails-core', '~> 0.2.1'
   s.add_dependency 'rails', '>= 5.0'
 
   s.add_development_dependency 'bcrypt', '~> 3.1.18'
