@@ -48,7 +48,7 @@
     "postcss-loader": "^7.2.4",
     "postcss-nested": "^6.0.1",
     "prettier": "^2.8.4",
-    "stylelint": "^15.2.0",
+    "stylelint": "^15.10.1",
     "stylelint-config-standard": "^30.0.1",
     "webpack": "^5.76.0",
     "webpack-cli": "^5.0.1"
