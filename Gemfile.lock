@@ -137,7 +137,7 @@ GEM
       timeout
     net-smtp (0.3.3)
       net-protocol
-    nio4r (2.5.8)
+    nio4r (2.5.9)
     nokogiri (1.15.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -145,7 +145,7 @@ GEM
     parser (3.2.1.1)
       ast (~> 2.4.1)
     public_suffix (5.0.1)
-    puma (6.1.1)
+    puma (6.3.1)
       nio4r (~> 2.0)
     racc (1.7.1)
     rack (2.2.7)
@@ -250,7 +250,7 @@ DEPENDENCIES
   listen (~> 3.8.0)
   loco-rails!
   mysql2 (~> 0.5.5)
-  puma (~> 6.1.1)
+  puma (~> 6.3.1)
   redis (~> 5.0.6)
   rspec-expectations (~> 3.12.2)
   rspec-mocks (~> 3.12.3)
