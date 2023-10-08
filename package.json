@@ -43,7 +43,7 @@
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
     "mini-css-extract-plugin": "^2.7.3",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.31",
     "postcss-import": "^15.1.0",
     "postcss-loader": "^7.2.4",
     "postcss-nested": "^6.0.1",
