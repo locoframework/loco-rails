@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'jbuilder', '~> 2.11.5'
   s.add_development_dependency 'listen', '~> 3.8.0'
   s.add_development_dependency 'mysql2', '~> 0.5.5'
-  s.add_development_dependency 'puma', '~> 6.3.1'
+  s.add_development_dependency 'puma', '~> 6.4.2'
   s.add_development_dependency 'redis', '~> 5.0.6'
   s.add_development_dependency 'rspec-expectations', '~> 3.12.2'
   s.add_development_dependency 'rspec-mocks', '~> 3.12.3'
