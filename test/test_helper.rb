@@ -11,6 +11,7 @@ require 'selenium/webdriver'
 require 'database_cleaner'
 require 'rspec/mocks'
 require 'rspec/expectations'
+require 'bcrypt'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
@@ -41,7 +42,7 @@ DatabaseCleaner.strategy = :truncation, { except: %w[ar_internal_metadata] }
 
 module ActiveSupport
   class TestCase
-    extend MiniTest::Spec::DSL
+    extend Minitest::Spec::DSL
 
     self.use_transactional_tests = false
 
