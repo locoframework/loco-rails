@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-require 'loco-rails-core'
-
 require 'loco/broadcaster'
 require 'loco/config'
 require 'loco/emitter'
 require 'loco/rails/engine'
-require 'loco/helpers'
 require 'loco/hub'
 require 'loco/permissions_presenter'
 require 'loco/sender'
