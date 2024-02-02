@@ -26,7 +26,7 @@ class User
     private
 
     def auth_failed(alert = 'Invalid email or password.')
-      redirect_to new_user_session_url, alert: alert
+      redirect_to new_user_session_url, alert:
     end
 
     def auth_succeeded(user)

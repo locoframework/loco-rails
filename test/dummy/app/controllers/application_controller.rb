@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   end
 
   def success_response(status, msg, data = nil, other = {})
-    resp = { success: true, status: status, flash: { success: msg } }
+    resp = { success: true, status:, flash: { success: msg } }
     unless data.nil?
       resp[:data] = {}
       data.each { |key, val| resp[:data][key] = val }
@@ -36,6 +36,6 @@ class ApplicationController < ActionController::Base
   end
 
   def failure_response(status, errors)
-    render json: { success: false, status: status, errors: errors }
+    render json: { success: false, status:, errors: }
   end
 end

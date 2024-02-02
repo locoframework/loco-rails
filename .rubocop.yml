@@ -61,6 +61,11 @@ Rails/ActionControllerFlashBeforeRender:
 Rails/I18nLocaleTexts:
   Enabled: false
 
+Style/ArgumentsForwarding:
+  Enabled: true
+  Exclude:
+    - lib/loco/ws_connection_finder.rb
+
 Style/ArrayCoercion:
   Enabled: false
 

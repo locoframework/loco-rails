@@ -27,7 +27,7 @@ Capybara.register_driver :chrome do |app|
       arr << 'headless' unless ENV.fetch('HEADLESS', nil) =~ /^(false|no|0)$/i
     end
   )
-  Capybara::Selenium::Driver.new app, browser: :chrome, options: options
+  Capybara::Selenium::Driver.new app, browser: :chrome, options:
 end
 
 Capybara.javascript_driver = :chrome

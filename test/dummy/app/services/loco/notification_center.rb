@@ -24,12 +24,12 @@ module Loco
         return false if permissions[:admin].nil?
 
         user = User.new id: data['user_id']
-        { user: user }
+        { user: }
       when 'NEW_MESSAGE'
         return false if permissions[:user].nil?
         return false unless (hub = find_room(data['room_id']))
 
-        { hub: hub }
+        { hub: }
       else
         false
       end

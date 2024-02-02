@@ -58,7 +58,7 @@ module Loco
     def members
       raw_members.map do |serialized|
         klass, id = serialized.split(':')
-        klass.classify.constantize.find_by(id: id)
+        klass.classify.constantize.find_by(id:)
       end
     end
   end
