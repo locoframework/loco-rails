@@ -7,7 +7,7 @@ module Loco
 
     attr_reader :obj
 
-    serialize :data, JSON
+    serialize :data, coder: JSON
 
     validates :obj_class, presence: true
     validates :event, presence: true
