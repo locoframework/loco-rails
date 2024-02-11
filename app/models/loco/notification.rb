@@ -7,7 +7,7 @@ module Loco
 
     attr_reader :obj
 
-    serialize :data, coder: JSON
+    serialize :data, coder: JSON if ActiveRecord::Base.connection.adapter_name != 'PostgreSQL'
 
     validates :obj_class, presence: true
     validates :event, presence: true

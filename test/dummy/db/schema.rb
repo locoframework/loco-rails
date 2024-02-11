@@ -10,21 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2017_08_09_131208) do
-
+ActiveRecord::Schema[7.1].define(version: 2024_02_11_210452) do
   create_table "admins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "articles", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "title"
     t.text "text"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "published_at", precision: nil
     t.integer "user_id"
     t.integer "admin_rate"
     t.text "admin_review"
@@ -36,8 +35,8 @@ ActiveRecord::Schema.define(version: 2017_08_09_131208) do
     t.string "author"
     t.text "text"
     t.integer "article_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "emotion"
     t.boolean "pinned"
     t.integer "admin_rate"
@@ -48,35 +47,37 @@ ActiveRecord::Schema.define(version: 2017_08_09_131208) do
     t.string "obj_class"
     t.integer "obj_id"
     t.string "token"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "loco_notifications", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "loco_notifications", id: false, charset: "utf8mb3", force: :cascade do |t|
     t.string "obj_class"
-    t.integer "obj_id"
+    t.bigint "obj_id"
     t.string "event"
-    t.string "data"
+    t.text "data"
     t.string "recipient_class"
-    t.integer "recipient_id"
+    t.bigint "recipient_id"
     t.string "recipient_token"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at", "recipient_class", "recipient_id"], name: "index_loco_notifications_on_created_at_and_recipient"
+    t.index ["created_at", "recipient_token"], name: "index_loco_notifications_on_created_at_and_recipient_token"
   end
 
   create_table "rooms", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "username"
     t.string "email"
     t.string "password_digest"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.datetime "confirmed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "confirmed_at", precision: nil
   end
 
 end

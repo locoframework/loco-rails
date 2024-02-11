@@ -31,6 +31,7 @@ class User
     test 'should allow to update fields in order to have updated values' do
       sleep 1
       update_article :two
+      sleep 1
       within "div[data-attr='title']" do
         click_link 'apply changes'
         update_value_attr_for '#article_title'

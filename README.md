@@ -173,7 +173,7 @@ Familiarize yourself with the [proper sections](https://github.com/locoframework
 
 _Look inside `test/dummy/` to check a recommended setup with the [webpack](https://webpack.js.org)._
 
-Loco-Rails and Loco-JS both use Semantic Versioning (MAJOR.MINOR.PATCH).  
+Loco-Rails and Loco-JS both use Semantic Versioning (MAJOR.MINOR.PATCH).
 It is required to keep the MAJOR version number the same between Loco-Rails and Loco-JS to maintain compatibility.
 
 Some features may require an upgrade of MINOR version both for front-end and back-end parts. Check Changelogs and follow our [Twitter](https://twitter.com/artofcode_co) to be notified.
@@ -193,11 +193,8 @@ end
 ```
 
 Where:
-
 * notifications_size - max number of notifications returned from the server at once
 * app_name - used as key's prefix to store info about current WebSocket connections in Redis
-  
-If Loco-Rails discovers Redis instance under `Redis.current`, it will use it. Except that, you can specify Redis instance directly using `redis_instance: Redis.new(your_config)`.
 
 2️⃣ Browse all generated files and customize them according to the comments.
 
@@ -266,7 +263,7 @@ If you want to send a message to a group of recipients, persist this group, and 
 
 #### Communication Hub
 
-You can treat it like a virtual room where you can add/remove members.  
+You can treat it like a virtual room where you can add/remove members.
 It works over WebSockets only with the `emit_to` module function.
 
 `Loco` also provides hub management module functions such as `add_hub`, `get_hub`, `del_hub`.
