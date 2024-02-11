@@ -8,5 +8,5 @@ Loco.configure do |c|
   c.silence_logger = false          # false by default
   c.notifications_size = 10         # 100 by default
   c.app_name = "loco_#{Rails.env}"  # your app's name (required for namespacing)
-  c.redis_instance = Redis.new(host: '127.0.0.1', port: 6380, db: db)
+  c.redis_instance = Redis.new(host: '127.0.0.1', port: 6380, db:)
 end

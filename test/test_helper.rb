@@ -11,12 +11,13 @@ require 'selenium/webdriver'
 require 'database_cleaner'
 require 'rspec/mocks'
 require 'rspec/expectations'
+require 'bcrypt'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 if ActiveSupport::TestCase.respond_to?(:fixture_path=)
-  ActiveSupport::TestCase.fixture_path = File.expand_path('fixtures', __dir__)
-  ActionDispatch::IntegrationTest.fixture_path = ActiveSupport::TestCase.fixture_path
+  ActiveSupport::TestCase.fixture_paths = [File.expand_path('fixtures', __dir__)]
+  ActionDispatch::IntegrationTest.fixture_paths = ActiveSupport::TestCase.fixture_paths
   ActiveSupport::TestCase.fixtures :all
 end
 
@@ -26,7 +27,7 @@ Capybara.register_driver :chrome do |app|
       arr << 'headless' unless ENV.fetch('HEADLESS', nil) =~ /^(false|no|0)$/i
     end
   )
-  Capybara::Selenium::Driver.new app, browser: :chrome, options: options
+  Capybara::Selenium::Driver.new app, browser: :chrome, options:
 end
 
 Capybara.javascript_driver = :chrome
@@ -41,7 +42,7 @@ DatabaseCleaner.strategy = :truncation, { except: %w[ar_internal_metadata] }
 
 module ActiveSupport
   class TestCase
-    extend MiniTest::Spec::DSL
+    extend Minitest::Spec::DSL
 
     self.use_transactional_tests = false
 

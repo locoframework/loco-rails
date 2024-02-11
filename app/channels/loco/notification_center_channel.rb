@@ -33,7 +33,7 @@ module Loco
     protected
 
     def update_connections
-      PermissionsPresenter.indexed(loco_permissions, except: :uuid).each do |_, resource|
+      PermissionsPresenter.indexed(loco_permissions, except: :uuid).each_value do |resource|
         WsConnectionManager.new(resource).update(@uuid)
       end
     end

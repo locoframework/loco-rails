@@ -22,9 +22,9 @@ module Loco
       def send_notifications(obj, event, recipients, payload)
         recipients.each do |recipient|
           notification = Notification.create!(
-            obj: obj,
-            event: event,
-            recipient: recipient,
+            obj:,
+            event:,
+            recipient:,
             data: payload
           )
           sync_time = notification.created_at.iso8601(6)
@@ -43,10 +43,10 @@ module Loco
       def send_notification(recipient, notification, sync_time)
         if notification.recipient_id
           Sender.(recipient, loco: { notification: notification.compact })
-          Sender.(recipient, loco: { sync_time: sync_time })
+          Sender.(recipient, loco: { sync_time: })
         else
           SenderJob.perform_later(recipient, loco: { notification: notification.compact })
-          SenderJob.perform_later(recipient, loco: { sync_time: sync_time })
+          SenderJob.perform_later(recipient, loco: { sync_time: })
         end
       end
     end

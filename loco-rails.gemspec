@@ -21,25 +21,9 @@ Gem::Specification.new do |s|
     'README.rdoc'
   ]
 
-  s.required_ruby_version = '>= 3.0.0'
+  s.required_ruby_version = '>= 3.1.0'
 
-  s.add_dependency 'loco-rails-core', '~> 0.2.1'
-  s.add_dependency 'rails', '>= 5.0'
+  s.add_dependency 'rails', '>= 6.1'
 
-  s.add_development_dependency 'bcrypt', '~> 3.1.18'
-  s.add_development_dependency 'capybara', '~> 3.38.0'
-  s.add_development_dependency 'database_cleaner', '~> 2.0.1'
-  s.add_development_dependency 'jbuilder', '~> 2.11.5'
-  s.add_development_dependency 'listen', '~> 3.8.0'
-  s.add_development_dependency 'mysql2', '~> 0.5.5'
-  s.add_development_dependency 'puma', '~> 6.4.2'
-  s.add_development_dependency 'redis', '~> 5.0.6'
-  s.add_development_dependency 'rspec-expectations', '~> 3.12.2'
-  s.add_development_dependency 'rspec-mocks', '~> 3.12.3'
-  s.add_development_dependency 'rubocop', '~> 1.48'
-  s.add_development_dependency 'rubocop-rails', '~> 2.18.0'
-  s.add_development_dependency 'selenium-webdriver', '~> 4.8.1'
-  s.add_development_dependency 'sprockets-rails', '~> 3.4.2'
-  s.add_development_dependency 'will_paginate', '~> 3.3.1'
   s.metadata['rubygems_mfa_required'] = 'true'
 end

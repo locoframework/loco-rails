@@ -59,8 +59,8 @@ module Loco
       end
     end
 
-    def scan_hash(key, &block)
-      storage.hscan_each(proper_key("h:#{key}"), &block)
+    def scan_hash(key, &)
+      storage.hscan_each(proper_key("h:#{key}"), &)
     end
 
     def hlen(key)

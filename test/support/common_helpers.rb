@@ -23,7 +23,7 @@ module CommonHelpers
   def create_comment_for_article(name, opts = {})
     author = opts[:author] || 'Ryan'
     text = opts[:text] || 'Some nice thoughts dude'
-    comment = articles(name).comments.create! author: author, text: text
+    comment = articles(name).comments.create!(author:, text:)
     Loco.emit comment, :created, data: { article_id: comment.article_id }
     perform_enqueued_jobs
     comment

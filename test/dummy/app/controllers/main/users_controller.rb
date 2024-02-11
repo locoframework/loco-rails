@@ -11,7 +11,7 @@ module Main
       if user.save
         token = SecureRandom.hex(10)
         emit(user, :created, to: Admin)
-        Connection.create!(obj: user, token: token)
+        Connection.create!(obj: user, token:)
         success_response_for_create(user, token)
       else
         failure_response(400, user.errors)
