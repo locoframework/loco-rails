@@ -1,4 +1,4 @@
-import { I18n } from "loco-js";
+import { I18n } from "loco-js-model";
 
 const lastChar = (s) => s[s.length - 1];
 

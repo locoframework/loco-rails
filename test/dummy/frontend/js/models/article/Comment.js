@@ -1,4 +1,4 @@
-import { Models } from "loco-js";
+import { Models } from "loco-js-model";
 
 class Comment extends Models.Base {
   static identity = "Article.Comment";

@@ -1,4 +1,4 @@
-import { helpers } from "loco-js";
+import { helpers } from "loco-js-core";
 
 import Member from "models/room/Member";
 

@@ -1,4 +1,4 @@
-import loco from "initializers/loco";
+import getEnv from "initializers/loco-core";
 
 import {
   addArticles,
@@ -22,13 +22,13 @@ import RoomsController from "controllers/user/Rooms";
 import UserController from "controllers/User";
 
 const articleCreated = async ({ id }) => {
-  if (loco.getEnv().namespaceController.constructor !== UserController) return;
+  if (getEnv().namespaceController.constructor !== UserController) return;
   const article = await Article.find({ id, abbr: true });
   store.dispatch(addArticles([article]));
 };
 
 const articlePublished = async ({ id }) => {
-  if (loco.getEnv().namespaceController.constructor === AdminController) {
+  if (getEnv().namespaceController.constructor === AdminController) {
     const article = await Article.find({ id, abbr: true, resource: "admin" });
     store.dispatch(prependArticles([article]));
   } else {
@@ -39,7 +39,7 @@ const articlePublished = async ({ id }) => {
 
 const articleUpdated = async ({ id }) => {
   const findParams = { id: id, abbr: true };
-  if (loco.getEnv().namespaceController.constructor === AdminController) {
+  if (getEnv().namespaceController.constructor === AdminController) {
     findParams["resource"] = "admin";
   }
   let [article, index] = findArticle(store.getState(), id);
@@ -60,7 +60,7 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
 
 const commentCreated = async ({ article_id: articleId, id }) => {
   const findParams = { articleId, id };
-  if (loco.getEnv().namespaceController.constructor === MainController) {
+  if (getEnv().namespaceController.constructor === MainController) {
     findParams["resource"] = "main";
   }
   const [article] = findArticle(store.getState(), articleId);
@@ -85,18 +85,18 @@ const commentUpdated = async ({ article_id: articleId, id }) => {
 };
 
 const ping = () => {
-  if (loco.getEnv().namespaceController.constructor !== UserController) return;
+  if (getEnv().namespaceController.constructor !== UserController) return;
   alert("Ping!");
 };
 
 const getCallbackForReceivedMessage = () => {
-  const nullCallback = () => {};
-  if (loco.getEnv().namespaceController.constructor !== UserController)
+  const nullCallback = () => { };
+  if (getEnv().namespaceController.constructor !== UserController)
     return nullCallback;
-  if (loco.getEnv().controller.constructor !== RoomsController)
+  if (getEnv().controller.constructor !== RoomsController)
     return nullCallback;
-  if (loco.getEnv().action !== "show") return nullCallback;
-  return loco.getEnv().controller.callbacks["receivedMessage"];
+  if (getEnv().action !== "show") return nullCallback;
+  return getEnv().controller.callbacks["receivedMessage"];
 };
 
 export default async (data) => {

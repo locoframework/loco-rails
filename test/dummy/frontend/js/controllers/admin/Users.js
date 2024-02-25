@@ -1,6 +1,6 @@
 import React from "react";
 import { render as renderElement } from "react-dom";
-import { helpers } from "loco-js";
+import { helpers } from "loco-js-core";
 
 import { setUsers } from "actions";
 import store from "store";

@@ -4,6 +4,7 @@ import "scaffold.css";
 import "global.css";
 
 import "initializers/rails";
+import "initializers/loco-core";
 import loco from "initializers/loco";
 import "validators/Vulgarity";
 import "locales";

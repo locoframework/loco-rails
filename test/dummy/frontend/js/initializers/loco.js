@@ -1,4 +1,5 @@
-import { createConnector, init } from "loco-js";
+import { init, connectWithModel } from "loco-js";
+import { connector, Config, I18n } from "loco-js-model";
 import { connect as connectUI } from "loco-js-ui";
 import { createConsumer } from "@rails/actioncable";
 
@@ -10,22 +11,15 @@ import Member from "models/room/Member";
 import Room from "models/Room";
 import User from "models/User";
 
-import Admin from "controllers/Admin";
-import Main from "controllers/Main";
-import UserController from "controllers/User";
-
 import renderFlash from "views/shared/Flash";
+
+connectWithModel(connector);
 
 Article.Comment = Comment;
 Room.Member = Member;
 
 const loco = init({
   cable: createConsumer(),
-  controllers: {
-    Admin,
-    Main,
-    User: UserController,
-  },
   models: {
     Article,
     Room,
@@ -50,6 +44,10 @@ const loco = init({
   },
 });
 
-connectUI(createConnector(loco));
+connectUI({
+  getLocale: () => Config.locale,
+  loco,
+  I18n,
+});
 
 export default loco;
