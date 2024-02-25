@@ -6,6 +6,7 @@ import "global.css";
 import "initializers/rails";
 import "initializers/loco-core";
 import loco from "initializers/loco";
+import "initializers/loco-ui";
 import "validators/Vulgarity";
 import "locales";
 

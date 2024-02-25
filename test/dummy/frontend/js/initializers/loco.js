@@ -1,6 +1,5 @@
 import { init, connectWithModel } from "loco-js";
-import { connector, Config, I18n } from "loco-js-model";
-import { connect as connectUI } from "loco-js-ui";
+import { connector } from "loco-js-model";
 import { createConsumer } from "@rails/actioncable";
 
 import NotificationCenter from "services/NotificationCenter";
@@ -42,12 +41,6 @@ const loco = init({
       return;
     loco.getWire().setPollingTime(1000);
   },
-});
-
-connectUI({
-  getLocale: () => Config.locale,
-  loco,
-  I18n,
 });
 
 export default loco;
