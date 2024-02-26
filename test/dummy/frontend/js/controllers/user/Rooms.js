@@ -11,12 +11,12 @@ class Rooms {
   }
 
   index() {
-    List();
+    this.cleanup = List();
   }
 
   async show() {
     this.callbacks["receivedMessage"] = Show.receivedMessage;
-    Show.render(helpers.params.id);
+    this.cleanup = Show.render(helpers.params.id);
     const resp = await Member.all({ roomId: helpers.params.id });
     Show.renderMembers(resp.resources);
   }

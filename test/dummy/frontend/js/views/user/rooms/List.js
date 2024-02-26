@@ -52,5 +52,5 @@ const receivedMessage = (type, data) => {
 };
 
 export default function () {
-  subscribe({ to: Room, with: receivedMessage });
+  return subscribe({ to: Room, with: receivedMessage });
 }

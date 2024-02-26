@@ -44,8 +44,8 @@ const handleSendingMessage = (roomId) => {
 
 export default {
   render: (roomId) => {
-    subscribe({ to: Room, with: createReceivedMessage(roomId) });
     handleSendingMessage(roomId);
+    return subscribe({ to: Room, with: createReceivedMessage(roomId) });
   },
 
   renderMembers: (members) => {
