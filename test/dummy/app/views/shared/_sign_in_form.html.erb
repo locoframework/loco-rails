@@ -1,6 +1,6 @@
 <h1>Sign in</h1>
 
-<%= form_tag url, defined?(opts) ? opts : {} do %>
+<%= form_tag url, (defined?(opts) ? opts : {}).merge('data-turbo' => 'false') do %>
   <p class='errors' data-for='base'></p>
 
   <div class="field">
