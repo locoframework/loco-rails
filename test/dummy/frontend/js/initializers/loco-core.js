@@ -12,10 +12,8 @@ const Controllers = {
 
 let env = null;
 
-["DOMContentLoaded", "turbo:load"].forEach((eventName) => {
-  document.addEventListener(eventName, () => {
-    env = init(Controllers);
-  });
+document.addEventListener("turbo:load", () => {
+  env = init(Controllers);
 });
 
 const getEnv = () => env;

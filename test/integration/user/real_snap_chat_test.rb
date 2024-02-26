@@ -22,8 +22,8 @@ class User
     end
 
     test "should show room's members" do
-      join_room users(:jane), @room
       assert page.has_content? 'zbig'
+      join_room users(:jane), @room
       assert page.has_content? 'jane'
     end
 
