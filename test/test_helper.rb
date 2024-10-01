@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ENV['RAILS_ENV'] = 'test'
-require File.expand_path('../test/dummy/config/environment.rb', __dir__)
+require_relative '../test/dummy/config/environment'
 ActiveRecord::Migrator.migrations_paths = [File.expand_path('../test/dummy/db/migrate', __dir__)]
 ActiveRecord::Migrator.migrations_paths << File.expand_path('../db/migrate', __dir__)
 require 'rails/test_help'
@@ -13,9 +13,12 @@ require 'rspec/mocks'
 require 'rspec/expectations'
 require 'bcrypt'
 
+# Filter out Minitest backtrace while allowing backtrace from other libraries to be shown.
+Minitest.backtrace_filter = Minitest::BacktraceFilter.new
+
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
-if ActiveSupport::TestCase.respond_to?(:fixture_path=)
+if ActiveSupport::TestCase.respond_to?(:fixture_paths=)
   ActiveSupport::TestCase.fixture_paths = [File.expand_path('fixtures', __dir__)]
   ActionDispatch::IntegrationTest.fixture_paths = ActiveSupport::TestCase.fixture_paths
   ActiveSupport::TestCase.fixtures :all
@@ -34,9 +37,6 @@ Capybara.javascript_driver = :chrome
 Capybara.current_driver = Capybara.javascript_driver
 Capybara.default_max_wait_time = 5
 Capybara.server = :puma
-
-# Filter out Minitest backtrace while allowing backtrace from other libraries to be shown.
-Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
 DatabaseCleaner.strategy = :truncation, { except: %w[ar_internal_metadata] }
 

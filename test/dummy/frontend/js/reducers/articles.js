@@ -10,8 +10,14 @@ import {
 
 export default produce((draft = [], action) => {
   switch (action.type) {
-    case ADD_ARTICLES:
-      return draft.concat(action.articles);
+    case ADD_ARTICLES: {
+      const newArticles = action.articles.filter(
+        (newArticle) =>
+          !draft.some((existingArticle) => existingArticle.id === newArticle.id)
+      );
+      draft.push(...newArticles);
+      return;
+    }
     case PREPEND_ARTICLES:
       return action.articles.concat(draft);
     case REMOVE_ARTICLE:

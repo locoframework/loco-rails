@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_11_210452) do
-  create_table "admins", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+ActiveRecord::Schema[7.2].define(version: 2024_02_11_210452) do
+  create_table "admins", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "articles", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "text"
     t.datetime "created_at", null: false
@@ -31,7 +31,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_210452) do
     t.float "admin_review_time"
   end
 
-  create_table "comments", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "comments", force: :cascade do |t|
     t.string "author"
     t.text "text"
     t.integer "article_id"
@@ -43,7 +43,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_210452) do
     t.boolean "approved", default: false
   end
 
-  create_table "connections", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "connections", force: :cascade do |t|
     t.string "obj_class"
     t.integer "obj_id"
     t.string "token"
@@ -51,7 +51,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_210452) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "loco_notifications", id: false, charset: "utf8mb3", force: :cascade do |t|
+  create_table "loco_notifications", id: false, force: :cascade do |t|
     t.string "obj_class"
     t.bigint "obj_id"
     t.string "event"
@@ -65,13 +65,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_210452) do
     t.index ["created_at", "recipient_token"], name: "index_loco_notifications_on_created_at_and_recipient_token"
   end
 
-  create_table "rooms", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "rooms", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "email"
     t.string "password_digest"
@@ -79,5 +79,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_210452) do
     t.datetime "updated_at", null: false
     t.datetime "confirmed_at", precision: nil
   end
-
 end

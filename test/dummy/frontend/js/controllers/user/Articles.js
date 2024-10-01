@@ -36,6 +36,17 @@ const onArticleDestroyed = (res) => {
 };
 
 class Articles {
+  initialize() {
+    this.unsubscribe = null;
+  }
+
+  deinitialize() {
+    if (this.unsubscribe !== null) {
+      this.unsubscribe();
+      this.unsubscribe = null;
+    }
+  }
+
   async index() {
     if (helpers.params.message === "deleted") {
       renderFlash({ alert: "Article has been deleted." });
@@ -57,13 +68,13 @@ class Articles {
   }
 
   new() {
-    FormView.render(new Article());
+    this.unsubscribe = FormView.render(new Article());
   }
 
   async edit() {
     FormView.renderComments(helpers.params.id);
     const article = await Article.find(helpers.params.id);
-    FormView.render(article);
+    this.unsubscribe = FormView.render(article);
   }
 }
 

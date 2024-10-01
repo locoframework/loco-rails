@@ -324,7 +324,7 @@ You can look at the working example [here](https://github.com/locoframework/loco
 
 ```bash
 $ bundle install
-$ docker-compose up
+$ docker compose up
 $ bin/rails db:create
 $ bin/rails test
 ```

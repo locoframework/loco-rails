@@ -60,10 +60,14 @@ const handleApplyingChanges = (form) => {
 export default {
   render: (article) => {
     store.dispatch(addArticles([article]));
-    subscribe({ to: article, with: createReceivedMessage(article) });
+    const unsubscribe = subscribe({
+      to: article,
+      with: createReceivedMessage(article),
+    });
     const form = new UI.Form({ for: article });
     form.render();
     handleApplyingChanges(form);
+    return unsubscribe;
   },
 
   renderComments: async (articleId) => {

@@ -1,17 +1,5 @@
-version: '3'
+version: "3"
 services:
-  mysql:
-    platform: linux/x86_64
-    image: mysql:8.0
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-    expose:
-      - "3306"
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql:/var/lib/mysql
-
   redis:
     image: redis:6.0
     expose:
@@ -19,8 +7,7 @@ services:
     ports:
       - "6380:6379"
     volumes:
-      - 'redis:/var/lib/redis/data'
+      - "redis:/var/lib/redis/data"
 
 volumes:
-  mysql:
   redis:
