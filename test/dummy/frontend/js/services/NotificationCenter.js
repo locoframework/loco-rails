@@ -90,11 +90,10 @@ const ping = () => {
 };
 
 const getCallbackForReceivedMessage = () => {
-  const nullCallback = () => { };
+  const nullCallback = () => {};
   if (getEnv().namespaceController.constructor !== UserController)
     return nullCallback;
-  if (getEnv().controller.constructor !== RoomsController)
-    return nullCallback;
+  if (getEnv().controller.constructor !== RoomsController) return nullCallback;
   if (getEnv().action !== "show") return nullCallback;
   return getEnv().controller.callbacks["receivedMessage"];
 };
