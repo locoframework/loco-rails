@@ -18,7 +18,7 @@ module Loco
 
       test 'should not return addressed notifications without passing correct permissions' do
         fetcher = Notification::Fetcher.new synced_at: 3.seconds.ago.iso8601(6)
-        Loco.emit articles(:one), :published, for: admins(:one)
+        Loco.emit articles(:one), :published, for: admin_support_members(:one)
         assert_empty fetcher.formatted_notifications
       end
 
@@ -27,7 +27,7 @@ module Loco
           synced_at: 3.seconds.ago.iso8601(6),
           permissions: [current_admin]
         )
-        Loco.emit articles(:one), :published, for: admins(:two)
+        Loco.emit articles(:one), :published, for: admin_support_members(:two)
         assert_empty fetcher.formatted_notifications
       end
 
@@ -36,7 +36,7 @@ module Loco
           synced_at: 3.seconds.ago.iso8601(6),
           permissions: [current_admin]
         )
-        Loco.emit articles(:one), :published, for: admins(:one)
+        Loco.emit articles(:one), :published, for: admin_support_members(:one)
         assert_equal 1, fetcher.formatted_notifications.size
       end
 
@@ -49,7 +49,7 @@ module Loco
           synced_at: 3.seconds.ago.iso8601(6),
           permissions: [current_admin(:two)]
         )
-        Loco.emit articles(:one), :published, for: Admin
+        Loco.emit articles(:one), :published, for: Admin::SupportMember
         assert_equal 1, fetcher.formatted_notifications.size
         assert_equal 1, fetcher2.formatted_notifications.size
       end
@@ -66,7 +66,7 @@ module Loco
       private
 
       def current_admin(which = :one)
-        admins which
+        admin_support_members(which)
       end
     end
   end

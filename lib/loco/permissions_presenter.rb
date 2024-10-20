@@ -6,7 +6,7 @@ module Loco
 
     def indexed(loco_permissions, opts = {})
       h = signed_in(loco_permissions).index_by do |o|
-        o.class.name.downcase.to_sym
+        o.class.name.underscore.to_sym
       end
       if opts[:except] == :uuid
         h.except(:string)

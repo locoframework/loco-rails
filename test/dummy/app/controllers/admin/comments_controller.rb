@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Admin
+module Admin
   class CommentsController < AdminController
     before_action :set_article, only: %i[index show edit update]
     before_action :set_comment, only: %i[show edit update]

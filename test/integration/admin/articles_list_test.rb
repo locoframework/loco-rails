@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class Admin
+module Admin
   class ArticlesListTest < IT
     include CommonHelpers
     include AdminHelpers

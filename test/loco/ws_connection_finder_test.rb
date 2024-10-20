@@ -16,7 +16,7 @@ module Loco
       end
 
       it 'finds connections of defined resources' do
-        WsConnectionFinder.([users(:zbig), Admin]) { |uuid| @res << uuid }
+        WsConnectionFinder.([users(:zbig), Admin::SupportMember]) { |uuid| @res << uuid }
         assert_equal(['UUID#1', 'UUID#3', 'UUID#3.1', 'UUID#4'], @res.sort)
       end
 

@@ -27,10 +27,10 @@ module Loco
       it 'can emit to a class of objects' do
         allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(COMPACT_OBJ)
         allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
-        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, PAYLOAD)
-        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, @sync_time_payload)
-        Broadcaster.(articles(:one), :created, recipients: [Admin])
-        assert_equal 1, Notification.where(Notification::FOR_CLASS_SQL_TMPL, 'Admin').count
+        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, PAYLOAD)
+        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @sync_time_payload)
+        Broadcaster.(articles(:one), :created, recipients: [Admin::SupportMember])
+        assert_equal 1, Notification.where(Notification::FOR_CLASS_SQL_TMPL, 'Admin::SupportMember').count
       end
 
       it 'can emit to a class of objects and a specific resource at the same time' do
@@ -38,9 +38,9 @@ module Loco
         allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
         expect(Sender).to receive(:call).with(users(:jane), PAYLOAD)
         expect(Sender).to receive(:call).with(users(:jane), @sync_time_payload)
-        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, PAYLOAD)
-        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin' }, @sync_time_payload)
-        Broadcaster.(articles(:one), :created, recipients: [Admin, users(:jane)])
+        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, PAYLOAD)
+        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @sync_time_payload)
+        Broadcaster.(articles(:one), :created, recipients: [Admin::SupportMember, users(:jane)])
       end
     end
   end

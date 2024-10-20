@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class Admin
+module Admin
   class UsersSectionTest < IT
     include AdminHelpers
 
@@ -29,7 +29,7 @@ class Admin
     test 'should auto load recently added user' do
       user = User.create! email: 'david@example.com', username: 'david',
                           password: 'secret', password_confirmation: 'secret'
-      Loco.emit user, :created, for: Admin
+      Loco.emit user, :created, for: Admin::SupportMember
       assert page.has_content? 'david@example.com'
     end
   end

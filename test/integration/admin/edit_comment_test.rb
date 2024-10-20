@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class Admin
+module Admin
   class EditCommentTest < IT
     include CommonHelpers
     include AdminHelpers

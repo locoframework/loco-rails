@@ -9,7 +9,7 @@ module Loco
     before do
       @org_expiration = WsConnectionManager::EXPIRATION
       Kernel.silence_warnings { WsConnectionManager::EXPIRATION = 1 }
-      create_connection(admins(:one), 'UUID#3')
+      create_connection(admin_support_members(:one), 'UUID#3')
     end
 
     after do
@@ -22,19 +22,19 @@ module Loco
       end
 
       it 'does not change the status' do
-        WsConnectionChecker.(WsConnectionIdentifier.(admins(:one)))
+        WsConnectionChecker.(WsConnectionIdentifier.(admin_support_members(:one)))
         assert_equal 'ok', WsConnectionStorage.current.get('UUID#3')
       end
 
       it 'does not call WsConnectionManager' do
         expect(WsConnectionManager).to_not receive(:new)
-        WsConnectionChecker.(WsConnectionIdentifier.(admins(:one)))
+        WsConnectionChecker.(WsConnectionIdentifier.(admin_support_members(:one)))
       end
     end
 
     describe 'a connections status is nil' do
       before do
-        @identifier = WsConnectionIdentifier.(admins(:one))
+        @identifier = WsConnectionIdentifier.(admin_support_members(:one))
         sleep(2)
         assert_nil WsConnectionStorage.current.get('UUID#3')
       end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Admin
+module Admin
   class UsersController < AdminController
     before_action :set_user, only: %i[edit update destroy]
 

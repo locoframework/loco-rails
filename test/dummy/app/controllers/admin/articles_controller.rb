@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Admin
+module Admin
   class ArticlesController < AdminController
     def published
       respond_to do |format|
