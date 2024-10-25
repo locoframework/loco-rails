@@ -3,7 +3,7 @@
 module Loco
   class Broadcaster
     class << self
-      def call(obj, event, recipients: nil, payload: nil)
+      def call(obj, event, recipients:, payload:)
         payload ||= {}
         payload[:loco] = { idempotency_key: SecureRandom.hex }
         send_notifications(obj, event, process_recipients(recipients), payload)

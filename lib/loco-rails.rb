@@ -23,7 +23,7 @@ module Loco
     end
   end
 
-  def emit(obj, event = nil, opts = {})
+  def emit(obj, event, opts = {})
     Broadcaster.(
       obj,
       event,

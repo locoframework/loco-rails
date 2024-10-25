@@ -3,7 +3,7 @@
 module Loco
   class Sender
     class << self
-      def call(recipient_s, payload = {})
+      def call(recipient_s, payload)
         payload = with_idempotency_key(payload)
         recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
         new.(recipients, payload)
