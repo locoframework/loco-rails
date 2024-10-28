@@ -14,6 +14,23 @@ require 'loco/ws_connection_identifier'
 require 'loco/ws_connection_storage'
 
 module Loco
+  module Priv
+    module_function
+
+    # TODO: implement
+    def new_emit(payload, to:, for:, ws_only:)
+    end
+
+    def legacy_emit(obj, event, opts)
+      Broadcaster.(
+        obj,
+        event,
+        payload: opts[:payload] || opts[:data],
+        recipients: opts[opts[:for] ? :for : :to]
+      )
+    end
+  end
+
   module_function
 
   def configure
@@ -23,17 +40,19 @@ module Loco
     end
   end
 
-  def emit(obj, event, opts = {})
-    Broadcaster.(
-      obj,
-      event,
-      payload: opts[:payload] || opts[:data],
-      recipients: opts[opts[:for] ? :for : :to]
-    )
+  def emit(for_or_recipients, event_or_payload, opts = nil, payload: nil, data: nil, for: nil, to: nil, ws_only: nil)
+    if event_or_payload.is_a?(Hash)
+      emit_to(for_or_recipients, event_or_payload)
+    elsif to
+      Priv.new_emit(event_or_payload, to:, for:, ws_only:)
+    else
+      opts ||= { payload:, data:, for: }
+      Priv.legacy_emit(for_or_recipients, event_or_payload, opts)
+    end
   end
 
-  def emit_to(recipient_s, data)
-    Sender.(recipient_s, data)
+  def emit_to(recipient_s, payload)
+    Sender.(recipient_s, payload)
   end
 
   def add_hub(name, members = [])

@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
       resp[:data] = {}
       data.each { |key, val| resp[:data][key] = val }
     end
-    other.each { |key, val| resp[key] = val } if other.any?
+    other.each { |key, val| resp[key] = val }
     render json: resp
   end
 
