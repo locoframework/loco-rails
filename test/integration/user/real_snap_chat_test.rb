@@ -34,8 +34,8 @@ class User
       perform_enqueued_jobs
       assert page.has_content? 'zbig: Hello Jane!'
       payload = { type: 'NEW_MESSAGE', message: 'Hi zbig!', author: 'jane' }
-      idempotency_key = Loco.emit_to HubFinder.new(@room).find, payload
-      Loco.emit_to HubFinder.new(@room).find, payload.merge(idempotency_key:)
+      idempotency_key = Loco.emit payload, to: HubFinder.new(@room).find, ws_only: true
+      Loco.emit payload.merge(idempotency_key:), to: HubFinder.new(@room).find, ws_only: true
       Loco.emit_to HubFinder.new(@room).find, payload.merge(idempotency_key:)
       sleep 0.1
       assert_equal 2, page.all('p.msg').count
