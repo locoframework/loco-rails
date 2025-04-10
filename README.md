@@ -335,6 +335,11 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 ## Major releases 🎙
 
+### 7.0 _(2025-04-XX)_
+
+* **Breaking changes**:
+    * `Loco.emit_to` was removed
+
 ### 6.1 _(2022-09-04)_
 
 * all `Loco::Emitter` methods are available as `Loco`'s `module_function`s

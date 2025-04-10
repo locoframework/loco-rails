@@ -43,7 +43,6 @@ module Loco
     end
   end
 
-  # TODO: emit_to removed
   def emit(for_or_recipients_or_payload = nil, event_or_payload = nil, opts = nil, payload: nil, data: nil, for: nil,
            to: nil, ws_only: nil)
     if event_or_payload.is_a?(Hash)
