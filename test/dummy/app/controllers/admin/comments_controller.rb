@@ -21,7 +21,7 @@ module Admin
 
     def update
       if @comment.update comment_params
-        emit @comment, :updated, payload: { article_id: @article.id }
+        Loco.emit(@comment, :updated, payload: { article_id: @article.id })
         render json: {
           success: true,
           status: 200,

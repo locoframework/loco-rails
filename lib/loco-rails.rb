@@ -2,7 +2,6 @@
 
 require 'loco/broadcaster'
 require 'loco/config'
-require 'loco/emitter'
 require 'loco/rails/engine'
 require 'loco/hub'
 require 'loco/permissions_presenter'

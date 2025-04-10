@@ -10,7 +10,7 @@ module Main
       user = User.new(user_params)
       if user.save
         token = SecureRandom.hex(10)
-        emit(user, :created, to: Admin::SupportMember)
+        Loco.emit(user, :created, to: Admin::SupportMember)
         Connection.create!(obj: user, token:)
         success_response_for_create(user, token)
       else
@@ -32,7 +32,7 @@ module Main
           id: user.id,
           notice: 'Welcome! You have signed up successfully.'
         },
-        access_token: token  # TODO: where is this used?
+        access_token: token # TODO: where is this used?
       )
     end
   end

@@ -22,7 +22,7 @@ class User
     def update
       render(:edit) && return unless @comment.update comment_params
 
-      emit @comment, :updated, payload: { article_id: @article.id }
+      Loco.emit(@comment, :updated, payload: { article_id: @article.id })
       respond_to do |f|
         f.json { render json: { ok: true, id: @comment.id } }
         f.html do
@@ -34,7 +34,7 @@ class User
 
     def destroy
       @comment.destroy
-      emit @comment, :destroyed, payload: { article_id: @article.id }
+      Loco.emit(@comment, :destroyed, payload: { article_id: @article.id })
       redirect_to edit_user_article_url(@article), notice: 'Comment has been deleted.'
     end
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  include Loco::Emitter
-
   protect_from_forgery with: :exception # For APIs, you may want to use :null_session instead.
 
   helper_method :current_admin, :current_user
