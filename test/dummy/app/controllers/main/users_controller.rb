@@ -32,7 +32,7 @@ module Main
           id: user.id,
           notice: 'Welcome! You have signed up successfully.'
         },
-        access_token: token
+        access_token: token  # TODO: where is this used?
       )
     end
   end

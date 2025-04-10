@@ -36,7 +36,7 @@ class User
       payload = { type: 'NEW_MESSAGE', message: 'Hi zbig!', author: 'jane' }
       idempotency_key = Loco.emit payload, to: HubFinder.new(@room).find, ws_only: true
       Loco.emit payload.merge(idempotency_key:), to: HubFinder.new(@room).find, ws_only: true
-      Loco.emit_to HubFinder.new(@room).find, payload.merge(idempotency_key:)
+      Loco.emit HubFinder.new(@room).find, payload.merge(idempotency_key:)
       sleep 0.1
       assert_equal 2, page.all('p.msg').count
       assert page.has_content? 'jane: Hi zbig!'

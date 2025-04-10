@@ -19,9 +19,9 @@ module Loco
 
     # TODO: implement
     def new_emit(payload, opts)
-      if opts[:for].nil? && opts[:ws_only]
-        Sender.(opts[:to], payload)
-      end
+      return unless opts[:for].nil? && opts[:ws_only]
+
+      Sender.(opts[:to], payload)
     end
 
     def legacy_emit(obj, event, opts)
@@ -43,19 +43,17 @@ module Loco
     end
   end
 
-  def emit(for_or_recipients_or_payload = nil, event_or_payload = nil, opts = nil, payload: nil, data: nil, for: nil, to: nil, ws_only: nil)
+  # TODO: emit_to removed
+  def emit(for_or_recipients_or_payload = nil, event_or_payload = nil, opts = nil, payload: nil, data: nil, for: nil,
+           to: nil, ws_only: nil)
     if event_or_payload.is_a?(Hash)
-      emit_to(for_or_recipients_or_payload, event_or_payload)
+      Sender.(for_or_recipients_or_payload, event_or_payload)
     elsif to
       Priv.new_emit(for_or_recipients_or_payload, { to:, for:, ws_only: })
     else
       opts ||= { payload:, data:, for: }
       Priv.legacy_emit(for_or_recipients_or_payload, event_or_payload, opts)
     end
-  end
-
-  def emit_to(recipient_s, payload)
-    Sender.(recipient_s, payload)
   end
 
   def add_hub(name, members = [])

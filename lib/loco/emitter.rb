@@ -8,7 +8,7 @@ module Loco
     end
 
     def emit_to(recipient_s, data)
-      Loco.emit_to(recipient_s, data)
+      Loco.emit(recipient_s, data)
     end
 
     def add_hub(name, members = [])
