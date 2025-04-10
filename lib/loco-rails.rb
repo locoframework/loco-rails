@@ -18,7 +18,7 @@ module Loco
 
     # TODO: implement
     def new_emit(payload, opts)
-      return unless opts[:for].nil? && opts[:ws_only]
+      return if opts[:for] || !opts[:ws_only]
 
       Sender.(opts[:to], payload)
     end
