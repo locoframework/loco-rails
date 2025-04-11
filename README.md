@@ -338,8 +338,8 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 ### 7.0 _(2025-04-XX)_
 
 * **Breaking changes**:
-    * `Loco.emit_to` was removed
-    * `Loco::Emitter` was removed
+    * `Loco.emit_to` was removed 👉 use `Loco.emit(payload, to: recipients, ws_only: true)`
+    * `Loco::Emitter` was removed 👉 use `Loco.emit`, `Loco.add_hub`, etc.
 
 ### 6.1 _(2022-09-04)_
 

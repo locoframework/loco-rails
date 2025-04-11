@@ -7,13 +7,15 @@ module Loco
 
       case data['type']
       when 'PING'
-        Loco.emit(res[:user], { type: 'PING' })
+        Loco.emit({ type: 'PING' }, to: res[:user], ws_only: true)
       when 'NEW_MESSAGE'
-        Loco.emit(res[:hub], {
+        Loco.emit({
                     type: 'NEW_MESSAGE',
                     message: data['txt'],
                     author: permissions[:user].username
-                  })
+                  },
+                  to: res[:hub],
+                  ws_only: true)
       end
     end
 

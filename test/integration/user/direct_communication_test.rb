@@ -13,7 +13,7 @@ class User
 
     test 'should show an alert' do
       sleep 0.1
-      Loco.emit users(:zbig), { type: 'PING' }
+      Loco.emit({ type: 'PING' }, to: users(:zbig), ws_only: true)
       sleep 0.1
       assert_equal 'Ping!', page.driver.browser.switch_to.alert.text
       page.driver.browser.switch_to.alert.accept
