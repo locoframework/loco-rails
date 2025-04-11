@@ -22,16 +22,6 @@ module Loco
       event = payload.delete(:event)
       Broadcaster.(subject, event, payload:, recipients: to)
     end
-
-    def legacy_emit(obj, event, opts)
-      warn('[loco-rails] Deprecated format! Use Loco.emit(payload, to: recipients, ws_only:, subject:)')
-      Broadcaster.(
-        obj,
-        event,
-        payload: opts[:payload] || opts[:data],
-        recipients: opts[opts[:for] ? :for : :to]
-      )
-    end
   end
 
   module_function
@@ -51,8 +41,6 @@ module Loco
     elsif subject_or_payload.is_a?(ActiveRecord::Base)
       payload = (payload || data || {}).merge(event:)
       Priv.new_emit(payload, subject: subject_or_payload, to: to || recipient, ws_only:)
-    else
-      Priv.legacy_emit(subject_or_payload, event, { payload:, data:, for:, to: })
     end
   end
 
