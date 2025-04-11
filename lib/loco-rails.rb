@@ -36,11 +36,11 @@ module Loco
   def emit(subject_or_payload, event = nil, payload: nil, data: nil, for: nil, to: nil,
            subject: nil, ws_only: false)
     recipient = binding.local_variable_get(:for)
-    if (to && ws_only) || (subject_or_payload.is_a?(Hash) && subject_or_payload[:event])
-      Priv.new_emit(subject_or_payload, to:, subject:, ws_only:)
-    elsif subject_or_payload.is_a?(ActiveRecord::Base)
+    if subject_or_payload.is_a?(ActiveRecord::Base)
       payload = (payload || data || {}).merge(event:)
       Priv.new_emit(payload, subject: subject_or_payload, to: to || recipient, ws_only:)
+    else
+      Priv.new_emit(subject_or_payload, to:, subject:, ws_only:)
     end
   end
 
