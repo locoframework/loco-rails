@@ -24,6 +24,7 @@ module Loco
     end
 
     def legacy_emit(obj, event, opts)
+      warn('[loco-rails] Deprecated format! Use Loco.emit(payload, to: recipients, ws_only:, subject:)')
       Broadcaster.(
         obj,
         event,
@@ -47,8 +48,7 @@ module Loco
     if (to && ws_only) || (subject_or_payload.is_a?(Hash) && subject_or_payload[:event])
       Priv.new_emit(subject_or_payload, to:, subject:, ws_only:)
     else
-      opts = { payload:, data:, for:, to: }
-      Priv.legacy_emit(subject_or_payload, event, opts)
+      Priv.legacy_emit(subject_or_payload, event, { payload:, data:, for:, to: })
     end
   end
 

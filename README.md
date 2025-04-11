@@ -340,9 +340,9 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 * **Breaking changes**:
     * `Loco::Emitter` was removed 👉 use `Loco.emit`, `Loco.add_hub`, etc.
 
+* new format `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 * **Deprecation warning:** formats other than above ☝️ will become unsupported in Loco-Rails 8
 * **Deprecation warning:** `Loco.emit_to` will be removed in Loco-Rails 8 👉 use `Loco.emit(payload, to: recipients, ws_only: true)`
-* new format `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 
 ### 6.1 _(2022-09-04)_
 
