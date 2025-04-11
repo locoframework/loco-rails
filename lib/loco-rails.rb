@@ -52,6 +52,10 @@ module Loco
     end
   end
 
+  def emit_to(recipient_s, payload)
+    Priv.new_emit(payload, to: recipient_s, ws_only: true)
+  end
+
   def add_hub(name, members = [])
     Hub.set(name, members)
   end
