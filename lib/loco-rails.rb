@@ -41,9 +41,11 @@ module Loco
   end
 
   def emit(for_or_recipients_or_payload = nil, event_or_payload = nil, payload: nil, data: nil, for: nil,
-           to: nil, ws_only: nil)
+           subject: nil, to: nil, ws_only: nil)
     if to && ws_only
       Priv.new_emit(for_or_recipients_or_payload, { to:, ws_only: })
+    elsif for_or_recipients_or_payload.is_a?(Hash) && for_or_recipients_or_payload[:event]
+      Priv.legacy_emit(subject, for_or_recipients_or_payload[:event], { to: })
     else
       opts = { payload:, data:, for:, to: }
       Priv.legacy_emit(for_or_recipients_or_payload, event_or_payload, opts)

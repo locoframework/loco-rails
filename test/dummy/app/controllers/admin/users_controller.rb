@@ -27,7 +27,7 @@ module Admin
       connection = Connection.for_obj(@user).last
       return if connection.nil?
 
-      Loco.emit(@user, :confirming, to: connection.token)
+      Loco.emit({ event: :confirming }, subject: @user, to: connection.token)
     end
 
     def update
