@@ -33,7 +33,7 @@ module Admin
     def update
       if @user.update user_params
         if @user.confirmed? && (connection = Connection.for_obj(@user).last)
-          Loco.emit(@user, :confirmed, for: connection.token)
+          Loco.emit({ event: :confirmed }, subject: @user, to: connection.token)
           connection.destroy
         end
         render json: { success: true, status: 200, flash: { success: 'User updated!' } }

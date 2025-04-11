@@ -22,7 +22,7 @@ class User
     def update
       render(:edit) && return unless @comment.update comment_params
 
-      Loco.emit(@comment, :updated, payload: { article_id: @article.id })
+      Loco.emit({ event: :updated, article_id: @article.id }, subject: @comment)
       respond_to do |f|
         f.json { render json: { ok: true, id: @comment.id } }
         f.html do

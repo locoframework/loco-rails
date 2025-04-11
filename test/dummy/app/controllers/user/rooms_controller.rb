@@ -21,7 +21,7 @@ class User
     def create
       @room = Room.new params_room
       if @room.save
-        Loco.emit(@room, :created, payload: { room: { id: @room.id, name: @room.name } })
+        Loco.emit({ event: :created, room: { id: @room.id, name: @room.name } }, subject: @room)
         redirect_to user_rooms_path, notice: 'Room has been created'
       else
         render :new
@@ -34,13 +34,14 @@ class User
 
     def join
       @hub.add_member current_user
-      Loco.emit(@room, :member_joined, payload: {
+      Loco.emit({
+                  event: :member_joined,
                   room_id: @room.id,
                   member: {
                     id: current_user.id,
                     username: current_user.username
                   }
-                })
+                }, subject: @room)
       redirect_to user_room_url(@room)
     end
 

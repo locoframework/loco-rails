@@ -16,7 +16,7 @@ module Main
     def create
       comment = Comment.new comment_params
       if comment.save
-        Loco.emit(comment, :created, payload: { article_id: comment.article_id })
+        Loco.emit({ article_id: comment.article_id, event: :created }, subject: comment)
         success_response(201, 'Your comment has been posted!')
       else
         failure_response(400, comment.errors)
