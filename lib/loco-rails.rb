@@ -44,9 +44,7 @@ module Loco
 
   def emit(for_or_recipients_or_payload = nil, event_or_payload = nil, opts = nil, payload: nil, data: nil, for: nil,
            to: nil, ws_only: nil)
-    if event_or_payload.is_a?(Hash)
-      Sender.(for_or_recipients_or_payload, event_or_payload)
-    elsif to
+    if to
       Priv.new_emit(for_or_recipients_or_payload, { to:, for:, ws_only: })
     else
       opts ||= { payload:, data:, for: }
