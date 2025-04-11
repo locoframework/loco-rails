@@ -45,7 +45,8 @@ module Loco
     if to && ws_only
       Priv.new_emit(for_or_recipients_or_payload, { to:, ws_only: })
     elsif for_or_recipients_or_payload.is_a?(Hash) && for_or_recipients_or_payload[:event]
-      Priv.legacy_emit(subject, for_or_recipients_or_payload[:event], { to: })
+      event = for_or_recipients_or_payload.delete(:event)
+      Priv.legacy_emit(subject, event, { to:, payload: for_or_recipients_or_payload })
     else
       opts = { payload:, data:, for:, to: }
       Priv.legacy_emit(for_or_recipients_or_payload, event_or_payload, opts)

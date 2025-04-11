@@ -10,7 +10,7 @@ module Main
       user = User.new(user_params)
       if user.save
         token = SecureRandom.hex(10)
-        Loco.emit(user, :created, to: Admin::SupportMember)
+        Loco.emit({ event: :created }, subject: user, to: Admin::SupportMember)
         Connection.create!(obj: user, token:)
         success_response_for_create(user, token)
       else
