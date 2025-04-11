@@ -18,8 +18,6 @@ module Loco
 
     # TODO: implement
     def new_emit(payload, opts)
-      return if opts[:for] || !opts[:ws_only]
-
       Sender.(opts[:to], payload)
     end
 
@@ -44,8 +42,8 @@ module Loco
 
   def emit(for_or_recipients_or_payload = nil, event_or_payload = nil, payload: nil, data: nil, for: nil,
            to: nil, ws_only: nil)
-    if to
-      Priv.new_emit(for_or_recipients_or_payload, { to:, for:, ws_only: })
+    if to && ws_only
+      Priv.new_emit(for_or_recipients_or_payload, { to:, ws_only: })
     else
       opts = { payload:, data:, for:, to: }
       Priv.legacy_emit(for_or_recipients_or_payload, event_or_payload, opts)
