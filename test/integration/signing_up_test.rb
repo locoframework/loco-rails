@@ -30,18 +30,14 @@ class SigningUpTest < IT
   end
 
   def admin_went_to_user_edit_page
-    Loco.emit user, :confirming, for: connection.token
+    Loco.emit user, :confirming, for: user.token
   end
 
   def admin_confirmed_user
-    Loco.emit user, :confirmed, for: connection.token
+    Loco.emit user, :confirmed, for: user.token
   end
 
   def user
     User.find_by email: 'joe@example.com'
-  end
-
-  def connection
-    Connection.for_obj(user).last
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_20_200519) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_16_121955) do
   create_table "admin_support_members", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -43,14 +43,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_20_200519) do
     t.boolean "approved", default: false
   end
 
-  create_table "connections", force: :cascade do |t|
-    t.string "obj_class"
-    t.integer "obj_id"
-    t.string "token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "loco_notifications", id: false, force: :cascade do |t|
     t.string "obj_class"
     t.bigint "obj_id"
@@ -78,5 +70,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_20_200519) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "confirmed_at", precision: nil
+    t.string "token"
+    t.index ["token"], name: "index_users_on_token", unique: true
   end
 end

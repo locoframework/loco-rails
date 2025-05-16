@@ -3,8 +3,10 @@ zbig:
   email: zbigniew.humeniuk@example.com
   password_digest: <%= BCrypt::Password.create("secret", cost: 4) %>
   confirmed_at: <%= 7.days.ago.strftime('%F %T') %>
+  token: Z25d1c2ee885f33da1a8467b059b3236
 
 jane:
   username: jane
   email: jane@example.com
   password_digest: <%= BCrypt::Password.create("secret", cost: 4) %>
+  token: J25d1c2ee885f33da1a8467b059b3236

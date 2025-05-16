@@ -9,10 +9,8 @@ module Main
     def create
       user = User.new(user_params)
       if user.save
-        token = SecureRandom.hex(10)
         Loco.emit({ event: :created }, subject: user, to: Admin::SupportMember)
-        Connection.create!(obj: user, token:)
-        success_response_for_create(user, token)
+        success_response_for_create(user)
       else
         failure_response(400, user.errors)
       end
@@ -24,7 +22,7 @@ module Main
       params.require(:user).permit(:email, :password, :password_confirmation, :username)
     end
 
-    def success_response_for_create(user, token)
+    def success_response_for_create(user)
       success_response(
         201,
         'Signed up!',
@@ -32,7 +30,7 @@ module Main
           id: user.id,
           notice: 'Welcome! You have signed up successfully.'
         },
-        access_token: token # TODO: where is this used?
+        access_token: user.token
       )
     end
   end

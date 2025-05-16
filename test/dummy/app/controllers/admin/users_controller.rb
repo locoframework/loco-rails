@@ -24,18 +24,12 @@ module Admin
     def edit
       return if @user.confirmed?
 
-      connection = Connection.for_obj(@user).last
-      return if connection.nil?
-
-      Loco.emit({ event: :confirming }, subject: @user, to: connection.token)
+      Loco.emit({ event: :confirming }, subject: @user, to: @user.token)
     end
 
     def update
       if @user.update user_params
-        if @user.confirmed? && (connection = Connection.for_obj(@user).last)
-          Loco.emit({ event: :confirmed }, subject: @user, to: connection.token)
-          connection.destroy
-        end
+        Loco.emit({ event: :confirmed }, subject: @user, to: @user.token) if @user.confirmed?
         render json: { success: true, status: 200, flash: { success: 'User updated!' } }
       else
         render json: { success: false, status: 400, errors: @user.errors }
