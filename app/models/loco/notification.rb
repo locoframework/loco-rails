@@ -12,7 +12,10 @@ module Loco
     validates :obj_class, presence: true
     validates :event, presence: true
 
-    before_validation :prepare
+    before_validation do
+      set_event
+      set_data
+    end
 
     class << self
       def table_name_prefix
@@ -70,11 +73,6 @@ module Loco
       else
         recipient_class.constantize.find(recipient_id)
       end
-    end
-
-    def prepare
-      set_event
-      set_data
     end
 
     def set_event

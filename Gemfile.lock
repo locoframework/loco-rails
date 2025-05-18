@@ -247,6 +247,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    silencer (2.0.0)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -294,6 +295,7 @@ DEPENDENCIES
   rubocop
   rubocop-rails
   selenium-webdriver (~> 4.25.0)
+  silencer (~> 2.0.0)
   sprockets-rails (~> 3.5.2)
   sqlite3 (>= 2.1)
   turbo-rails (~> 2.0.10)

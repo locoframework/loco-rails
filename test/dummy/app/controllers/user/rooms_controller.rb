@@ -21,7 +21,7 @@ class User
     def create
       @room = Room.new params_room
       if @room.save
-        Loco.emit({ event: :created, room: { id: @room.id, name: @room.name } }, subject: @room)
+        Loco.emit({ event: :created, room: { id: @room.id, name: @room.name } }, subject: @room, to: [User])
         redirect_to user_rooms_path, notice: 'Room has been created'
       else
         render :new
@@ -41,7 +41,7 @@ class User
                     id: current_user.id,
                     username: current_user.username
                   }
-                }, subject: @room)
+                }, subject: @room, to: [User])
       redirect_to user_room_url(@room)
     end
 
@@ -50,7 +50,7 @@ class User
       Loco.emit(@room, :member_left, payload: {
                   room_id: @room.id,
                   member: { id: current_user.id }
-                })
+                }, to: [User])
       redirect_to user_rooms_path
     end
 
@@ -61,7 +61,7 @@ class User
       end
       del_hub @hub
       @room.destroy
-      Loco.emit(@room, :destroyed, payload: { room_id: @room.id })
+      Loco.emit(@room, :destroyed, payload: { room_id: @room.id }, to: [User])
       redirect_to user_rooms_path, notice: 'Room has been deleted'
     end
 
