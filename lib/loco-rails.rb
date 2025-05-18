@@ -38,9 +38,9 @@ module Loco
     recipient = binding.local_variable_get(:for)
     if subject_or_payload.is_a?(ActiveRecord::Base)
       payload = (payload || data || {}).merge(event:)
-      Priv.new_emit(payload, subject: subject_or_payload, to: to || recipient, ws_only:)
+      Priv.new_emit(payload, to: to || recipient, ws_only:, subject: subject_or_payload)
     else
-      Priv.new_emit(subject_or_payload, to:, subject:, ws_only:)
+      Priv.new_emit(subject_or_payload, to:, ws_only:, subject:)
     end
   end
 

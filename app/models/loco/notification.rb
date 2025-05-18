@@ -9,9 +9,6 @@ module Loco
 
     serialize :data, coder: JSON if ActiveRecord::Base.connection.adapter_name != 'PostgreSQL'
 
-    validates :obj_class, presence: true
-    validates :event, presence: true
-
     before_validation do
       set_event
       set_data
@@ -26,7 +23,7 @@ module Loco
     def obj=(val)
       if val.instance_of? Class
         self.obj_class = val.to_s
-      else
+      elsif val
         self.obj_class = val.class.name
         self.obj_id = val.id
         @obj = val
@@ -78,6 +75,7 @@ module Loco
     def set_event
       return if event.present?
       return if obj.instance_of?(Class)
+      return if obj.nil?
 
       self.event = if obj.new_record?
                      'creating'
