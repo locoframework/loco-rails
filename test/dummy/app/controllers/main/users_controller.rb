@@ -28,7 +28,8 @@ module Main
         'Signed up!',
         {
           id: user.id,
-          notice: 'Welcome! You have signed up successfully.'
+          notice: 'Welcome! You have signed up successfully.',
+          access_token: user.token
         },
         access_token: user.token
       )

@@ -126,7 +126,7 @@ export default async (data) => {
       commentUpdated(data.payload);
       break;
     case "USER_CONFIRMED":
-      console.log("!!! USER_CONFIRMED !!!");
+      window.location.href = "/user/sessions/new?event=confirmed";
       break;
     case "User created": {
       const user = await User.find(data.payload.id);

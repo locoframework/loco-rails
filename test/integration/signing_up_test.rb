@@ -14,6 +14,17 @@ class SigningUpTest < IT
     assert page.has_content?('Your account has been verified. You can sign in now.')
   end
 
+  test 'signing up user and go to articles page' do
+    browse_to_sign_up_page
+    fill_in_form
+    assert page.has_content?('Please wait while administrator verifies your account')
+    click_link 'main page'
+    sleep 0.5
+    Loco.emit({ type: 'USER_CONFIRMED' }, to: user.token)
+    assert page.has_content?('Your account has been verified. You can sign in now.')
+    assert_match %r{/user/sessions/new\?event=confirmed$}, current_url
+  end
+
   private
 
   def browse_to_sign_up_page

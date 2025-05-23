@@ -29,7 +29,10 @@ module Admin
 
     def update
       if @user.update user_params
-        Loco.emit({ event: :confirmed }, subject: @user, to: @user.token) if @user.confirmed?
+        if @user.confirmed?
+          Loco.emit({ event: :confirmed }, subject: @user, to: @user.token)
+          Loco.emit({ type: 'USER_CONFIRMED' }, to: @user.token)
+        end
         render json: { success: true, status: 200, flash: { success: 'User updated!' } }
       else
         render json: { success: false, status: 400, errors: @user.errors }
