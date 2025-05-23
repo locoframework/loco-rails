@@ -125,6 +125,9 @@ export default async (data) => {
     case "Article.Comment updated":
       commentUpdated(data.payload);
       break;
+    case "USER_CONFIRMED":
+      console.log("!!! USER_CONFIRMED !!!");
+      break;
     case "User created": {
       const user = await User.find(data.payload.id);
       store.dispatch(prependUsers([user]));
