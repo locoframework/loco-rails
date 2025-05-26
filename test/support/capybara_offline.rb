@@ -2,13 +2,13 @@
 
 module CapybaraOffline
   def go_disconnected(disconnected_mode = :server_error)
-    page.evaluate_script 'window.test.getLine().subscription.disconnected();'
+    page.evaluate_script 'window.test.getLine().client.subscription.disconnected();'
     current_proxy = NoResponseRack.new disconnected_mode
     rack_mappings.unshift [nil, '', /^(.*)/n, current_proxy]
   end
 
   def go_connected
-    page.evaluate_script 'window.test.getLine().subscription.connected();'
+    page.evaluate_script 'window.test.getLine().client.subscription.connected();'
     rack_mappings.shift
   end
 
