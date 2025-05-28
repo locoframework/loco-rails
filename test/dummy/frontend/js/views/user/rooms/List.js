@@ -4,17 +4,15 @@ import Room from "models/Room";
 
 const memberJoined = (roomId) => {
   const node = membersNode(roomId);
-  node.textContent = parseInt(node.text()) + 1;
+  node.textContent = parseInt(node.textContent) + 1;
 };
 
 const memberLeft = (roomId) => {
   const node = membersNode(roomId);
-  node.textContent = parseInt(node.text()) - 1;
+  node.textContent = parseInt(node.textContent) - 1;
 };
 
-const membersNode = (roomId) => {
-  document.querySelector(`#room_${roomId} td.members`);
-};
+const membersNode = (roomId) => document.querySelector(`#room_${roomId} td.members`);
 
 const renderRoom = (room) => {
   `

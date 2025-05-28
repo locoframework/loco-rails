@@ -31,13 +31,13 @@ module UserHelpers
 
   def join_room(user, room)
     HubFinder.new(room).find.add_member user
-    Loco.emit room, :member_joined, data: {
-      room_id: room.id,
-      member: {
-        id: user.id,
-        username: user.username
-      }
-    }
+    Loco.emit(room, :member_joined, data: {
+                room_id: room.id,
+                member: {
+                  id: user.id,
+                  username: user.username
+                }
+              }, to: [User])
     perform_enqueued_jobs
   end
 end
