@@ -37,6 +37,7 @@ const handleSendingMessage = (roomId) => {
         type: "NEW_MESSAGE",
         txt: event.target.value,
         room_id: roomId,
+        message_type: document.querySelector("[name='message_type']:checked").value,
       });
       event.target.value = "";
     });

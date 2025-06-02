@@ -12,5 +12,9 @@
   <%= text_area_tag :message, nil, placeholder: "Type your thoughts here...",
     data: {behavior: 'room-speaker'} %>
 </p>
+<p>
+  <%= radio_button_tag :message_type, 'ephemeral', checked: true %> <label for="message_type_ephemeral">Ephemeral</label>
+  <%= radio_button_tag :message_type, 'persistent' %> <label for="message_type_persistent">Persistent</label>
+</p>
 
 <p><%= link_to 'Leave', leave_user_room_path(@room), method: :patch %></p>
