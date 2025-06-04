@@ -4,19 +4,8 @@ module Loco
   class Sender
     class << self
       def call(recipient_s, payload)
-        payload = with_idempotency_key(payload)
         recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
-        new.(recipients, payload)
-      end
-
-      private
-
-      def with_idempotency_key(payload)
-        hash = payload.clone
-        hash[:loco] ||= {}
-        hash[:loco][:idempotency_key] ||= hash[:idempotency_key] || SecureRandom.hex
-        hash.delete(:idempotency_key)
-        hash
+        new.(recipients, Payload.(payload))
       end
     end
 
