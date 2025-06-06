@@ -20,11 +20,19 @@ module Loco
       private
 
       def process_recipients(recipients)
-        recipients = [:all] if recipients.nil?
+        return [:all] if recipients.nil?
+
         recipients = [recipients] unless recipients.is_a?(Array)
         recipients = recipients.map { |e| e.nil? ? :all : e }
-        recipients = [:all] if recipients.include?(:all)
-        recipients
+        return [:all] if recipients.include?(:all)
+
+        recipients.map do |recipient|
+          if recipient.is_a?(Hub)
+            recipient.members(shallow: true)
+          else
+            recipient
+          end
+        end.flatten
       end
 
       def keify_recipient(recipient)

@@ -55,10 +55,15 @@ module Loco
       WsConnectionStorage.current.members(@name)
     end
 
-    def members
-      raw_members.map do |serialized|
-        klass, id = serialized.split(':')
-        klass.classify.constantize.find_by(id:)
+    def members(shallow: false)
+      raw_members.map do |identifier|
+        if identifier.include?(':')
+          klass, id = identifier.split(':')
+          klass = klass.classify.constantize
+          shallow ? klass.new(id:) : klass.find_by(id:)
+        else
+          identifier.classify.constantize
+        end
       end
     end
   end

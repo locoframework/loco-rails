@@ -15,7 +15,7 @@ module Loco
                     author: permissions[:user].username
                   },
                   to: res[:hub],
-                  ws_only: true)
+                  ws_only: data['message_type'] == 'ephemeral')
       end
     end
 

@@ -20,9 +20,9 @@ module Loco
 
       private
 
-      def search_the_hub(resource, &block)
-        WsConnectionStorage.current.members(resource.full_name).map do |serialized|
-          WsConnectionStorage.current.members(serialized).each(&block)
+      def search_the_hub(hub, &block)
+        WsConnectionStorage.current.members(hub.full_name).map do |identifier|
+          WsConnectionStorage.current.members(identifier).each(&block)
         end
       end
     end
