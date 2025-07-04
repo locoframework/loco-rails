@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_16_121955) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_04_040330) do
   create_table "admin_support_members", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
@@ -55,6 +55,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_16_121955) do
     t.datetime "updated_at", null: false
     t.index ["created_at", "recipient_class", "recipient_id"], name: "index_loco_notifications_on_created_at_and_recipient"
     t.index ["created_at", "recipient_token"], name: "index_loco_notifications_on_created_at_and_recipient_token"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "room_id", null: false
+    t.bigint "user_id", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id", "created_at"], name: "index_messages_on_room_id_and_created_at"
+    t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
   create_table "rooms", force: :cascade do |t|

@@ -6,7 +6,11 @@
 
 <p><b>Messages</b></p>
 
-<section id='messages' class='bottom_space'></section>
+<section id='messages' class='bottom_space'>
+  <% @messages.each do |message| %>
+    <p class="msg"><b><%= message.user.username %></b>: <%= message.content %></p>
+  <% end %>
+</section>
 
 <p>
   <%= text_area_tag :message, nil, placeholder: "Type your thoughts here...",

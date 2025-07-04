@@ -2,6 +2,7 @@
 
 class User < ApplicationRecord
   has_many :articles
+  has_many :messages, dependent: :destroy
 
   has_secure_password
 

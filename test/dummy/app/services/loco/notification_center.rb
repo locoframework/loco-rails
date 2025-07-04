@@ -9,6 +9,13 @@ module Loco
       when 'PING'
         Loco.emit({ type: 'PING' }, to: res[:user], ws_only: true)
       when 'NEW_MESSAGE'
+        if data['message_type'] == 'persistent' && res[:hub]
+          Message.create!(
+            room_id: data['room_id'],
+            user: permissions[:user],
+            content: data['txt']
+          )
+        end
         Loco.emit({
                     type: 'NEW_MESSAGE',
                     message: data['txt'],
@@ -26,20 +33,16 @@ module Loco
       when 'PING'
         return false if permissions[:admin].nil?
 
-        user = User.new id: data['user_id']
+        user = User.new(id: data['user_id'])
         { user: }
       when 'NEW_MESSAGE'
         return false if permissions[:user].nil?
-        return false unless (hub = find_room(data['room_id']))
+        return false unless (hub = Hub.get("room_#{data['room_id']}"))
 
         { hub: }
       else
         false
       end
-    end
-
-    def find_room(id)
-      Hub.get "room_#{id}"
     end
   end
 end

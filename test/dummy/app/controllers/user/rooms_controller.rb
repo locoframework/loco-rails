@@ -29,7 +29,7 @@ class User
     end
 
     def show
-      render
+      @messages = @room.messages.includes(:user).order(created_at: :asc).limit(50)
     end
 
     def join
