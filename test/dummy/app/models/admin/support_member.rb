@@ -1,7 +1,11 @@
-class Admin::SupportMember < ApplicationRecord
-  has_secure_password
+# frozen_string_literal: true
 
-  validates :email, presence: true,
-                    format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
-  validates :password_confirmation, presence: { on: :create }
+module Admin
+  class SupportMember < ApplicationRecord
+    has_secure_password
+
+    validates :email, presence: true,
+                      format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+    validates :password_confirmation, presence: { on: :create }
+  end
 end

@@ -8,40 +8,37 @@ AllCops:
     - test/dummy/db/schema.rb
 
 Layout/IndentationConsistency:
-  Enabled: true
   Exclude:
     - lib/generators/loco/file_injector/templates/connection.rb
 
 Layout/InitialIndentation:
-  Enabled: true
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
     - lib/generators/loco/file_injector/templates/connection.rb
 
 Layout/TrailingEmptyLines:
-  Enabled: true
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
 
 Metrics/BlockLength:
-  Enabled: true
   Exclude:
     - loco-rails.gemspec
     - test/dummy/config/routes.rb
     - test/loco/*
 
 Metrics/ClassLength:
-  Enabled: true
   Exclude:
     - test/integration/**/*
     - test/loco/**/*
 
 Metrics/MethodLength:
-  Enabled: true
   Max: 12
 
+Metrics/ParameterLists:
+  Exclude:
+    - lib/loco-rails.rb
+
 Naming/FileName:
-  Enabled: true
   Exclude:
     - lib/loco-rails.rb
 
@@ -49,12 +46,10 @@ Rails:
   Enabled: true
 
 Rails/ApplicationJob:
-  Enabled: true
   Exclude:
     - app/jobs/loco/*
 
 Rails/ActionControllerFlashBeforeRender:
-  Enabled: true
   Exclude:
     - test/dummy/app/controllers/admin/sessions_controller.rb
 
@@ -62,7 +57,6 @@ Rails/I18nLocaleTexts:
   Enabled: false
 
 Style/ArgumentsForwarding:
-  Enabled: true
   Exclude:
     - lib/loco/ws_connection_finder.rb
 
@@ -73,7 +67,6 @@ Style/Documentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
-  Enabled: true
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
     - lib/generators/loco/file_injector/templates/connection.rb
@@ -82,6 +75,5 @@ Style/LambdaCall:
   Enabled: false
 
 Style/MixinUsage:
-  Enabled: true
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb

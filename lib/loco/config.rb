@@ -14,8 +14,6 @@ module Loco
       self.notifications_size = config.notifications_size if config.notifications_size
       self.app_name = config.app_name if config.app_name
       self.redis_instance = config.redis_instance
-    ensure
-      true
     end
   end
 end

@@ -9,24 +9,24 @@ module Loco
       when 'PING'
         Loco.emit({ type: 'PING' }, to: res[:user], ws_only: true)
       when 'NEW_MESSAGE'
-        if data['message_type'] == 'persistent' && res[:hub]
-          Message.create!(
-            room_id: data['room_id'],
-            user: permissions[:user],
-            content: data['txt']
-          )
-        end
-        Loco.emit({
-                    type: 'NEW_MESSAGE',
-                    message: data['txt'],
-                    author: permissions[:user].username
-                  },
-                  to: res[:hub],
-                  ws_only: data['message_type'] == 'ephemeral')
+        new_message(permissions[:user], data, res[:hub])
       end
     end
 
-    protected
+    private
+
+    def new_message(user, data, hub)
+      if data['message_type'] == 'persistent' && hub
+        Message.create!(room_id: data['room_id'], user:, content: data['txt'])
+      end
+      Loco.emit({
+                  type: 'NEW_MESSAGE',
+                  message: data['txt'],
+                  author: user.username
+                },
+                to: hub,
+                ws_only: data['message_type'] == 'ephemeral')
+    end
 
     def validate_message(name, permissions, data)
       case name
