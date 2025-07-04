@@ -12,7 +12,7 @@ class User
       @room = Room.create! name: 'Business'
       sign_in_user 'zbigniew.humeniuk@example.com', 'secret'
       click_on 'RealSnapChat rooms'
-      click_on 'Join'
+      click_on 'Join', match: :first
       sleep 0.1
     end
 
