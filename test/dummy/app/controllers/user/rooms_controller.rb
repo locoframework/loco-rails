@@ -29,7 +29,7 @@ class User
     end
 
     def show
-      @messages = @room.messages.includes(:user).order(created_at: :asc).limit(50)
+      @messages = @room.messages.includes(:user).order(created_at: :asc).last(50)
     end
 
     def join

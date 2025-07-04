@@ -48,5 +48,72 @@ class User
       go_connected
       assert page.has_content? 'jane'
     end
+
+    test 'should create persistent message record when message_type is persistent' do
+      join_room users(:jane), @room
+
+      # Send persistent message
+      choose 'message_type_persistent'
+      fill_in 'message', with: 'This is a persistent message'
+      find('#message').native.send_keys :return
+      perform_enqueued_jobs
+
+      # Verify message appears on page
+      assert page.has_content? 'zbig: This is a persistent message'
+
+      # Verify message record was created in database
+      message = Message.last
+      assert_equal 'This is a persistent message', message.content
+      assert_equal @room.id, message.room_id
+      assert_equal users(:zbig).id, message.user_id
+      assert_equal 1, @room.messages.count
+    end
+
+    test 'should not create message record when message_type is ephemeral' do
+      join_room users(:jane), @room
+
+      # Send ephemeral message (default)
+      choose 'message_type_ephemeral'
+      fill_in 'message', with: 'This is an ephemeral message'
+      find('#message').native.send_keys :return
+      perform_enqueued_jobs
+
+      # Verify message appears on page
+      assert page.has_content? 'zbig: This is an ephemeral message'
+
+      # Verify no message record was created in database
+      assert_equal 0, @room.messages.count
+    end
+
+    test 'should display existing persistent messages when entering room' do
+      # Create some persistent messages before entering room
+      Message.create!(room: @room, user: users(:zbig), content: 'First persistent message')
+      Message.create!(room: @room, user: users(:jane), content: 'Second persistent message')
+
+      # Enter the room
+      visit user_room_path(@room)
+
+      # Verify messages are displayed
+      assert page.has_content? 'zbig: First persistent message'
+      assert page.has_content? 'jane: Second persistent message'
+      assert_equal 2, page.all('p.msg').count
+    end
+
+    test 'should limit displayed messages to last 50' do
+      # Create 55 persistent messages
+      55.times do |i|
+        Message.create!(room: @room, user: users(:zbig), content: "Message #{i + 1}.")
+      end
+
+      # Enter the room
+      visit user_room_path(@room)
+
+      # Verify only last 50 messages are displayed
+      assert_equal 50, page.all('p.msg').count
+      assert page.has_content? 'zbig: Message 6.'  # First message in the 50
+      assert page.has_content? 'zbig: Message 55.' # Last message
+      assert_not page.has_content? 'zbig: Message 1.' # Should not be displayed
+      assert_not page.has_content? 'zbig: Message 5.' # Should not be displayed
+    end
   end
 end
