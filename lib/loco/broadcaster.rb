@@ -22,16 +22,20 @@ module Loco
       def process_recipients(recipients)
         return [:all] if recipients.nil?
 
-        recipients = [recipients] unless recipients.is_a?(Array)
-        recipients = recipients.map { |e| e.nil? ? :all : e }
+        recipients = normalize_recipients(recipients)
         return [:all] if recipients.include?(:all)
 
+        expand_recipients(recipients)
+      end
+
+      def normalize_recipients(recipients)
+        recipients = [recipients] unless recipients.is_a?(Array)
+        recipients.map { |e| e.nil? ? :all : e }
+      end
+
+      def expand_recipients(recipients)
         recipients.map do |recipient|
-          if recipient.is_a?(Hub)
-            recipient.members(shallow: true)
-          else
-            recipient
-          end
+          recipient.is_a?(Hub) ? recipient.members(shallow: true) : recipient
         end.flatten
       end
 
