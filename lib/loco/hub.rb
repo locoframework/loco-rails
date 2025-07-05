@@ -42,7 +42,7 @@ module Loco
     end
 
     def destroy
-      WsConnectionStorage.current.members(@name).each do |member|
+      raw_members.each do |member|
         WsConnectionStorage.current.rem(@name, member)
       end
     end
