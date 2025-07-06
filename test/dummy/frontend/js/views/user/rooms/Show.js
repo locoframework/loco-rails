@@ -43,10 +43,23 @@ const handleSendingMessage = (roomId) => {
     });
 };
 
+const heartbeat = (roomId) => {
+  const intervalId = setInterval(() => {
+    loco.emit({ type: "HEARTBEAT", room_id: roomId });
+    console.log("heartbeat", roomId); // TODO: remove
+  }, 3000);
+  return () => clearInterval(intervalId);
+};
+
 export default {
   render: (roomId) => {
     handleSendingMessage(roomId);
-    return subscribe({ to: Room, with: createReceivedMessage(roomId) });
+    const unsubscribeHeartbeat = heartbeat(roomId);
+    const unsubscribeMessages = subscribe({ to: Room, with: createReceivedMessage(roomId) });
+    return () => {
+      unsubscribeHeartbeat();
+      unsubscribeMessages();
+    };
   },
 
   renderMembers: (members) => {

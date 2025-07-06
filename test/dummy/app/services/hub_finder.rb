@@ -6,7 +6,13 @@ class HubFinder
   end
 
   def find
-    Loco.get_hub(name) || Loco.add_hub(name)
+    hub = Loco.get_hub(name)
+    if hub
+      ClearRoomMembers.call(hub)
+      hub
+    else
+      Loco.add_hub(name)
+    end
   end
 
   private

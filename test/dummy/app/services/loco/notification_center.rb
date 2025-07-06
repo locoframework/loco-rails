@@ -8,6 +8,10 @@ module Loco
       case data['type']
       when 'PING'
         Loco.emit({ type: 'PING' }, to: res[:user], ws_only: true)
+      when 'HEARTBEAT'
+        # TODO: refactor
+        key = ClearRoomMembers.redis_key(data['room_id'], permissions[:user].id)
+        APP_REDIS.set(key, Time.current, ex: 4)
       when 'NEW_MESSAGE'
         new_message(permissions[:user], data, res[:hub])
       end
@@ -35,7 +39,7 @@ module Loco
 
         user = User.new(id: data['user_id'])
         { user: }
-      when 'NEW_MESSAGE'
+      when 'HEARTBEAT', 'NEW_MESSAGE'
         return false if permissions[:user].nil?
         return false unless (hub = Hub.get("room_#{data['room_id']}"))
 

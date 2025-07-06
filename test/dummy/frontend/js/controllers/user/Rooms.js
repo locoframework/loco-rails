@@ -10,13 +10,17 @@ class Rooms {
     this.callbacks = {};
   }
 
+  deinitialize() {
+    this.unsubscribe();
+  }
+
   index() {
-    this.cleanup = List();
+    this.unsubscribe = List();
   }
 
   async show() {
     this.callbacks["receivedMessage"] = Show.receivedMessage;
-    this.cleanup = Show.render(helpers.params.id);
+    this.unsubscribe = Show.render(helpers.params.id);
     const resp = await Member.all({ roomId: helpers.params.id });
     Show.renderMembers(resp.resources);
   }

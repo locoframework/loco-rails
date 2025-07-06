@@ -33,6 +33,9 @@ class User
     end
 
     def join
+      # TODO: refactor
+      key = ClearRoomMembers.redis_key(@room.id, current_user.id)
+      APP_REDIS.set(key, Time.current, ex: 4)
       @hub.add_member current_user
       Loco.emit({
                   event: :member_joined,
