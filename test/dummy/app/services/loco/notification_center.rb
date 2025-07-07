@@ -12,6 +12,7 @@ module Loco
         # TODO: refactor
         key = ClearRoomMembers.redis_key(data['room_id'], permissions[:user].id)
         APP_REDIS.set(key, Time.current, ex: 4)
+        ClearRoomMembersJob.set(wait: 5.seconds).perform_later(data['room_id'])
       when 'NEW_MESSAGE'
         new_message(permissions[:user], data, res[:hub])
       end

@@ -6,7 +6,6 @@ class ClearRoomMembers
         next if APP_REDIS.get(redis_key(room_id, member.id))
 
         hub.del_member(member)
-        # TODO: move to background job (?) to auto emit member_left event
         # TODO: refactor Room.new(id: room_id)
         Loco.emit(Room.new(id: room_id), :member_left, payload: {
                     room_id:,
