@@ -1,0 +1,13 @@
+<tr id='room_<%= room_with_hub.room.id %>'>
+  <td><%= room_with_hub.room.name %></td>
+  <td class='members'><%= room_with_hub.hub.raw_members.size %></td>
+  <td>
+    <% if room_with_hub.hub.include? current_user %>
+      <%= link_to 'Leave', leave_user_room_path(room_with_hub.room), method: :patch %>
+    <% else %>
+      <%= link_to 'Join', join_user_room_path(room_with_hub.room), method: :patch %>
+    <% end %> |
+    <%= link_to 'Destroy', user_room_path(room_with_hub.room), method: :delete,
+      data: {confirm: "R U sure?"} %>
+  </td>
+</tr>
