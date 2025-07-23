@@ -33,18 +33,7 @@ class User
     end
 
     def join
-      # TODO: refactor
-      key = ClearRoomMembers.redis_key(@room.id, current_user.id)
-      APP_REDIS.set(key, Time.current, ex: 4)
-      @hub.add_member current_user
-      Loco.emit({
-                  event: :member_joined,
-                  room_id: @room.id,
-                  member: {
-                    id: current_user.id,
-                    username: current_user.username
-                  }
-                }, subject: @room, to: [User])
+      MaintainRoomMembers.rejoin(hub: @hub, user: current_user)
       redirect_to user_room_url(@room)
     end
 

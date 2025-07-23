@@ -41,14 +41,14 @@ module Loco
       WsConnectionStorage.current.rem(@name, WsConnectionIdentifier.(member))
     end
 
+    def include?(member)
+      WsConnectionStorage.current.member?(@name, WsConnectionIdentifier.(member))
+    end
+
     def destroy
       raw_members.each do |member|
         WsConnectionStorage.current.rem(@name, member)
       end
-    end
-
-    def include?(resource)
-      WsConnectionStorage.current.member?(@name, WsConnectionIdentifier.(resource))
     end
 
     def raw_members
