@@ -34,6 +34,7 @@ class User
 
     def join
       MaintainRoomMembers.rejoin(hub: @hub, user: current_user)
+      MaintainRoomMembersJob.set(wait: 5.seconds).perform_later(@room.id)
       redirect_to user_room_url(@room)
     end
 
