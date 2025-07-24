@@ -10,7 +10,6 @@
     </tr>
   </thead>
   <tbody>
-    <%= render partial: 'room', collection: @rooms_with_hub, as: :room_with_hub %>
   </tbody>
 </table>
 <% end %>
@@ -20,3 +19,14 @@
 <br>
 
 <%= link_to 'New Room', new_user_room_path %>
+
+<script type="application/json" id="rooms-data">
+  <%= raw @rooms_with_hub.map { |os|
+    {
+      id:            os.room.id,
+      name:          os.room.name,
+      members_count: os.hub.raw_members.size,
+      joined:        os.hub.include?(current_user)
+    }
+  }.to_json %>
+</script>

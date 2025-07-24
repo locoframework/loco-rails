@@ -14,15 +14,28 @@ const memberLeft = (roomId) => {
 
 const membersNode = (roomId) => document.querySelector(`#room_${roomId} td.members`);
 
-const renderRoom = (room) => {
-  `
-  <tr id='room_${room.id}'>
-    <td>${room.name}</td>
-    <td class='members'>0</td>
+const roomTmpl = ({ id, name, members_count, joined }) => {
+  return `
+  <tr id="room_${id}">
+    <td>${name}</td>
+    <td class="members">${members_count}</td>
     <td>
-      <a rel='nofollow' data-method='patch' href='/user/rooms/${room.id}/join'>Join</a> |
-      <a data-confirm='R U sure?' rel='nofollow' data-method='delete'
-        href='/user/rooms/${room.id}'>Destroy</a>
+      <a
+        rel="nofollow"
+        data-method="patch"
+        href="${joined ? `/user/rooms/${id}/leave` : `/user/rooms/${id}/join`}"
+      >
+        ${joined ? 'Leave' : 'Join'}
+      </a>
+      |
+      <a
+        rel="nofollow"
+        data-method="delete"
+        data-confirm="R U sure?"
+        href="/user/rooms/${id}"
+      >
+        Destroy
+      </a>
     </td>
   </tr>
   `;
@@ -38,8 +51,8 @@ const receivedMessage = (type, data) => {
       break;
     case "Room created": {
       document
-        .getElementById("rooms_list")
-        .insertAdjacentHTML("beforeend", renderRoom(data.room));
+        .querySelector("#rooms_list tbody")
+        .insertAdjacentHTML("beforeend", roomTmpl(data.room));
       break;
     }
     case "Room destroyed": {
@@ -49,6 +62,21 @@ const receivedMessage = (type, data) => {
   }
 };
 
+const renderRooms = () => {
+  const dataEl = document.getElementById("rooms-data");
+  const rooms = JSON.parse(dataEl.textContent);
+
+  const tbody = document.querySelector("#rooms_list tbody");
+  rooms.forEach(r => {
+    tbody.insertAdjacentHTML(
+      "beforeend",
+      roomTmpl(r)
+    );
+  });
+}
+
 export default function () {
+  renderRooms();
+
   return subscribe({ to: Room, with: receivedMessage });
 }
