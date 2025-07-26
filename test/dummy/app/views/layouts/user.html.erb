@@ -25,3 +25,7 @@
   </div>
 <% end %>
 </html>
+
+<script type="application/json" id="current-user-data">
+  <%= raw current_user.slice(:id, :username, :email).to_json %>
+</script>

@@ -3,7 +3,7 @@
 class MaintainRoomMembers
   class << self
     def rejoin(hub:, user:)
-      room_id = hub.name.split(':').last.split('_').last
+      room_id = hub.name.split(':').last.split('_').last.to_i
       key = redis_key(room_id, user.id)
       APP_REDIS.set(key, Time.current, ex: 4)
       return if hub.include?(user)

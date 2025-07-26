@@ -2,17 +2,10 @@ import { subscribe } from "loco-js";
 
 import Room from "models/Room";
 
-const memberJoined = (roomId) => {
-  const node = membersNode(roomId);
-  node.textContent = parseInt(node.textContent) + 1;
+const store = {
+  currentUser: null,
+  rooms: [],
 };
-
-const memberLeft = (roomId) => {
-  const node = membersNode(roomId);
-  node.textContent = parseInt(node.textContent) - 1;
-};
-
-const membersNode = (roomId) => document.querySelector(`#room_${roomId} td.members`);
 
 const roomTmpl = ({ id, name, members_count, joined }) => {
   return `
@@ -41,14 +34,42 @@ const roomTmpl = ({ id, name, members_count, joined }) => {
   `;
 };
 
+const renderRooms = () => {
+  const tbody = document.querySelector("#rooms_list tbody");
+  store.rooms.forEach(r => {
+    tbody.insertAdjacentHTML(
+      "beforeend",
+      roomTmpl(r)
+    );
+  });
+}
+
+const reRenderRoom = (roomId) => {
+  const room = store.rooms.find(r => r.id === roomId);
+  const node = document.getElementById(`room_${roomId}`);
+  node.innerHTML = roomTmpl(room);
+};
+
 const receivedMessage = (type, data) => {
   switch (type) {
-    case "Room member_joined":
-      memberJoined(data.room_id);
+    case "Room member_joined": {
+      const room = store.rooms.find(r => r.id === data.room_id);
+      room.members_count++;
+      if (data.member.id === store.currentUser.id) {
+        room.joined = true;
+      }
+      reRenderRoom(data.room_id);
       break;
-    case "Room member_left":
-      memberLeft(data.room_id);
+    }
+    case "Room member_left": {
+      const room = store.rooms.find(r => r.id === data.room_id);
+      room.members_count--;
+      if (data.member.id === store.currentUser.id) {
+        room.joined = false;
+      }
+      reRenderRoom(data.room_id);
       break;
+    }
     case "Room created": {
       document
         .querySelector("#rooms_list tbody")
@@ -62,21 +83,13 @@ const receivedMessage = (type, data) => {
   }
 };
 
-const renderRooms = () => {
-  const dataEl = document.getElementById("rooms-data");
-  const rooms = JSON.parse(dataEl.textContent);
-
-  const tbody = document.querySelector("#rooms_list tbody");
-  rooms.forEach(r => {
-    tbody.insertAdjacentHTML(
-      "beforeend",
-      roomTmpl(r)
-    );
-  });
-}
-
 export default function () {
+  let dataEl = document.getElementById("rooms-data");
+  store.rooms = JSON.parse(dataEl.textContent);
   renderRooms();
+
+  dataEl = document.getElementById("current-user-data");
+  store.currentUser = JSON.parse(dataEl.textContent);
 
   return subscribe({ to: Room, with: receivedMessage });
 }
