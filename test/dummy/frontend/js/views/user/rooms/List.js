@@ -84,8 +84,6 @@ const receivedMessage = (type, data) => {
 };
 
 export default function () {
-  console.log(">>> CurrentUser", CurrentUser());
-
   let dataEl = document.getElementById("rooms-data");
   store.rooms = JSON.parse(dataEl.textContent);
   renderRooms();
