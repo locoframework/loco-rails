@@ -30,14 +30,7 @@ module UserHelpers
   end
 
   def join_room(user, room)
-    HubFinder.new(room).find.add_member user
-    Loco.emit(room, :member_joined, data: {
-                room_id: room.id,
-                member: {
-                  id: user.id,
-                  username: user.username
-                }
-              }, to: [User])
+    MaintainRoomMembers.rejoin(hub: HubFinder.new(room).find, user:)
     perform_enqueued_jobs
   end
 end
