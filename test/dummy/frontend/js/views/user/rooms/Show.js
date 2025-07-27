@@ -4,6 +4,9 @@ import loco from "initializers/loco";
 import Room from "models/Room";
 
 const memberJoined = (member) => {
+  if (document.querySelector(`#members li#user_${member.id}`)) {
+    return;
+  }
   const li = `<li id='user_${member.id}'>${member.username}</li>`;
   document.getElementById("members").insertAdjacentHTML("beforeend", li);
 };
