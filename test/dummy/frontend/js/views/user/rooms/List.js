@@ -1,9 +1,9 @@
 import { subscribe } from "loco-js";
 
 import Room from "models/Room";
+import CurrentUser from "services/CurrentUser";
 
 const store = {
-  currentUser: null,
   rooms: [],
 };
 
@@ -55,7 +55,7 @@ const receivedMessage = (type, data) => {
     case "Room member_joined": {
       const room = store.rooms.find(r => r.id === data.room_id);
       room.members_count++;
-      if (data.member.id === store.currentUser.id) {
+      if (data.member.id === CurrentUser().id) {
         room.joined = true;
       }
       reRenderRoom(data.room_id);
@@ -64,7 +64,7 @@ const receivedMessage = (type, data) => {
     case "Room member_left": {
       const room = store.rooms.find(r => r.id === data.room_id);
       room.members_count--;
-      if (data.member.id === store.currentUser.id) {
+      if (data.member.id === CurrentUser().id) {
         room.joined = false;
       }
       reRenderRoom(data.room_id);
@@ -84,12 +84,11 @@ const receivedMessage = (type, data) => {
 };
 
 export default function () {
+  console.log(">>> CurrentUser", CurrentUser());
+
   let dataEl = document.getElementById("rooms-data");
   store.rooms = JSON.parse(dataEl.textContent);
   renderRooms();
-
-  dataEl = document.getElementById("current-user-data");
-  store.currentUser = JSON.parse(dataEl.textContent);
 
   return subscribe({ to: Room, with: receivedMessage });
 }
