@@ -14,6 +14,7 @@ class User
       click_on 'RealSnapChat rooms'
       click_on 'Join', match: :first
       sleep 0.1
+      perform_enqueued_jobs
     end
 
     def teardown
@@ -77,6 +78,16 @@ class User
         assert_equal 'This is a persistent message', lt.data['message']
         assert_equal 'zbig', lt.data['author']
       end
+    end
+
+    test 'autoleaving room' do
+      click_on 'RealSnapChat rooms'
+      assert_equal '1', find("tr#room_#{@room.id} td.members").text
+      sleep 5 # TODO: invalidate redis key faster in test env
+      MaintainRoomMembers.clear(@room.id)
+      perform_enqueued_jobs
+      assert_equal '0', find("tr#room_#{@room.id} td.members").text
+      assert find("tr#room_#{@room.id}").has_link?('Join', href: "/user/rooms/#{@room.id}/join")
     end
   end
 end
