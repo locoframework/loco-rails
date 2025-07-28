@@ -3,9 +3,7 @@ import { subscribe } from "loco-js";
 import Room from "models/Room";
 import CurrentUser from "services/CurrentUser";
 
-const store = {
-  rooms: [],
-};
+let rooms = [];
 
 const roomTmpl = ({ id, name, members_count, joined }) => {
   return `
@@ -35,45 +33,42 @@ const roomTmpl = ({ id, name, members_count, joined }) => {
 };
 
 const renderRooms = () => {
+  rooms.forEach(r => renderRoom(r));
+}
+
+const renderRoom = (room) => {
   const tbody = document.querySelector("#rooms_list tbody");
-  store.rooms.forEach(r => {
-    tbody.insertAdjacentHTML(
-      "beforeend",
-      roomTmpl(r)
-    );
-  });
+  tbody.insertAdjacentHTML("beforeend", roomTmpl(room));
 }
 
 const reRenderRoom = (roomId) => {
-  const room = store.rooms.find(r => r.id === roomId);
+  const room = rooms.find(r => r.id === roomId);
   const node = document.getElementById(`room_${roomId}`);
   node.innerHTML = roomTmpl(room);
 };
 
+const membersChanged = (roomId, change, memberId) => {
+  const room = rooms.find(r => r.id === roomId);
+  room.members_count += change;
+  if (memberId === CurrentUser().id) {
+    room.joined = change > 0;
+  }
+  reRenderRoom(roomId);
+}
+
 const receivedMessage = (type, data) => {
   switch (type) {
     case "Room member_joined": {
-      const room = store.rooms.find(r => r.id === data.room_id);
-      room.members_count++;
-      if (data.member.id === CurrentUser().id) {
-        room.joined = true;
-      }
-      reRenderRoom(data.room_id);
+      membersChanged(data.room_id, 1, data.member.id);
       break;
     }
     case "Room member_left": {
-      const room = store.rooms.find(r => r.id === data.room_id);
-      room.members_count--;
-      if (data.member.id === CurrentUser().id) {
-        room.joined = false;
-      }
-      reRenderRoom(data.room_id);
+      membersChanged(data.room_id, -1, data.member.id);
       break;
     }
     case "Room created": {
-      document
-        .querySelector("#rooms_list tbody")
-        .insertAdjacentHTML("beforeend", roomTmpl(data.room));
+      rooms.push(data.room);
+      renderRoom(data.room);
       break;
     }
     case "Room destroyed": {
@@ -85,7 +80,7 @@ const receivedMessage = (type, data) => {
 
 export default function () {
   let dataEl = document.getElementById("rooms-data");
-  store.rooms = JSON.parse(dataEl.textContent);
+  rooms = JSON.parse(dataEl.textContent);
   renderRooms();
 
   return subscribe({ to: Room, with: receivedMessage });
