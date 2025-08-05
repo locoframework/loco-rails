@@ -12,7 +12,7 @@
   "author": "Zbigniew Humeniuk <hello@artofcode.co>",
   "license": "MIT",
   "dependencies": {
-    "@hotwired/turbo-rails": "^8.0.3",
+    "@hotwired/turbo-rails": "^8.0.13",
     "@rails/actioncable": "^7.0.4-2",
     "@rails/ujs": "^7.0.4-2",
     "core-js": "^3.29.0",
