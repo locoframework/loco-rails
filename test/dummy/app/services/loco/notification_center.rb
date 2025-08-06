@@ -9,14 +9,20 @@ module Loco
       when 'PING'
         Loco.emit({ type: 'PING' }, to: res[:user], ws_only: true)
       when 'HEARTBEAT'
-        MaintainRoomMembers.rejoin(hub: res[:hub], user: permissions[:user])
-        MaintainRoomMembersJob.set(wait: 5.seconds).perform_later(data['room_id'])
+        heartbeat(permissions[:user], data['room_id'])
       when 'NEW_MESSAGE'
         new_message(permissions[:user], data, res[:hub])
       end
     end
 
     private
+
+    def heartbeat(user, room_id)
+      name = "room_#{room_id}"
+      hub = Loco.get_hub(name) || Loco.add_hub(name)
+      MaintainRoomMembers.rejoin(hub:, user:)
+      MaintainRoomMembersJob.set(wait: 5.seconds).perform_later(room_id)
+    end
 
     def new_message(user, data, hub)
       if data['message_type'] == 'persistent' && hub
@@ -31,14 +37,16 @@ module Loco
                 ws_only: data['message_type'] == 'ephemeral')
     end
 
-    def validate_message(name, permissions, data)
+    def validate_message(name, permissions, data) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
       case name
       when 'PING'
         return false if permissions[:admin].nil?
 
         user = User.new(id: data['user_id'])
         { user: }
-      when 'HEARTBEAT', 'NEW_MESSAGE'
+      when 'HEARTBEAT'
+        permissions[:user] ? true : false
+      when 'NEW_MESSAGE'
         return false if permissions[:user].nil?
         return false unless (hub = Hub.get("room_#{data['room_id']}"))
 
