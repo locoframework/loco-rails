@@ -12,6 +12,10 @@ const Controllers = {
 
 let env = null;
 
+document.addEventListener("turbo:load", () => {
+  env = init(Controllers);
+});
+
 ["turbo:click", "turbo:submit-start"].forEach((event) => {
   document.addEventListener(event, () => {
     if (env !== null && env.controller.cleanup != null) {
@@ -19,10 +23,6 @@ let env = null;
       env.controller.cleanup = null;
     }
   });
-});
-
-document.addEventListener("turbo:load", () => {
-  env = init(Controllers);
 });
 
 const getEnv = () => env;
