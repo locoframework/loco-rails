@@ -19,7 +19,7 @@ class User
 
     def teardown
       super
-      HubFinder.new(@room).find.destroy
+      FindHub.(room_id: @room.id).destroy
     end
 
     test "should show room's members" do
@@ -35,8 +35,8 @@ class User
       perform_enqueued_jobs
       assert page.has_content? 'zbig: Hello Jane!'
       payload = { type: 'NEW_MESSAGE', message: 'Hi zbig!', author: 'jane' }
-      idempotency_key = Loco.emit payload, to: HubFinder.new(@room).find, ws_only: true
-      Loco.emit payload.merge(idempotency_key:), to: HubFinder.new(@room).find, ws_only: true
+      idempotency_key = Loco.emit payload, to: FindHub.(room_id: @room.id), ws_only: true
+      Loco.emit payload.merge(idempotency_key:), to: FindHub.(room_id: @room.id), ws_only: true
       sleep 0.1
       assert_equal 2, page.all('p.msg').count
       assert page.has_content? 'jane: Hi zbig!'

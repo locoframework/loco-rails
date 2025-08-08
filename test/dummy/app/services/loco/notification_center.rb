@@ -18,8 +18,7 @@ module Loco
     private
 
     def heartbeat(user, room_id)
-      name = "room_#{room_id}"
-      hub = Loco.get_hub(name) || Loco.add_hub(name)
+      hub = FindHub.(room_id:)
       MaintainRoomMembers.rejoin(hub:, user:)
       MaintainRoomMembersJob.set(wait: 5.seconds).perform_later(room_id)
     end

@@ -10,7 +10,7 @@ class User
     def index
       @rooms = Room.paginate page: params[:page], per_page: 10
       @rooms_with_hub = @rooms.map do |room|
-        RoomWithHub.new(room, HubFinder.new(room).find)
+        RoomWithHub.new(room, FindHub.(room_id: room.id))
       end
     end
 
@@ -69,7 +69,7 @@ class User
     end
 
     def find_hub
-      @hub = HubFinder.new(@room).find
+      @hub = FindHub.(room_id: @room.id)
     end
   end
 end

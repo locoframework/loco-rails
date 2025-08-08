@@ -30,7 +30,7 @@ module UserHelpers
   end
 
   def join_room(user, room)
-    MaintainRoomMembers.rejoin(hub: HubFinder.new(room).find, user:)
+    MaintainRoomMembers.rejoin(hub: FindHub.(room_id: room.id), user:)
     perform_enqueued_jobs
   end
 end
