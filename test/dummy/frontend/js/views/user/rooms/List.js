@@ -13,7 +13,7 @@ const roomTmpl = ({ id, name, members_count, joined }) => {
     <td>
       <a
         rel="nofollow"
-        data-method="patch"
+        data-turbo-method="patch"
         href="${joined ? `/user/rooms/${id}/leave` : `/user/rooms/${id}/join`}"
       >
         ${joined ? 'Leave' : 'Join'}
@@ -21,8 +21,8 @@ const roomTmpl = ({ id, name, members_count, joined }) => {
       |
       <a
         rel="nofollow"
-        data-method="delete"
-        data-confirm="R U sure?"
+        data-turbo-method="delete"
+        data-turbo-confirm="R U sure?"
         href="/user/rooms/${id}"
       >
         Destroy

@@ -21,19 +21,19 @@ class User
 
     test 'should update published on the list' do
       visit '/user/articles'
-      sleep 0.5
+      assert_selector "#article_#{articles(:two).id}", wait: 5
       articles(:two).publish
       Loco.emit articles(:two), :updated, for: [users(:zbig)]
       within "#article_#{articles(:two).id} td.published" do
-        assert page.has_content? 'yes'
+        assert_text 'yes', wait: 5
       end
     end
 
     test 'should update title of updated article on the list' do
       visit '/user/articles'
-      sleep 0.5
+      assert_selector "#article_#{articles(:two).id}", wait: 5
       update_article :two
-      assert page.has_content? 'WiAR'
+      assert_selector "#article_#{articles(:two).id} .title", text: 'WiAR', wait: 5
     end
 
     test 'should remove article from the list on destroy' do

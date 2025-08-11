@@ -19,7 +19,7 @@ function Article({ article, onArticleDestroyed }) {
 
   return (
     <tr id={`article_${article.id}`}>
-      <td>{article.title}</td>
+      <td className="title">{article.title}</td>
       <td>{article.content}</td>
       <td className="comments_quantity">{article.commentsCount}</td>
       <td className="published">{article.publishedAt ? "yes" : "no"}</td>

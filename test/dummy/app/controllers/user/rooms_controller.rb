@@ -24,7 +24,7 @@ class User
         Loco.emit({ event: :created, room: { id: @room.id, name: @room.name } }, subject: @room, to: [User])
         redirect_to user_rooms_path, notice: 'Room has been created'
       else
-        render :new
+        render :new, status: :unprocessable_entity
       end
     end
 
@@ -52,7 +52,7 @@ class User
         redirect_to user_rooms_path, alert: 'Only empty room can be deleted'
         return
       end
-      del_hub @hub
+      Loco.del_hub(@hub)
       @room.destroy
       Loco.emit(@room, :destroyed, payload: { room_id: @room.id }, to: [User])
       redirect_to user_rooms_path, notice: 'Room has been deleted'

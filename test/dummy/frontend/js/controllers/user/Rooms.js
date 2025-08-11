@@ -8,10 +8,14 @@ import Show from "views/user/rooms/Show";
 class Rooms {
   constructor() {
     this.callbacks = {};
+    this.unsubscribe = null;
   }
 
   deinitialize() {
-    this.unsubscribe();
+    if (this.unsubscribe !== null) {
+      this.unsubscribe();
+      this.unsubscribe = null;
+    }
   }
 
   index() {

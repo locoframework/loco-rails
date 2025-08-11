@@ -21,4 +21,4 @@
   <%= radio_button_tag :message_type, 'persistent' %> <label for="message_type_persistent">Persistent</label>
 </p>
 
-<p><%= link_to 'Leave', leave_user_room_path(@room), method: :patch %></p>
+<p><%= link_to 'Leave', leave_user_room_path(@room), data: { turbo_method: :patch } %></p>

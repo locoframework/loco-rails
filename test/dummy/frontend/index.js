@@ -3,7 +3,6 @@ import "core-js/stable";
 import "scaffold.css";
 import "global.css";
 
-import "initializers/rails";
 import "initializers/turbo-rails";
 import "initializers/loco-core";
 import loco from "initializers/loco";
