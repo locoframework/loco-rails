@@ -67,6 +67,7 @@ const receivedMessage = (type, data) => {
       break;
     }
     case "Room created": {
+      data.room.members_count = 0;
       rooms.push(data.room);
       renderRoom(data.room);
       break;
