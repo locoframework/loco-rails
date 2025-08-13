@@ -12,9 +12,11 @@ class User
       @room = Room.create! name: 'Business'
       sign_in_user 'zbigniew.humeniuk@example.com', 'secret'
       click_on 'RealSnapChat rooms'
-      click_on 'Join', match: :first
-      sleep 0.1
-      perform_enqueued_jobs
+      assert_selector "body[data-action='index']"
+      perform_enqueued_jobs do
+        click_on 'Join', match: :first
+        assert_selector "body[data-action='show']"
+      end
     end
 
     def teardown
@@ -23,16 +25,17 @@ class User
     end
 
     test "should show room's members" do
-      assert page.has_content? 'zbig'
+      assert_text 'zbig'
       join_room users(:jane), @room
-      assert page.has_content? 'jane'
+      assert_text 'jane'
     end
 
     test 'should send messages' do
       join_room users(:jane), @room
       fill_in 'message', with: 'Hello Jane!'
-      find('#message').native.send_keys :return
-      perform_enqueued_jobs
+      perform_enqueued_jobs do
+        find('#message').native.send_keys :return
+      end
       assert page.has_content? 'zbig: Hello Jane!'
       payload = { type: 'NEW_MESSAGE', message: 'Hi zbig!', author: 'jane' }
       idempotency_key = Loco.emit payload, to: FindHub.(room_id: @room.id), ws_only: true
@@ -47,7 +50,7 @@ class User
       sleep 0.1
       join_room users(:jane), @room
       go_connected
-      assert page.has_content? 'jane'
+      assert_text 'jane', wait: 5
     end
 
     test 'should create persistent message record when message_type is persistent' do
@@ -55,15 +58,17 @@ class User
 
       choose 'message_type_persistent'
       fill_in 'message', with: 'This is a persistent message'
-      find('#message').native.send_keys :return
-      perform_enqueued_jobs
+      perform_enqueued_jobs do
+        find('#message').native.send_keys :return
+      end
 
       assert page.has_content? 'zbig: This is a persistent message'
 
       choose 'message_type_ephemeral'
       fill_in 'message', with: 'This is an ephemeral message'
-      find('#message').native.send_keys :return
-      perform_enqueued_jobs
+      perform_enqueued_jobs do
+        find('#message').native.send_keys :return
+      end
 
       assert page.has_content? 'zbig: This is an ephemeral message'
 
@@ -82,6 +87,7 @@ class User
 
     test 'autoleaving room' do
       click_on 'RealSnapChat rooms'
+      assert_selector "body[data-action='index']", wait: 5
       assert_equal '1', find("tr#room_#{@room.id} td.members").text
       sleep 5 # TODO: invalidate redis key faster in test env
       MaintainRoomMembers.clear(@room.id)
