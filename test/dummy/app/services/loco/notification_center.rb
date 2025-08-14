@@ -24,9 +24,7 @@ module Loco
     end
 
     def new_message(user, data, hub)
-      if data['message_type'] == 'persistent' && hub
-        Message.create!(room_id: data['room_id'], user:, content: data['txt'])
-      end
+      Message.create!(room_id: data['room_id'], user:, content: data['txt']) if data['message_type'] == 'persistent'
       Loco.emit({
                   type: 'NEW_MESSAGE',
                   message: data['txt'],
