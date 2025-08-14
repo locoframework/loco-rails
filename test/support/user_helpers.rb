@@ -34,4 +34,14 @@ module UserHelpers
       MaintainRoomMembers.rejoin(hub: FindHub.(room_id: room.id), user:)
     end
   end
+
+  def persistent_message(user:, room:, hub:, message:)
+    Message.create!(room_id: room.id, user:, content: message)
+    Loco.emit({
+                type: 'NEW_MESSAGE',
+                message:,
+                author: user.username
+              },
+              to: hub, ws_only: false)
+  end
 end

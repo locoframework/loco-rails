@@ -17,11 +17,12 @@ class User
         click_on 'Join', match: :first
         assert_selector "body[data-action='show']"
       end
+      @hub = Loco.get_hub("room_#{@room.id}")
     end
 
     def teardown
       super
-      FindHub.(room_id: @room.id).destroy
+      @hub.destroy
     end
 
     test "should show room's members" do

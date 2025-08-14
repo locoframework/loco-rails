@@ -47,7 +47,7 @@ module Loco
         permissions[:user] ? true : false
       when 'NEW_MESSAGE'
         return false if permissions[:user].nil?
-        return false unless (hub = Hub.get("room_#{data['room_id']}"))
+        return false unless (hub = Loco.get_hub("room_#{data['room_id']}"))
 
         { hub: }
       else
