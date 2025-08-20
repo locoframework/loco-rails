@@ -44,4 +44,13 @@ module UserHelpers
               },
               to: hub, ws_only: false)
   end
+
+  def ephemeral_message(user:, hub:, message:)
+    Loco.emit({
+                type: 'NEW_MESSAGE',
+                message:,
+                author: user.username
+              },
+              to: hub, ws_only: true)
+  end
 end

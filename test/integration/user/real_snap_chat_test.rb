@@ -54,6 +54,20 @@ class User
       assert_text 'jane', wait: 5
     end
 
+    test 'receiving messages after returning from disconnection' do
+      join_room users(:jane), @room
+      assert_selector '#members li', count: 2, wait: 5
+      sleep 1 # needs to stay so disconnection works
+      page.evaluate_script 'window.test.getLine().disconnect({all: true});'
+      persistent_message(user: users(:jane), room: @room, hub: @hub, message: "What's up!")
+      ephemeral_message(user: users(:jane), hub: @hub, message: 'Ephemeral message')
+      persistent_message(user: users(:jane), room: @room, hub: @hub, message: 'How are you?')
+      page.evaluate_script 'window.test.getLine().connect();'
+      assert_no_text 'Ephemeral message', wait: 5
+      assert_text "What's up!", wait: 5
+      assert_text 'How are you?', wait: 5
+    end
+
     test 'should create persistent message record when message_type is persistent' do
       join_room users(:jane), @room
 
