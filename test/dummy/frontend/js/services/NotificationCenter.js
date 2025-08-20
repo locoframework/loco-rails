@@ -21,14 +21,30 @@ import MainController from "controllers/Main";
 import RoomsController from "controllers/user/Rooms";
 import UserController from "controllers/User";
 
+const userNamespace = () => {
+  return getEnv().namespaceController.constructor === UserController;
+};
+
+const adminNamespace = () => {
+  return getEnv().namespaceController.constructor === AdminController;
+};
+
+const mainNamespace = () => {
+  return getEnv().namespaceController.constructor === MainController;
+};
+
+const inChatRoom = () => {
+  return userNamespace() && getEnv().controller.constructor === RoomsController && getEnv().action === "show";
+};
+
 const articleCreated = async ({ id }) => {
-  if (getEnv().namespaceController.constructor !== UserController) return;
+  if (!userNamespace()) return;
   const article = await Article.find({ id, abbr: true });
   store.dispatch(addArticles([article]));
 };
 
 const articlePublished = async ({ id }) => {
-  if (getEnv().namespaceController.constructor === AdminController) {
+  if (adminNamespace()) {
     const article = await Article.find({ id, abbr: true, resource: "admin" });
     store.dispatch(prependArticles([article]));
   } else {
@@ -39,7 +55,7 @@ const articlePublished = async ({ id }) => {
 
 const articleUpdated = async ({ id }) => {
   const findParams = { id: id, abbr: true };
-  if (getEnv().namespaceController.constructor === AdminController) {
+  if (adminNamespace()) {
     findParams["resource"] = "admin";
   }
   let [article, index] = findArticle(store.getState(), id);
@@ -60,7 +76,7 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
 
 const commentCreated = async ({ article_id: articleId, id }) => {
   const findParams = { articleId, id };
-  if (getEnv().namespaceController.constructor === MainController) {
+  if (mainNamespace()) {
     findParams["resource"] = "main";
   }
   const [article] = findArticle(store.getState(), articleId);
@@ -85,20 +101,30 @@ const commentUpdated = async ({ article_id: articleId, id }) => {
 };
 
 const ping = () => {
-  if (getEnv().namespaceController.constructor !== UserController) return;
+  if (!userNamespace()) return;
   alert("Ping!");
 };
 
 const getCallbackForReceivedMessage = () => {
-  const nullCallback = () => {};
-  if (getEnv().namespaceController.constructor !== UserController)
-    return nullCallback;
-  if (getEnv().controller.constructor !== RoomsController) return nullCallback;
-  if (getEnv().action !== "show") return nullCallback;
+  if (!inChatRoom()) return () => {};
   return getEnv().controller.callbacks["receivedMessage"];
 };
 
+const handleWsDisconnected = () => {
+  console.log("NC: disconnected");
+  if (inChatRoom()) {
+    console.log("NC: in chat room"); // TODO: inform about ephemeral messages
+  }
+};
+
 export default async (data) => {
+  if (data.loco !== undefined) {
+    switch (data.loco) {
+      case "disconnected":
+        handleWsDisconnected();
+        break;
+    }
+  }
   switch (data.type) {
     case "PING":
       ping();
