@@ -4,6 +4,7 @@ require 'test_helper'
 
 class DisconnectionTest < IT
   include CapybaraOffline
+  include CommonHelpers
 
   def setup
     super
@@ -11,14 +12,12 @@ class DisconnectionTest < IT
     go_disconnected
   end
 
-  def teardown
-    super
+  test 'fetches missed notifications' do
+    create_comment_for_article :one
+    create_comment_for_article :one, author: 'Jason', text: 'Very interesting...'
     go_connected
-  end
-
-  test 'should show alert about disconnection from the server' do
-    page.evaluate_script 'window.test.getWire().allowedDisconnectionTime = 1;'
-    msg = 'You have been disconnected from the server for too long. Reload page!'
-    assert page.has_content? msg
+    within "article#article_#{articles(:one).id}" do
+      assert page.has_content? '2 comments'
+    end
   end
 end

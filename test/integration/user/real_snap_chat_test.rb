@@ -4,8 +4,8 @@ require 'test_helper'
 
 class User
   class RealSnapChatTest < IT
-    include UserHelpers
     include CapybaraOffline
+    include UserHelpers
 
     def setup
       super
@@ -54,7 +54,7 @@ class User
       assert_text 'jane', wait: 5
     end
 
-    test 'receiving messages after returning from disconnection' do
+    test 'receiving messages via WS after returning from disconnection' do
       join_room users(:jane), @room
       assert_selector '#members li', count: 2, wait: 5
       sleep 1 # needs to stay so disconnection works
