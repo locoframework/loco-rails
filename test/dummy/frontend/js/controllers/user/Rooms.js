@@ -7,7 +7,7 @@ import Show from "views/user/rooms/Show";
 
 class Rooms {
   constructor() {
-    this.callbacks = {};
+    this.view = null;
     this.unsubscribe = null;
   }
 
@@ -23,7 +23,7 @@ class Rooms {
   }
 
   async show() {
-    this.callbacks["receivedMessage"] = Show.receivedMessage;
+    this.view = Show;
     this.unsubscribe = Show.render(helpers.params.id);
     const resp = await Member.all({ roomId: helpers.params.id });
     Show.renderMembers(resp.resources);

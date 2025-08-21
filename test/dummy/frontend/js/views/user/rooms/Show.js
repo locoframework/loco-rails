@@ -3,6 +3,8 @@ import { subscribe } from "loco-js";
 import loco from "initializers/loco";
 import Room from "models/Room";
 
+import renderFlash from "views/shared/Flash";
+
 const memberJoined = (member) => {
   if (document.querySelector(`#members li#user_${member.id}`)) {
     return;
@@ -76,5 +78,11 @@ export default {
     document
       .getElementById("messages")
       .insertAdjacentHTML("beforeend", renderedMessage);
+  },
+
+  disconnected: () => {
+    const msg =
+      "You have been disconnected from the server. You might have lost some ephemeral messages.";
+      renderFlash({ alert: msg, hide: false });
   },
 };

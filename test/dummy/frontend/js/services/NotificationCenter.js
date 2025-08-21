@@ -105,15 +105,14 @@ const ping = () => {
   alert("Ping!");
 };
 
-const getCallbackForReceivedMessage = () => {
+const getCallbackForNewMessage = () => {
   if (!inChatRoom()) return () => {};
-  return getEnv().controller.callbacks["receivedMessage"];
+  return getEnv().controller.view.receivedMessage;
 };
 
-const handleWsDisconnected = () => {
-  console.log("NC: disconnected");
+const wsDisconnected = () => {
   if (inChatRoom()) {
-    console.log("NC: in chat room"); // TODO: inform about ephemeral messages
+    getEnv().controller.view.disconnected();
   }
 };
 
@@ -121,7 +120,7 @@ export default async (data) => {
   if (data.loco !== undefined) {
     switch (data.loco) {
       case "disconnected":
-        handleWsDisconnected();
+        wsDisconnected();
         break;
     }
   }
@@ -130,7 +129,7 @@ export default async (data) => {
       ping();
       break;
     case "NEW_MESSAGE":
-      getCallbackForReceivedMessage()(data.message, data.author);
+      getCallbackForNewMessage()(data.message, data.author);
       break;
     case "Article created":
       articleCreated(data.payload);

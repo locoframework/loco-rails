@@ -66,6 +66,7 @@ class User
       assert_no_text 'Ephemeral message', wait: 5
       assert_text "What's up!", wait: 5
       assert_text 'How are you?', wait: 5
+      assert_text 'You might have lost some ephemeral messages.', wait: 5
     end
 
     test 'should create persistent message record when message_type is persistent' do
