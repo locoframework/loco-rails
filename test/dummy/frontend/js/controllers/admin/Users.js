@@ -1,5 +1,5 @@
 import React from "react";
-import { render as renderElement } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { helpers } from "loco-js-core";
 
 import { setUsers } from "actions";
@@ -14,9 +14,8 @@ class Users {
   async index() {
     const resp = await User.get("all");
     store.dispatch(setUsers(resp.resources));
-    renderElement(
+    createRoot(document.querySelector("table tbody")).render(
       <UserList users={resp.resources} />,
-      document.querySelector("table tbody")
     );
   }
 

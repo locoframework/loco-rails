@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { helpers } from "loco-js-core";
 
 import { setArticles, setComments } from "actions";
@@ -25,13 +25,11 @@ const renderComments = async () => {
     total: res.total,
   });
   store.dispatch(setComments(comments, helpers.params.id));
-  render(
+  createRoot(document.getElementById("comments")).render(
     <CommentList articleId={helpers.params.id} comments={comments} />,
-    document.getElementById("comments")
   );
-  render(
+  createRoot(document.getElementById("comments_count")).render(
     <CommentsNumber articleId={helpers.params.id} comments={comments} />,
-    document.getElementById("comments_count")
   );
 };
 

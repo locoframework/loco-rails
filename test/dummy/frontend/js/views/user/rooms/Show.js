@@ -42,7 +42,8 @@ const handleSendingMessage = (roomId) => {
         type: "NEW_MESSAGE",
         txt: event.target.value,
         room_id: roomId,
-        message_type: document.querySelector("[name='message_type']:checked").value,
+        message_type: document.querySelector("[name='message_type']:checked")
+          .value,
       });
       event.target.value = "";
     });
@@ -60,7 +61,10 @@ export default {
   render: (roomId) => {
     handleSendingMessage(roomId);
     const unsubscribeHeartbeat = heartbeat(roomId);
-    const unsubscribeMessages = subscribe({ to: Room, with: createReceivedMessage(roomId) });
+    const unsubscribeMessages = subscribe({
+      to: Room,
+      with: createReceivedMessage(roomId),
+    });
     return () => {
       unsubscribeHeartbeat();
       unsubscribeMessages();
@@ -83,6 +87,6 @@ export default {
   disconnected: () => {
     const msg =
       "You have been disconnected from the server. You might have lost some ephemeral messages.";
-      renderFlash({ alert: msg, hide: false });
+    renderFlash({ alert: msg, hide: false });
   },
 };

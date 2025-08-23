@@ -1,5 +1,5 @@
 import React from "react";
-import { render as renderElement } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { subscribe } from "loco-js";
 
 import CommentList from "components/admin/CommentList";
@@ -28,9 +28,8 @@ export default {
   },
 
   renderComments: (comments) => {
-    renderElement(
+    createRoot(document.getElementById("comments")).render(
       <CommentList comments={comments} />,
-      document.getElementById("comments")
     );
   },
 };

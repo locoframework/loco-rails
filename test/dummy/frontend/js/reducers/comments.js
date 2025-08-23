@@ -18,7 +18,7 @@ export default produce((draft = {}, action) => {
     case REMOVE_COMMENT:
       if (draft[action.articleId] == null) return draft;
       draft[action.articleId] = draft[action.articleId].filter(
-        (comment) => comment.id !== action.id
+        (comment) => comment.id !== action.id,
       );
       break;
     case SET_COMMENTS:
@@ -29,7 +29,7 @@ export default produce((draft = {}, action) => {
       let index = action.index;
       if (!index) {
         const comment = draft[articleId].find(
-          (c) => c.id === action.comment.id
+          (c) => c.id === action.comment.id,
         );
         index = draft[articleId].indexOf(comment);
       }

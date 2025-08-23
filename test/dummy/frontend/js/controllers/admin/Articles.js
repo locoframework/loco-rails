@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { helpers } from "loco-js-core";
 
 import { setArticles } from "actions";
@@ -27,9 +27,8 @@ class Articles {
   async published() {
     const resp = await Article.get("published");
     store.dispatch(setArticles(resp.resources));
-    render(
+    createRoot(document.getElementById("articles")).render(
       <ArticleList articles={resp.resources} />,
-      document.getElementById("articles")
     );
   }
 

@@ -13,7 +13,7 @@ function CommentList(props) {
 
   useEffect(() => {
     const unsubscribe = store.subscribe(() =>
-      setComments(commentsForArticle(store.getState(), articleId))
+      setComments(commentsForArticle(store.getState(), articleId)),
     );
 
     return () => {

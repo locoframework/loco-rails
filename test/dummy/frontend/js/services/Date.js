@@ -32,25 +32,25 @@ class Date {
       "%d",
       this.date.getDate() >= 10
         ? this.date.getDate()
-        : `0${this.date.getDate()}`
+        : `0${this.date.getDate()}`,
     );
     str = str.replace(
       "%H",
       this.date.getHours() >= 10
         ? this.date.getHours()
-        : `0${this.date.getHours()}`
+        : `0${this.date.getHours()}`,
     );
     str = str.replace(
       "%M",
       this.date.getMinutes() >= 10
         ? this.date.getMinutes()
-        : `0${this.date.getMinutes()}`
+        : `0${this.date.getMinutes()}`,
     );
     return str.replace(
       "%S",
       this.date.getSeconds() >= 10
         ? this.date.getSeconds()
-        : `0${this.date.getSeconds()}`
+        : `0${this.date.getSeconds()}`,
     );
   }
 }

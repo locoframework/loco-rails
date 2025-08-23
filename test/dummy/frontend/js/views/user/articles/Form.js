@@ -1,5 +1,5 @@
 import React from "react";
-import { render as renderElement } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
@@ -15,7 +15,7 @@ import CommentList from "containers/user/CommentList";
 const displayChanges = (article) => {
   for (const [attrib] of Object.entries(article.changes())) {
     const sel = document.querySelector(
-      `a.apply_changes[data-for=${article.getAttrRemoteName(attrib)}]`
+      `a.apply_changes[data-for=${article.getAttrRemoteName(attrib)}]`,
     );
     if (!sel) continue;
     sel.classList.remove("none");
@@ -73,13 +73,12 @@ export default {
   renderComments: async (articleId) => {
     const resp = await Comment.all({ articleId: articleId });
     store.dispatch(setComments(resp.resources, articleId));
-    renderElement(
+    createRoot(document.getElementById("comments")).render(
       <CommentList
         articleId={articleId}
         comments={resp.resources}
         isAdmin={true}
       />,
-      document.getElementById("comments")
     );
   },
 };

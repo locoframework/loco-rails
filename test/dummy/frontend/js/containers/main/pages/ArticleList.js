@@ -10,7 +10,7 @@ function ArticleList(props) {
 
   useEffect(() => {
     const unsubscribe = store.subscribe(() =>
-      setArticles(store.getState().articles)
+      setArticles(store.getState().articles),
     );
 
     return () => {

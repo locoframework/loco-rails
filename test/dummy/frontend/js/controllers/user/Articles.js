@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { helpers } from "loco-js-core";
 
 import { setArticles, setComments } from "actions";
@@ -24,9 +24,8 @@ const renderArticle = async () => {
 const renderComments = async () => {
   const resp = await Comment.all({ articleId: helpers.params.id });
   store.dispatch(setComments(resp.resources, helpers.params.id));
-  render(
+  createRoot(document.getElementById("comments")).render(
     <CommentList articleId={helpers.params.id} comments={resp.resources} />,
-    document.getElementById("comments")
   );
 };
 
@@ -53,12 +52,11 @@ class Articles {
     }
     const resp = await Article.get("all");
     store.dispatch(setArticles(resp.resources));
-    render(
+    createRoot(document.getElementById("article_list")).render(
       <ArticleList
         articles={resp.resources}
         onArticleDestroyed={onArticleDestroyed}
       />,
-      document.getElementById("article_list")
     );
   }
 

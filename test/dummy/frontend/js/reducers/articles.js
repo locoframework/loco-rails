@@ -13,7 +13,9 @@ export default produce((draft = [], action) => {
     case ADD_ARTICLES: {
       const newArticles = action.articles.filter(
         (newArticle) =>
-          !draft.some((existingArticle) => existingArticle.id === newArticle.id)
+          !draft.some(
+            (existingArticle) => existingArticle.id === newArticle.id,
+          ),
       );
       draft.push(...newArticles);
       return;

@@ -16,7 +16,7 @@ const roomTmpl = ({ id, name, members_count, joined }) => {
         data-turbo-method="patch"
         href="${joined ? `/user/rooms/${id}/leave` : `/user/rooms/${id}/join`}"
       >
-        ${joined ? 'Leave' : 'Join'}
+        ${joined ? "Leave" : "Join"}
       </a>
       |
       <a
@@ -33,28 +33,28 @@ const roomTmpl = ({ id, name, members_count, joined }) => {
 };
 
 const renderRooms = () => {
-  rooms.forEach(r => renderRoom(r));
-}
+  rooms.forEach((r) => renderRoom(r));
+};
 
 const renderRoom = (room) => {
   const tbody = document.querySelector("#rooms_list tbody");
   tbody.insertAdjacentHTML("beforeend", roomTmpl(room));
-}
+};
 
 const reRenderRoom = (roomId) => {
-  const room = rooms.find(r => r.id === roomId);
+  const room = rooms.find((r) => r.id === roomId);
   const node = document.getElementById(`room_${roomId}`);
   node.innerHTML = roomTmpl(room);
 };
 
 const membersChanged = (roomId, change, memberId) => {
-  const room = rooms.find(r => r.id === roomId);
+  const room = rooms.find((r) => r.id === roomId);
   room.members_count += change;
   if (memberId === CurrentUser().id) {
     room.joined = change > 0;
   }
   reRenderRoom(roomId);
-}
+};
 
 const receivedMessage = (type, data) => {
   switch (type) {

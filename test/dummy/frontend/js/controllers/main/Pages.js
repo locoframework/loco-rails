@@ -1,5 +1,5 @@
 import React from "react";
-import { render as renderElement } from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import { setArticles } from "actions";
 import store from "store";
@@ -10,15 +10,13 @@ import ArticleList from "containers/main/pages/ArticleList";
 
 class Pages {
   async index() {
-    renderElement(
+    createRoot(document.getElementById("load_more_wrapper")).render(
       <LoadMoreLink />,
-      document.getElementById("load_more_wrapper")
     );
     const resp = await Article.get("all", { page: 1 });
     store.dispatch(setArticles(resp.resources));
-    renderElement(
+    createRoot(document.getElementById("articles")).render(
       <ArticleList articles={resp.resources} />,
-      document.getElementById("articles")
     );
   }
 }

@@ -34,7 +34,11 @@ const mainNamespace = () => {
 };
 
 const inChatRoom = () => {
-  return userNamespace() && getEnv().controller.constructor === RoomsController && getEnv().action === "show";
+  return (
+    userNamespace() &&
+    getEnv().controller.constructor === RoomsController &&
+    getEnv().action === "show"
+  );
 };
 
 const articleCreated = async ({ id }) => {

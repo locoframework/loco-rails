@@ -19,7 +19,7 @@ const handlePublishing = (article) => {
         await article.put("publish");
         document.getElementById("publish_article").outerHTML =
           "<span>Published!</span>";
-      } catch (err) {
+      } catch {
         document.getElementById("publish_article").textContent = "Publish";
         renderFlash({ alert: "Connection error!" });
       }

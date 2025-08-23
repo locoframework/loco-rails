@@ -21,8 +21,8 @@ function Comment({ comment, isAdmin = false }) {
     store.dispatch(
       updateComment(
         new CommentModel({ ...comment, approved: true }),
-        comment.articleId
-      )
+        comment.articleId,
+      ),
     );
   };
 
