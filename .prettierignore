@@ -1,2 +1,4 @@
 node_modules/
 README.md
+test/dummy/app/assets/bundles/
+*.yml

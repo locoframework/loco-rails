@@ -1,9 +1,5 @@
 {
-  "./*.js": [
-    "prettier --write",
-    "eslint --fix",
-    "git add"
-  ],
+  "./*.js": ["prettier --write", "eslint --fix", "git add"],
   "test/dummy/frontend/**/*.js": [
     "prettier --write",
     "eslint --fix",
@@ -14,8 +10,5 @@
     "stylelint --fix",
     "git add"
   ],
-  "*.{gemspec,rb}": [
-    "bundle exec rubocop --force-exclusion",
-    "git add"
-  ]
+  "*.{gemspec,rb}": ["bundle exec rubocop --force-exclusion", "git add"]
 }
