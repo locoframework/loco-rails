@@ -27,15 +27,6 @@ export default [
     },
     settings: {
       react: { version: "detect" },
-      "import/resolver": {
-        webpack: {
-          config: {
-            resolve: {
-              modules: ["css", "js", "node_modules"],
-            },
-          },
-        },
-      },
     },
     rules: {
       "prettier/prettier": "error",
