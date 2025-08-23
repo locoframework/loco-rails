@@ -4,7 +4,7 @@
   "scripts": {
     "prepare": "husky",
     "format": "prettier --write .",
-    "lint": "eslint *.js test/dummy/frontend --fix",
+    "lint": "eslint . --ext .js --fix",
     "lint-staged": "lint-staged",
     "build": "webpack --mode=production --node-env=production -c webpack.prod.js --progress",
     "start": "webpack -c webpack.dev.js --watch --progress",

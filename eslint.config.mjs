@@ -6,10 +6,10 @@ import reactRecommended from "eslint-plugin-react/configs/recommended.js";
 import globals from "globals";
 
 export default [
+  { ignores: ["test/dummy/app/assets/bundles/"] },
   js.configs.recommended,
   reactRecommended,
   {
-    files: ["**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
