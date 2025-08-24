@@ -1,11 +1,14 @@
 const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const postcssOptions = require("./postcss.config.js");
 
 module.exports = {
+  cache: {
+    type: "filesystem",
+  },
   resolve: {
+    extensions: [".js", ".jsx", ".json"],
     modules: [
       path.join(__dirname, "test/dummy/frontend/css"),
       path.join(__dirname, "test/dummy/frontend/js"),
@@ -22,13 +25,17 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
+          options: { cacheDirectory: true },
         },
       },
       {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: { importLoaders: 1 },
+          },
           {
             loader: "postcss-loader",
             options: { postcssOptions: postcssOptions },
@@ -38,7 +45,6 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),
@@ -63,5 +69,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "test/dummy/app/assets/bundles"),
     publicPath: "/assets/",
+    clean: true,
   },
+  performance: { hints: false },
 };
