@@ -12,7 +12,7 @@ body {
 a {
   color: #00f;
 
-  img {
+  & img {
     border: none;
   }
 }
@@ -89,13 +89,13 @@ li {
     background-color: rgb(227 183 113 / 90%);
   }
 
-  p {
+  & p {
     text-align: center;
   }
 }
 
 #user-nav {
-  p {
+  & p {
     text-align: right;
   }
 }
