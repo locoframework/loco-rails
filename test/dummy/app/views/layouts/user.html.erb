@@ -8,12 +8,12 @@
   <% end %>
 
   <div id="container">
-    <div id="user_nav">
+    <div id="user-nav">
       <p>Hello <%= current_user.username %>!
         <%= link_to "sign out", user_session_url(id: 'current'), method: :delete,
               data: {'user-id' => current_user.id}, id: 'sign_out_user' %>
       </p>
-      <p class="text_right">
+      <p class="text-right">
         <%= link_to "Articles", user_articles_url,
           class: "#{'bold' if controller_name == 'articles'}" %> |
         <%= link_to "RealSnapChat rooms", user_rooms_url,

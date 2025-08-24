@@ -45,7 +45,7 @@ li {
   display: none;
 }
 
-.text_right {
+.text-right {
   text-align: right;
 }
 
@@ -53,7 +53,7 @@ li {
   margin-right: 4px;
 }
 
-.bottom_space {
+.bottom-space {
   margin-bottom: 14px;
 }
 
@@ -78,15 +78,15 @@ li {
   color: #fff;
 
   &.notice {
-    background-color: rgba(0, 178, 5, 0.9);
+    background-color: rgb(0 178 5 / 90%);
   }
 
   &.alert {
-    background-color: rgba(208, 0, 0, 0.9);
+    background-color: rgb(208 0 0 / 90%);
   }
 
   &.warning {
-    background-color: rgba(227, 183, 113, 0.9);
+    background-color: rgb(227 183 113 / 90%);
   }
 
   p {
@@ -94,7 +94,7 @@ li {
   }
 }
 
-#user_nav {
+#user-nav {
   p {
     text-align: right;
   }

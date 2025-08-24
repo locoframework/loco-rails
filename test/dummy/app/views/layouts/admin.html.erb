@@ -8,11 +8,11 @@
   <% end %>
 
   <div id="container">
-    <div id="user_nav">
+    <div id="user-nav">
       <p><%= link_to "Sign out", admin_session_url(id: 'current'), method: :delete,
               data: {'admin-id' => current_admin.id} %>
       </p>
-      <p class="text_right">
+      <p class="text-right">
         <%= link_to "Users", admin_users_url, class: "#{'bold' if controller_name == 'users'}" %>
         |
         <%= link_to "Articles", published_admin_articles_url, class: "#{'bold' if controller_name == 'articles'}" %>

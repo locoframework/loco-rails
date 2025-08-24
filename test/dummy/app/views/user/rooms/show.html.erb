@@ -2,11 +2,11 @@
 
 <p><b>Members</b></p>
 
-<ul id='members' class='bottom_space'></ul>
+<ul id='members' class='bottom-space'></ul>
 
 <p><b>Messages</b></p>
 
-<section id='messages' class='bottom_space'>
+<section id='messages' class='bottom-space'>
   <% @messages.each do |message| %>
     <p class="msg"><b><%= message.user.username %></b>: <%= message.content %></p>
   <% end %>
