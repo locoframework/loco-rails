@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 
 import { PREPEND_USERS, SET_USERS } from "actions";
 
