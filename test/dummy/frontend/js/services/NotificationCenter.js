@@ -36,6 +36,7 @@ const mainNamespace = () => {
 const inChatRoom = () => {
   return (
     userNamespace() &&
+    getEnv().controller !== null &&
     getEnv().controller.constructor === RoomsController &&
     getEnv().action === "show"
   );
