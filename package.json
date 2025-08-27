@@ -17,7 +17,7 @@
     "@rails/actioncable": "^8.0.201",
     "immer": "^10.1.1",
     "loco-js": "/Users/zbigniewhumeniuk/dev/libs/js/loco-js",
-    "loco-js-core": "^0.3.0",
+    "loco-js-core": "/Users/zbigniewhumeniuk/dev/libs/js/loco-js-core",
     "loco-js-model": "/Users/zbigniewhumeniuk/dev/libs/js/loco-js-model",
     "loco-js-ui": "^6.0.1",
     "prop-types": "^15.8.1",
