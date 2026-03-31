@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { helpers } from "loco-js-core";
+import { helpers } from "simplicit";
 
 import { setArticles } from "actions";
 import store from "store";

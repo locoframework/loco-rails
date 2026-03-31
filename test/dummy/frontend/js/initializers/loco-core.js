@@ -1,4 +1,4 @@
-import { init } from "loco-js-core";
+import { init } from "simplicit";
 
 import Admin from "controllers/Admin";
 import Main from "controllers/Main";

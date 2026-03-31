@@ -1,4 +1,4 @@
-import { helpers } from "loco-js-core";
+import { helpers } from "simplicit";
 
 import renderForm from "views/admin/comments/Form";
 
