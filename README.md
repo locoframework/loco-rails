@@ -12,12 +12,8 @@ This is how it can be visualized:
 Loco Framework
 |
 |--- Loco-Rails (back-end part)
-|       |
-|       |--- Loco-Rails-Core (logical structure for JS / can be used separately with Loco-JS-Core)
 |
 |--- Loco-JS (front-end part)
-        |
-        |--- Loco-JS-Core (logical structure for JS / can be used separately)
         |
         |--- Loco-JS-Model (model part / can be used separately)
         |
@@ -30,7 +26,6 @@ The following sections contain a more detailed description of its internals and 
 
 # ⛑ But how is Loco supposed to help?
 
-* by providing a logical structure for a JavaScript code along with a base class for controllers. You exactly know where to start looking for a JavaScript code that runs a current page ([**Loco-JS-Core**](https://github.com/locoframework/loco-js-core/))
 * you have models that protect API endpoints from sending invalid data. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
 * you can easily assign a model to a form enriching this form with fields' validation ([**Loco-JS-UI**](https://github.com/locoframework/loco-js-ui/))
 * you can subscribe to a model or a collection of models on the front-end by passing a function. Front-end and back-end models can be connected. This function is called when a notification for a given model is sent on the server-side. (**Loco**)
@@ -140,9 +135,8 @@ This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locofr
 
 **Loco-Rails**
 
-* [Loco-Rails-Core](https://github.com/locoframework/loco-rails-core) - Rails plugin that has been extracted from Loco-Rails so it could be used as a stand-alone lib. It provides a logical structure for JavaScript code that corresponds with Rails` controllers and their actions that handle a given request. Loco-Rails-Core requires [Loco-JS-Core](https://github.com/locoframework/loco-js-core) to work.
-* modern Ruby (tested on >= 2.3.0)
-* Rails 5
+* modern Ruby (tested on >= 3.1.0)
+* Rails >= 7.1
 * [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - Loco-Rails stores information about WebSocket connections in Redis. It is not required if you don't want to use ActionCable.
 
 # 📥 Installation
@@ -362,10 +356,6 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 * **Breaking changes**:
     * Redis is required in dev env too when you use ActionCable
     * internal data structures in Redis have changed. Running `FLUSHDB` is recommended
-
-### 4.1 _(2020-07-27)_
-
-* Loco-JS-Core has been updated to v0.2
 
 ### 4.0 _(2020-07-26)_
 
