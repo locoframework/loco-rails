@@ -10,7 +10,7 @@ module Loco
       end
     end
 
-    # TODO: delete in the next release
+    # TODO: delete in the 7.1 release
     def sync_time
       ActiveSupport::Deprecation.warn(
         'Loco::NotificationCenterController#sync_time is deprecated and will be removed in the next release.',
