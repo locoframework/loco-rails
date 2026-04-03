@@ -4,8 +4,8 @@ module Loco
   class SenderJob < ActiveJob::Base
     queue_as :loco
 
-    def perform(recipient, data)
-      Sender.(recipient, data)
+    def perform(recipient, payload)
+      Sender.(recipient, payload)
     end
   end
 end
