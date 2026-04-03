@@ -9,8 +9,8 @@
 
   <div id="container">
     <div id="user-nav">
-      <p><%= link_to "Sign out", admin_session_url(id: 'current'), method: :delete,
-              data: {'admin-id' => current_admin.id} %>
+      <p><%= link_to "Sign out", admin_session_url(id: 'current'),
+              data: { turbo_method: :delete, 'admin-id' => current_admin.id } %>
       </p>
       <p class="text-right">
         <%= link_to "Users", admin_users_url, class: "#{'bold' if controller_name == 'users'}" %>
