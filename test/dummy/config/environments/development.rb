@@ -74,5 +74,7 @@ Rails.application.configure do
 
   config.assets.quiet = true
   config.hosts << 'dummy.test'
+
+  # TODO: ActionCable.server.config.logger = Logger.new($stdout, level: :warn)
   ActionCable.server.config.logger = Logger.new(nil)
 end
