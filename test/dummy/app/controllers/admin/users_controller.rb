@@ -8,7 +8,7 @@ module Admin
       respond_to do |format|
         format.html
         format.json do
-          @users = User.order('created_at DESC').paginate page: params[:page], per_page: 10
+          @users = User.order(created_at: :desc).paginate page: params[:page], per_page: 10
           @count = User.count
         end
       end
@@ -55,8 +55,8 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit :email, :username, :password, :password_confirmation,
-                                   :confirmed
+      params.expect user: %i[email username password password_confirmation
+                             confirmed]
     end
   end
 end

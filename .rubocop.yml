@@ -74,6 +74,10 @@ Style/FrozenStringLiteralComment:
 Style/LambdaCall:
   Enabled: false
 
+Style/OneClassPerFile:
+  Exclude:
+    - test/**/*
+
 Style/MixinUsage:
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb

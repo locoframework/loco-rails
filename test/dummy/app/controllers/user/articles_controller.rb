@@ -12,7 +12,7 @@ class User
       respond_to do |format|
         format.html { render }
         format.json do
-          @articles = current_user.articles.order('created_at ASC')
+          @articles = current_user.articles.order(:created_at)
                                   .paginate page: params[:page], per_page: 5
           @count = current_user.articles.count
         end
@@ -90,7 +90,7 @@ class User
     end
 
     def article_params
-      params.require(:article).permit(:title, :text)
+      params.expect(article: %i[title text])
     end
 
     def json_response_for_destroy(article)

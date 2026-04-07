@@ -32,7 +32,7 @@ module Loco
       end
 
       def default_scope
-        Notification.order('created_at ASC')
+        Notification.order(:created_at)
                     .where('created_at > ?', sync_time)
       end
 

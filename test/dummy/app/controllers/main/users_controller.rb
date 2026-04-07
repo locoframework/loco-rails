@@ -19,7 +19,7 @@ module Main
     private
 
     def user_params
-      params.require(:user).permit(:email, :password, :password_confirmation, :username)
+      params.expect(user: %i[email password password_confirmation username])
     end
 
     def success_response_for_create(user)

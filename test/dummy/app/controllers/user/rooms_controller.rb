@@ -14,6 +14,10 @@ class User
       end
     end
 
+    def show
+      @messages = @room.messages.includes(:user).order(created_at: :asc).last(50)
+    end
+
     def new
       @room = Room.new
     end
@@ -24,12 +28,8 @@ class User
         Loco.emit({ event: :created, room: { id: @room.id, name: @room.name } }, subject: @room, to: [User])
         redirect_to user_rooms_path, notice: 'Room has been created'
       else
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
-    end
-
-    def show
-      @messages = @room.messages.includes(:user).order(created_at: :asc).last(50)
     end
 
     def join
@@ -61,7 +61,7 @@ class User
     protected
 
     def params_room
-      params.require(:room).permit :name
+      params.expect room: [:name]
     end
 
     def find_room

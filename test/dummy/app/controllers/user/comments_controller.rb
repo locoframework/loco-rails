@@ -7,7 +7,7 @@ class User
 
     def index
       skope = Comment.where article_id: @article.id
-      @comments = skope.order('created_at ASC').paginate page: params[:page], per_page: 10
+      @comments = skope.order(:created_at).paginate page: params[:page], per_page: 10
       @count = skope.count
     end
 
@@ -43,7 +43,7 @@ class User
     def comment_params
       permitted_params = %i[author text]
       permitted_params << :approved if current_admin
-      params.require(:comment).permit(*permitted_params)
+      params.expect(comment: [*permitted_params])
     end
 
     def set_article

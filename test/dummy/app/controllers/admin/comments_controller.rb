@@ -7,7 +7,7 @@ module Admin
 
     def index
       skope = Comment.where article_id: @article.id
-      @comments = skope.order('created_at ASC').paginate page: params[:page], per_page: 5
+      @comments = skope.order(:created_at).paginate page: params[:page], per_page: 5
       @count = skope.count
     end
 
@@ -35,7 +35,7 @@ module Admin
     private
 
     def comment_params
-      params.require(:comment).permit :author, :text, :emotion, :pinned, :admin_rate
+      params.expect comment: %i[author text emotion pinned admin_rate]
     end
 
     def set_article

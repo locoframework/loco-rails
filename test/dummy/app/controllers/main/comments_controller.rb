@@ -13,6 +13,10 @@ module Main
       )
     end
 
+    def show
+      @comment = Comment.where(article_id: params[:article_id]).find params[:id]
+    end
+
     def create
       comment = Comment.new comment_params
       if comment.save
@@ -23,19 +27,15 @@ module Main
       end
     end
 
-    def show
-      @comment = Comment.where(article_id: params[:article_id]).find params[:id]
-    end
-
     private
 
     def comment_params
-      params.require(:comment).permit :author, :text, :article_id
+      params.expect comment: %i[author text article_id]
     end
 
     def skope
       Comment.where(article_id: params[:article_id])
-             .order('created_at ASC')
+             .order(:created_at)
     end
   end
 end

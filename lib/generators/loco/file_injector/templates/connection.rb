@@ -7,12 +7,10 @@
       self.loco_permissions = [SecureRandom.uuid, current_user, current_admin]
     end
 
-    protected
+    def current_admin
+      defined?(Admin) && Admin.find_by(id: cookies.signed[:admin_id])
+    end
 
-      def current_admin
-        defined?(Admin) && Admin.find_by(id: cookies.signed[:admin_id])
-      end
-
-      def current_user
-        defined?(User) && User.find_by(id: cookies.signed[:user_id])
-      end
+    def current_user
+      defined?(User) && User.find_by(id: cookies.signed[:user_id])
+    end

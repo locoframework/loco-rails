@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  has_many :articles
+  has_many :articles, dependent: :destroy
   has_many :messages, dependent: :destroy
 
   has_secure_password
@@ -24,13 +24,10 @@ class User < ApplicationRecord
     self.confirmed_at = success ? Time.current : nil
   end
 
-  def confirmed
+  def confirmed?
     !confirmed_at.nil?
   end
-
-  def confirmed?
-    confirmed
-  end
+  alias confirmed confirmed?
 
   private
 

@@ -18,7 +18,7 @@ module Loco
     def signed_in(loco_permissions, opts = {})
       arr = loco_permissions.compact
       if opts[:except] == :uuid
-        arr.reject { |e| e.is_a?(String) }
+        arr.grep_v(String)
       else
         arr
       end

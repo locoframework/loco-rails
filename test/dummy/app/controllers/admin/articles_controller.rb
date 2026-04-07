@@ -7,7 +7,7 @@ module Admin
         format.html { render }
         format.json do
           skope = Article.published
-          @articles = skope.order('published_at DESC').includes(:user).paginate(
+          @articles = skope.order(published_at: :desc).includes(:user).paginate(
             page: params[:page],
             per_page: 4
           )
@@ -42,9 +42,9 @@ module Admin
     private
 
     def article_params
-      params.require(:article).permit :admin_review, :category_id,
-                                      :admin_rate, :admin_review_started_at,
-                                      :published
+      params.expect article: %i[admin_review category_id
+                                admin_rate admin_review_started_at
+                                published]
     end
   end
 end
