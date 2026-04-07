@@ -130,38 +130,30 @@ This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locofr
 
 # 🤝 Dependencies
 
-**Loco-JS**
-
-* 🎊 no strict external dependencies. 🎉 But check out its [_"soft dependencies"_](https://github.com/locoframework/loco-js#-dependencies)❗️
-
-**Loco-Rails**
-
-* modern Ruby (tested on >= 3.1.0)
-* Rails >= 7.1
-* [Redis](http://redis.io) and [redis](https://github.com/redis/redis-rb) gem - Loco-Rails stores information about WebSocket connections in Redis. It is not required if you don't want to use ActionCable.
+- Ruby >= 3.1.0
+- Rails >= 7.1
+- [Redis](http://redis.io) — stores WebSocket connection state. Not required if you don't use ActionCable.
 
 # 📥 Installation
 
-To have Loco fully functional, you have to install both: back-end and front-end parts.
-
-1️⃣ Add Loco-Rails to your Gemfile:
+1️⃣ Add to your Gemfile:
 
 ```ruby
 gem 'loco-rails'
 ```
 
-At the command prompt run:
+2️⃣ Run:
 
 ```bash
-$ bundle install
-$ bin/rails generate loco:install
-$ bin/rails db:migrate
+bundle install
+bin/rails generate loco:install
+bin/rails db:migrate
 ```
 
-2️⃣ Now it's time for the front-end part. Install it using npm (or yarn):
+3️⃣ Install the front-end part:
 
 ```bash
-$ npm install loco-js --save
+npm install loco-js --save
 ```
 
 Familiarize yourself with the [proper sections](https://github.com/locoframework/loco-js#-installation) from the [Loco-JS documentation](https://github.com/locoframework/loco-js) on how to set up everything on the front-end side.
@@ -178,12 +170,11 @@ Some features may require an upgrade of MINOR version both for front-end and bac
 1️⃣ `loco:install` generator creates `config/initializers/loco.rb` file (among other things) that holds configuration:
 
 ```ruby
-# frozen_string_literal: true
-
 Loco.configure do |c|
-  c.silence_logger = false          # false by default
-  c.notifications_size = 10         # 100 by default
-  c.app_name = "loco_#{Rails.env}"  # your app's name (required for namespacing)
+  c.silence_logger = false          # mute Loco's logger (default: false)
+  c.notifications_size = 100        # max notifications returned at once (default: 100)
+  c.app_name = "loco_#{Rails.env}"  # Redis key prefix (default: 'loco')
+  c.redis_instance = nil            # custom Redis instance (default: nil)
 end
 ```
 
@@ -239,11 +230,9 @@ class GarbageCollectorJob < ApplicationJob
   end
 
   def perform
-    Loco::Notification.where('created_at < ?', 1.hour.ago)
-                      .find_each(&:destroy)
+    Loco::Notification.where('created_at < ?', 1.hour.ago).find_each(&:destroy)
   end
 end
-
 ```
 
 ### `Loco.emit_to`
@@ -316,10 +305,10 @@ You can look at the working example [here](https://github.com/locoframework/loco
 # 👩🏽‍🔬 Tests
 
 ```bash
-$ bundle install
-$ docker compose up
-$ bin/rails db:create
-$ bin/rails test
+bundle install
+docker compose up
+bin/rails db:create
+bin/rails test
 ```
 
 Capybara powers integration tests. Capybara is cool, but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately. It helps to keep the focus on the browser's window that runs integration tests on macOS.
@@ -358,40 +347,8 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 ### 4.0 _(2020-07-26)_
 
-* **Breaking changes**:
-    * `received_signal` instance method of `NotificationCenter` has been renamed to `received_message`
-    * `Loco.configure` initialization method requires a block
-
-### 3.0
-
-* Loco-JS and Loco-JS-Model are no longer distributed with Loco-Rails and have to be installed using `npm`
-* all generators, generating legacy `CoffeeScript` code, have been removed
-
-### 2.2
-
-* Loco-JS and Loco-JS-Model have been updated
-
-### 2.0
-
-* changes in the front-end architecture - Loco-JS-Model has been extracted from Loco-JS
-
-### 1.5
-
-* Loco-JS dropped the dependency on jQuery. So it officially has no dependencies 🎉
-
-### 1.4
-
-* Ability to specify Redis instance through configuration
-
-### 1.3
-
-* `emit_to` - send messages to chosen recipients over WebSocket connection (an abstraction on the top of `ActionCable`)
-
-* Communication Hubs - create *virtual rooms*, add members and `emit_to` these hubs messages using WebSockets. All in 2 lines of code!
-
-* now `emit` uses WebSocket connection by default (if available). But it can automatically switch to AJAX polling in case of unavailability. And all the notifications will be delivered, even those that were sent during this lack of a connection. 👏 If you use `ActionCable` solely and you lost connection to the server, then all the messages that were sent in the meantime are gone 😭.
-
-Information about all releases is published on [Twitter](https://twitter.com/artofcode_co)
+- **Breaking:** `received_signal` renamed to `received_message` in `NotificationCenter`
+- **Breaking:** `Loco.configure` requires a block
 
 # 📜 License
 
