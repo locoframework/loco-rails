@@ -4,9 +4,10 @@
 
 # 🧐 What is Loco-Rails?
 
-**Loco-Rails** is a [Rails engine](http://guides.rubyonrails.org/engines.html) — a lightweight library that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts: front-end and back-end, called [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, respectively.
+**Loco-Rails** is a lightweight [Rails engine](http://guides.rubyonrails.org/engines.html) for real-time communication between back-end and front-end. It consists of 2 parts:
 
-This is how it can be visualized:
+- **Loco-Rails** (this gem) — back-end
+- [**Loco-JS**](https://github.com/locoframework/loco-js) — front-end
 
 ```
 Loco
@@ -230,8 +231,6 @@ Arguments:
 When you emit a lot of notifications, you create a lot of records in the database. This way, your **loco_notifications** table may soon become very big. You must periodically delete old records. Below is a somewhat naive approach, but it works.
 
 ```ruby
-# frozen_string_literal: true
-
 class GarbageCollectorJob < ApplicationJob
   queue_as :default
 
@@ -329,7 +328,7 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 ## Major releases 🎙
 
-### 7.0 _(2025-04-XX)_
+### 7.0 _(2026-04)_
 
 * **Breaking changes**:
     * `Loco::Emitter` was removed 👉 use `Loco.emit`, `Loco.add_hub`, etc.
