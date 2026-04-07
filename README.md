@@ -4,12 +4,12 @@
 
 # 🧐 What is Loco-Rails?
 
-**Loco-Rails** is a [Rails engine](http://guides.rubyonrails.org/engines.html) from the technical point of view. Conceptually, it is a framework that works on top of [Rails](http://rubyonrails.org) and consists of 2 parts: front-end and back-end. They are called [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, respectively.
+**Loco-Rails** is a [Rails engine](http://guides.rubyonrails.org/engines.html) — a lightweight library that works on top of [Rails](http://rubyonrails.org). It consists of 2 parts: front-end and back-end, called [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, respectively.
 
 This is how it can be visualized:
 
 ```
-Loco Framework
+Loco
 |
 |--- Loco-Rails (back-end part)
 |
@@ -36,7 +36,7 @@ The following sections contain a more detailed description of its internals and 
 
 ## Current state everywhere
 
-Let's assume, 2 users are navigating to a chat room page containing a list of chat members. This is a regular request-response application without technics like AJAX polling and WebSockets.
+Let's assume, 2 users are navigating to a chat room page containing a list of chat members. This is a regular request-response application without techniques like AJAX polling and WebSockets.
 
 |  User A | User B |
 |---|---|
@@ -143,7 +143,7 @@ This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locofr
 
 To have Loco fully functional, you have to install both: back-end and front-end parts.
 
-1️⃣ Loco-Rails works with Rails 5 onwards. You can add it to your Gemfile with:
+1️⃣ Add Loco-Rails to your Gemfile:
 
 ```ruby
 gem 'loco-rails'
@@ -221,7 +221,7 @@ Arguments:
 	* **:updated** - when `updated_at > created_at`
 3. a hash with relevant keys:
 	* **:to** - message's recipients. It can be a single object or an array of objects. Instances of models, their classes, and strings are accepted. If a recipient is a class, then given notification is addressed to all instances of this class currently signed in. If a receiver is a string (token), clients will receive notifications who have subscribed to this token on the front-end side. They can do this by invoking this code: `getWire().token = "<token>";`
-	* **:data** - additional data, serialized to JSON, transmitted along with the notification
+	* **:payload** - additional data, serialized to JSON, transmitted along with the notification
 
 ⚠️ If you wonder how to receive those notifications on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-receiving-messages) of Loco-JS [README](https://github.com/locoframework/loco-js).
 
@@ -392,9 +392,7 @@ Capybara powers integration tests. Capybara is cool, but sometimes random tests 
 
 * now `emit` uses WebSocket connection by default (if available). But it can automatically switch to AJAX polling in case of unavailability. And all the notifications will be delivered, even those that were sent during this lack of a connection. 👏 If you use `ActionCable` solely and you lost connection to the server, then all the messages that were sent in the meantime are gone 😭.
 
-🔥 Only version 4 is under support and development.
-
-Informations about all releases are published on [Twitter](https://twitter.com/artofcode_co)
+Information about all releases is published on [Twitter](https://twitter.com/artofcode_co)
 
 # 📜 License
 
