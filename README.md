@@ -9,29 +9,7 @@
 - **Loco-Rails** (this gem) — back-end
 - [**Loco-JS**](https://github.com/locoframework/loco-js) — front-end
 
-```
-Loco
-|
-|--- Loco-Rails (back-end part)
-|
-|--- Loco-JS (front-end part)
-        |
-        |--- Loco-JS-Model (model part / can be used separately)
-        |
-        |--- other built-in parts of Loco-JS
-
-        Loco-JS-UI - connects models with UI elements (a separate library)
-```
-
-The following sections contain a more detailed description of its internals and API.
-
-# ⛑ But how is Loco supposed to help?
-
-* you have models that protect API endpoints from sending invalid data. They also facilitate fetching objects of a given type from the server ([**Loco-JS-Model**](https://github.com/locoframework/loco-js-model/))
-* you can easily assign a model to a form enriching this form with fields' validation ([**Loco-JS-UI**](https://github.com/locoframework/loco-js-ui/))
-* you can subscribe to a model or a collection of models on the front-end by passing a function. Front-end and back-end models can be connected. This function is called when a notification for a given model is sent on the server-side. (**Loco**)
-* it allows sending messages over WebSockets in both directions with just a single line of code on each side (**Loco**)
-* it respects permissions. You can filter out sent messages if a sender is not signed in as a given resource, _for example, a given admin or user_) (**Loco**)
+It allows you to:
 
 # 🚨 Other, more specific problems that Loco solves
 
@@ -127,6 +105,10 @@ export default {
 ```
 
 This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locoframework/loco-js) and [Loco-JS-Model](https://github.com/locoframework/loco-js-model) documentation for more.
+- send messages over WebSockets in both directions with a single line of code on each side
+- persist notifications in the database so clients receive missed messages after reconnecting
+- respect permissions — deliver messages only to recipients signed in as a given resource (e.g., a specific user or admin)
+- group recipients into Communication Hubs (virtual rooms)
 
 # 🤝 Dependencies
 
