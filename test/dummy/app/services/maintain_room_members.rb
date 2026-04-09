@@ -42,7 +42,7 @@ class MaintainRoomMembers
                     id: user.id,
                     username: user.username
                   }
-                }, subject: Room.new(id: room_id), to: [User])
+                }, subject: Room.new(id: room_id), to: [User]) # TODO: cut subject + update docs?
     end
   end
 end

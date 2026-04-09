@@ -104,11 +104,12 @@ export default {
 };
 ```
 
-This is just the tip of the iceberg. Look at [Loco-JS](https://github.com/locoframework/loco-js) and [Loco-JS-Model](https://github.com/locoframework/loco-js-model) documentation for more.
 - send messages over WebSockets in both directions with a single line of code on each side
 - persist notifications in the database so clients receive missed messages after reconnecting
 - respect permissions — deliver messages only to recipients signed in as a given resource (e.g., a specific user or admin)
 - group recipients into Communication Hubs (virtual rooms)
+
+See [docs/EXAMPLES.md](docs/EXAMPLES.md) for a full chat room example showing back-end and front-end working together.
 
 # 🤝 Dependencies
 
@@ -138,18 +139,15 @@ bin/rails db:migrate
 npm install loco-js --save
 ```
 
-Familiarize yourself with the [proper sections](https://github.com/locoframework/loco-js#-installation) from the [Loco-JS documentation](https://github.com/locoframework/loco-js) on how to set up everything on the front-end side.
+See [Loco-JS documentation](https://github.com/locoframework/loco-js#-installation) for front-end setup.
 
-_Look inside `test/dummy/` to check a recommended setup with the [webpack](https://webpack.js.org)._
+Keep the MAJOR version the same between Loco-Rails and Loco-JS to maintain compatibility.
 
-Loco-Rails and Loco-JS both use Semantic Versioning (MAJOR.MINOR.PATCH).
-It is required to keep the MAJOR version number the same between Loco-Rails and Loco-JS to maintain compatibility.
-
-Some features may require an upgrade of MINOR version both for front-end and back-end parts. Check Changelogs and follow our [Twitter](https://twitter.com/artofcode_co) to be notified.
+_Look inside `test/dummy/` for a reference setup._
 
 # ⚙️ Configuration
 
-1️⃣ `loco:install` generator creates `config/initializers/loco.rb` file (among other things) that holds configuration:
+`loco:install` generates `config/initializers/loco.rb`:
 
 ```ruby
 Loco.configure do |c|
@@ -160,9 +158,7 @@ Loco.configure do |c|
 end
 ```
 
-Where:
-* notifications_size - max number of notifications returned from the server at once
-* app_name - used as key's prefix to store info about current WebSocket connections in Redis
+# 🎮 Usage
 
 2️⃣ Browse all generated files and customize them according to the comments.
 
@@ -293,20 +289,16 @@ bin/rails db:create
 bin/rails test
 ```
 
-Capybara powers integration tests. Capybara is cool, but sometimes random tests fail unexpectedly. So before you assume that something is wrong, just run failed tests separately. It helps to keep the focus on the browser's window that runs integration tests on macOS.
-
 # 📈 Changelog
 
 ## Major releases 🎙
 
 ### 7.0 _(2026-04)_
 
-* **Breaking changes**:
-    * `Loco::Emitter` was removed 👉 use `Loco.emit`, `Loco.add_hub`, etc.
-
 * new format `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 * **Deprecation warning:** formats other than above ☝️ will become unsupported in Loco-Rails 8
 * **Deprecation warning:** `Loco.emit_to` will be removed in Loco-Rails 8 👉 use `Loco.emit(payload, to: recipients, ws_only: true)`
+- **Breaking:** `Loco::Emitter` removed — use `Loco.emit`, `Loco.add_hub`, etc.
 
 ### 6.1 _(2022-09-04)_
 
