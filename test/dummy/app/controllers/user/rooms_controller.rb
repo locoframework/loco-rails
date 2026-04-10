@@ -40,7 +40,7 @@ class User
 
     def leave
       @hub.del_member current_user
-      Loco.emit(@room, :member_left, payload: {
+      Loco.emit(@room, :member_left, payload: { # TODO: modern syntax + update EXAMPLES.md
                   room_id: @room.id,
                   member: { id: current_user.id }
                 }, to: [User])
