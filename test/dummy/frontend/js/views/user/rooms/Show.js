@@ -18,18 +18,17 @@ const memberLeft = (member) => {
   node.parentNode.removeChild(node);
 };
 
-const createReceivedMessage = (roomId) => {
-  return function (type, data) {
-    switch (type) {
-      case "Room member_joined":
-        if (data.room_id !== roomId) return;
-        memberJoined(data.member);
-        break;
-      case "Room member_left":
-        if (data.room_id !== roomId) return;
-        memberLeft(data.member);
-    }
-  };
+const onMessage = (roomId) => (type, data) => {
+  if (data.room_id !== roomId) return;
+
+  switch (type) {
+    case "Room member_joined":
+      memberJoined(data.member);
+      break;
+    case "Room member_left":
+      memberLeft(data.member);
+      break;
+  }
 };
 
 const handleSendingMessage = (roomId) => {
@@ -63,7 +62,7 @@ export default {
     const unsubscribeHeartbeat = heartbeat(roomId);
     const unsubscribeMessages = subscribe({
       to: Room,
-      with: createReceivedMessage(roomId),
+      with: onMessage(roomId),
     });
     return () => {
       unsubscribeHeartbeat();
