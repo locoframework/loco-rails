@@ -44,10 +44,6 @@ class User extends Models.Base {
       remoteName: "updated_at",
     },
   };
-
-  constructor(data) {
-    super(data);
-  }
 }
 
 export default User;

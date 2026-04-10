@@ -7,10 +7,6 @@ class Member extends Models.Base {
     url: "/user/rooms/:roomId/members",
     paginate: { per: 100 },
   };
-
-  constructor(data) {
-    super(data);
-  }
 }
 
 export default Member;

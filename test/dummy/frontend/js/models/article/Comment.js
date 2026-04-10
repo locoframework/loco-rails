@@ -59,10 +59,6 @@ class Comment extends Models.Base {
       type: "Boolean",
     },
   };
-
-  constructor(data) {
-    super(data);
-  }
 }
 
 export default Comment;
