@@ -4,14 +4,24 @@
 
 # 🧐 What is Loco-Rails?
 
-**Loco-Rails** is a lightweight [Rails engine](http://guides.rubyonrails.org/engines.html) for real-time communication between back-end and front-end. It consists of 2 parts:
+**Loco-Rails** is a lightweight [Rails engine](http://guides.rubyonrails.org/engines.html) for real-time communication between back-end and front-end.
 
-- **Loco-Rails** (this gem) — back-end
-- [**Loco-JS**](https://github.com/locoframework/loco-js) — front-end
+```text
+Loco
+|
+|--- Loco-Rails (back-end, this gem)
+|
+|--- Loco-JS (front-end)
+        |
+        |--- Loco-JS-Model (model layer, can be used standalone)
+```
+
+[**Loco-JS-Model**](https://github.com/locoframework/loco-js-model) lets you define JavaScript classes that mirror your Rails models (e.g., `Article`, `Comment`). Combined with [**Loco-JS**](https://github.com/locoframework/loco-js) and **Loco-Rails**, you subscribe to these front-end models and get notified in the browser when the corresponding record is created/updated on the server.
 
 It allows you to:
 
 - send messages over WebSockets in both directions with a single line of code on each side
+- subscribe to front-end models — when a Rails record changes, subscribers are notified automatically
 - persist notifications in the database so clients receive missed messages after reconnecting
 - respect permissions — deliver messages only to recipients signed in as a given resource (e.g., a specific user or admin)
 - group recipients into Communication Hubs (virtual rooms)
@@ -67,15 +77,14 @@ end
 
 # 🎮 Usage
 
-2️⃣ Browse all generated files and customize them according to the comments.
+## 📡 Emitting messages — `Loco.emit`
 
-# 🎮 Usage
+`Loco.emit` is the single entry point for sending messages. It supports two modes:
 
-## Emitting messages 📡
+### Notification mode (persisted)
 
-Use `Loco.emit` or `Loco.emit_to` module functions to send different types of messages.
+Emits a notification about a resource event. Persisted in the `loco_notifications` table, so **clients receive missed messages after reconnecting**. Sent via WebSocket if available.
 
-### `Loco.emit`
 
 This module function emits a notification that informs recipients about an event that occurred on the given resource - e.g., _the post was updated_, _the ticket was validated_. If a WebSocket connection is established - a message is sent this way. If not - it's delivered via AJAX polling. Switching between an available method is done automatically.
 
@@ -202,29 +211,25 @@ bin/rails test
 
 ### 7.0 _(2026-04)_
 
-* new format `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
-* **Deprecation warning:** formats other than above ☝️ will become unsupported in Loco-Rails 8
-* **Deprecation warning:** `Loco.emit_to` will be removed in Loco-Rails 8 👉 use `Loco.emit(payload, to: recipients, ws_only: true)`
 - **Breaking:** `Loco::Emitter` removed — use `Loco.emit`, `Loco.add_hub`, etc.
+- New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
+- **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
+- **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8
 
 ### 6.1 _(2022-09-04)_
 
-* all `Loco::Emitter` methods are available as `Loco`'s `module_function`s
-* **Deprecation warning:** `Loco::Emitter` will be removed in Loco-Rails 7
+- All `Loco::Emitter` methods available as `Loco` module functions
+- **Deprecation:** `Loco::Emitter` will be removed in Loco-Rails 7
 
 ### 6.0 _(2022-02-03)_
 
-* Loco-Rails works with Rails 7 and Ruby 3.1
-* it drops support for Ruby 2.6
-* test app uses Loco-JS v6 and Loco-JS-UI v6
+- Rails 7 and Ruby 3.1 support
+- Drops Ruby 2.6
 
 ### 5.0 _(2020-12-23)_
 
-* `connection.rb` template has been modified
-
-* **Breaking changes**:
-    * Redis is required in dev env too when you use ActionCable
-    * internal data structures in Redis have changed. Running `FLUSHDB` is recommended
+- **Breaking:** Redis required in dev env when using ActionCable
+- **Breaking:** Internal Redis data structures changed — `FLUSHDB` recommended
 
 ### 4.0 _(2020-07-26)_
 

@@ -6,7 +6,7 @@ class CreateLocoNotifications < ActiveRecord::Migration[6.1]
       t.string :obj_class
       t.bigint :obj_id
       t.string :event
-      t.column :data, (ActiveRecord::Base.connection.adapter_name == 'PostgreSQL' ? :jsonb : :text)
+      t.column :data, (ActiveRecord::Base.connection.adapter_name == 'PostgreSQL' ? :jsonb : :text) # TODO: see Rdux
       t.string :recipient_class
       t.bigint :recipient_id
       t.string :recipient_token

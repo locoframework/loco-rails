@@ -10,7 +10,6 @@ module Loco
     serialize :data, coder: JSON if ActiveRecord::Base.connection.adapter_name != 'PostgreSQL'
 
     before_validation do
-      set_event
       set_data
     end
 
@@ -70,22 +69,6 @@ module Loco
       else
         recipient_class.constantize.find(recipient_id)
       end
-    end
-
-    def set_event
-      return if event.present?
-      return if obj.instance_of?(Class)
-      return if obj.nil?
-
-      self.event = if obj.new_record?
-                     'creating'
-                   else
-                     event_for_persisted_obj
-                   end
-    end
-
-    def event_for_persisted_obj
-      obj.created_at == obj.updated_at ? 'created' : 'updated'
     end
 
     def set_data
