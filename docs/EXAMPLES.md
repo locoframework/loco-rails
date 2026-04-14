@@ -68,8 +68,8 @@ Subscribe to `Room` notifications. The callback receives the event type (e.g., `
 import { subscribe } from "loco-js";
 import Room from "models/Room";
 
-const onMessage = (roomId) => (type, data) => {
-  if (data.room_id !== roomId) return;
+const onMessage = (roomId) => (type, payload) => {
+  if (payload.room_id !== roomId) return;
 
   switch (type) {
     case "Room member_joined":

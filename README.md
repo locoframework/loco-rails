@@ -103,7 +103,20 @@ Arguments:
 
 On the front-end, use `subscribe` from [Loco-JS](https://github.com/locoframework/loco-js) to receive these notifications:
 
-Example:
+```javascript
+import { subscribe } from "loco-js";
+import Article from "models/Article";
+
+const receivedNotification = (type, payload) => {
+  switch (type) {
+    case "Article confirmed":
+      // payload from the server
+      break;
+  }
+};
+
+subscribe({ to: Article, with: receivedNotification });
+```
 
 ```ruby
 receivers = [article.user, Admin, 'a54e1ef01cb9']

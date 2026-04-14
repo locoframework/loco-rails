@@ -18,15 +18,15 @@ const memberLeft = (member) => {
   node.parentNode.removeChild(node);
 };
 
-const onMessage = (roomId) => (type, data) => {
-  if (data.room_id !== roomId) return;
+const onMessage = (roomId) => (type, payload) => {
+  if (payload.room_id !== roomId) return;
 
   switch (type) {
     case "Room member_joined":
-      memberJoined(data.member);
+      memberJoined(payload.member);
       break;
     case "Room member_left":
-      memberLeft(data.member);
+      memberLeft(payload.member);
       break;
   }
 };

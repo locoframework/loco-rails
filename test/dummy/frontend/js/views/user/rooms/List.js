@@ -56,24 +56,24 @@ const membersChanged = (roomId, change, memberId) => {
   reRenderRoom(roomId);
 };
 
-const receivedMessage = (type, data) => {
+const receivedMessage = (type, payload) => {
   switch (type) {
     case "Room member_joined": {
-      membersChanged(data.room_id, 1, data.member.id);
+      membersChanged(payload.room_id, 1, payload.member.id);
       break;
     }
     case "Room member_left": {
-      membersChanged(data.room_id, -1, data.member.id);
+      membersChanged(payload.room_id, -1, payload.member.id);
       break;
     }
     case "Room created": {
-      data.room.members_count = 0;
-      rooms.push(data.room);
-      renderRoom(data.room);
+      payload.room.members_count = 0;
+      rooms.push(payload.room);
+      renderRoom(payload.room);
       break;
     }
     case "Room destroyed": {
-      const roomNode = document.getElementById(`room_${data.room_id}`);
+      const roomNode = document.getElementById(`room_${payload.room_id}`);
       roomNode.parentNode.removeChild(roomNode);
     }
   }
