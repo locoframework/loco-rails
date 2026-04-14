@@ -5,18 +5,16 @@ module Loco
     FOR_OBJ_SQL_TMPL = 'recipient_class = ? AND recipient_id = ?'
     FOR_CLASS_SQL_TMPL = 'recipient_class = ? AND recipient_id IS NULL'
 
+    def self.table_name_prefix
+      'loco_'
+    end
+
     attr_reader :obj
 
     serialize :data, coder: JSON if ActiveRecord::Base.connection.adapter_name != 'PostgreSQL'
 
     before_validation do
-      set_data
-    end
-
-    class << self
-      def table_name_prefix
-        'loco_'
-      end
+      self.data = (data || {}).merge(id: obj.id) if obj
     end
 
     def obj=(val)
@@ -69,13 +67,6 @@ module Loco
       else
         recipient_class.constantize.find(recipient_id)
       end
-    end
-
-    def set_data
-      self.data ||= {}
-      return if obj.nil?
-
-      self.data = data.merge(id: obj.id)
     end
   end
 end

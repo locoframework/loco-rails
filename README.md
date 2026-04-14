@@ -83,12 +83,25 @@ end
 
 ### Notification mode (persisted)
 
-Emits a notification about a resource event. Persisted in the `loco_notifications` table, so **clients receive missed messages after reconnecting**. Sent via WebSocket if available.
+Emits a notification about a resource event (e.g., _the post was updated_, _the ticket was validated). If a WebSocket connection is established — message is sent this way. If not — it's delivered via AJAX polling. Switching between available methods is done automatically. Notifications are persisted in the `loco_notifications` table, so **clients receive missed messages after reconnecting**.
 
+```ruby
+Loco.emit(payload, to: [article.user, Admin, 'a54e1ef01cb9'], subject: article)
+```
 
-This module function emits a notification that informs recipients about an event that occurred on the given resource - e.g., _the post was updated_, _the ticket was validated_. If a WebSocket connection is established - a message is sent this way. If not - it's delivered via AJAX polling. Switching between an available method is done automatically.
+Arguments:
 
-Notifications are stored in the *loco_notifications* table in the database. One of the advantages of saving messages in a DB is that **when the client loses connection with the server and restores it after a certain time - he will get all not received notifications** 👏 unless you delete them before, of course.
+1. **payload** (required) — a Hash serialized to JSON. Two conventions for the message name:
+    - `:event` — paired with `:subject` (ActiveRecord instance). Front-end receives `"{ModelName} {event}"` (e.g., `"User confirmed"`). Routed via `subscribe({ to: Model })` from [Loco-JS](https://github.com/locoframework/loco-js) using models defined with [Loco-JS-Model](https://github.com/locoframework/loco-js-model).
+    - `:type` — convention when there is no model subject. Front-end receives the raw `type` string (e.g., `"USER_CONFIRMED"`). Typically dispatched in a central `NotificationCenter` switch.
+1. Keyword arguments:
+    - **`:to`** (required) — recipients. Single object or array. Accepts:
+        - **model instance** (e.g., `user`) — delivers to that specific signed-in resource
+        - **class** (e.g., `User`, `Admin`) — delivers to all signed-in instances of that class
+        - **string token** (e.g., `'a54e1ef01cb9'`) — delivers to any front-end client that subscribed to that token via `getWire().token = "a54e1ef01cb9"`. Useful for anonymous/guest users or custom grouping without a Hub.
+    - **`:subject`** (optional) — ActiveRecord instance the event relates to. When provided, its `id` is merged into the payload and the notification is routable via front-end model subscribers.
+
+On the front-end, use `subscribe` from [Loco-JS](https://github.com/locoframework/loco-js) to receive these notifications:
 
 Example:
 
