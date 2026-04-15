@@ -17,11 +17,7 @@ Room.Member = Member;
 
 const loco = init({
   cable: createConsumer(),
-  models: {
-    Article,
-    Room,
-    User,
-  },
+  models: [Article, Room, User],
   notificationCenter: NotificationCenter,
   notifications: {
     log: true,

@@ -101,7 +101,8 @@ Arguments:
         - **string token** (e.g., `'a54e1ef01cb9'`) — delivers to any front-end client that subscribed to that token via `getWire().token = "a54e1ef01cb9"`. Useful for anonymous/guest users or custom grouping without a Hub.
     - **`:subject`** (optional) — ActiveRecord instance the event relates to. When provided, its `id` is merged into the payload and the notification is routable via front-end model subscribers.
 
-On the front-end, use `subscribe` from [Loco-JS](https://github.com/locoframework/loco-js) to receive these notifications:
+On the front-end, all messages (both `:event` and `:type` based) are routed through `NotificationCenter` — a central callback you pass during initialization:
+
 
 ```javascript
 import { subscribe } from "loco-js";
