@@ -103,6 +103,33 @@ Arguments:
 
 On the front-end, all messages (both `:event` and `:type` based) are routed through `NotificationCenter` — a central callback you pass during initialization:
 
+```javascript
+// frontend/js/initializers/loco.js
+
+import { init } from "loco-js";
+import { createConsumer } from "@rails/actioncable";
+import Article from "models/Article";
+import Room from "models/Room";
+
+const loco = init({
+  cable: createConsumer(),
+  models: [Article, Room],
+  notificationCenter: async (payload) => {
+    switch (payload.type) {
+      case "USER_CONFIRMED":           // :type message — no model subject
+        window.location.href = "/user/sessions/new?event=confirmed";
+        break;
+      case "Article created":          // :event message — "{ModelName} {event}"
+        handleArticleCreated(payload);
+        break;
+    }
+  },
+});
+
+export default loco;
+```
+
+For model-specific subscriptions, you can also use `subscribe` from [Loco-JS](https://github.com/locoframework/loco-js) - useful when a view only cares about one model:
 
 ```javascript
 import { subscribe } from "loco-js";
@@ -111,7 +138,7 @@ import Article from "models/Article";
 const receivedNotification = (type, payload) => {
   switch (type) {
     case "Article confirmed":
-      // payload from the server
+      // handle payload from the server
       break;
   }
 };
@@ -122,11 +149,14 @@ subscribe({ to: Article, with: receivedNotification });
 ```ruby
 receivers = [article.user, Admin, 'a54e1ef01cb9']
 data = { foo: 'bar' }
+See [Loco-JS — Receiving messages](https://github.com/locoframework/loco-js#-receiving-messages) for details.
 
 Loco.emit(article, :confirmed, to: receivers, payload: data)
 ```
+### Direct mode (WebSocket only, not persisted)
 
 Arguments:
+Sends a message directly via WebSocket. Not stored in DB — if the client is offline, the message is lost.
 
 1. a resource this event relates to
 2. a name of an event that occurred (Symbol/String). Default values are:
@@ -135,6 +165,9 @@ Arguments:
 3. a hash with relevant keys:
 	* **:to** - message's recipients. It can be a single object or an array of objects. Instances of models, their classes, and strings are accepted. If a recipient is a class, then given notification is addressed to all instances of this class currently signed in. If a receiver is a string (token), clients will receive notifications who have subscribed to this token on the front-end side. They can do this by invoking this code: `getWire().token = "<token>";`
 	* **:payload** - additional data, serialized to JSON, transmitted along with the notification
+```ruby
+Loco.emit({ type: 'NEW_MESSAGE', message: 'Hi!' }, to: [hub, admin], ws_only: true)
+```
 
 ⚠️ If you wonder how to receive those notifications on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-receiving-messages) of Loco-JS [README](https://github.com/locoframework/loco-js).
 
