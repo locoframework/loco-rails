@@ -129,51 +129,41 @@ const loco = init({
 export default loco;
 ```
 
-For model-specific subscriptions, you can also use `subscribe` from [Loco-JS](https://github.com/locoframework/loco-js) - useful when a view only cares about one model:
+For model-specific subscriptions, you can also use `subscribe` from [Loco-JS](https://github.com/locoframework/loco-js) — useful when a view only cares about certain models. One callback can handle multiple models; the `type` string differentiates:
 
 ```javascript
 import { subscribe } from "loco-js";
 import Article from "models/Article";
+import Comment from "models/Comment";
 
 const receivedNotification = (type, payload) => {
   switch (type) {
     case "Article confirmed":
-      // handle payload from the server
+      break;
+    case "Comment created":
       break;
   }
 };
 
 subscribe({ to: Article, with: receivedNotification });
+subscribe({ to: Comment, with: receivedNotification });
 ```
 
-```ruby
-receivers = [article.user, Admin, 'a54e1ef01cb9']
-data = { foo: 'bar' }
 See [Loco-JS — Receiving messages](https://github.com/locoframework/loco-js#-receiving-messages) for details.
 
-Loco.emit(article, :confirmed, to: receivers, payload: data)
-```
 ### Direct mode (WebSocket only, not persisted)
 
-Arguments:
 Sends a message directly via WebSocket. Not stored in DB — if the client is offline, the message is lost.
 
-1. a resource this event relates to
-2. a name of an event that occurred (Symbol/String). Default values are:
-	* **:created** - when `created_at == updated_at`
-	* **:updated** - when `updated_at > created_at`
-3. a hash with relevant keys:
-	* **:to** - message's recipients. It can be a single object or an array of objects. Instances of models, their classes, and strings are accepted. If a recipient is a class, then given notification is addressed to all instances of this class currently signed in. If a receiver is a string (token), clients will receive notifications who have subscribed to this token on the front-end side. They can do this by invoking this code: `getWire().token = "<token>";`
-	* **:payload** - additional data, serialized to JSON, transmitted along with the notification
 ```ruby
 Loco.emit({ type: 'NEW_MESSAGE', message: 'Hi!' }, to: [hub, admin], ws_only: true)
 ```
 
-⚠️ If you wonder how to receive those notifications on the front-end side, look at the [proper section](https://github.com/locoframework/loco-js#-receiving-messages) of Loco-JS [README](https://github.com/locoframework/loco-js).
+⚠️ Loco uses ActiveJob (`:loco` queue) when broadcasting to a class (e.g., `to: [User]`) or to `:all` — these fan out to all connected clients of that type. When you target a specific user (e.g., `to: user`), the message is sent inline without a job. This is transparent — you use the same `Loco.emit` API either way.
 
-#### Garbage collection
+## 🗑️ Garbage collection
 
-When you emit a lot of notifications, you create a lot of records in the database. This way, your **loco_notifications** table may soon become very big. You must periodically delete old records. Below is a somewhat naive approach, but it works.
+Periodically delete old notifications to keep the `loco_notifications` table manageable:
 
 ```ruby
 class GarbageCollectorJob < ApplicationJob
@@ -189,60 +179,31 @@ class GarbageCollectorJob < ApplicationJob
 end
 ```
 
-### `Loco.emit_to`
+## 🏘️ Communication Hubs
 
-This module function emits a direct message to recipients. Direct messages are sent only via a WebSocket connection and are not persisted in a DB.
-
-⚠️ It utilizes _ActionCable_ under the hood. You can use _ActionCable_ in a standard way and _Loco-way_ side by side. If you choose to stick to Loco only - you will never have to create `ApplicationCable::Channel`s. Remember that Loco places `ActiveJob`s into the `:loco` queue.
-
-If you want to send a message to a group of recipients, persist this group, and have an ability to add/remove members - an entity called **Communication Hub** may be handy.
-
-#### Communication Hub
-
-You can treat it like a virtual room where you can add/remove members.
-It works over WebSockets only with the `emit_to` module function.
-
-`Loco` also provides hub management module functions such as `add_hub`, `get_hub`, `del_hub`.
-
-Details:
-
-* `add_hub(name, members = [])` - creates and returns an instance of `Loco::Hub` with a given name and members passed as a 2nd argument. In a typical use case - members should be an array of _ActiveRecord_ instances.
-
-* `get_hub(name)` - returns an instance of `Loco::Hub` with a given name or `nil` if a hub does not exist.
-
-* `del_hub(name)` - destroys an instance of `Loco::Hub` with a given name if it exists.
-
-Important instance methods of `Loco::Hub`:
-
-* `name`
-* `members` - returns the hub's members. Members are stored in an informative, shortened form inside Redis. Be aware that this method performs calls to DB to fetch all members.
-* `raw_members` - returns hub's members in the shortened form as they are stored: `"{class}:{id}"`
-* `add_member(member)`
-* `del_member(member)`
-* `include?(member)`
-* `destroy`
-
-Example:
+Virtual rooms for grouping recipients. Members stored in Redis. Hubs expand to their members when passed to `Loco.emit` — works in both persisted and `ws_only: true` modes.
 
 ```ruby
-hub1 = Hub.get('room_1')
-admin = Admin.find(1)
-
-data = { type: 'NEW_MESSAGE', message: 'Hi all!', author: 'system' }
-
-Loco.emit_to([hub1, admin], data)
+hub = Loco.add_hub('room_1', [user1, user2])  # create with members
+hub = Loco.get_hub('room_1')                  # retrieve
+Loco.del_hub('room_1')                        # destroy
 ```
 
-Arguments:
+Send a message to all hub members (plus any extra recipients):
 
-1. recipients - a single object or an array of objects. ActiveRecord instances and Communication Hubs are allowed.
-2. data - a hash serialized to JSON during sending.
+```ruby
+hub = Loco.get_hub('room_1')
+admin = Admin.find(1)
 
-⚠️ Check out the [proper section](https://github.com/locoframework/loco-js#-receiving-messages) of Loco-JS [README](https://github.com/locoframework/loco-js) about receiving these messages on the front-end.
+Loco.emit(
+  { type: 'NEW_MESSAGE', message: 'Hi all!', author: 'system' },
+  to: [hub, admin]
+)
+```
 
-# 🚛 Receiving notifications sent over WebSockets
+Hub instance methods: `name`, `members`, `raw_members`, `add_member(member)`, `del_member(member)`, `include?(member)`, `destroy`
 
-## Notification Center 🛰
+Note: `members` performs DB queries to fetch full objects. Use `raw_members` for the lightweight `"{class}:{id}"` form stored in Redis.
 
 You can send messages over a WebSocket connection from the browser to the server using the `emit` function. These messages can be received on the back-end by the `Loco::NotificationCenter` class located in *app/services/loco/notification_center.rb*
 
