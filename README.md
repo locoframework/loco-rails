@@ -205,17 +205,16 @@ Hub instance methods: `name`, `members`, `raw_members`, `add_member(member)`, `d
 
 Note: `members` performs DB queries to fetch full objects. Use `raw_members` for the lightweight `"{class}:{id}"` form stored in Redis.
 
-You can send messages over a WebSocket connection from the browser to the server using the `emit` function. These messages can be received on the back-end by the `Loco::NotificationCenter` class located in *app/services/loco/notification_center.rb*
+## 🛰 Receiving messages from the front-end
 
-`loco:install` generator generates this class.
+Messages sent from the browser via WebSocket are received by `Loco::NotificationCenter` (generated at `app/services/loco/notification_center.rb`).
 
-The `received_message` instance method is called automatically for each message sent by front-end clients. 2 arguments are passed:
+The `received_message` instance method is called for each message with 2 arguments:
 
-1. a hash with resources that can sign in to your app. You define them as `loco_permissions` inside `ApplicationCable::Connection` class. The keys of this hash are lowercase class names of signed-in resources, and the values are the instances themselves.
+1. **permissions** — a hash of signed-in resources (keys: lowercase class names, values: instances), as defined in `ApplicationCable::Connection#loco_permissions`
+2. **payload** — the sent payload
 
-2. a hash with sent data
-
-You can look at the working example [here](https://github.com/locoframework/loco-rails/blob/master/test/dummy/app/services/loco/notification_center.rb).
+See [working example](https://github.com/locoframework/loco-rails/blob/master/test/dummy/app/services/loco/notification_center.rb).
 
 # 👩🏽‍🔬 Tests
 

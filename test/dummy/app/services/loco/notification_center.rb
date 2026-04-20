@@ -2,16 +2,16 @@
 
 module Loco
   class NotificationCenter
-    def received_message(permissions, data)
-      return unless (res = validate_message(data['type'], permissions, data))
+    def received_message(permissions, payload)
+      return unless (res = validate_message(payload['type'], permissions, payload))
 
-      case data['type']
+      case payload['type']
       when 'PING'
         Loco.emit({ type: 'PING' }, to: res[:user], ws_only: true)
       when 'HEARTBEAT'
-        heartbeat(permissions[:user], data['room_id'])
+        heartbeat(permissions[:user], payload['room_id'])
       when 'NEW_MESSAGE'
-        new_message(permissions[:user], data, res[:hub])
+        new_message(permissions[:user], payload, res[:hub])
       end
     end
 
@@ -23,29 +23,31 @@ module Loco
       MaintainRoomMembersJob.set(wait: 5.seconds).perform_later(room_id)
     end
 
-    def new_message(user, data, hub)
-      Message.create!(room_id: data['room_id'], user:, content: data['txt']) if data['message_type'] == 'persistent'
+    def new_message(user, payload, hub)
+      if payload['message_type'] == 'persistent'
+        Message.create!(room_id: payload['room_id'], user:, content: payload['txt'])
+      end
       Loco.emit({
                   type: 'NEW_MESSAGE',
-                  message: data['txt'],
+                  message: payload['txt'],
                   author: user.username
                 },
                 to: hub,
-                ws_only: data['message_type'] == 'ephemeral')
+                ws_only: payload['message_type'] == 'ephemeral')
     end
 
-    def validate_message(name, permissions, data) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
+    def validate_message(name, permissions, payload) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
       case name
       when 'PING'
         return false if permissions[:admin].nil?
 
-        user = User.new(id: data['user_id'])
+        user = User.new(id: payload['user_id'])
         { user: }
       when 'HEARTBEAT'
         permissions[:user] ? true : false
       when 'NEW_MESSAGE'
         return false if permissions[:user].nil?
-        return false unless (hub = Loco.get_hub("room_#{data['room_id']}"))
+        return false unless (hub = Loco.get_hub("room_#{payload['room_id']}"))
 
         { hub: }
       else
