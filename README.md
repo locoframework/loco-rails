@@ -64,16 +64,79 @@ _Look inside `test/dummy/` for a reference setup._
 
 # ⚙️ Configuration
 
-`loco:install` generates `config/initializers/loco.rb`:
+`loco:install` generates/injects four things you must review and customize:
+
+## 1. `config/initializers/loco.rb`
 
 ```ruby
 Loco.configure do |c|
   c.silence_logger = false          # mute Loco's logger (default: false)
   c.notifications_size = 100        # max notifications returned at once (default: 100)
-  c.app_name = "loco_#{Rails.env}"  # Redis key prefix (default: 'loco')
-  c.redis_instance = nil            # custom Redis instance (default: nil)
+  c.app_name = "loco_#{Rails.env}"  # Redis key prefix — keeps envs isolated (default: 'loco')
+  c.redis_instance = nil            # reuse an existing Redis client instead of creating a new one (default: nil)
 end
 ```
+
+## 2. `ApplicationController#loco_permissions`
+
+Tells Loco which signed-in resources exist in an HTTP request (used by the notification-polling endpoint). Return an array of method names that resolve to signed-in resources (e.g., `current_user`, `current_admin`). Must match what your auth layer exposes.
+
+```ruby
+def loco_permissions
+  [current_user, current_admin]  # add/remove per your app's roles
+end
+```
+
+## 3. `ApplicationCable::Connection#loco_permissions`
+
+Same concept for the WebSocket connection. Loco identifies each connection by this array. **The first element must be `SecureRandom.uuid`** — it gives the connection a unique anonymous identity so Loco can:
+
+- track connections that aren't tied to a signed-in user (token-based subscribers)
+- route messages to the exact browser tab, not "all connections of user X"
+- clean up stale connections in Redis by UUID
+
+The rest of the array mirrors the signed-in resources from `ApplicationController`. Connections without any signed-in resource are rejected via `reject_unauthorized_connection`.
+
+```ruby
+identified_by :loco_permissions
+
+def connect
+  reject_unauthorized_connection unless current_user || current_admin
+  self.loco_permissions = [SecureRandom.uuid, current_user, current_admin]
+end
+
+def current_admin
+  defined?(Admin) && Admin.find_by(id: cookies.signed[:admin_id])
+end
+
+def current_user
+  defined?(User) && User.find_by(id: cookies.signed[:user_id])
+end
+```
+
+## 4. `app/services/loco/notification_center.rb`
+
+Handler for messages sent **from the browser to the server** over WebSocket. Fill in `received_message` to route incoming messages. See the [Receiving messages from the front-end](#-receiving-messages-from-the-front-end) section below.
+
+```ruby
+module Loco
+  class NotificationCenter
+    def received_message(permissions, payload)
+      # handle messages here
+    end
+  end
+end
+```
+
+## 5. Routes
+
+`loco:install` also mounts the engine for notification polling:
+
+```ruby
+mount Loco::Engine => '/notification-center'
+```
+
+This endpoint is hit when WebSocket is unavailable — clients fetch missed persisted notifications via HTTP.
 
 # 🎮 Usage
 
