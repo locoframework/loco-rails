@@ -11,8 +11,6 @@ module Loco
 
     attr_reader :obj
 
-    serialize :data, coder: JSON if ActiveRecord::Base.connection.adapter_name != 'PostgreSQL'
-
     before_validation do
       self.data = (data || {}).merge(id: obj.id) if obj
     end

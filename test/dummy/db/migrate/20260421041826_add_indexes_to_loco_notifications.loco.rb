@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# This migration comes from loco (originally 20240211210452)
 class AddIndexesToLocoNotifications < ActiveRecord::Migration[7.1]
   def change
     add_index :loco_notifications, %i[created_at recipient_class recipient_id],

@@ -295,6 +295,26 @@ bin/rails test
 ### 7.0 _(2026-04)_
 
 - **Breaking:** `Loco::Emitter` removed — use `Loco.emit`, `Loco.add_hub`, etc.
+- **Breaking:** `loco_notifications.data` column changed from `text` to native JSON (`jsonb` on PostgreSQL, `json` on MySQL/SQLite). Model-level `serialize :data, coder: JSON` removed — the adapter now (de)serializes natively. If upgrading, generate a migration to change the column type:
+
+    ```ruby
+    class ChangeLocoNotificationsDataToJson < ActiveRecord::Migration[7.1]
+      def up
+        if connection.adapter_name == 'PostgreSQL'
+          # `using:` tells PG how to cast existing TEXT values to jsonb.
+          # Without it, ALTER COLUMN fails on non-empty tables.
+          change_column :loco_notifications, :data, :jsonb, using: 'data::jsonb'
+        else
+          change_column :loco_notifications, :data, :json
+        end
+      end
+
+      def down
+        change_column :loco_notifications, :data, :text
+      end
+    end
+    ```
+
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8
