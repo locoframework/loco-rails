@@ -33,10 +33,11 @@ def leave
 
   hub.del_member(current_user)
 
-  Loco.emit(@room, :member_left, payload: {
+  Loco.emit({
+    event: :member_left,
     room_id: @room.id,
     member: { id: current_user.id }
-  }, to: [User])
+  }, subject: @room, to: [User])
 
   redirect_to user_rooms_path
 end
