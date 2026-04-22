@@ -6,7 +6,9 @@ module Loco
 
     class << self
       def set(name, members)
-        new(name, members)
+        new(name).tap do |hub|
+          members.map { |member| hub.add_member(member) }
+        end
       end
 
       def get(name)
@@ -20,39 +22,33 @@ module Loco
       end
     end
 
-    def initialize(name, members = [])
-      @name = self.class.full_name(name)
-      members.map { |member| add_member(member) }
-    end
+    attr_reader :name, :full_name
 
-    def name
-      full_name.split(PREFIX).last
-    end
-
-    def full_name
-      @name
+    def initialize(name)
+      @name = name
+      @full_name = self.class.full_name(name)
     end
 
     def add_member(member)
-      WsConnectionStorage.current.add(@name, WsConnectionIdentifier.(member))
+      WsConnectionStorage.current.add(@full_name, WsConnectionIdentifier.(member))
     end
 
     def del_member(member)
-      WsConnectionStorage.current.rem(@name, WsConnectionIdentifier.(member))
+      WsConnectionStorage.current.rem(@full_name, WsConnectionIdentifier.(member))
     end
 
     def include?(member)
-      WsConnectionStorage.current.member?(@name, WsConnectionIdentifier.(member))
+      WsConnectionStorage.current.member?(@full_name, WsConnectionIdentifier.(member))
     end
 
     def destroy
       raw_members.each do |member|
-        WsConnectionStorage.current.rem(@name, member)
+        WsConnectionStorage.current.rem(@full_name, member)
       end
     end
 
     def raw_members
-      WsConnectionStorage.current.members(@name)
+      WsConnectionStorage.current.members(@full_name)
     end
 
     def members(shallow: false)
