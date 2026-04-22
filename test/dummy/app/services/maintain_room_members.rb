@@ -21,10 +21,11 @@ class MaintainRoomMembers
 
         hub.del_member(member)
         # TODO: refactor Room.new(id: room_id)
-        Loco.emit(Room.new(id: room_id), :member_left, payload: {
+        Loco.emit({
+                    event: :member_left,
                     room_id:,
                     member: { id: member.id }
-                  }, to: [User])
+                  }, subject: Room.new(id: room_id), to: [User])
       end
     end
 
