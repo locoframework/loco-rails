@@ -105,7 +105,7 @@ class User
       click_on 'RealSnapChat rooms'
       assert_selector "body[data-action='index']", wait: 5
       assert_equal '1', find("tr#room_#{@room.id} td.members").text
-      sleep 5 # TODO: invalidate redis key faster in test env
+      sleep 2 # HEARTBEAT_TTL is 1 in test env
       MaintainRoomMembers.clear(@room.id)
       perform_enqueued_jobs
       assert_equal '0', find("tr#room_#{@room.id} td.members").text

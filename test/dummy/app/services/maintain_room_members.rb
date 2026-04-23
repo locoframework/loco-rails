@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class MaintainRoomMembers
+  HEARTBEAT_TTL = Rails.env.test? ? 1 : 4
+
   class << self
     def rejoin(hub:, user:)
       room_id = hub.name.split(':').last.split('_').last.to_i
       key = redis_key(room_id, user.id)
-      APP_REDIS.set(key, Time.current, ex: 4)
+      APP_REDIS.set(key, Time.current, ex: HEARTBEAT_TTL)
       return if hub.include?(user)
 
       hub.add_member(user)
@@ -20,7 +22,6 @@ class MaintainRoomMembers
         next if APP_REDIS.get(redis_key(room_id, member.id))
 
         hub.del_member(member)
-        # TODO: refactor Room.new(id: room_id)
         Loco.emit({
                     event: :member_left,
                     room_id:,
@@ -43,7 +44,7 @@ class MaintainRoomMembers
                     id: user.id,
                     username: user.username
                   }
-                }, subject: Room.new(id: room_id), to: [User]) # TODO: cut subject + update docs?
+                }, subject: Room.new(id: room_id), to: [User])
     end
   end
 end
