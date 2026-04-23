@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     loco-rails (7.0.0.pre)
-      rails (>= 7.1, < 9.0)
+      rails (>= 7.2, < 9.0)
 
 GEM
   remote: https://rubygems.org/

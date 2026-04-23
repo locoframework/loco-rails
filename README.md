@@ -4,7 +4,7 @@
 
 # 🧐 What is Loco-Rails?
 
-**Loco-Rails** is a lightweight [Rails engine](http://guides.rubyonrails.org/engines.html) for real-time communication between back-end and front-end.
+**Loco-Rails** is a lightweight [Rails engine](http://guides.rubyonrails.org/engines.html) for real-time communication between back-end and front-end. It's an abstraction on top of [ActionCable](https://guides.rubyonrails.org/action_cable_overview.html) — you don't have to write channels or ActionCable code directly. Loco handles the plumbing so you can focus on what to send, not how.
 
 ```text
 Loco
@@ -30,9 +30,9 @@ See [docs/EXAMPLES.md](docs/EXAMPLES.md) for a full chat room example showing ba
 
 # 🤝 Dependencies
 
-- Ruby >= 3.1.0
-- Rails >= 7.1
-- [Redis](http://redis.io) — stores WebSocket connection state. Not required if you don't use ActionCable.
+- Ruby >= 3.3.0
+- Rails >= 7.2
+- [Redis](http://redis.io) — stores WebSocket connection state and hub membership. Required for all real-time flows (`Loco.emit`, hubs).
 
 # 📥 Installation
 
@@ -298,7 +298,7 @@ bin/rails test
 - **Breaking:** `loco_notifications.data` column changed from `text` to native JSON (`jsonb` on PostgreSQL, `json` on MySQL/SQLite). Model-level `serialize :data, coder: JSON` removed — the adapter now (de)serializes natively. If upgrading, generate a migration to change the column type:
 
     ```ruby
-    class ChangeLocoNotificationsDataToJson < ActiveRecord::Migration[7.1]
+    class ChangeLocoNotificationsDataToJson < ActiveRecord::Migration[7.2]
       def up
         if connection.adapter_name == 'PostgreSQL'
           # `using:` tells PG how to cast existing TEXT values to jsonb.

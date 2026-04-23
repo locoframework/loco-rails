@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # This migration comes from loco (originally 20150927133812)
-class CreateLocoNotifications < ActiveRecord::Migration[7.1]
+class CreateLocoNotifications < ActiveRecord::Migration[7.2]
   def change
     create_table :loco_notifications, id: false do |t|
       t.string :obj_class

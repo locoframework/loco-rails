@@ -21,9 +21,9 @@ Gem::Specification.new do |s|
     'README.rdoc'
   ]
 
-  s.required_ruby_version = '>= 3.1.0'
+  s.required_ruby_version = '>= 3.3.0'
 
-  s.add_dependency 'rails', '>= 7.1', '< 9.0'
+  s.add_dependency 'rails', '>= 7.2', '< 9.0'
 
   s.metadata['rubygems_mfa_required'] = 'true'
 end

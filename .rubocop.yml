@@ -1,8 +1,8 @@
-require: rubocop-rails
+plugins: rubocop-rails
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.1
+  TargetRubyVersion: 3.3
   Exclude:
     - node_modules/**/*
     - test/dummy/db/schema.rb
