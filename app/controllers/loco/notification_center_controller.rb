@@ -3,11 +3,7 @@
 module Loco
   class NotificationCenterController < ApplicationController
     def index
-      if Loco::Config.silence_logger
-        logger.silence { fetch_notifications }
-      else
-        fetch_notifications
-      end
+      logger.silence(Loco::Config.log_level) { fetch_notifications }
     end
 
     # TODO: delete in the 7.1 release

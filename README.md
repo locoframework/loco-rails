@@ -89,9 +89,9 @@ _Look inside `test/dummy/` for a reference setup._
 
 ```ruby
 Loco.configure do |c|
-  c.silence_logger = false          # mute Loco's logger (default: false)
+  c.log_level = :info               # Loco controller log level — set :error to silence noise (default: :info)
   c.notifications_size = 100        # max notifications returned at once (default: 100)
-  c.app_name = "loco_#{Rails.env}"  # Redis key prefix — keeps envs isolated (default: 'loco')
+  c.app_name = "loco_#{Rails.env}"  # Redis key prefix — keeps envs isolated (default: "loco_#{Rails.env}")
   c.redis_instance = nil            # reuse an existing Redis client instead of creating a new one (default: nil)
 end
 ```
@@ -256,7 +256,7 @@ class GarbageCollectorJob < ApplicationJob
   end
 
   def perform
-    Loco::Notification.where('created_at < ?', 1.hour.ago).find_each(&:destroy)
+    Loco::Notification.where('created_at < ?', 1.hour.ago).in_batches.delete_all
   end
 end
 ```
@@ -334,6 +334,8 @@ bin/rails test
     end
     ```
 
+- **Breaking:** `Loco::Config#silence_logger` removed — use `c.log_level = :error` (or higher) to silence
+- Added `c.log_level` config option (default `:info`)
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8
