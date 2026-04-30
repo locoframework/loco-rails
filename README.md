@@ -6,6 +6,25 @@
 
 **Loco-Rails** is a lightweight [Rails engine](http://guides.rubyonrails.org/engines.html) for real-time communication between back-end and front-end. It's an abstraction on top of [ActionCable](https://guides.rubyonrails.org/action_cable_overview.html) — you don't have to write channels or ActionCable code directly. Loco handles the plumbing so you can focus on what to send, not how.
 
+## Why Loco over plain Rails/ActionCable?
+
+Plain ActionCable gives you raw WebSockets. Everything else you build yourself. Loco ships the "everything else":
+
+| Concern | Plain Rails + ActionCable | Loco-Rails |
+| --- | --- | --- |
+| **Channels** | Write a custom `Channel` class per stream; manage subscriptions | Built-in `NotificationCenterChannel` (internal to Loco — you never touch it) handles all streams. Zero channels to write. |
+| **Targeted delivery** | Broadcast to a named stream; you track who subscribed where | `Loco.emit(..., to: user)` / `to: [Admin]` / `to: 'token'` — routing by resource, class, or token |
+| **Offline clients** | Broadcast is fire-and-forget. Messages sent while offline are lost | Notifications persisted in DB; fetched on reconnect |
+| **WebSocket unavailable** | No fallback — client sees nothing | Auto-switches to HTTP polling via `/notification-center` |
+| **Server → browser dispatch** | Wire each subscription/handler manually per channel | One `NotificationCenter` callback receives every message; switch on `payload.type` (e.g., `"Article created"`, `"USER_CONFIRMED"`) — all routing in one place |
+| **Browser → server messages** | Write channel `receive` per stream | One `NotificationCenter#received_message` hook for all incoming messages |
+| **Permission-aware routing** | Auth per-channel; you gate every subscribe | `loco_permissions` array identifies connection; `to:` respects it |
+| **Group broadcasts** | Manage streams and membership manually | Communication Hubs — virtual rooms in Redis, add/remove members, broadcast with one call |
+| **Connection tracking** | ActionCable doesn't track individual tabs | Each connection gets a UUID; messages target the exact tab |
+| **Idempotency** | Write your own dedup | Built-in via idempotency keys on emit |
+
+**Bottom line**: plain ActionCable is a WebSocket transport. Loco is a real-time delivery system — transport + persistence + routing + reconnection semantics, all in one API (`Loco.emit`).
+
 ```text
 Loco
 |
