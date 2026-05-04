@@ -9,19 +9,23 @@ module Loco
       'loco_'
     end
 
-    attr_reader :obj
-
     before_validation do
-      self.data = (data || {}).merge(id: obj.id) if obj
+      self.data = (data || {}).merge(id: obj_id) if obj_id
     end
 
     def obj=(val)
-      if val.instance_of? Class
+      case val
+      when nil
+        # no-op
+      when Class
         self.obj_class = val.to_s
-      elsif val
+      when Array
+        klass, id = val
+        self.obj_class = klass.to_s
+        self.obj_id = id
+      else
         self.obj_class = val.class.name
         self.obj_id = val.id
-        @obj = val
       end
     end
 

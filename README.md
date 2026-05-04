@@ -181,7 +181,12 @@ Arguments:
         - **model instance** (e.g., `user`) — delivers to that specific signed-in resource
         - **class** (e.g., `User`, `Admin`) — delivers to all signed-in instances of that class
         - **string token** (e.g., `'a54e1ef01cb9'`) — delivers to any front-end client that subscribed to that token via `getWire().token = "a54e1ef01cb9"`. Useful for anonymous/guest users or custom grouping without a Hub.
-    - **`:subject`** (optional) — ActiveRecord instance the event relates to. When provided, its `id` is merged into the payload and the notification is routable via front-end model subscribers.
+    - **`:subject`** (optional) — what the event is about. Accepts:
+        - **ActiveRecord instance** (e.g., `article`)
+        - **`[Class, id]` tuple** (e.g., `[Article, 42]`) — avoids allocating an AR instance just for metadata
+        - **Class** (e.g., `Article`) — when there's no specific record id
+
+        When provided, the `id` (if any) is merged into the payload and the notification is routable via front-end model subscribers.
 
 On the front-end, all messages (both `:event` and `:type` based) are routed through `NotificationCenter` — a central callback you pass during initialization:
 
@@ -336,6 +341,7 @@ bin/rails test
 
 - **Breaking:** `Loco::Config#silence_logger` removed — use `c.log_level = :error` (or higher) to silence
 - Added `c.log_level` config option (default `:info`)
+- `:subject` now accepts `[Class, id]` tuple — avoids `Klass.new(id: x)` allocation when only metadata is needed
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8

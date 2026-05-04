@@ -26,7 +26,7 @@ class MaintainRoomMembers
                     event: :member_left,
                     room_id:,
                     member: { id: member.id }
-                  }, subject: Room.new(id: room_id), to: [User])
+                  }, subject: [Room, room_id], to: [User])
       end
     end
 
@@ -44,7 +44,7 @@ class MaintainRoomMembers
                     id: user.id,
                     username: user.username
                   }
-                }, subject: Room.new(id: room_id), to: [User])
+                }, subject: [Room, room_id], to: [User])
     end
   end
 end
