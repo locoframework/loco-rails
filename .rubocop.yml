@@ -81,3 +81,4 @@ Style/OneClassPerFile:
 Style/MixinUsage:
   Exclude:
     - lib/generators/loco/file_injector/templates/application_controller.rb
+    - lib/generators/loco/file_injector/templates/connection.rb

@@ -1,10 +1,7 @@
-    identified_by :loco_permissions
+    include Loco::Permissions::Connection
 
     def connect
       reject_unauthorized_connection unless current_user || current_admin
-      # loco_permissions should be the same as in application_controller.rb
-      # + SecureRandom.uuid is mandatory at 1st position
-      self.loco_permissions = [SecureRandom.uuid, current_user, current_admin]
     end
 
     def current_admin

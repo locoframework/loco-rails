@@ -93,43 +93,50 @@ Loco.configure do |c|
   c.notifications_size = 100        # max notifications returned at once (default: 100)
   c.app_name = "loco_#{Rails.env}"  # Redis key prefix — keeps envs isolated (default: "loco_#{Rails.env}")
   c.redis_instance = nil            # reuse an existing Redis client instead of creating a new one (default: nil)
+
+  # Signed-in resources Loco should be aware of. Called with the current
+  # context (controller or ActionCable connection). Must return an array.
+  c.resources = ->(ctx) { [ctx.try(:current_user), ctx.try(:current_admin)] }
 end
 ```
 
-## 2. `ApplicationController#loco_permissions`
+## 2. `ApplicationController` — include `Loco::Permissions::Controller`
 
-Tells Loco which signed-in resources exist in an HTTP request (used by the notification-polling endpoint). Return an array of method names that resolve to signed-in resources (e.g., `current_user`, `current_admin`). Must match what your auth layer exposes.
+One-liner mixin. The resource list comes from `c.resources` in the initializer.
 
 ```ruby
-def loco_permissions
-  [current_user, current_admin]  # add/remove per your app's roles
+class ApplicationController < ActionController::Base
+  include Loco::Permissions::Controller
 end
 ```
 
-## 3. `ApplicationCable::Connection#loco_permissions`
+## 3. `ApplicationCable::Connection` — include `Loco::Permissions::Connection`
 
-Same concept for the WebSocket connection. Loco identifies each connection by this array. **The first element must be `SecureRandom.uuid`** — it gives the connection a unique anonymous identity so Loco can:
+Same idea for WebSockets. Each connection is identified by `[SecureRandom.uuid, *resources]` (resources from `c.resources`). The UUID gives the connection a unique anonymous identity so Loco can:
 
 - track connections that aren't tied to a signed-in user (token-based subscribers)
 - route messages to the exact browser tab, not "all connections of user X"
 - clean up stale connections in Redis by UUID
 
-The rest of the array mirrors the signed-in resources from `ApplicationController`. Connections without any signed-in resource are rejected via `reject_unauthorized_connection`.
+The mixin auto-runs `identified_by :loco_permissions` and prepends a wrapper that assigns `self.loco_permissions = [SecureRandom.uuid, *Loco::Config.resources.call(self)]` before your `connect` body runs. Your `connect` only handles authentication. Connections without any signed-in resource are rejected via `reject_unauthorized_connection`.
 
 ```ruby
-identified_by :loco_permissions
+module ApplicationCable
+  class Connection < ActionCable::Connection::Base
+    include Loco::Permissions::Connection
 
-def connect
-  reject_unauthorized_connection unless current_user || current_admin
-  self.loco_permissions = [SecureRandom.uuid, current_user, current_admin]
-end
+    def connect
+      reject_unauthorized_connection unless current_user || current_admin
+    end
 
-def current_admin
-  defined?(Admin) && Admin.find_by(id: cookies.signed[:admin_id])
-end
+    def current_admin
+      defined?(Admin) && Admin.find_by(id: cookies.signed[:admin_id])
+    end
 
-def current_user
-  defined?(User) && User.find_by(id: cookies.signed[:user_id])
+    def current_user
+      defined?(User) && User.find_by(id: cookies.signed[:user_id])
+    end
+  end
 end
 ```
 
@@ -342,6 +349,7 @@ bin/rails test
 - **Breaking:** `Loco::Config#silence_logger` removed — use `c.log_level = :error` (or higher) to silence
 - Added `c.log_level` config option (default `:info`)
 - `:subject` now accepts `[Class, id]` tuple — avoids `Klass.new(id: x)` allocation when only metadata is needed
+- Added `Loco::Permissions::Controller` and `Loco::Permissions::Connection` mixins. Both consume `c.resources = ->(ctx) { [...] }` config (declared once, used in both contexts). Connection mixin auto-runs `identified_by :loco_permissions` and assigns `[SecureRandom.uuid, *resources]` before `connect`. Older manual `loco_permissions` definitions still work; mixins are opt-in for cleaner setup
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8
