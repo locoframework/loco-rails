@@ -69,8 +69,9 @@ class TCWithMocks < ActiveSupport::TestCase
   end
 
   def after_teardown
-    super
     ::RSpec::Mocks.verify
+    @assertions += 1
+    super
   ensure
     ::RSpec::Mocks.teardown
   end
