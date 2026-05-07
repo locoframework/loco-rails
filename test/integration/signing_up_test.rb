@@ -41,11 +41,11 @@ class SigningUpTest < IT
   end
 
   def admin_went_to_user_edit_page
-    Loco.emit user, :confirming, for: user.token
+    Loco.emit({ event: :confirming }, subject: user, to: user.token)
   end
 
   def admin_confirmed_user
-    Loco.emit user, :confirmed, for: user.token
+    Loco.emit({ event: :confirmed }, subject: user, to: user.token)
   end
 
   def user

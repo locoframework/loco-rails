@@ -43,7 +43,7 @@ module Main
         a.title = 'AGtTRA'
         a.save!
       end
-      Loco.emit articles(:one), :updated, for: [:all]
+      Loco.emit({ event: :updated }, subject: articles(:one), to: :all)
       assert page.has_content? 'AGtTRA'
     end
 
@@ -82,13 +82,13 @@ module Main
 
     def publish_article(name)
       articles(name).publish
-      Loco.emit articles(name), :published, data: { id: articles(name).id }
+      Loco.emit({ event: :published }, subject: articles(name))
       perform_enqueued_jobs
     end
 
     def destroy_comment(comment)
       comment.destroy
-      Loco.emit comment, :destroyed, data: { article_id: comment.article_id }
+      Loco.emit({ event: :destroyed, article_id: comment.article_id }, subject: comment)
       perform_enqueued_jobs
     end
 

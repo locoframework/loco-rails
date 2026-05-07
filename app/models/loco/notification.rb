@@ -10,7 +10,7 @@ module Loco
     end
 
     before_validation do
-      self.data = (data || {}).merge(id: obj_id) if obj_id
+      self.data = (data || {}).deep_stringify_keys.merge('id' => obj_id) if obj_id
     end
 
     def obj=(val)

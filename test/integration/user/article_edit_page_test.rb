@@ -16,9 +16,8 @@ class User
 
     test 'should show info about editing' do
       sleep 0.1
-      Loco.emit articles(:two), :updating,
-                data: { mark: Time.current.to_f.to_s },
-                for: [users(:zbig)]
+      Loco.emit({ event: :updating, mark: Time.current.to_f.to_s },
+                subject: articles(:two), to: [users(:zbig)])
       assert page.has_content? 'Uuups someone else started editing this article.'
     end
 

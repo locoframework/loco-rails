@@ -20,13 +20,13 @@ module UserHelpers
       a.text = 'Lorem Ipsum II' * 8
       a.save!
     end
-    Loco.emit articles(name), :updated, for: [users(:zbig)]
+    Loco.emit({ event: :updated }, subject: articles(name), to: [users(:zbig)])
   end
 
   def destroy_article(name)
     article = articles name
     article.destroy
-    Loco.emit article, :destroyed, for: [article.user]
+    Loco.emit({ event: :destroyed }, subject: article, to: [article.user])
   end
 
   def join_room(user, room)

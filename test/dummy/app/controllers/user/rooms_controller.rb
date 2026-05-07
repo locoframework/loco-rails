@@ -55,7 +55,7 @@ class User
       end
       Loco.del_hub(@hub)
       @room.destroy
-      Loco.emit(@room, :destroyed, payload: { room_id: @room.id }, to: [User])
+      Loco.emit({ event: :destroyed, room_id: @room.id }, subject: @room, to: [User])
       redirect_to user_rooms_path, notice: 'Room has been deleted'
     end
 

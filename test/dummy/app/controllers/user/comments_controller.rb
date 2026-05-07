@@ -34,7 +34,7 @@ class User
 
     def destroy
       @comment.destroy
-      Loco.emit(@comment, :destroyed, payload: { article_id: @article.id })
+      Loco.emit({ event: :destroyed, article_id: @article.id }, subject: @comment)
       redirect_to edit_user_article_url(@article), notice: 'Comment has been deleted.'
     end
 

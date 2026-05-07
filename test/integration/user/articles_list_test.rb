@@ -23,7 +23,7 @@ class User
       visit '/user/articles'
       assert_selector "#article_#{articles(:two).id}", wait: 5
       articles(:two).publish
-      Loco.emit articles(:two), :updated, for: [users(:zbig)]
+      Loco.emit({ event: :updated }, subject: articles(:two), to: [users(:zbig)])
       within "#article_#{articles(:two).id} td.published" do
         assert_text 'yes', wait: 5
       end
@@ -69,14 +69,14 @@ class User
         title: 'Article #1',
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' * 2
       ).tap(&:save!)
-      Loco.emit article, :created, for: [users(user_name)]
+      Loco.emit({ event: :created }, subject: article, to: [users(user_name)])
       article
     end
 
     def destroy_article(name)
       articles(name).tap do |article|
         article.destroy
-        Loco.emit article, :destroyed, for: [users(:zbig)]
+        Loco.emit({ event: :destroyed }, subject: article, to: [users(:zbig)])
       end
     end
   end

@@ -24,21 +24,21 @@ module CommonHelpers
     author = opts[:author] || 'Ryan'
     text = opts[:text] || 'Some nice thoughts dude'
     comment = articles(name).comments.create!(author:, text:)
-    Loco.emit comment, :created, data: { article_id: comment.article_id }
+    Loco.emit({ event: :created, article_id: comment.article_id }, subject: comment)
     perform_enqueued_jobs
     comment
   end
 
   def destroy_comment(comment)
     comment.destroy
-    Loco.emit comment, :destroyed, data: { article_id: comment.article_id }
+    Loco.emit({ event: :destroyed, article_id: comment.article_id }, subject: comment)
     perform_enqueued_jobs
   end
 
   def update_comment(comment)
     comment.text = "#{comment.text} (edited)"
     comment.save!
-    Loco.emit comment, :updated, data: { article_id: comment.article_id }
+    Loco.emit({ event: :updated, article_id: comment.article_id }, subject: comment)
     perform_enqueued_jobs
   end
 end

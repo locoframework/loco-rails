@@ -59,8 +59,8 @@ class User
 
     def publish
       if @article.publish
-        Loco.emit(@article, :published, payload: { id: @article.id })
-        Loco.emit(@article, :updated, to: current_user)
+        Loco.emit({ event: :published }, subject: @article)
+        Loco.emit({ event: :updated }, subject: @article, to: current_user)
         render json: { success: true, status: 200 }
       else
         render json: { success: false, status: 400, errors: @article.errors }
@@ -69,7 +69,7 @@ class User
 
     def destroy
       success = @article.destroy
-      Loco.emit(@article, :destroyed, to: current_user) if success
+      Loco.emit({ event: :destroyed }, subject: @article, to: current_user) if success
       respond_to do |format|
         format.html do
           flash[success ? :notice : :alert] = success ? DESTROY_NOTICE : DESTROY_ALERT

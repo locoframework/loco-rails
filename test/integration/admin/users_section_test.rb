@@ -29,7 +29,7 @@ module Admin
     test 'should auto load recently added user' do
       user = User.create! email: 'david@example.com', username: 'david',
                           password: 'secret', password_confirmation: 'secret'
-      Loco.emit user, :created, for: Admin::SupportMember
+      Loco.emit({ event: :created }, subject: user, to: Admin::SupportMember)
       assert page.has_content? 'david@example.com'
     end
   end

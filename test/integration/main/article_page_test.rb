@@ -31,7 +31,7 @@ module Main
 
     test 'should show info about editing' do
       sleep 0.1
-      Loco.emit articles(:one), :updating, data: { mark: Time.current.to_f.to_s }
+      Loco.emit({ event: :updating, mark: Time.current.to_f.to_s }, subject: articles(:one))
       content = 'Author is currently editing article. Be aware of possible changes.'
       assert page.has_content? content
     end
@@ -126,7 +126,7 @@ module Main
         a.text = "#{a.text} (edited)"
         a.save!
       end
-      Loco.emit articles(name), :updated, for: [:all]
+      Loco.emit({ event: :updated }, subject: articles(name), to: :all)
       perform_enqueued_jobs
     end
   end
