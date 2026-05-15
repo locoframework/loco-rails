@@ -208,13 +208,13 @@ import Room from "models/Room";
 const loco = init({
   cable: createConsumer(),
   models: [Article, Room],
-  notificationCenter: async (payload) => {
-    switch (payload.type) {
+  notificationCenter: async (data) => {
+    switch (data.type) {
       case "USER_CONFIRMED":           // :type message — no model subject
         window.location.href = "/user/sessions/new?event=confirmed";
         break;
       case "Article created":          // :event message — "{ModelName} {event}"
-        handleArticleCreated(payload);
+        handleArticleCreated(data.payload);
         break;
     }
   },

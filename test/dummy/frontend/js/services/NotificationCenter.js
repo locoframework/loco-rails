@@ -8,6 +8,7 @@ import {
   prependUsers,
   removeComment,
   updateComment,
+  updateUser,
 } from "actions";
 import store from "store";
 import { findArticle, findComment } from "selectors/articles";
@@ -136,6 +137,9 @@ export default async (data) => {
     case "NEW_MESSAGE":
       getCallbackForNewMessage()(data.message, data.author);
       break;
+    case "USER_CONFIRMED":
+      window.location.href = "/user/sessions/new?event=confirmed";
+      break;
     case "Article created":
       articleCreated(data.payload);
       break;
@@ -155,13 +159,13 @@ export default async (data) => {
     case "Article.Comment updated":
       commentUpdated(data.payload);
       break;
-    case "USER_CONFIRMED":
-      window.location.href = "/user/sessions/new?event=confirmed";
-      break;
     case "User created": {
       const user = await User.find(data.payload.id);
       store.dispatch(prependUsers([user]));
       break;
     }
+    case "User confirmed":
+      store.dispatch(updateUser({ id: data.payload.id, confirmed: true }));
+      break;
   }
 };

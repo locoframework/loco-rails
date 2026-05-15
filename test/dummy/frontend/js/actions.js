@@ -15,6 +15,7 @@ export const UPDATE_COMMENT = "UPDATE_COMMENT";
 
 export const PREPEND_USERS = "PREPEND_USERS";
 export const SET_USERS = "SET_USERS";
+export const UPDATE_USER = "UPDATE_USER";
 
 /*
  * action creators
@@ -61,5 +62,9 @@ export function prependUsers(users) {
 }
 
 export function setUsers(users) {
-  return { type: PREPEND_USERS, users };
+  return { type: SET_USERS, users };
+}
+
+export function updateUser(user) {
+  return { type: UPDATE_USER, user };
 }
