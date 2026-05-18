@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import ArticleModel from "models/Article";
 
-import { removeArticle } from "actions";
 import store from "store";
 
 function Article({ article, onArticleDestroyed }) {
@@ -12,7 +11,7 @@ function Article({ article, onArticleDestroyed }) {
     if (!confirm("Are you sure?")) return;
     const data = await article.delete(null);
     if (data.success) {
-      store.dispatch(removeArticle(data.id));
+      store.dispatch({ type: "REMOVE_ARTICLE", id: data.id });
     }
     onArticleDestroyed(data);
   };

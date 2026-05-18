@@ -2,7 +2,6 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { helpers } from "simplicit";
 
-import { setArticles, setComments } from "actions";
 import store from "store";
 
 import CommentList from "containers/main/articles/CommentList";
@@ -14,7 +13,7 @@ import ShowView from "views/main/articles/Show";
 
 const renderArticle = async () => {
   const article = await Article.find(helpers.params.id);
-  store.dispatch(setArticles([article]));
+  store.dispatch({ type: "SET_ARTICLES", articles: [article] });
   ShowView.renderArticle(article);
 };
 
@@ -24,7 +23,11 @@ const renderComments = async () => {
     articleId: helpers.params.id,
     total: res.total,
   });
-  store.dispatch(setComments(comments, helpers.params.id));
+  store.dispatch({
+    type: "SET_COMMENTS",
+    comments,
+    articleId: helpers.params.id,
+  });
   createRoot(document.getElementById("comments")).render(
     <CommentList articleId={helpers.params.id} comments={comments} />,
   );

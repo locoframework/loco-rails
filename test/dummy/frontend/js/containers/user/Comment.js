@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import DateService from "services/Date";
 
-import { updateComment } from "actions";
 import store from "store";
 
 import CommentModel from "models/article/Comment";
@@ -18,12 +17,11 @@ function Comment({ comment, isAdmin = false }) {
     comment.approved = true;
     const res = await comment.updateAttribute("approved");
     if (!res.ok) return;
-    store.dispatch(
-      updateComment(
-        new CommentModel({ ...comment, approved: true }),
-        comment.articleId,
-      ),
-    );
+    store.dispatch({
+      type: "UPDATE_COMMENT",
+      comment: new CommentModel({ ...comment, approved: true }),
+      articleId: comment.articleId,
+    });
   };
 
   const adminSection = () => {

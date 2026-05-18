@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import Article from "models/Article";
 
-import { addArticles } from "actions";
 import store from "store";
 
 export default function LoadMoreLink() {
@@ -21,7 +20,7 @@ export default function LoadMoreLink() {
       return;
     }
     if (resp.resources.length > 0) {
-      store.dispatch(addArticles(resp.resources));
+      store.dispatch({ type: "ADD_ARTICLES", articles: resp.resources });
     } else {
       setNoMorePosts(true);
     }

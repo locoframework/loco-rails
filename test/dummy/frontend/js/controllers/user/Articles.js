@@ -2,7 +2,6 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { helpers } from "simplicit";
 
-import { setArticles, setComments } from "actions";
 import store from "store";
 
 import renderFlash from "views/shared/Flash";
@@ -17,13 +16,17 @@ import CommentList from "containers/user/CommentList";
 
 const renderArticle = async () => {
   const article = await Article.find(helpers.params.id);
-  store.dispatch(setArticles([article]));
+  store.dispatch({ type: "SET_ARTICLES", articles: [article] });
   ShowView(article);
 };
 
 const renderComments = async () => {
   const resp = await Comment.all({ articleId: helpers.params.id });
-  store.dispatch(setComments(resp.resources, helpers.params.id));
+  store.dispatch({
+    type: "SET_COMMENTS",
+    comments: resp.resources,
+    articleId: helpers.params.id,
+  });
   createRoot(document.getElementById("comments")).render(
     <CommentList articleId={helpers.params.id} comments={resp.resources} />,
   );
@@ -51,7 +54,7 @@ class Articles {
       renderFlash({ alert: "Article has been deleted." });
     }
     const resp = await Article.get("all");
-    store.dispatch(setArticles(resp.resources));
+    store.dispatch({ type: "SET_ARTICLES", articles: resp.resources });
     createRoot(document.getElementById("article_list")).render(
       <ArticleList
         articles={resp.resources}

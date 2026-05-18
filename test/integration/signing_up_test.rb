@@ -20,7 +20,7 @@ class SigningUpTest < IT
     assert page.has_content?('Please wait while administrator verifies your account')
     click_link 'main page'
     sleep 0.5
-    Loco.emit({ type: 'USER_CONFIRMED' }, to: user.token)
+    Loco.emit({ event: :confirmed }, subject: user, to: user.token)
     assert page.has_content?('Your account has been verified. You can sign in now.')
     assert_match %r{/user/sessions/new\?event=confirmed$}, current_url
   end

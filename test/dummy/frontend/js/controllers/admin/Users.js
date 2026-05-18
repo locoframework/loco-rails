@@ -2,7 +2,6 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { helpers } from "simplicit";
 
-import { setUsers } from "actions";
 import store from "store";
 
 import User from "models/User";
@@ -13,7 +12,7 @@ import renderForm from "views/admin/users/Form";
 class Users {
   async index() {
     const resp = await User.get("all");
-    store.dispatch(setUsers(resp.resources));
+    store.dispatch({ type: "SET_USERS", users: resp.resources });
     createRoot(document.querySelector("table tbody")).render(
       <UserList users={resp.resources} />,
     );

@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
-import { addArticles, setComments } from "actions";
 import store from "store";
 
 import Comment from "models/article/Comment";
@@ -59,7 +58,7 @@ const handleApplyingChanges = (form) => {
 
 export default {
   render: (article) => {
-    store.dispatch(addArticles([article]));
+    store.dispatch({ type: "ADD_ARTICLES", articles: [article] });
     const unsubscribe = subscribe({
       to: article,
       with: createReceivedMessage(article),
@@ -72,7 +71,11 @@ export default {
 
   renderComments: async (articleId) => {
     const resp = await Comment.all({ articleId: articleId });
-    store.dispatch(setComments(resp.resources, articleId));
+    store.dispatch({
+      type: "SET_COMMENTS",
+      comments: resp.resources,
+      articleId,
+    });
     createRoot(document.getElementById("comments")).render(
       <CommentList
         articleId={articleId}

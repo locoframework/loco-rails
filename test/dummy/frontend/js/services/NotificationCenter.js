@@ -1,15 +1,5 @@
 import getEnv from "initializers/loco-core";
 
-import {
-  addArticles,
-  prependArticles,
-  updateArticle,
-  addComments,
-  prependUsers,
-  removeComment,
-  updateComment,
-  updateUser,
-} from "actions";
 import store from "store";
 import { findArticle, findComment } from "selectors/articles";
 
@@ -46,16 +36,16 @@ const inChatRoom = () => {
 const articleCreated = async ({ id }) => {
   if (!userNamespace()) return;
   const article = await Article.find({ id, abbr: true });
-  store.dispatch(addArticles([article]));
+  store.dispatch({ type: "ADD_ARTICLES", articles: [article] });
 };
 
 const articlePublished = async ({ id }) => {
   if (adminNamespace()) {
     const article = await Article.find({ id, abbr: true, resource: "admin" });
-    store.dispatch(prependArticles([article]));
+    store.dispatch({ type: "PREPEND_ARTICLES", articles: [article] });
   } else {
     const article = await Article.find({ id, abbr: true });
-    store.dispatch(addArticles([article]));
+    store.dispatch({ type: "ADD_ARTICLES", articles: [article] });
   }
 };
 
@@ -67,7 +57,7 @@ const articleUpdated = async ({ id }) => {
   let [article, index] = findArticle(store.getState(), id);
   if (!article) return;
   article = await Article.find(findParams);
-  store.dispatch(updateArticle(article, index));
+  store.dispatch({ type: "UPDATE_ARTICLE", article, index });
 };
 
 const commentsChanged = ({ article_id: articleId }, diff) => {
@@ -77,7 +67,7 @@ const commentsChanged = ({ article_id: articleId }, diff) => {
     ...article,
     commentsCount: article.commentsCount + diff,
   });
-  store.dispatch(updateArticle(updatedArticle, index));
+  store.dispatch({ type: "UPDATE_ARTICLE", article: updatedArticle, index });
 };
 
 const commentCreated = async ({ article_id: articleId, id }) => {
@@ -89,12 +79,12 @@ const commentCreated = async ({ article_id: articleId, id }) => {
   if (!article) return;
   const comment = await Comment.find(findParams);
   if (comment === null) return;
-  store.dispatch(addComments([comment], articleId));
+  store.dispatch({ type: "ADD_COMMENTS", comments: [comment], articleId });
   commentsChanged({ article_id: articleId }, 1);
 };
 
 const commentDestroyed = ({ article_id: articleId, id }) => {
-  store.dispatch(removeComment(id, articleId));
+  store.dispatch({ type: "REMOVE_COMMENT", id, articleId });
 };
 
 const commentUpdated = async ({ article_id: articleId, id }) => {
@@ -103,7 +93,12 @@ const commentUpdated = async ({ article_id: articleId, id }) => {
   });
   if (!comment) return;
   const reloadedComment = await comment.reload();
-  store.dispatch(updateComment(reloadedComment, articleId, index));
+  store.dispatch({
+    type: "UPDATE_COMMENT",
+    comment: reloadedComment,
+    articleId,
+    index,
+  });
 };
 
 const ping = () => {
@@ -158,12 +153,15 @@ export default async (data) => {
       break;
     case "User created": {
       const user = await User.find(data.payload.id);
-      store.dispatch(prependUsers([user]));
+      store.dispatch({ type: "PREPEND_USERS", users: [user] });
       break;
     }
     case "User confirmed":
       if (adminNamespace()) {
-        store.dispatch(updateUser({ id: data.payload.id, confirmed: true }));
+        store.dispatch({
+          type: "UPDATE_USER",
+          user: { id: data.payload.id, confirmed: true },
+        });
       } else {
         window.location.href = "/user/sessions/new?event=confirmed";
       }

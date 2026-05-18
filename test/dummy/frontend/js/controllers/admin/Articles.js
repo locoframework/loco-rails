@@ -2,7 +2,6 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { helpers } from "simplicit";
 
-import { setArticles } from "actions";
 import store from "store";
 
 import Article from "models/Article";
@@ -26,7 +25,7 @@ const renderComment = async () => {
 class Articles {
   async published() {
     const resp = await Article.get("published");
-    store.dispatch(setArticles(resp.resources));
+    store.dispatch({ type: "SET_ARTICLES", articles: resp.resources });
     createRoot(document.getElementById("articles")).render(
       <ArticleList articles={resp.resources} />,
     );
