@@ -137,9 +137,6 @@ export default async (data) => {
     case "NEW_MESSAGE":
       getCallbackForNewMessage()(data.message, data.author);
       break;
-    case "USER_CONFIRMED":
-      window.location.href = "/user/sessions/new?event=confirmed";
-      break;
     case "Article created":
       articleCreated(data.payload);
       break;
@@ -165,7 +162,11 @@ export default async (data) => {
       break;
     }
     case "User confirmed":
-      store.dispatch(updateUser({ id: data.payload.id, confirmed: true }));
+      if (adminNamespace()) {
+        store.dispatch(updateUser({ id: data.payload.id, confirmed: true }));
+      } else {
+        window.location.href = "/user/sessions/new?event=confirmed";
+      }
       break;
   }
 };
