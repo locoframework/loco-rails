@@ -39,7 +39,7 @@ module Loco
     def validate_message(name, permissions, payload) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
       case name
       when 'PING'
-        return false if permissions[:admin].nil?
+        return false if permissions[:'admin/support_member'].nil?
 
         user = User.new(id: payload['user_id'])
         { user: }
