@@ -1,103 +1,24 @@
 import getEnv from "initializers/loco-core";
 
-import store from "store";
-import { findArticle, findComment } from "selectors/articles";
+import {
+  created as articleCreated,
+  published as articlePublished,
+  updated as articleUpdated,
+  commentsUpdated,
+} from "actions/articles";
 
-import Article from "models/Article";
-import Comment from "models/article/Comment";
-import User from "models/User";
+import {
+  created as commentCreated,
+  destroyed as commentDestroyed,
+  updated as commentUpdated,
+} from "actions/comments";
 
-import AdminController from "controllers/Admin";
-import MainController from "controllers/Main";
-import RoomsController from "controllers/user/Rooms";
-import UserController from "controllers/User";
+import {
+  created as userCreated,
+  confirmed as userConfirmed,
+} from "actions/users";
 
-const userNamespace = () => {
-  return getEnv().namespaceController.constructor === UserController;
-};
-
-const adminNamespace = () => {
-  return getEnv().namespaceController.constructor === AdminController;
-};
-
-const mainNamespace = () => {
-  return getEnv().namespaceController.constructor === MainController;
-};
-
-const inChatRoom = () => {
-  return (
-    userNamespace() &&
-    getEnv().controller !== null &&
-    getEnv().controller.constructor === RoomsController &&
-    getEnv().action === "show"
-  );
-};
-
-const articleCreated = async ({ id }) => {
-  if (!userNamespace()) return;
-  const article = await Article.find({ id, abbr: true });
-  store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
-};
-
-const articlePublished = async ({ id }) => {
-  if (adminNamespace()) {
-    const article = await Article.find({ id, abbr: true, resource: "admin" });
-    store.dispatch({ type: "ARTICLES.PREPEND", articles: [article] });
-  } else {
-    const article = await Article.find({ id, abbr: true });
-    store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
-  }
-};
-
-const articleUpdated = async ({ id }) => {
-  const findParams = { id, abbr: true };
-  if (adminNamespace()) {
-    findParams["resource"] = "admin";
-  }
-  const [existing] = findArticle(store.getState(), id);
-  if (!existing) return;
-  const article = await Article.find(findParams);
-  store.dispatch({ type: "ARTICLE.UPDATE", article });
-};
-
-const commentsChanged = ({ article_id: articleId }, diff) => {
-  const [article] = findArticle(store.getState(), articleId);
-  if (!article) return;
-  store.dispatch({
-    type: "ARTICLE.UPDATE",
-    article: { id: articleId, commentsCount: article.commentsCount + diff },
-  });
-};
-
-const commentCreated = async ({ article_id: articleId, id }) => {
-  const findParams = { articleId, id };
-  if (mainNamespace()) {
-    findParams["resource"] = "main";
-  }
-  const [article] = findArticle(store.getState(), articleId);
-  if (!article) return;
-  const comment = await Comment.find(findParams);
-  if (comment === null) return;
-  store.dispatch({ type: "COMMENTS.ADD", comments: [comment], articleId });
-  commentsChanged({ article_id: articleId }, 1);
-};
-
-const commentDestroyed = ({ article_id: articleId, id }) => {
-  store.dispatch({ type: "COMMENT.REMOVE", id, articleId });
-};
-
-const commentUpdated = async ({ article_id: articleId, id }) => {
-  const [comment] = findComment(store.getState(), id, {
-    parentId: articleId,
-  });
-  if (!comment) return;
-  const reloadedComment = await comment.reload();
-  store.dispatch({
-    type: "COMMENT.UPDATE",
-    comment: reloadedComment,
-    articleId,
-  });
-};
+import { inChatRoom, userNamespace } from "services/namespace";
 
 const ping = () => {
   if (!userNamespace()) return;
@@ -110,9 +31,7 @@ const getCallbackForNewMessage = () => {
 };
 
 const wsDisconnected = () => {
-  if (inChatRoom()) {
-    getEnv().controller.view.disconnected();
-  }
+  if (inChatRoom()) getEnv().controller.view.disconnected();
 };
 
 export default async (data) => {
@@ -143,26 +62,17 @@ export default async (data) => {
       commentCreated(data.payload);
       break;
     case "Article.Comment destroyed":
-      commentsChanged(data.payload, -1);
+      commentsUpdated(data.payload, -1);
       commentDestroyed(data.payload);
       break;
     case "Article.Comment updated":
       commentUpdated(data.payload);
       break;
-    case "User created": {
-      const user = await User.find(data.payload.id);
-      store.dispatch({ type: "USERS.PREPEND", users: [user] });
+    case "User created":
+      userCreated(data.payload);
       break;
-    }
     case "User confirmed":
-      if (adminNamespace()) {
-        store.dispatch({
-          type: "USER.UPDATE",
-          user: { id: data.payload.id, confirmed: true },
-        });
-      } else {
-        window.location.href = "/user/sessions/new?event=confirmed";
-      }
+      userConfirmed(data.payload);
       break;
   }
 };
