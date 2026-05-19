@@ -1,5 +1,5 @@
 import store from "store";
-import { findArticle, findComment } from "selectors/articles";
+import { findArticle, findComment } from "selectors";
 import Comment from "models/article/Comment";
 import { mainNamespace } from "services/namespace";
 import { commentsUpdated } from "actions/articles";
@@ -7,7 +7,7 @@ import { commentsUpdated } from "actions/articles";
 export const created = async ({ article_id: articleId, id }) => {
   const findParams = { articleId, id };
   if (mainNamespace()) findParams.resource = "main";
-  const [article] = findArticle(store.getState(), articleId);
+  const article = findArticle(store.getState(), articleId);
   if (!article) return;
   const comment = await Comment.find(findParams);
   if (comment === null) return;
@@ -20,7 +20,7 @@ export const destroyed = ({ article_id: articleId, id }) => {
 };
 
 export const updated = async ({ article_id: articleId, id }) => {
-  const [comment] = findComment(store.getState(), id, { parentId: articleId });
+  const comment = findComment(store.getState(), id, { parentId: articleId });
   if (!comment) return;
   const reloadedComment = await comment.reload();
   store.dispatch({

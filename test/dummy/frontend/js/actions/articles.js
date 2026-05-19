@@ -1,5 +1,5 @@
 import store from "store";
-import { findArticle } from "selectors/articles";
+import { findArticle } from "selectors";
 import Article from "models/Article";
 import { adminNamespace, userNamespace } from "services/namespace";
 
@@ -22,14 +22,14 @@ export const published = async ({ id }) => {
 export const updated = async ({ id }) => {
   const findParams = { id, abbr: true };
   if (adminNamespace()) findParams.resource = "admin";
-  const [existing] = findArticle(store.getState(), id);
+  const existing = findArticle(store.getState(), id);
   if (!existing) return;
   const article = await Article.find(findParams);
   store.dispatch({ type: "ARTICLE.UPDATE", article });
 };
 
 export const commentsUpdated = ({ article_id: articleId }, diff) => {
-  const [article] = findArticle(store.getState(), articleId);
+  const article = findArticle(store.getState(), articleId);
   if (!article) return;
   store.dispatch({
     type: "ARTICLE.UPDATE",

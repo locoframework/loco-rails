@@ -1,11 +1,7 @@
-export const createFinder = (resourceType) => {
-  return function (state, id, opts = {}) {
-    let resources = state[resourceType];
-    if (opts.parentId) resources = resources[opts.parentId];
-    if (resources === undefined) return [null, null];
-    const resource = resources.find((a) => a.id === id);
-    if (!resource) return [null, null];
-    const index = resources.indexOf(resource);
-    return [resource, index];
-  };
-};
+import { createFinder } from "./createFinder";
+
+export const findArticle = createFinder("articles");
+export const findComment = createFinder("comments");
+
+export const commentsForArticle = (state, articleId) =>
+  state.comments[articleId];

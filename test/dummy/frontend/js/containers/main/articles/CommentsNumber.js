@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import store from "store";
-import { commentsForArticle } from "selectors/comments";
+import { commentsForArticle } from "selectors";
 import CommentModel from "models/article/Comment";
 
 function CommentsNumber(props) {
