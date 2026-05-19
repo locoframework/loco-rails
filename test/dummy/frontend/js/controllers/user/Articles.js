@@ -23,7 +23,7 @@ const renderArticle = async () => {
 const renderComments = async () => {
   const resp = await Comment.all({ articleId: helpers.params.id });
   store.dispatch({
-    type: "SET_COMMENTS",
+    type: "COMMENTS.SET",
     comments: resp.resources,
     articleId: helpers.params.id,
   });

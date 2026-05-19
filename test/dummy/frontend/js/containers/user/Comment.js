@@ -18,7 +18,7 @@ function Comment({ comment, isAdmin = false }) {
     const res = await comment.updateAttribute("approved");
     if (!res.ok) return;
     store.dispatch({
-      type: "UPDATE_COMMENT",
+      type: "COMMENT.UPDATE",
       comment: new CommentModel({ ...comment, approved: true }),
       articleId: comment.articleId,
     });

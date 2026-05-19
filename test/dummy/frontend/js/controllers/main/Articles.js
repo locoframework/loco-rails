@@ -24,7 +24,7 @@ const renderComments = async () => {
     total: res.total,
   });
   store.dispatch({
-    type: "SET_COMMENTS",
+    type: "COMMENTS.SET",
     comments,
     articleId: helpers.params.id,
   });

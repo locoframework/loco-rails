@@ -1,10 +1,9 @@
 import { combineReducers } from "redux";
 
 import common from "./common";
-import comments from "./comments";
 
 export default combineReducers({
   articles: common("article"),
-  comments,
+  comments: common("comment", { nestedBy: "articleId" }),
   users: common("user"),
 });

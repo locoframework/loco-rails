@@ -72,7 +72,7 @@ export default {
   renderComments: async (articleId) => {
     const resp = await Comment.all({ articleId: articleId });
     store.dispatch({
-      type: "SET_COMMENTS",
+      type: "COMMENTS.SET",
       comments: resp.resources,
       articleId,
     });

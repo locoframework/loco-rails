@@ -78,25 +78,24 @@ const commentCreated = async ({ article_id: articleId, id }) => {
   if (!article) return;
   const comment = await Comment.find(findParams);
   if (comment === null) return;
-  store.dispatch({ type: "ADD_COMMENTS", comments: [comment], articleId });
+  store.dispatch({ type: "COMMENTS.ADD", comments: [comment], articleId });
   commentsChanged({ article_id: articleId }, 1);
 };
 
 const commentDestroyed = ({ article_id: articleId, id }) => {
-  store.dispatch({ type: "REMOVE_COMMENT", id, articleId });
+  store.dispatch({ type: "COMMENT.REMOVE", id, articleId });
 };
 
 const commentUpdated = async ({ article_id: articleId, id }) => {
-  const [comment, index] = findComment(store.getState(), id, {
+  const [comment] = findComment(store.getState(), id, {
     parentId: articleId,
   });
   if (!comment) return;
   const reloadedComment = await comment.reload();
   store.dispatch({
-    type: "UPDATE_COMMENT",
+    type: "COMMENT.UPDATE",
     comment: reloadedComment,
     articleId,
-    index,
   });
 };
 
