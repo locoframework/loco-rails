@@ -58,7 +58,7 @@ const handleApplyingChanges = (form) => {
 
 export default {
   render: (article) => {
-    store.dispatch({ type: "ADD_ARTICLES", articles: [article] });
+    store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
     const unsubscribe = subscribe({
       to: article,
       with: createReceivedMessage(article),

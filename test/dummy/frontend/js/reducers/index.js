@@ -1,11 +1,10 @@
 import { combineReducers } from "redux";
 
-import articles from "./articles";
+import common from "./common";
 import comments from "./comments";
-import users from "./users";
 
 export default combineReducers({
-  articles,
+  articles: common("article"),
   comments,
-  users,
+  users: common("user"),
 });

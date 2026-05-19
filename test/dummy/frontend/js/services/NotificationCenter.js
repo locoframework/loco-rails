@@ -36,38 +36,37 @@ const inChatRoom = () => {
 const articleCreated = async ({ id }) => {
   if (!userNamespace()) return;
   const article = await Article.find({ id, abbr: true });
-  store.dispatch({ type: "ADD_ARTICLES", articles: [article] });
+  store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
 };
 
 const articlePublished = async ({ id }) => {
   if (adminNamespace()) {
     const article = await Article.find({ id, abbr: true, resource: "admin" });
-    store.dispatch({ type: "PREPEND_ARTICLES", articles: [article] });
+    store.dispatch({ type: "ARTICLES.PREPEND", articles: [article] });
   } else {
     const article = await Article.find({ id, abbr: true });
-    store.dispatch({ type: "ADD_ARTICLES", articles: [article] });
+    store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
   }
 };
 
 const articleUpdated = async ({ id }) => {
-  const findParams = { id: id, abbr: true };
+  const findParams = { id, abbr: true };
   if (adminNamespace()) {
     findParams["resource"] = "admin";
   }
-  let [article, index] = findArticle(store.getState(), id);
-  if (!article) return;
-  article = await Article.find(findParams);
-  store.dispatch({ type: "UPDATE_ARTICLE", article, index });
+  const [existing] = findArticle(store.getState(), id);
+  if (!existing) return;
+  const article = await Article.find(findParams);
+  store.dispatch({ type: "ARTICLE.UPDATE", article });
 };
 
 const commentsChanged = ({ article_id: articleId }, diff) => {
-  const [article, index] = findArticle(store.getState(), articleId);
+  const [article] = findArticle(store.getState(), articleId);
   if (!article) return;
-  const updatedArticle = new Article({
-    ...article,
-    commentsCount: article.commentsCount + diff,
+  store.dispatch({
+    type: "ARTICLE.UPDATE",
+    article: { id: articleId, commentsCount: article.commentsCount + diff },
   });
-  store.dispatch({ type: "UPDATE_ARTICLE", article: updatedArticle, index });
 };
 
 const commentCreated = async ({ article_id: articleId, id }) => {
@@ -153,13 +152,13 @@ export default async (data) => {
       break;
     case "User created": {
       const user = await User.find(data.payload.id);
-      store.dispatch({ type: "PREPEND_USERS", users: [user] });
+      store.dispatch({ type: "USERS.PREPEND", users: [user] });
       break;
     }
     case "User confirmed":
       if (adminNamespace()) {
         store.dispatch({
-          type: "UPDATE_USER",
+          type: "USER.UPDATE",
           user: { id: data.payload.id, confirmed: true },
         });
       } else {

@@ -12,7 +12,7 @@ import renderForm from "views/admin/users/Form";
 class Users {
   async index() {
     const resp = await User.get("all");
-    store.dispatch({ type: "SET_USERS", users: resp.resources });
+    store.dispatch({ type: "USERS.SET", users: resp.resources });
     createRoot(document.querySelector("table tbody")).render(
       <UserList users={resp.resources} />,
     );

@@ -20,7 +20,7 @@ export default function LoadMoreLink() {
       return;
     }
     if (resp.resources.length > 0) {
-      store.dispatch({ type: "ADD_ARTICLES", articles: resp.resources });
+      store.dispatch({ type: "ARTICLES.ADD", articles: resp.resources });
     } else {
       setNoMorePosts(true);
     }

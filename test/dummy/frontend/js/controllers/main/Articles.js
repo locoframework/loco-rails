@@ -13,7 +13,7 @@ import ShowView from "views/main/articles/Show";
 
 const renderArticle = async () => {
   const article = await Article.find(helpers.params.id);
-  store.dispatch({ type: "SET_ARTICLES", articles: [article] });
+  store.dispatch({ type: "ARTICLES.SET", articles: [article] });
   ShowView.renderArticle(article);
 };
 

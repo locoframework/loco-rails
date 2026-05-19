@@ -25,7 +25,7 @@ const renderComment = async () => {
 class Articles {
   async published() {
     const resp = await Article.get("published");
-    store.dispatch({ type: "SET_ARTICLES", articles: resp.resources });
+    store.dispatch({ type: "ARTICLES.SET", articles: resp.resources });
     createRoot(document.getElementById("articles")).render(
       <ArticleList articles={resp.resources} />,
     );

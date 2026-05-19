@@ -13,7 +13,7 @@ class Pages {
       <LoadMoreLink />,
     );
     const resp = await Article.get("all", { page: 1 });
-    store.dispatch({ type: "SET_ARTICLES", articles: resp.resources });
+    store.dispatch({ type: "ARTICLES.SET", articles: resp.resources });
     createRoot(document.getElementById("articles")).render(
       <ArticleList articles={resp.resources} />,
     );

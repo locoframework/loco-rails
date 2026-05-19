@@ -16,7 +16,7 @@ import CommentList from "containers/user/CommentList";
 
 const renderArticle = async () => {
   const article = await Article.find(helpers.params.id);
-  store.dispatch({ type: "SET_ARTICLES", articles: [article] });
+  store.dispatch({ type: "ARTICLES.SET", articles: [article] });
   ShowView(article);
 };
 
@@ -54,7 +54,7 @@ class Articles {
       renderFlash({ alert: "Article has been deleted." });
     }
     const resp = await Article.get("all");
-    store.dispatch({ type: "SET_ARTICLES", articles: resp.resources });
+    store.dispatch({ type: "ARTICLES.SET", articles: resp.resources });
     createRoot(document.getElementById("article_list")).render(
       <ArticleList
         articles={resp.resources}
