@@ -5,18 +5,18 @@ import {
   published as articlePublished,
   updated as articleUpdated,
   commentsUpdated,
-} from "actions/articles";
+} from "reactions/articles";
 
 import {
   created as commentCreated,
   destroyed as commentDestroyed,
   updated as commentUpdated,
-} from "actions/comments";
+} from "reactions/comments";
 
 import {
   created as userCreated,
   confirmed as userConfirmed,
-} from "actions/users";
+} from "reactions/users";
 
 import { inChatRoom, userNamespace } from "services/namespace";
 

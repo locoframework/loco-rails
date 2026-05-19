@@ -2,7 +2,7 @@ import store from "store";
 import { findArticle, findComment } from "selectors";
 import Comment from "models/article/Comment";
 import { mainNamespace } from "services/namespace";
-import { commentsUpdated } from "actions/articles";
+import { commentsUpdated } from "reactions/articles";
 
 export const created = async ({ article_id: articleId, id }) => {
   const findParams = { articleId, id };
