@@ -209,12 +209,13 @@ const loco = init({
   cable: createConsumer(),
   models: [Article, Room],
   notificationCenter: async (data) => {
-    switch (data.type) {
+    const { type, payload } = data;
+    switch (type) {
       case "USER_CONFIRMED":           // :type message — no model subject
         window.location.href = "/user/sessions/new?event=confirmed";
         break;
       case "Article created":          // :event message — "{ModelName} {event}"
-        handleArticleCreated(data.payload);
+        handleArticleCreated(payload);
         break;
     }
   },

@@ -17,6 +17,7 @@ export const created = async ({ article_id: articleId, id }) => {
 
 export const destroyed = ({ article_id: articleId, id }) => {
   store.dispatch({ type: "COMMENT.REMOVE", id, articleId });
+  commentsUpdated({ article_id: articleId }, -1);
 };
 
 export const updated = async ({ article_id: articleId, id }) => {

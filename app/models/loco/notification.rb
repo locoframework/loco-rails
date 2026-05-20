@@ -10,7 +10,11 @@ module Loco
     end
 
     before_validation do
-      self.data = (data || {}).deep_stringify_keys.merge('id' => obj_id) if obj_id
+      next unless obj_id
+
+      self.data = (data || {}).deep_stringify_keys.tap do |hash|
+        hash['payload'] = (hash['payload'] || {}).merge('id' => obj_id)
+      end
     end
 
     def obj=(val)

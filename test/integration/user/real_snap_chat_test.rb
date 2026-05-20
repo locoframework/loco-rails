@@ -96,8 +96,8 @@ class User
         lt = Loco::Notification.find_by(obj_class: nil, obj_id: nil, event: nil, recipient_class: 'User',
                                         recipient_id: member.id)
         assert_equal 'NEW_MESSAGE', lt.data['type']
-        assert_equal 'This is a persistent message', lt.data['message']
-        assert_equal 'zbig', lt.data['author']
+        assert_equal 'This is a persistent message', lt.data['payload']['message']
+        assert_equal 'zbig', lt.data['payload']['author']
       end
     end
 

@@ -4,7 +4,6 @@ import {
   created as articleCreated,
   published as articlePublished,
   updated as articleUpdated,
-  commentsUpdated,
 } from "reactions/articles";
 
 import {
@@ -35,44 +34,40 @@ const wsDisconnected = () => {
 };
 
 export default async (data) => {
-  if (data.loco !== undefined) {
-    switch (data.loco) {
-      case "disconnected":
-        wsDisconnected();
-        break;
-    }
-  }
-  switch (data.type) {
+  const { type, payload, loco } = data;
+
+  if (loco === "disconnected") return wsDisconnected();
+
+  switch (type) {
     case "PING":
       ping();
       break;
     case "NEW_MESSAGE":
-      getCallbackForNewMessage()(data.message, data.author);
+      getCallbackForNewMessage()(payload.message, payload.author);
       break;
     case "Article created":
-      articleCreated(data.payload);
+      articleCreated(payload);
       break;
     case "Article published":
-      articlePublished(data.payload);
+      articlePublished(payload);
       break;
     case "Article updated":
-      articleUpdated(data.payload);
+      articleUpdated(payload);
       break;
     case "Article.Comment created":
-      commentCreated(data.payload);
+      commentCreated(payload);
       break;
     case "Article.Comment destroyed":
-      commentsUpdated(data.payload, -1);
-      commentDestroyed(data.payload);
+      commentDestroyed(payload);
       break;
     case "Article.Comment updated":
-      commentUpdated(data.payload);
+      commentUpdated(payload);
       break;
     case "User created":
-      userCreated(data.payload);
+      userCreated(payload);
       break;
     case "User confirmed":
-      userConfirmed(data.payload);
+      userConfirmed(payload);
       break;
   }
 };

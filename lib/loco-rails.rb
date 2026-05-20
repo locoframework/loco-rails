@@ -16,11 +16,17 @@ require 'loco/ws_connection_storage'
 
 module Loco
   module Priv
-    def self.new_emit(payload, to:, ws_only:, subject: nil)
-      return Sender.(to, payload) if ws_only
+    class << self
+      def new_emit(payload, to:, ws_only:, subject: nil)
+        data = {
+          payload: payload.except(:event, :type, :idempotency_key),
+          type: payload[:type],
+          idempotency_key: payload[:idempotency_key]
+        }
+        return Sender.(to, data) if ws_only
 
-      event = payload.delete(:event)
-      Broadcaster.(subject, event, payload:, recipients: to)
+        Broadcaster.(subject, payload[:event], payload: data, recipients: to)
+      end
     end
   end
 
