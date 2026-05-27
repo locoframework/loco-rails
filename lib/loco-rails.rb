@@ -4,7 +4,7 @@ require 'loco/broadcaster'
 require 'loco/config'
 require 'loco/rails/engine'
 require 'loco/hub'
-require 'loco/payload'
+require 'loco/data'
 require 'loco/permissions'
 require 'loco/permissions_presenter'
 require 'loco/sender'
@@ -25,7 +25,7 @@ module Loco
         }
         return Sender.(to, data) if ws_only
 
-        Broadcaster.(subject, payload[:event], payload: data, recipients: to)
+        Broadcaster.(subject, payload[:event], data:, recipients: to)
       end
     end
   end

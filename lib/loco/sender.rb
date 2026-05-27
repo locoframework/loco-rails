@@ -3,9 +3,9 @@
 module Loco
   class Sender
     class << self
-      def call(recipient_s, payload)
+      def call(recipient_s, data)
         recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
-        new.(recipients, Payload.(payload))
+        new.(recipients, Data.(data))
       end
     end
 

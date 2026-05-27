@@ -3,8 +3,8 @@
 module Loco
   class Broadcaster
     class << self
-      def call(obj, event, recipients:, payload:)
-        data = Payload.(payload)
+      def call(obj, event, recipients:, data:)
+        data = Data.(data)
         process_recipients(recipients).each do |recipient|
           notification = Notification.create!(
             obj:,
