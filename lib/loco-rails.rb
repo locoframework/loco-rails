@@ -18,11 +18,11 @@ module Loco
   module Priv
     class << self
       def new_emit(payload, to:, ws_only:, subject: nil)
-        data = {
+        data = Data.(
           payload: payload.except(:event, :type, :idempotency_key),
           type: payload[:type],
           idempotency_key: payload[:idempotency_key]
-        }
+        )
         return Sender.(to, data) if ws_only
 
         Broadcaster.(subject, payload[:event], data:, recipients: to)
