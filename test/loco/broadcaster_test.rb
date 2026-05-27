@@ -33,7 +33,9 @@ module Loco
       it 'can emit to a class of objects and a specific resource at the same time' do
         allow_any_instance_of(Loco::Notification).to receive(:compact).and_return(COMPACT_OBJ)
         allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
-        expect(Sender).to receive(:call).with(users(:jane), @payload)
+        sender = instance_double(Sender)
+        expect(Sender).to receive(:new).with(users(:jane)).and_return(sender)
+        expect(sender).to receive(:call).with(@payload)
         expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @payload)
         Broadcaster.(articles(:one), :created, recipients: [Admin::SupportMember, users(:jane)], data: nil)
       end

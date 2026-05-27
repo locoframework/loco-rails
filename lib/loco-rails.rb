@@ -23,7 +23,7 @@ module Loco
           type: payload[:type],
           idempotency_key: payload[:idempotency_key]
         )
-        return Sender.(to, data) if ws_only
+        return Sender.new(to).(data) if ws_only
 
         Broadcaster.(subject, payload[:event], data:, recipients: to)
       end

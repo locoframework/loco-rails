@@ -49,7 +49,7 @@ module Loco
       def send_notification(recipient, notification, sync_time)
         payload = { loco: { sync_time:, notification: notification.compact } }
         if notification.recipient_id
-          Sender.(recipient, payload)
+          Sender.new(recipient).(payload)
         else
           SenderJob.perform_later(recipient, payload)
         end

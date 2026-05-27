@@ -5,7 +5,7 @@ module Loco
     queue_as :loco
 
     def perform(recipient, payload)
-      Sender.(recipient, payload)
+      Sender.new(recipient).(payload)
     end
   end
 end
