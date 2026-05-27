@@ -5,10 +5,10 @@ module Loco
     class << self
       def call(data)
         data ||= {}
-        hash = data.except(:idempotency_key)
-        hash[:loco] ||= {}
-        hash[:loco][:idempotency_key] ||= data[:idempotency_key] || SecureRandom.hex
-        hash
+        new_data = data.except(:idempotency_key)
+        new_data[:loco] ||= {}
+        new_data[:loco][:idempotency_key] ||= data[:idempotency_key] || SecureRandom.hex
+        new_data
       end
     end
   end

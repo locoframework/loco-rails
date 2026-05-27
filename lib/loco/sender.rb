@@ -5,7 +5,7 @@ module Loco
     class << self
       def call(recipient_s, data)
         recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
-        new.(recipients, Data.(data))
+        new.(recipients, data)
       end
     end
 

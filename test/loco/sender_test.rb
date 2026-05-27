@@ -9,56 +9,48 @@ module Loco
     describe '.call' do
       before do
         setup_connections
-        @payload = { loco: { idempotency_key: 'foobarbaz' } }
+        @data = Data.(idempotency_key: 'foobarbaz')
       end
 
-      it 'sends payload via WS to recipients' do
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('random_uuid', @payload)
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#1', @payload)
-        Sender.([users(:zbig), 'random_uuid'], { idempotency_key: 'foobarbaz' })
+      it 'sends data via WS to recipients' do
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('random_uuid', @data)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#1', @data)
+        Sender.([users(:zbig), 'random_uuid'], @data)
       end
 
-      it 'does not mutate a passed payload' do
-        payload = { foo: 'bar' }
-        Sender.('foobarbaz', payload)
-        assert_equal({ foo: 'bar' }, payload)
+      it 'does not mutate a passed data' do
+        Sender.('foobarbaz', @data)
+        assert_equal(Data.(idempotency_key: 'foobarbaz'), @data)
       end
 
       it 'returns idempotency_key' do
         key = SecureRandom.hex
-        assert_equal key, Sender.(users(:zbig), { idempotency_key: key })
+        assert_equal key, Sender.(users(:zbig), Data.(idempotency_key: key))
       end
 
       it 'sends a passed idempotency key' do
         uuid = SecureRandom.uuid
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with(uuid, @payload)
-        Sender.(uuid, { idempotency_key: 'foobarbaz' })
-      end
-
-      it 'sends a generated idempotency key' do
-        uuid = SecureRandom.uuid
-        expect(SecureRandom).to receive(:hex) { 'foobarbaz' }
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with(uuid, @payload)
-        Sender.(uuid, {})
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with(uuid, @data)
+        Sender.(uuid, @data)
       end
 
       it 'accepts a hash with token' do
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#6', @payload)
-        Sender.({ 'token' => 'random-token' }, { idempotency_key: 'foobarbaz' })
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#6', @data)
+        Sender.({ 'token' => 'random-token' }, @data)
       end
 
       it 'accepts a hash with class' do
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#3', @payload)
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#3.1', @payload)
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#4', @payload)
-        Sender.({ 'class' => 'Admin::SupportMember' }, { idempotency_key: 'foobarbaz' })
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#3', @data)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#3.1', @data)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#4', @data)
+        Sender.({ 'class' => 'Admin::SupportMember' }, @data)
       end
 
       it 'sends to a given UUID only once' do
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#1', @payload).once
-        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#2', @payload).once
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#1', @data).once
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#2', @data).once
 
-        Sender.([users(:zbig), User], @payload)
+        Sender.([users(:zbig), User], @data)
       end
     end
   end
