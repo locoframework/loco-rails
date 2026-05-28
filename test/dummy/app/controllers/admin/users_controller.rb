@@ -5,13 +5,8 @@ module Admin
     before_action :set_user, only: %i[edit update destroy]
 
     def index
-      respond_to do |format|
-        format.html
-        format.json do
-          @users = User.order(created_at: :desc).paginate page: params[:page], per_page: 10
-          @count = User.count
-        end
-      end
+      @users = User.order(created_at: :desc).paginate page: params[:page], per_page: 10
+      @count = User.count
     end
 
     def show

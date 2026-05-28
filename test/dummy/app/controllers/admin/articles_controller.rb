@@ -3,17 +3,12 @@
 module Admin
   class ArticlesController < AdminController
     def published
-      respond_to do |format|
-        format.html { render }
-        format.json do
-          skope = Article.published
-          @articles = skope.order(published_at: :desc).includes(:user).paginate(
-            page: params[:page],
-            per_page: 4
-          )
-          @count = skope.count
-        end
-      end
+      skope = Article.published
+      @articles = skope.order(published_at: :desc).includes(:user).paginate(
+        page: params[:page],
+        per_page: 4
+      )
+      @count = skope.count
     end
 
     def show

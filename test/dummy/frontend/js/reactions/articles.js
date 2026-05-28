@@ -19,6 +19,10 @@ export const published = async ({ id }) => {
   }
 };
 
+export const destroyed = ({ id }) => {
+  store.dispatch({ type: "ARTICLE.REMOVE", id });
+};
+
 export const updated = async ({ id }) => {
   const findParams = { id, abbr: true };
   if (adminNamespace()) findParams.resource = "admin";

@@ -1,3 +1,17 @@
 <h1>Published Articles</h1>
 
 <section id="articles"></section>
+
+<script type="application/json" id="articles-data">
+  <%= raw @articles.map { |a|
+    {
+      id:             a.id,
+      title:          a.title,
+      text:           a.text,
+      author:         a.user&.username,
+      published_at:   a.published_at,
+      comments_count: a.comments.count,
+      admin_rate:     a.admin_rate
+    }
+  }.to_json %>
+</script>

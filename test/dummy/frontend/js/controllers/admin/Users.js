@@ -10,11 +10,13 @@ import renderUser from "views/admin/users/Show";
 import renderForm from "views/admin/users/Form";
 
 class Users {
-  async index() {
-    const resp = await User.get("all");
-    store.dispatch({ type: "USERS.SET", users: resp.resources });
+  index() {
+    const users = JSON.parse(
+      document.getElementById("users-data").textContent,
+    ).map((u) => new User(u));
+    store.dispatch({ type: "USERS.SET", users });
     createRoot(document.querySelector("table tbody")).render(
-      <UserList users={resp.resources} />,
+      <UserList users={users} />,
     );
   }
 

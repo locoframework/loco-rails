@@ -37,9 +37,11 @@ class User
     end
 
     test 'should remove article from the list on destroy' do
+      visit '/user/articles'
       title = articles(:one).title
+      assert_text title, wait: 5
       destroy_article :one
-      assert_not page.has_content? title
+      assert_no_text title, wait: 5
     end
 
     test 'should update number of comments if one was added' do

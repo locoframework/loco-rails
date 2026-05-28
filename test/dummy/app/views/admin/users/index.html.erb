@@ -13,3 +13,14 @@
   <tbody>
   </tbody>
 </table>
+
+<script type="application/json" id="users-data">
+  <%= raw @users.map { |u|
+    {
+      id:        u.id,
+      email:     u.email,
+      username:  u.username,
+      confirmed: u.confirmed?
+    }
+  }.to_json %>
+</script>

@@ -49,15 +49,17 @@ class Articles {
     }
   }
 
-  async index() {
+  index() {
     if (helpers.params.message === "deleted") {
       renderFlash({ alert: "Article has been deleted." });
     }
-    const resp = await Article.get("all");
-    store.dispatch({ type: "ARTICLES.SET", articles: resp.resources });
+    const articles = JSON.parse(
+      document.getElementById("articles-data").textContent,
+    ).map((a) => new Article(a));
+    store.dispatch({ type: "ARTICLES.SET", articles });
     createRoot(document.getElementById("article_list")).render(
       <ArticleList
-        articles={resp.resources}
+        articles={articles}
         onArticleDestroyed={onArticleDestroyed}
       />,
     );

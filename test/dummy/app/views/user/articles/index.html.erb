@@ -18,3 +18,15 @@
 <br>
 
 <%= link_to 'New Article', new_user_article_path %>
+
+<script type="application/json" id="articles-data">
+  <%= raw @articles.map { |a|
+    {
+      id:             a.id,
+      title:          a.title,
+      text:           a.text,
+      comments_count: a.comments.count,
+      published_at:   a.published_at
+    }
+  }.to_json %>
+</script>

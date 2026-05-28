@@ -23,11 +23,13 @@ const renderComment = async () => {
 };
 
 class Articles {
-  async published() {
-    const resp = await Article.get("published");
-    store.dispatch({ type: "ARTICLES.SET", articles: resp.resources });
+  published() {
+    const articles = JSON.parse(
+      document.getElementById("articles-data").textContent,
+    ).map((a) => new Article(a));
+    store.dispatch({ type: "ARTICLES.SET", articles });
     createRoot(document.getElementById("articles")).render(
-      <ArticleList articles={resp.resources} />,
+      <ArticleList articles={articles} />,
     );
   }
 

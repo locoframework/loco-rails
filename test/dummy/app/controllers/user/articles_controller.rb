@@ -9,14 +9,9 @@ class User
     DESTROY_ALERT = "Article can't be destroyed because is published."
 
     def index
-      respond_to do |format|
-        format.html { render }
-        format.json do
-          @articles = current_user.articles.order(:created_at)
-                                  .paginate page: params[:page], per_page: 5
-          @count = current_user.articles.count
-        end
-      end
+      @articles = current_user.articles.order(:created_at)
+                              .paginate page: params[:page], per_page: 5
+      @count = current_user.articles.count
     end
 
     def show

@@ -2,6 +2,7 @@ import getEnv from "initializers/loco-core";
 
 import {
   created as articleCreated,
+  destroyed as articleDestroyed,
   published as articlePublished,
   updated as articleUpdated,
 } from "reactions/articles";
@@ -53,6 +54,9 @@ export default async (data) => {
       break;
     case "Article updated":
       articleUpdated(payload);
+      break;
+    case "Article destroyed":
+      articleDestroyed(payload);
       break;
     case "Article.Comment created":
       commentCreated(payload);
