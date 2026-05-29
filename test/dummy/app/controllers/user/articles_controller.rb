@@ -15,13 +15,7 @@ class User
     end
 
     def show
-      respond_to do |format|
-        format.html { render }
-        format.json do
-          set_article
-          @abbr = params[:abbr].present?
-        end
-      end
+      @article = current_user.articles.find params[:id]
     end
 
     def new

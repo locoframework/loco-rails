@@ -11,13 +11,7 @@ module Main
     end
 
     def show
-      respond_to do |format|
-        format.json do
-          @article = Article.published.includes(:user).find params[:id]
-          @abbr = params[:abbr].present?
-        end
-        format.html { render }
-      end
+      @article = Article.published.includes(:user, :comments).find params[:id]
     end
   end
 end

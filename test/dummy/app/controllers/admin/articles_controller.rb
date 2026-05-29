@@ -17,7 +17,7 @@ module Admin
     end
 
     def edit
-      render
+      @article = Article.includes(:user, :comments).find params[:id]
     end
 
     def update

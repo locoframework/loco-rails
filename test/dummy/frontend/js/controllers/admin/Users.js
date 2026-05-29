@@ -20,8 +20,10 @@ class Users {
     );
   }
 
-  async show() {
-    const user = await User.find(helpers.params.id);
+  show() {
+    const user = new User(
+      JSON.parse(document.getElementById("user-data").textContent),
+    );
     renderUser(user);
   }
 

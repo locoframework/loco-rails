@@ -2,19 +2,14 @@
 
 module Admin
   class UsersController < AdminController
-    before_action :set_user, only: %i[edit update destroy]
+    before_action :set_user, only: %i[show edit update destroy]
 
     def index
       @users = User.order(created_at: :desc).paginate page: params[:page], per_page: 10
       @count = User.count
     end
 
-    def show
-      respond_to do |format|
-        format.html { render }
-        format.json { set_user }
-      end
-    end
+    def show; end
 
     def edit
       return if @user.confirmed?

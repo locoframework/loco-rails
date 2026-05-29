@@ -8,14 +8,16 @@ import LoadMoreLink from "containers/main/pages/LoadMoreLink";
 import ArticleList from "containers/main/pages/ArticleList";
 
 class Pages {
-  async index() {
+  index() {
     createRoot(document.getElementById("load_more_wrapper")).render(
       <LoadMoreLink />,
     );
-    const resp = await Article.get("all", { page: 1 });
-    store.dispatch({ type: "ARTICLES.SET", articles: resp.resources });
+    const articles = JSON.parse(
+      document.getElementById("articles-data").textContent,
+    ).map((a) => new Article(a));
+    store.dispatch({ type: "ARTICLES.SET", articles });
     createRoot(document.getElementById("articles")).render(
-      <ArticleList articles={resp.resources} />,
+      <ArticleList articles={articles} />,
     );
   }
 }

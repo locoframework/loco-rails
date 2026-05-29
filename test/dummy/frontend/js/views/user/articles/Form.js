@@ -69,19 +69,17 @@ export default {
     return unsubscribe;
   },
 
-  renderComments: async (articleId) => {
-    const resp = await Comment.all({ articleId: articleId });
+  renderComments: (articleId) => {
+    const comments = JSON.parse(
+      document.getElementById("comments-data").textContent,
+    ).map((c) => new Comment(c));
     store.dispatch({
       type: "COMMENTS.SET",
-      comments: resp.resources,
+      comments,
       articleId,
     });
     createRoot(document.getElementById("comments")).render(
-      <CommentList
-        articleId={articleId}
-        comments={resp.resources}
-        isAdmin={true}
-      />,
+      <CommentList articleId={articleId} comments={comments} isAdmin={true} />,
     );
   },
 };

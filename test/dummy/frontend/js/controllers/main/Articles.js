@@ -11,18 +11,18 @@ import Article from "models/Article";
 import Comment from "models/article/Comment";
 import ShowView from "views/main/articles/Show";
 
-const renderArticle = async () => {
-  const article = await Article.find(helpers.params.id);
+const renderArticle = () => {
+  const article = new Article(
+    JSON.parse(document.getElementById("article-data").textContent),
+  );
   store.dispatch({ type: "ARTICLES.SET", articles: [article] });
   ShowView.renderArticle(article);
 };
 
-const renderComments = async () => {
-  const res = await Comment.get("count", { articleId: helpers.params.id });
-  const comments = await Comment.all({
-    articleId: helpers.params.id,
-    total: res.total,
-  });
+const renderComments = () => {
+  const comments = JSON.parse(
+    document.getElementById("comments-data").textContent,
+  ).map((c) => new Comment(c));
   store.dispatch({
     type: "COMMENTS.SET",
     comments,
@@ -37,7 +37,7 @@ const renderComments = async () => {
 };
 
 class Articles {
-  async show() {
+  show() {
     const newComment = new Comment({ articleId: helpers.params.id });
     ShowView.renderForm(newComment);
     renderArticle();

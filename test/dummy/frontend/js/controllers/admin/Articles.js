@@ -1,6 +1,5 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { helpers } from "simplicit";
 
 import store from "store";
 
@@ -11,15 +10,19 @@ import renderForm from "views/admin/articles/Form";
 
 import ArticleList from "containers/admin/ArticleList";
 
-const renderArticle = async () => {
-  const article = await Article.find(helpers.params.id);
+const renderArticle = () => {
+  const article = new Article(
+    JSON.parse(document.getElementById("article-data").textContent),
+  );
   EditView.render(article);
   renderForm(article);
 };
 
-const renderComment = async () => {
-  const resp = await Comment.all({ articleId: helpers.params.id });
-  EditView.renderComments(resp.resources);
+const renderComment = () => {
+  const comments = JSON.parse(
+    document.getElementById("comments-data").textContent,
+  ).map((c) => new Comment(c));
+  EditView.renderComments(comments);
 };
 
 class Articles {
@@ -33,7 +36,7 @@ class Articles {
     );
   }
 
-  async edit() {
+  edit() {
     renderArticle();
     renderComment();
   }

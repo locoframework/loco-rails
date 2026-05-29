@@ -32,3 +32,22 @@
 <p>
   <%= link_to "Go back", root_url %>
 </p>
+
+<script type="application/json" id="article-data">
+  <%= raw({
+    id: @article.id,
+    title: @article.title,
+    text: @article.text,
+    author: @article.user&.username,
+    published_at: @article.published_at,
+    comments_count: @article.comments.count
+  }.to_json) %>
+</script>
+
+<script type="application/json" id="comments-data">
+  <%= raw(@article.comments.map { |c|
+    { id: c.id, article_id: c.article_id, author: c.author, text: c.text,
+      created_at: c.created_at, approved: c.approved, emotion: c.emotion,
+      pinned: c.pinned, admin_rate: c.admin_rate }
+  }.to_json) %>
+</script>

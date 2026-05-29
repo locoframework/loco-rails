@@ -14,21 +14,25 @@ import Comment from "models/article/Comment";
 import ArticleList from "containers/user/ArticleList";
 import CommentList from "containers/user/CommentList";
 
-const renderArticle = async () => {
-  const article = await Article.find(helpers.params.id);
+const renderArticle = () => {
+  const article = new Article(
+    JSON.parse(document.getElementById("article-data").textContent),
+  );
   store.dispatch({ type: "ARTICLES.SET", articles: [article] });
   ShowView(article);
 };
 
-const renderComments = async () => {
-  const resp = await Comment.all({ articleId: helpers.params.id });
+const renderComments = () => {
+  const comments = JSON.parse(
+    document.getElementById("comments-data").textContent,
+  ).map((c) => new Comment(c));
   store.dispatch({
     type: "COMMENTS.SET",
-    comments: resp.resources,
+    comments,
     articleId: helpers.params.id,
   });
   createRoot(document.getElementById("comments")).render(
-    <CommentList articleId={helpers.params.id} comments={resp.resources} />,
+    <CommentList articleId={helpers.params.id} comments={comments} />,
   );
 };
 
@@ -74,9 +78,11 @@ class Articles {
     this.unsubscribe = FormView.render(new Article());
   }
 
-  async edit() {
+  edit() {
     FormView.renderComments(helpers.params.id);
-    const article = await Article.find(helpers.params.id);
+    const article = new Article(
+      JSON.parse(document.getElementById("article-data").textContent),
+    );
     this.unsubscribe = FormView.render(article);
   }
 }
