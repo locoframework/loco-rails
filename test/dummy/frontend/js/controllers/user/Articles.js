@@ -4,6 +4,7 @@ import { helpers } from "simplicit";
 
 import store from "store";
 
+import { inlineList, inlineOne } from "utils/inline";
 import renderFlash from "views/shared/Flash";
 import ShowView from "views/user/articles/Show";
 import FormView from "views/user/articles/Form";
@@ -15,17 +16,13 @@ import ArticleList from "containers/user/ArticleList";
 import CommentList from "containers/user/CommentList";
 
 const renderArticle = () => {
-  const article = new Article(
-    JSON.parse(document.getElementById("article-data").textContent),
-  );
+  const article = inlineOne("article-data", Article);
   store.dispatch({ type: "ARTICLES.SET", articles: [article] });
   ShowView(article);
 };
 
 const renderComments = () => {
-  const comments = JSON.parse(
-    document.getElementById("comments-data").textContent,
-  ).map((c) => new Comment(c));
+  const comments = inlineList("comments-data", Comment);
   store.dispatch({
     type: "COMMENTS.SET",
     comments,
@@ -57,9 +54,7 @@ class Articles {
     if (helpers.params.message === "deleted") {
       renderFlash({ alert: "Article has been deleted." });
     }
-    const articles = JSON.parse(
-      document.getElementById("articles-data").textContent,
-    ).map((a) => new Article(a));
+    const articles = inlineList("articles-data", Article);
     store.dispatch({ type: "ARTICLES.SET", articles });
     createRoot(document.getElementById("article_list")).render(
       <ArticleList
@@ -80,10 +75,7 @@ class Articles {
 
   edit() {
     FormView.renderComments(helpers.params.id);
-    const article = new Article(
-      JSON.parse(document.getElementById("article-data").textContent),
-    );
-    this.unsubscribe = FormView.render(article);
+    this.unsubscribe = FormView.render(inlineOne("article-data", Article));
   }
 }
 

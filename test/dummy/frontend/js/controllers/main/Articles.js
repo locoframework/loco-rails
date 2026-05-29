@@ -4,6 +4,7 @@ import { helpers } from "simplicit";
 
 import store from "store";
 
+import { inlineList, inlineOne } from "utils/inline";
 import CommentList from "containers/main/articles/CommentList";
 import CommentsNumber from "containers/main/articles/CommentsNumber";
 
@@ -12,17 +13,13 @@ import Comment from "models/article/Comment";
 import ShowView from "views/main/articles/Show";
 
 const renderArticle = () => {
-  const article = new Article(
-    JSON.parse(document.getElementById("article-data").textContent),
-  );
+  const article = inlineOne("article-data", Article);
   store.dispatch({ type: "ARTICLES.SET", articles: [article] });
   ShowView.renderArticle(article);
 };
 
 const renderComments = () => {
-  const comments = JSON.parse(
-    document.getElementById("comments-data").textContent,
-  ).map((c) => new Comment(c));
+  const comments = inlineList("comments-data", Comment);
   store.dispatch({
     type: "COMMENTS.SET",
     comments,

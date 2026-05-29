@@ -5,6 +5,7 @@ import { UI } from "loco-js-ui";
 
 import store from "store";
 
+import { inlineList } from "utils/inline";
 import Comment from "models/article/Comment";
 
 import renderFlash from "views/shared/Flash";
@@ -70,9 +71,7 @@ export default {
   },
 
   renderComments: (articleId) => {
-    const comments = JSON.parse(
-      document.getElementById("comments-data").textContent,
-    ).map((c) => new Comment(c));
+    const comments = inlineList("comments-data", Comment);
     store.dispatch({
       type: "COMMENTS.SET",
       comments,
