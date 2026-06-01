@@ -12,7 +12,7 @@ export const created = async ({ id }) => {
 export const published = async ({ id }) => {
   if (adminNamespace()) {
     const article = await Article.find({ id, abbr: true, resource: "admin" });
-    store.dispatch({ type: "ARTICLES.PREPEND", articles: [article] });
+    store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
   } else {
     const article = await Article.find({ id, abbr: true });
     store.dispatch({ type: "ARTICLES.ADD", articles: [article] });

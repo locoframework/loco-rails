@@ -4,7 +4,7 @@ import { adminNamespace } from "services/namespace";
 
 export const created = async ({ id }) => {
   const user = await User.find(id);
-  store.dispatch({ type: "USERS.PREPEND", users: [user] });
+  store.dispatch({ type: "USERS.ADD", users: [user] });
 };
 
 export const confirmed = ({ id }) => {

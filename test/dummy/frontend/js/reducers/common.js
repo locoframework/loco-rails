@@ -6,17 +6,15 @@ export default (modelName, { nestedBy } = {}) => {
   const M = modelName.toUpperCase();
   const MS = `${M}S`;
 
+  const append = (current, items) =>
+    current.concat(items.filter((n) => !current.some((e) => e.id === n.id)));
+
   if (nestedBy) {
     return produce((draft = {}, action) => {
       const key = action[nestedBy];
       switch (action.type) {
         case `${MS}.ADD`:
-          if (!draft[key]) draft[key] = [];
-          draft[key] = draft[key].concat(action[plural]);
-          break;
-        case `${MS}.PREPEND`:
-          if (!draft[key]) draft[key] = [];
-          draft[key] = action[plural].concat(draft[key]);
+          draft[key] = append(draft[key] || [], action[plural]);
           break;
         case `${MS}.SET`:
           draft[key] = action[plural];
@@ -42,11 +40,7 @@ export default (modelName, { nestedBy } = {}) => {
   return produce((draft = [], action) => {
     switch (action.type) {
       case `${MS}.ADD`:
-        return draft.concat(
-          action[plural].filter((n) => !draft.some((e) => e.id === n.id)),
-        );
-      case `${MS}.PREPEND`:
-        return action[plural].concat(draft);
+        return append(draft, action[plural]);
       case `${MS}.SET`:
         return action[plural];
       case `${M}.REMOVE`:
