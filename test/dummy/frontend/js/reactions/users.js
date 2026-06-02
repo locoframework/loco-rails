@@ -9,7 +9,7 @@ export const created = async ({ id }) => {
 
 export const confirmed = ({ id }) => {
   if (adminNamespace()) {
-    store.dispatch({ type: "USER.UPDATE", user: { id, confirmed: true } });
+    store.dispatch({ type: "USERS.UPDATE", user: { id, confirmed: true } });
   } else {
     window.location.href = "/user/sessions/new?event=confirmed";
   }

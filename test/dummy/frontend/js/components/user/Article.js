@@ -11,7 +11,7 @@ function Article({ article, onArticleDestroyed }) {
     if (!confirm("Are you sure?")) return;
     const data = await article.delete(null);
     if (data.success) {
-      store.dispatch({ type: "ARTICLE.REMOVE", id: data.id });
+      store.dispatch({ type: "ARTICLES.REMOVE", id: data.id });
     }
     onArticleDestroyed(data);
   };

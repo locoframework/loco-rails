@@ -20,7 +20,7 @@ export const published = async ({ id }) => {
 };
 
 export const destroyed = ({ id }) => {
-  store.dispatch({ type: "ARTICLE.REMOVE", id });
+  store.dispatch({ type: "ARTICLES.REMOVE", id });
 };
 
 export const updated = async ({ id }) => {
@@ -29,14 +29,14 @@ export const updated = async ({ id }) => {
   const existing = findArticle(store.getState(), id);
   if (!existing) return;
   const article = await Article.find(findParams);
-  store.dispatch({ type: "ARTICLE.UPDATE", article });
+  store.dispatch({ type: "ARTICLES.UPDATE", article });
 };
 
 export const commentsUpdated = ({ article_id: articleId }, diff) => {
   const article = findArticle(store.getState(), articleId);
   if (!article) return;
   store.dispatch({
-    type: "ARTICLE.UPDATE",
+    type: "ARTICLES.UPDATE",
     article: { id: articleId, commentsCount: article.commentsCount + diff },
   });
 };
