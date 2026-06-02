@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
 
-import common from "./common";
+import resourceReducer from "./resourceReducer";
 
 export default combineReducers({
-  articles: common("article"),
-  comments: common("comment", { nestedBy: "articleId" }),
-  users: common("user"),
+  articles: resourceReducer("article"),
+  comments: resourceReducer("comment", { nestedBy: "articleId" }),
+  users: resourceReducer("user"),
 });
