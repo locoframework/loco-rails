@@ -4,33 +4,39 @@ module Loco
   class WsConnectionManager
     EXPIRATION = 60 * 3
 
-    def initialize(resource, opts = {})
-      if opts[:identifier]
-        @identifier = resource
-      else
-        @resource = resource
-      end
+    def initialize(resource)
+      @resource = resource
     end
 
     def add(uuid)
-      WsConnectionStorage.current.add(identifier, uuid)
-      WsConnectionStorage.current.add("uuid:#{uuid}", identifier)
+      WsConnectionStorage.instance.add(identifier, uuid)
+      WsConnectionStorage.instance.add("uuid:#{uuid}", identifier)
       update(uuid)
-      WsConnectionChecker.(identifier, skip: uuid)
+      drop_stale_connections(skip: uuid)
     end
 
     def del(uuid, skip_checker: false)
-      WsConnectionStorage.current.rem(identifier, uuid)
-      WsConnectionStorage.current.rem("uuid:#{uuid}", identifier)
-      WsConnectionStorage.current.del(uuid)
-      WsConnectionChecker.(identifier) unless skip_checker
+      WsConnectionStorage.instance.rem(identifier, uuid)
+      WsConnectionStorage.instance.rem("uuid:#{uuid}", identifier)
+      WsConnectionStorage.instance.del(uuid)
+      drop_stale_connections unless skip_checker
     end
 
     def update(uuid)
-      WsConnectionStorage.current.set(uuid, 'ok', ex: EXPIRATION)
+      WsConnectionStorage.instance.set(uuid, 'ok', ex: EXPIRATION)
     end
 
     private
+
+    # a connection is alive as long as its uuid key hasn't expired
+    def drop_stale_connections(skip: nil)
+      WsConnectionStorage.instance.members(identifier).each do |uuid|
+        next if uuid == skip
+        next if WsConnectionStorage.instance.get(uuid) == 'ok'
+
+        del(uuid, skip_checker: true)
+      end
+    end
 
     def identifier
       @identifier ||= WsConnectionIdentifier.(@resource)

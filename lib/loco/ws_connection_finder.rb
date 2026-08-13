@@ -4,7 +4,7 @@ module Loco
   class WsConnectionFinder
     class << self
       def call(resources, &block)
-        storage = WsConnectionStorage.current
+        storage = WsConnectionStorage.instance
         resources = [resources] unless resources.is_a?(Array)
         resources.each do |resource|
           case resource
@@ -21,8 +21,8 @@ module Loco
       private
 
       def search_the_hub(hub, &block)
-        WsConnectionStorage.current.members(hub.full_name).map do |identifier|
-          WsConnectionStorage.current.members(identifier).each(&block)
+        WsConnectionStorage.instance.members(hub.full_name).map do |identifier|
+          WsConnectionStorage.instance.members(identifier).each(&block)
         end
       end
     end

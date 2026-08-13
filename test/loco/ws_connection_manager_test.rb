@@ -3,24 +3,42 @@
 require 'test_helper'
 
 module Loco
-  class WsConnectionManagerTest < TCWithMocks
+  class WsConnectionManagerTest < TC
     before do
       @user = users(:zbig)
       @identifier = WsConnectionIdentifier.(@user)
-      @storage = WsConnectionStorage.current
-      @described_class = Loco::WsConnectionManager
-      @subject = @described_class.new(@user)
+      @storage = WsConnectionStorage.instance
+      @subject = WsConnectionManager.new(@user)
     end
 
-    describe 'initialization' do
-      it 'can accept an identifier' do
-        assert_equal 'foo', @described_class.new('foo', identifier: true).send(:identifier)
+    describe '#add' do
+      it 'adds UUID and it is considered connected' do
+        @subject.add('uuid1')
+        assert_equal 'ok', @storage.get('uuid1')
+        assert_equal ['uuid1'], @storage.members(@identifier)
       end
     end
 
-    describe 'checking connections' do
+    describe '#del' do
+      it 'deletes a key' do
+        @subject.add('uuid1')
+        @subject.del('uuid1')
+        assert_nil @storage.get('uuid1')
+        assert_empty @storage.members(@identifier)
+      end
+    end
+
+    describe '#update' do
+      it 'refreshes the connection state' do
+        @subject.add('uuid1')
+        @storage.set('uuid1', 'tmp-state')
+        @subject.update('uuid1')
+        assert_equal 'ok', @storage.get('uuid1')
+      end
+    end
+
+    describe 'stale connections' do
       before do
-        @payload = { loco: { ping: true } }
         @org_expiration = WsConnectionManager::EXPIRATION
         Kernel.silence_warnings { WsConnectionManager::EXPIRATION = 1 }
       end
@@ -29,54 +47,43 @@ module Loco
         Kernel.silence_warnings { WsConnectionManager::EXPIRATION = @org_expiration }
       end
 
-      it 'is run after add and del' do
-        uuid1 = 'UUID#1'
-        expect(WsConnectionChecker).to receive(:call).with(@identifier, skip: uuid1)
-        @subject.add(uuid1)
-        assert_equal 'ok', @storage.get(uuid1)
-        expect(WsConnectionChecker).to receive(:call).with(@identifier)
-        @subject.del(uuid1)
-      end
-    end
-
-    describe '#add' do
-      it 'adds UUID and it is considered connected' do
+      it 'keeps fresh connections' do
         @subject.add('uuid1')
-        assert_equal 'ok', WsConnectionStorage.current.get('uuid1')
+        @subject.add('uuid2')
+        assert_equal %w[uuid1 uuid2], @storage.members(@identifier).sort
+        assert_equal 'ok', @storage.get('uuid1')
       end
-    end
 
-    describe '#del' do
-      it 'deletes a key' do
+      it 'drops connections whose state has expired' do
         @subject.add('uuid1')
-        @subject.del('uuid1')
-        assert_nil WsConnectionStorage.current.get('uuid1')
+        sleep 2
+        @subject.add('uuid2')
+        assert_equal ['uuid2'], @storage.members(@identifier)
+        assert_empty @storage.members('uuid:uuid1')
       end
 
-      it 'calls out a checker' do
-        expect(WsConnectionChecker).to receive(:call).with("user:#{@user.id}")
+      it 'sweeps the remaining stale connections on del too' do
+        @subject.add('uuid1')
+        @subject.add('uuid2')
+        sleep 2
         @subject.del('uuid1')
+        assert_empty @storage.members(@identifier)
+        assert_empty @storage.members('uuid:uuid2')
       end
 
-      it 'can skip triggering a checker"' do
-        expect(WsConnectionChecker).to_not receive(:call)
+      it 'skips the sweep when asked — this is what stops del from recursing' do
+        @subject.add('uuid1')
+        @subject.add('uuid2')
+        sleep 2
         @subject.del('uuid1', skip_checker: true)
-      end
-    end
-
-    describe '#update' do
-      it do
-        @subject.add('uuid1')
-        @storage.set('h:uuid1', 'tmp-state')
-        @subject.update('uuid1')
-        assert_equal 'ok', WsConnectionStorage.current.get('uuid1')
+        assert_equal ['uuid2'], @storage.members(@identifier)
       end
     end
 
     describe 'private #identifier' do
       it 'returns a correct format of an identifier' do
         assert_equal "user:#{@user.id}", @subject.send(:identifier)
-        assert_equal 'foo', @described_class.new('foo').send(:identifier)
+        assert_equal 'foo', WsConnectionManager.new('foo').send(:identifier)
       end
     end
   end

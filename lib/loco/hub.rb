@@ -7,12 +7,12 @@ module Loco
     class << self
       def set(name, members)
         new(name).tap do |hub|
-          members.map { |member| hub.add_member(member) }
+          members.each { |member| hub.add_member(member) }
         end
       end
 
       def get(name)
-        return nil if WsConnectionStorage.current.type("s:#{full_name(name)}") != 'set'
+        return nil if WsConnectionStorage.instance.type("s:#{full_name(name)}") != 'set'
 
         new(name)
       end
@@ -30,25 +30,23 @@ module Loco
     end
 
     def add_member(member)
-      WsConnectionStorage.current.add(@full_name, WsConnectionIdentifier.(member))
+      WsConnectionStorage.instance.add(@full_name, WsConnectionIdentifier.(member))
     end
 
     def del_member(member)
-      WsConnectionStorage.current.rem(@full_name, WsConnectionIdentifier.(member))
+      WsConnectionStorage.instance.rem(@full_name, WsConnectionIdentifier.(member))
     end
 
     def include?(member)
-      WsConnectionStorage.current.member?(@full_name, WsConnectionIdentifier.(member))
+      WsConnectionStorage.instance.member?(@full_name, WsConnectionIdentifier.(member))
     end
 
     def destroy
-      raw_members.each do |member|
-        WsConnectionStorage.current.rem(@full_name, member)
-      end
+      WsConnectionStorage.instance.del_set(@full_name)
     end
 
     def raw_members
-      WsConnectionStorage.current.members(@full_name)
+      WsConnectionStorage.instance.members(@full_name)
     end
 
     def members(shallow: false)

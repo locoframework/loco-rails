@@ -6,12 +6,6 @@ module Loco
 
     attr_reader :storage
 
-    class << self
-      def current
-        instance
-      end
-    end
-
     def initialize
       @storage = Config.redis_instance
     end
@@ -20,32 +14,16 @@ module Loco
       storage.type(proper_key(key))
     end
 
-    def exists?(key)
-      storage.exists?(proper_key(key))
-    end
-
-    def get(key, hkey = nil)
-      if hkey.nil?
-        storage.get(proper_key("k:#{key}"))
-      else
-        storage.hget(proper_key("h:#{key}"), hkey)
-      end
+    def get(key)
+      storage.get(proper_key("k:#{key}"))
     end
 
     def set(key, val, opts = {})
-      if val.is_a?(Hash)
-        storage.hset(proper_key("h:#{key}"), val)
-      else
-        storage.set(proper_key("k:#{key}"), val, ex: opts[:ex])
-      end
+      storage.set(proper_key("k:#{key}"), val, ex: opts[:ex])
     end
 
-    def del(key, hkey = nil)
-      if hkey.nil?
-        storage.del(proper_key("k:#{key}"))
-      else
-        storage.hdel(proper_key("h:#{key}"), hkey)
-      end
+    def del(key)
+      storage.del(proper_key("k:#{key}"))
     end
 
     def scan(match: nil, all: false, &block)
@@ -57,14 +35,6 @@ module Loco
           storage.smembers(key).each(&block)
         end
       end
-    end
-
-    def scan_hash(key, &)
-      storage.hscan_each(proper_key("h:#{key}"), &)
-    end
-
-    def hlen(key)
-      storage.hlen(proper_key("h:#{key}"))
     end
 
     def add(key, val)
@@ -81,6 +51,10 @@ module Loco
 
     def rem(key, val)
       storage.srem(proper_key("s:#{key}"), val)
+    end
+
+    def del_set(key)
+      storage.del(proper_key("s:#{key}"))
     end
 
     private

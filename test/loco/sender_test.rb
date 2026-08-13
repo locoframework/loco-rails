@@ -9,7 +9,7 @@ module Loco
     describe '.call' do
       before do
         setup_connections
-        @data = Data.(idempotency_key: 'foobarbaz')
+        @data = { loco: { idempotency_key: 'foobarbaz' } }
       end
 
       it 'sends data via WS to recipients' do
@@ -20,12 +20,12 @@ module Loco
 
       it 'does not mutate a passed data' do
         Sender.new('foobarbaz').(@data)
-        assert_equal(Data.(idempotency_key: 'foobarbaz'), @data)
+        assert_equal({ loco: { idempotency_key: 'foobarbaz' } }, @data)
       end
 
       it 'returns idempotency_key' do
         key = SecureRandom.hex
-        assert_equal key, Sender.new(users(:zbig)).(Data.(idempotency_key: key))
+        assert_equal key, Sender.new(users(:zbig)).({ loco: { idempotency_key: key } })
       end
 
       it 'sends a passed idempotency key' do

@@ -19,23 +19,10 @@ module Loco
       private
 
       def process_recipients(recipients)
-        return [:all] if recipients.nil?
-
-        recipients = normalize_recipients(recipients)
+        recipients = (recipients.is_a?(Array) ? recipients : [recipients]).map { |e| e.nil? ? :all : e }
         return [:all] if recipients.include?(:all)
 
-        expand_recipients(recipients)
-      end
-
-      def normalize_recipients(recipients)
-        recipients = [recipients] unless recipients.is_a?(Array)
-        recipients.map { |e| e.nil? ? :all : e }
-      end
-
-      def expand_recipients(recipients)
-        recipients.map do |recipient|
-          recipient.is_a?(Hub) ? recipient.members(shallow: true) : recipient
-        end.flatten
+        recipients.map { |e| e.is_a?(Hub) ? e.members(shallow: true) : e }.flatten
       end
 
       def keify_recipient(recipient)

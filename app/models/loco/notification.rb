@@ -2,9 +2,6 @@
 
 module Loco
   class Notification < ApplicationRecord
-    FOR_OBJ_SQL_TMPL = 'recipient_class = ? AND recipient_id = ?'
-    FOR_CLASS_SQL_TMPL = 'recipient_class = ? AND recipient_id IS NULL'
-
     def self.table_name_prefix
       'loco_'
     end
@@ -18,19 +15,15 @@ module Loco
     end
 
     def obj=(val)
-      case val
-      when nil
-        # no-op
-      when Class
-        self.obj_class = val.to_s
-      when Array
-        klass, id = val
-        self.obj_class = klass.to_s
-        self.obj_id = id
-      else
-        self.obj_class = val.class.name
-        self.obj_id = val.id
-      end
+      return if val.nil?
+
+      klass, id = case val
+                  when Class then [val, nil]
+                  when Array then val
+                  else [val.class, val.id]
+                  end
+      self.obj_class = klass.to_s
+      self.obj_id = id
     end
 
     def recipient=(val)

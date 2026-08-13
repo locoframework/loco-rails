@@ -3,7 +3,7 @@
 module Loco
   class Notification
     class Fetcher
-      attr_accessor :max_size
+      attr_reader :max_size
 
       def initialize(opts)
         @synced_at = opts[:synced_at]
@@ -27,8 +27,10 @@ module Loco
 
       private
 
+      # a client without a sync point yet (loco-js sends `synced_at=null` on its
+      # first check) starts from now — it gets its sync point back in this response
       def sync_time
-        Time.zone.parse @synced_at
+        Time.zone.parse(@synced_at.to_s) || Time.current
       end
 
       def default_scope
@@ -36,40 +38,21 @@ module Loco
                     .where('created_at > ?', sync_time)
       end
 
-      # OPTIMIZE: one query
       def notifications
-        return @notifications if @notifications
-
-        notifications = notifications_for_all
-        notifications += notifications_behind_permissions
-        notifications += notifications_behind_token if @recipient_token
-        @notifications = notifications.sort_by(&:created_at)[0, max_size]
+        @notifications ||= scopes.reduce(:or).first(max_size)
       end
 
-      def notifications_for_all
-        default_scope.where(
-          recipient_class: nil,
-          recipient_id: nil,
-          recipient_token: nil
-        ).first(max_size)
+      def scopes
+        scopes = [default_scope.where(recipient_class: nil, recipient_id: nil, recipient_token: nil)]
+        scopes += @permissions.map { |resource| scope_for_resource(resource) }
+        scopes << default_scope.where(recipient_token: @recipient_token) if @recipient_token
+        scopes
       end
 
-      def notifications_behind_permissions
-        @permissions.inject([]) { |arr, resource| arr + notification_for_resource(resource) }
-      end
+      def scope_for_resource(resource)
+        return default_scope.where(recipient_class: resource.to_s, recipient_id: nil) if resource.instance_of?(Class)
 
-      def notifications_behind_token
-        default_scope.where(recipient_token: @recipient_token).first max_size
-      end
-
-      def notification_for_resource(resource)
-        if resource.instance_of?(Class)
-          return default_scope.where(Notification::FOR_CLASS_SQL_TMPL, resource.to_s)
-                              .first(max_size)
-        end
-        klass = resource.class.name
-        sql = "(#{Notification::FOR_OBJ_SQL_TMPL}) OR (#{Notification::FOR_CLASS_SQL_TMPL})"
-        default_scope.where(sql, klass, resource.id, klass).first(max_size)
+        default_scope.where(recipient_class: resource.class.name, recipient_id: [resource.id, nil])
       end
     end
   end

@@ -348,6 +348,7 @@ bin/rails test
     ```
 
 - **Breaking:** `Loco::Config#silence_logger` removed — use `c.log_level = :error` (or higher) to silence
+- **Breaking:** `GET /sync-time` removed — the sync time comes back with every notification fetch. **Requires loco-js >= 7.0.** Keep both libraries on the same major version: loco-js <= 6.3.0 calls this endpoint on init and after every WS disconnection, and treats a 404 as neither success nor failure, so it silently stops polling (WebSocket traffic still flows, which makes it easy to miss). During the upgrade deploy, tabs still running an old bundle lose polling until the page is reloaded
 - Added `c.log_level` config option (default `:info`)
 - `:subject` now accepts `[Class, id]` tuple — avoids `Klass.new(id: x)` allocation when only metadata is needed
 - Added `Loco::Permissions::Controller` and `Loco::Permissions::Connection` mixins. Both consume `c.resources = ->(ctx) { [...] }` config (declared once, used in both contexts). Connection mixin auto-runs `identified_by :loco_permissions` and assigns `[SecureRandom.uuid, *resources]` before `connect`. Older manual `loco_permissions` definitions still work; mixins are opt-in for cleaner setup

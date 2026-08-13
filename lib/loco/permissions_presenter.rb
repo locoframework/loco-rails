@@ -4,24 +4,13 @@ module Loco
   module PermissionsPresenter
     module_function
 
-    def indexed(loco_permissions, opts = {})
-      h = signed_in(loco_permissions).index_by do |o|
-        o.class.name.underscore.to_sym
-      end
-      if opts[:except] == :uuid
-        h.except(:string)
-      else
-        h
-      end
+    def indexed(loco_permissions, except: nil)
+      signed_in(loco_permissions, except:).index_by { |o| o.class.name.underscore.to_sym }
     end
 
-    def signed_in(loco_permissions, opts = {})
+    def signed_in(loco_permissions, except: nil)
       arr = loco_permissions.compact
-      if opts[:except] == :uuid
-        arr.grep_v(String)
-      else
-        arr
-      end
+      except == :uuid ? arr.grep_v(String) : arr
     end
   end
 end

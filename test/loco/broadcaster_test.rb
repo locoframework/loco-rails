@@ -27,7 +27,7 @@ module Loco
         allow_any_instance_of(Loco::Notification).to receive(:created_at).and_return(@time)
         expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @payload)
         Broadcaster.(articles(:one), :created, recipients: [Admin::SupportMember], data: nil)
-        assert_equal 1, Notification.where(Notification::FOR_CLASS_SQL_TMPL, 'Admin::SupportMember').count
+        assert_equal 1, Notification.where(recipient_class: 'Admin::SupportMember', recipient_id: nil).count
       end
 
       it 'can emit to a class of objects and a specific resource at the same time' do
