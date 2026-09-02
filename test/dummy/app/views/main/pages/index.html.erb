@@ -9,13 +9,13 @@
   <% end %>
 </p>
 
-<section id="articles"></section>
+<section id="articles" data-container-component="main-article"></section>
 
 <hr>
 
-<p id="load_more_wrapper"></p>
+<p id="load_more_wrapper" data-component="load-more"></p>
 
-<script type="application/json" id="articles-data">
+<script type="application/json" data-model="Article">
   <%= raw @articles.map { |a|
     {
       id:             a.id,

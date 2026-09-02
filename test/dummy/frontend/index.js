@@ -5,6 +5,7 @@ import "initializers/turbo-rails";
 import "initializers/loco-core";
 import loco from "initializers/loco";
 import "initializers/loco-ui";
+import "initializers/simplicit";
 import "validators/Vulgarity";
 import "locales";
 
