@@ -18,7 +18,7 @@ document.addEventListener("turbo:load", () => {
 
 ["turbo:click", "turbo:submit-start"].forEach((event) => {
   document.addEventListener(event, () => {
-    if (env !== null && env.controller.cleanup != null) {
+    if (env?.controller?.cleanup != null) {
       env.controller.cleanup();
       env.controller.cleanup = null;
     }
