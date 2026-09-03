@@ -12,13 +12,10 @@ function CommentList(props) {
   const [comments, setComments] = useState(props.comments);
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(() =>
-      setComments(commentsForArticle(store.getState(), articleId)),
-    );
-
-    return () => {
-      unsubscribe();
-    };
+    const read = () =>
+      setComments(commentsForArticle(store.getState(), articleId));
+    read(); // catch dispatches that landed between render and subscribe
+    return store.subscribe(read);
   }, []);
 
   if (comments.length === 0) return <p>No comments.</p>;

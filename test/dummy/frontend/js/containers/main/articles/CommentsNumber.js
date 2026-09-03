@@ -9,13 +9,10 @@ function CommentsNumber(props) {
   const [comments, setComments] = useState(props.comments);
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
+    const read = () =>
       setComments(commentsForArticle(store.getState(), props.articleId));
-    });
-
-    return () => {
-      unsubscribe();
-    };
+    read(); // catch dispatches that landed between render and subscribe
+    return store.subscribe(read);
   }, []);
 
   return <>{`${comments.length} comment${comments.length === 1 ? "" : "s"}`}</>;

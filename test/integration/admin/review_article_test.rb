@@ -11,6 +11,9 @@ module Admin
       sign_in
       click_on 'Articles'
       click_on 'Review'
+      # The page subscribes to the article in JS; emitting before that lands
+      # races the subscription, so wait until it has rendered.
+      assert_selector '#article_title', text: articles(:one).title
     end
 
     test 'should auto update an article' do

@@ -1,5 +1,6 @@
 import store from "store";
 import { findArticle, findComment } from "selectors";
+import Article from "models/Article";
 import Comment from "models/article/Comment";
 import { mainNamespace } from "services/namespace";
 import { commentsUpdated } from "reactions/articles";
@@ -7,7 +8,8 @@ import { commentsUpdated } from "reactions/articles";
 export const created = async ({ article_id: articleId, id }) => {
   const findParams = { articleId, id };
   if (mainNamespace()) findParams.resource = "main";
-  const article = findArticle(store.getState(), articleId);
+  const article =
+    Article.byId(articleId) ?? findArticle(store.getState(), articleId);
   if (!article) return;
   const comment = await Comment.find(findParams);
   if (comment === null) return;

@@ -9,13 +9,9 @@ function ArticleList(props) {
   const [articles, setArticles] = useState(props.articles);
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(() =>
-      setArticles(store.getState().articles),
-    );
-
-    return () => {
-      unsubscribe();
-    };
+    const read = () => setArticles(store.getState().articles);
+    read(); // catch dispatches that landed between render and subscribe
+    return store.subscribe(read);
   }, []);
 
   const list = articles.map((article) => (

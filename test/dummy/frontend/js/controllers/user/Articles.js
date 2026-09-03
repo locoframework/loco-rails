@@ -23,8 +23,10 @@ const renderArticle = () => {
 
 const renderComments = () => {
   const comments = inlineList("comments-data", Comment);
+  // ADD, not SET: the store outlives the page under Turbo, so a websocket
+  // comment may already be in it — a snapshot must merge, not clobber.
   store.dispatch({
-    type: "COMMENTS.SET",
+    type: "COMMENTS.ADD",
     comments,
     articleId: helpers.params.id,
   });

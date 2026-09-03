@@ -9,11 +9,9 @@ function UserList(props) {
   const [users, setUsers] = useState(props.users);
 
   useEffect(() => {
-    const unsubscribe = store.subscribe(() => setUsers(store.getState().users));
-
-    return () => {
-      unsubscribe();
-    };
+    const read = () => setUsers(store.getState().users);
+    read(); // catch dispatches that landed between render and subscribe
+    return store.subscribe(read);
   }, []);
 
   const list = users.map((user) => (
