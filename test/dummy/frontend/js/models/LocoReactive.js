@@ -3,11 +3,9 @@ import { Reactive } from "simplicit";
 
 const { Base } = Models;
 
-// A loco-js-model that is also a Simplicit Model: the server round-trips stay
-// loco's, the in-memory collection and re-rendering are Simplicit's.
 class LocoReactive extends Reactive(Base) {
-  static getIdentity() {
-    return this.identity ?? this.name;
+  static get identity() {
+    return this.name;
   }
 
   static async all(...args) {
