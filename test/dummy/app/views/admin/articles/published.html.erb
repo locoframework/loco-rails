@@ -1,8 +1,8 @@
 <h1>Published Articles</h1>
 
-<section id="articles"></section>
+<section id="articles" data-container-component="admin-article"></section>
 
-<script type="application/json" id="articles-data">
+<script type="application/json" data-model="Article">
   <%= raw @articles.map { |a|
     {
       id:             a.id,

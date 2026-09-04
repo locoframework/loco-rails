@@ -2,9 +2,6 @@ import { Component } from "simplicit";
 
 import DateService from "services/Date";
 
-const publishedOn = (date) =>
-  date ? new DateService(date).toString("short") : "";
-
 class Article extends Component {
   static name = "main-article";
 
@@ -20,7 +17,7 @@ class Article extends Component {
       <h2>${title}</h2>
       <p>
         <i>
-          ${author} wrote this on ${publishedOn(publishedAt)} /
+          ${author} wrote this on ${new DateService(publishedAt).toString("short")} /
           <a href="/articles/${id}#comments" class="comments_quantity">
             ${commentsCount} comment${commentsCount === 1 ? "" : "s"}
           </a>
