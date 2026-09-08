@@ -21,7 +21,11 @@ module Main
       comment = Comment.new comment_params
       if comment.save
         Loco.emit({ article_id: comment.article_id, event: :created }, subject: comment)
-        success_response(201, 'Your comment has been posted!')
+        success_response(
+          201,
+          'Your comment has been posted!',
+          comment.as_json(only: %i[id author text article_id created_at])
+        )
       else
         failure_response(400, comment.errors)
       end

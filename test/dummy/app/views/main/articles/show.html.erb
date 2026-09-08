@@ -3,14 +3,17 @@
   <p><i>
     <span id='author'></span> wrote this on
     <span id='pub_date'></span> /
-    <a id='comments_count' href='#comments'></a>
+    <a id='comments_count' href='#comments' data-component="comments-count"></a>
   </i></p>
   <section id='text'></section>
 </article>
 
 <h3>Comments</h3>
 
-<section id='comments' class='bottom-space'></section>
+<section id='comments' class='bottom-space'>
+  <p id="no_comments" data-component="no-comments">No comments.</p>
+  <div data-container-component="main-comment"></div>
+</section>
 
 <%= form_for [Article.new(id: 0), Comment.new] do |f| %>
   <div class="field" data-attr="author">
@@ -44,7 +47,7 @@
   }.to_json) %>
 </script>
 
-<script type="application/json" id="comments-data">
+<script type="application/json" data-model="Comment">
   <%= raw(@article.comments.map { |c|
     { id: c.id, article_id: c.article_id, author: c.author, text: c.text,
       created_at: c.created_at, approved: c.approved, emotion: c.emotion,
