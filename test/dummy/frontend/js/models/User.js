@@ -1,7 +1,10 @@
-import { Models } from "loco-js-model";
+import LocoReactive from "models/LocoReactive";
+import AdminUser from "components/admin/User";
 
-class User extends Models.Base {
-  static identity = "User";
+class User extends LocoReactive {
+  static name = "User";
+
+  static components = [AdminUser];
 
   static resources = {
     url: "/users",

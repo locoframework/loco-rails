@@ -1,7 +1,12 @@
-import { Models } from "loco-js-model";
+import LocoReactive from "models/LocoReactive";
+import CommentsCount from "components/main/CommentsCount";
+import MainComment from "components/main/Comment";
+import NoComments from "components/main/NoComments";
 
-class Comment extends Models.Base {
-  static identity = "Article.Comment";
+class Comment extends LocoReactive {
+  static name = "Article.Comment";
+
+  static components = [CommentsCount, MainComment, NoComments];
 
   static remoteName = "Comment";
 

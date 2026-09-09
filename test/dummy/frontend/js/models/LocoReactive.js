@@ -24,7 +24,9 @@ class LocoReactive extends Reactive(Base) {
     if (!resp.success) return resp;
 
     if (isCreate) {
-      this.id = resp.id;
+      // The create response carries the record the server actually built —
+      // id, timestamps, defaults — so assign it rather than fetching it back.
+      this.update({ id: resp.data?.id ?? resp.id, ...resp.data });
       this.constructor.add(this);
     } else {
       this.update(partial);
@@ -38,8 +40,11 @@ class LocoReactive extends Reactive(Base) {
     return resp;
   }
 
+  // Accepts either attribute names or the server's remote names, so a
+  // response payload can be assigned as-is.
   update(partial = {}) {
-    for (const [key, val] of Object.entries(partial)) this.assignAttr(key, val);
+    for (const [key, val] of Object.entries(partial))
+      this.assignAttr(this.getAttrName(key), val);
     return this.rerender();
   }
 

@@ -14,6 +14,7 @@ const findParams = (id) => {
 export const created = async ({ id }) => {
   if (!userNamespace()) return;
   const article = await Article.find({ id, abbr: true });
+  Article.add(article);
   store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
 };
 

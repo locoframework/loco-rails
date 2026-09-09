@@ -12,7 +12,6 @@ import FormView from "views/user/articles/Form";
 import Article from "models/Article";
 import Comment from "models/article/Comment";
 
-import ArticleList from "containers/user/ArticleList";
 import CommentList from "containers/user/CommentList";
 
 const renderArticle = () => {
@@ -35,11 +34,6 @@ const renderComments = () => {
   );
 };
 
-const onArticleDestroyed = (res) => {
-  if (res.success) renderFlash({ notice: res.notice });
-  else renderFlash({ alert: res.alert });
-};
-
 class Articles {
   initialize() {
     this.unsubscribe = null;
@@ -56,14 +50,6 @@ class Articles {
     if (helpers.params.message === "deleted") {
       renderFlash({ alert: "Article has been deleted." });
     }
-    const articles = inlineList("articles-data", Article);
-    store.dispatch({ type: "ARTICLES.SET", articles });
-    createRoot(document.getElementById("article_list")).render(
-      <ArticleList
-        articles={articles}
-        onArticleDestroyed={onArticleDestroyed}
-      />,
-    );
   }
 
   show() {

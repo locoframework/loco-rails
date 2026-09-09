@@ -6,9 +6,8 @@ import User from "controllers/User";
 
 import Article from "models/Article";
 import Comment from "models/article/Comment";
-import CommentsCount from "components/main/CommentsCount";
+import UserModel from "models/User";
 import LoadMore from "components/main/LoadMore";
-import NoComments from "components/main/NoComments";
 
 const Controllers = {
   Admin,
@@ -21,8 +20,8 @@ const Controllers = {
 document.addEventListener("DOMContentLoaded", () => {
   start({
     root: document,
-    models: [Article, Comment],
-    components: [CommentsCount, LoadMore, NoComments],
+    models: [Article, Comment, UserModel],
+    components: [LoadMore],
   });
 });
 
