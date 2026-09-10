@@ -1,12 +1,22 @@
 import LocoReactive from "models/LocoReactive";
+import AdminComment from "components/admin/Comment";
 import CommentsCount from "components/main/CommentsCount";
 import MainComment from "components/main/Comment";
 import NoComments from "components/main/NoComments";
+import UserComment from "components/user/Comment";
+import UserCommentAdmin from "components/user/CommentAdmin";
 
 class Comment extends LocoReactive {
   static name = "Article.Comment";
 
-  static components = [CommentsCount, MainComment, NoComments];
+  static components = [
+    AdminComment,
+    CommentsCount,
+    MainComment,
+    NoComments,
+    UserComment,
+    UserCommentAdmin,
+  ];
 
   static remoteName = "Comment";
 

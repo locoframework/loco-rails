@@ -12,6 +12,8 @@
 
 <section id="comments">
   <h4>Comments</h4>
+  <p id="no_comments" data-component="no-comments">No comments.</p>
+  <div data-container-component="user-comment"></div>
 </section>
 
 <%= link_to 'Edit', edit_user_article_path(id: 0), id: "edit_link" %> |
@@ -27,7 +29,7 @@
   }.to_json) %>
 </script>
 
-<script type="application/json" id="comments-data">
+<script type="application/json" data-model="Article.Comment">
   <%= raw(@article.comments.map { |c|
     { id: c.id, article_id: c.article_id, author: c.author, text: c.text,
       created_at: c.created_at, approved: c.approved, emotion: c.emotion,

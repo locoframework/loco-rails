@@ -40,6 +40,15 @@ class LocoReactive extends Reactive(Base) {
     return resp;
   }
 
+  async updateAttribute(attr, value = this[attr]) {
+    const previous = this[attr];
+    this.assignAttr(attr, value);
+    const resp = await super.updateAttribute(attr);
+    if (resp.success) this.rerender();
+    else this.assignAttr(attr, previous);
+    return resp;
+  }
+
   // Accepts either attribute names or the server's remote names, so a
   // response payload can be assigned as-is.
   update(partial = {}) {

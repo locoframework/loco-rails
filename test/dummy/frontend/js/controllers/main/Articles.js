@@ -1,7 +1,5 @@
 import { helpers } from "simplicit";
 
-import store from "store";
-
 import { inlineOne } from "utils/inline";
 
 import Article from "models/Article";
@@ -10,7 +8,6 @@ import ShowView from "views/main/articles/Show";
 
 const renderArticle = () => {
   const article = inlineOne("article-data", Article);
-  store.dispatch({ type: "ARTICLES.SET", articles: [article] });
   ShowView.renderArticle(article);
 };
 

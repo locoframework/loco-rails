@@ -1,39 +1,32 @@
-import store from "store";
-import { findArticle, findComment } from "selectors";
-import Article from "models/Article";
+import { helpers } from "simplicit";
+
 import Comment from "models/article/Comment";
 import { mainNamespace } from "services/namespace";
 import { commentsUpdated } from "reactions/articles";
 
+// Every page that lists comments is article-scoped, so the id in the URL is
+// the article whose comments are on screen. Without this, a comment on another
+// article would join the collection and render in the wrong list.
+const onArticlePage = (articleId) => helpers.params.id === articleId;
+
 export const created = async ({ article_id: articleId, id }) => {
+  commentsUpdated({ article_id: articleId }, 1);
+  if (!onArticlePage(articleId)) return;
+
   const findParams = { articleId, id };
   if (mainNamespace()) findParams.resource = "main";
-  const article =
-    Article.byId(articleId) ?? findArticle(store.getState(), articleId);
-  if (!article) return;
   const comment = await Comment.find(findParams);
   if (comment === null) return;
   Comment.add(comment);
-  store.dispatch({ type: "COMMENTS.ADD", comments: [comment], articleId });
-  commentsUpdated({ article_id: articleId }, 1);
 };
 
 export const destroyed = ({ article_id: articleId, id }) => {
   Comment.byId(id)?.del();
-  store.dispatch({ type: "COMMENTS.REMOVE", id, articleId });
   commentsUpdated({ article_id: articleId }, -1);
 };
 
-export const updated = async ({ article_id: articleId, id }) => {
+export const updated = async ({ id }) => {
   const record = Comment.byId(id);
-  const existing = findComment(store.getState(), id, { parentId: articleId });
-  if (!record && !existing) return;
-  const reloadedComment = await (record ?? existing).reload();
-  record?.update(reloadedComment);
-  if (existing)
-    store.dispatch({
-      type: "COMMENTS.UPDATE",
-      comment: reloadedComment,
-      articleId,
-    });
+  if (!record) return;
+  record.update(await record.reload());
 };

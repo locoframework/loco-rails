@@ -1,6 +1,5 @@
-import { subscribe } from "loco-js";
+import { emit, subscribe } from "loco-js";
 
-import loco from "initializers/loco";
 import Room from "models/Room";
 
 import renderFlash from "views/shared/Flash";
@@ -37,7 +36,7 @@ const handleSendingMessage = (roomId) => {
     .addEventListener("keypress", (event) => {
       if (event.keyCode !== 13) return;
       event.preventDefault();
-      loco.emit({
+      emit({
         type: "NEW_MESSAGE",
         txt: event.target.value,
         room_id: roomId,
@@ -50,7 +49,7 @@ const handleSendingMessage = (roomId) => {
 
 const heartbeat = (roomId) => {
   const intervalId = setInterval(() => {
-    loco.emit({ type: "HEARTBEAT", room_id: roomId });
+    emit({ type: "HEARTBEAT", room_id: roomId });
     console.log("heartbeat", roomId); // TODO: remove
   }, 3000);
   return () => clearInterval(intervalId);

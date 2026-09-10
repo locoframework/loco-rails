@@ -1,6 +1,5 @@
-import { inlineList, inlineOne } from "utils/inline";
+import { inlineOne } from "utils/inline";
 import Article from "models/Article";
-import Comment from "models/article/Comment";
 import EditView from "views/admin/articles/Edit";
 import renderForm from "views/admin/articles/Form";
 
@@ -10,14 +9,9 @@ const renderArticle = () => {
   renderForm(article);
 };
 
-const renderComment = () => {
-  EditView.renderComments(inlineList("comments-data", Comment));
-};
-
 class Articles {
   edit() {
     renderArticle();
-    renderComment();
   }
 }
 

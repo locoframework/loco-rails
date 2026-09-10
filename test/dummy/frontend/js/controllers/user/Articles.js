@@ -1,37 +1,15 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
 import { helpers } from "simplicit";
 
-import store from "store";
-
-import { inlineList, inlineOne } from "utils/inline";
+import { inlineOne } from "utils/inline";
 import renderFlash from "views/shared/Flash";
 import ShowView from "views/user/articles/Show";
 import FormView from "views/user/articles/Form";
 
 import Article from "models/Article";
-import Comment from "models/article/Comment";
-
-import CommentList from "containers/user/CommentList";
 
 const renderArticle = () => {
   const article = inlineOne("article-data", Article);
-  store.dispatch({ type: "ARTICLES.SET", articles: [article] });
   ShowView(article);
-};
-
-const renderComments = () => {
-  const comments = inlineList("comments-data", Comment);
-  // ADD, not SET: the store outlives the page under Turbo, so a websocket
-  // comment may already be in it — a snapshot must merge, not clobber.
-  store.dispatch({
-    type: "COMMENTS.ADD",
-    comments,
-    articleId: helpers.params.id,
-  });
-  createRoot(document.getElementById("comments")).render(
-    <CommentList articleId={helpers.params.id} comments={comments} />,
-  );
 };
 
 class Articles {
@@ -54,7 +32,6 @@ class Articles {
 
   show() {
     renderArticle();
-    renderComments();
   }
 
   new() {
@@ -62,7 +39,6 @@ class Articles {
   }
 
   edit() {
-    FormView.renderComments(helpers.params.id);
     this.unsubscribe = FormView.render(inlineOne("article-data", Article));
   }
 }

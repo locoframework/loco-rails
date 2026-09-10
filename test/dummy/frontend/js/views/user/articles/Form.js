@@ -1,16 +1,7 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
 import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
-import store from "store";
-
-import { inlineList } from "utils/inline";
-import Comment from "models/article/Comment";
-
 import renderFlash from "views/shared/Flash";
-
-import CommentList from "containers/user/CommentList";
 
 const displayChanges = (article) => {
   for (const [attrib] of Object.entries(article.changes())) {
@@ -59,7 +50,6 @@ const handleApplyingChanges = (form) => {
 
 export default {
   render: (article) => {
-    store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
     const unsubscribe = subscribe({
       to: article,
       with: createReceivedMessage(article),
@@ -68,19 +58,5 @@ export default {
     form.render();
     handleApplyingChanges(form);
     return unsubscribe;
-  },
-
-  renderComments: (articleId) => {
-    const comments = inlineList("comments-data", Comment);
-    // ADD, not SET: the store outlives the page under Turbo, so a websocket
-    // comment may already be in it — a snapshot must merge, not clobber.
-    store.dispatch({
-      type: "COMMENTS.ADD",
-      comments,
-      articleId,
-    });
-    createRoot(document.getElementById("comments")).render(
-      <CommentList articleId={articleId} comments={comments} isAdmin={true} />,
-    );
   },
 };

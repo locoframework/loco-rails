@@ -14,20 +14,14 @@
   "dependencies": {
     "@hotwired/turbo-rails": "^8.0.16",
     "@rails/actioncable": "^8.0.201",
-    "immer": "^10.1.1",
     "loco-js": "/Users/zbigniewhumeniuk/dev/libs/js/loco-js",
     "simplicit": "/Users/zbigniewhumeniuk/dev/libs/js/simplicit",
     "loco-js-model": "/Users/zbigniewhumeniuk/dev/libs/js/loco-js-model",
-    "loco-js-ui": "^6.0.1",
-    "prop-types": "^15.8.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "redux": "^5.0.1"
+    "loco-js-ui": "^6.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
-    "@babel/preset-react": "^7.27.1",
     "@eslint/js": "^9.34.0",
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
@@ -37,7 +31,6 @@
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
