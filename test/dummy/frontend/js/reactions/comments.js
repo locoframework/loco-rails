@@ -9,8 +9,9 @@ import { commentsUpdated } from "reactions/articles";
 // article would join the collection and render in the wrong list.
 const onArticlePage = (articleId) => helpers.params.id === articleId;
 
-export const created = async ({ article_id: articleId, id }) => {
-  commentsUpdated({ article_id: articleId }, 1);
+export const created = async (payload) => {
+  const { article_id: articleId, id } = payload;
+  commentsUpdated(payload);
   if (!onArticlePage(articleId)) return;
 
   const findParams = { articleId, id };
@@ -20,9 +21,9 @@ export const created = async ({ article_id: articleId, id }) => {
   Comment.add(comment);
 };
 
-export const destroyed = ({ article_id: articleId, id }) => {
-  Comment.byId(id)?.del();
-  commentsUpdated({ article_id: articleId }, -1);
+export const destroyed = (payload) => {
+  Comment.byId(payload.id)?.del();
+  commentsUpdated(payload);
 };
 
 export const updated = async ({ id }) => {

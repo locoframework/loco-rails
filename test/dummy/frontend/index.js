@@ -3,13 +3,14 @@ import "global.css";
 
 import "initializers/turbo-rails";
 import "initializers/simplicit";
-import loco from "initializers/loco";
-import "initializers/loco-ui";
+import "initializers/loco";
 import "validators/Vulgarity";
 import "locales";
 
+import { getLoco } from "services/loco";
+
 // for testing purposes only
 window.test = {
-  getLine: () => loco.getLine(),
-  getWire: () => loco.getWire(),
+  getLine: () => getLoco().getLine(),
+  getWire: () => getLoco().getWire(),
 };

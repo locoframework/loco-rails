@@ -2,8 +2,7 @@
 
 <section id="articles" data-container-component="admin-article"></section>
 
-<script type="application/json" data-model="Article">
-  <%= raw @articles.map { |a|
+<%= loco_model_records "Article", @articles.map { |a|
     {
       id:             a.id,
       title:          a.title,
@@ -13,5 +12,4 @@
       comments_count: a.comments.count,
       admin_rate:     a.admin_rate
     }
-  }.to_json %>
-</script>
+  } %>

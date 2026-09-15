@@ -1,5 +1,7 @@
 import { init, start } from "simplicit";
 
+import { getLoco } from "services/loco";
+
 import Admin from "controllers/Admin";
 import Main from "controllers/Main";
 import User from "controllers/User";
@@ -22,6 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
     root: document,
     models: [Article, Comment, UserModel],
     components: [LoadMore],
+    // A server-rendered snapshot is authoritative only as of the moment it was
+    // rendered, and loading it replaces the collection. Anything that happened
+    // after that — a notification handled while the page was still in flight —
+    // has to be applied again on top of it.
+    onHydrate: (asOf) => getLoco().replaySince(asOf),
   });
 });
 

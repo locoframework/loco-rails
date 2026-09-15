@@ -73,10 +73,8 @@
   }.to_json) %>
 </script>
 
-<script type="application/json" data-model="Article.Comment">
-  <%= raw(@article.comments.map { |c|
+<%= loco_model_records "Article.Comment", @article.comments.map { |c|
     { id: c.id, article_id: c.article_id, author: c.author, text: c.text,
       created_at: c.created_at, approved: c.approved, emotion: c.emotion,
       pinned: c.pinned, admin_rate: c.admin_rate }
-  }.to_json) %>
-</script>
+  } %>

@@ -2,6 +2,8 @@
 
 require 'loco/broadcaster'
 require 'loco/config'
+require 'loco/current'
+require 'loco/helpers'
 require 'loco/rails/engine'
 require 'loco/hub'
 require 'loco/permissions'

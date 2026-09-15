@@ -15,8 +15,7 @@
 
 <p id="load_more_wrapper" data-component="load-more"></p>
 
-<script type="application/json" data-model="Article">
-  <%= raw @articles.map { |a|
+<%= loco_model_records "Article", @articles.map { |a|
     {
       id:             a.id,
       title:          a.title,
@@ -25,5 +24,4 @@
       published_at:   a.published_at,
       comments_count: a.comments.count
     }
-  }.to_json %>
-</script>
+  } %>

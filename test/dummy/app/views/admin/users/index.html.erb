@@ -14,13 +14,11 @@
   </tbody>
 </table>
 
-<script type="application/json" data-model="User">
-  <%= raw @users.map { |u|
+<%= loco_model_records "User", @users.map { |u|
     {
       id:        u.id,
       email:     u.email,
       username:  u.username,
       confirmed: u.confirmed?
     }
-  }.to_json %>
-</script>
+  } %>

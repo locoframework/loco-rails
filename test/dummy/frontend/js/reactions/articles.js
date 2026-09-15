@@ -26,7 +26,10 @@ export const updated = async ({ id }) => {
   record.update(await Article.find(findParams(id)));
 };
 
-export const commentsUpdated = ({ article_id: articleId }, diff) => {
-  const record = Article.byId(articleId);
-  record?.update({ commentsCount: record.commentsCount + diff });
+export const commentsUpdated = ({
+  article_id: articleId,
+  comments_count: count,
+}) => {
+  if (count == null) return;
+  Article.byId(articleId)?.update({ commentsCount: count });
 };

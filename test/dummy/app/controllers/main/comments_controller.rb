@@ -20,7 +20,8 @@ module Main
     def create
       comment = Comment.new comment_params
       if comment.save
-        Loco.emit({ article_id: comment.article_id, event: :created }, subject: comment)
+        Loco.emit({ article_id: comment.article_id, event: :created,
+                    comments_count: comment.article.comments.count }, subject: comment)
         success_response(
           201,
           'Your comment has been posted!',

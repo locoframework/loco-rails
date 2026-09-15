@@ -1,5 +1,6 @@
 import { Component } from "simplicit";
-import { emit } from "loco-js";
+
+import { getLoco } from "services/loco";
 
 class User extends Component {
   static name = "admin-user";
@@ -20,7 +21,7 @@ class User extends Component {
   connect() {
     this.on("ping", "click", (e) => {
       e.preventDefault();
-      emit({ type: "PING", user_id: this.model.id });
+      getLoco().emit({ type: "PING", user_id: this.model.id });
     });
   }
 }

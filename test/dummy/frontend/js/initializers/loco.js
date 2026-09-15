@@ -1,7 +1,9 @@
 import { init, connectWithModel } from "loco-js";
-import { connector } from "loco-js-model";
+import { Config, connector, I18n } from "loco-js-model";
+import { connect } from "loco-js-ui";
 import { createConsumer } from "@rails/actioncable";
 
+import { setLoco } from "services/loco";
 import NotificationCenter from "services/NotificationCenter";
 
 import Article from "models/Article";
@@ -32,4 +34,13 @@ const loco = init({
   },
 });
 
-export default loco;
+setLoco(loco);
+
+// loco-js-ui reads the Wire off the instance the moment it connects, so it has
+// to run here rather than in an initializer of its own whose ordering against
+// this one nothing enforces.
+connect({
+  getLocale: () => Config.locale,
+  loco,
+  I18n,
+});

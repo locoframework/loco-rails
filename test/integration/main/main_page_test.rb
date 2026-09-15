@@ -88,7 +88,8 @@ module Main
 
     def destroy_comment(comment)
       comment.destroy
-      Loco.emit({ event: :destroyed, article_id: comment.article_id }, subject: comment)
+      Loco.emit({ event: :destroyed, article_id: comment.article_id,
+                  comments_count: comment.article.comments.count }, subject: comment)
       perform_enqueued_jobs
     end
 

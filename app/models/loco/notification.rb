@@ -51,7 +51,7 @@ module Loco
     end
 
     def compact
-      [obj_class, obj_id, event, data]
+      [obj_class, obj_id, event, data, created_at.iso8601(6)]
     end
 
     private

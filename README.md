@@ -311,6 +311,54 @@ The `received_message` instance method is called for each message with 2 argumen
 
 See [working example](https://github.com/locoframework/loco-rails/blob/master/test/dummy/app/services/loco/notification_center.rb).
 
+## 🌱 Seeding a page — `loco_model_records`
+
+Renders the snapshot a client-side model layer hydrates from. Pass the model name and its records:
+
+```erb
+<%= loco_model_records "Article", @articles.map { |a|
+  { id: a.id, title: a.title, comments_count: a.comments.count }
+} %>
+```
+
+It emits:
+
+```html
+<script type="application/json" data-model="Article" data-as-of="2026-09-14T04:20:50.577026Z">[{"id":1,"title":"Hello","comments_count":2}]</script>
+```
+
+JSON is escaped with `json_escape`, so nothing in the data can close the script tag.
+
+### Why `data-as-of`
+
+A rendered page and the notification stream are two writers to one client-side store, and the page is only authoritative **as of the moment it was rendered**. Hydration replaces the collection, so a notification handled while the page was still in flight gets erased:
+
+```
+T0  request starts           data-as-of = T0
+T1  query runs               snapshot = world as of T1
+T2  notification created     client applies it
+T3  page hydrates            snapshot replaces it — the T2 write is gone
+```
+
+`data-as-of` is a position on the **same clock as `Notification#created_at`**, so the client can replay exactly the notifications the snapshot does not already contain — those stamped at or after it. Without a cutoff you must either replay nothing (the write stays lost) or replay everything (a round trip per handler, on every navigation).
+
+It is captured in a `prepend_before_action`, **before the action queries anything** (`Loco::Current.as_of`), so it can never be later than the data it describes. Erring early costs a redundant replay; erring late loses the write.
+
+### On the client
+
+Every notification carries its own `sync_time` as the last element of its wire tuple — `[obj_class, obj_id, event, data, sync_time]` — on both the polling and WebSocket paths. With [Loco-JS](https://github.com/locoframework/loco-js) and [Simplicit](https://github.com/locoframework/simplicit):
+
+```js
+start({
+  models: [Article],
+  onHydrate: (asOf) => getLoco().replaySince(asOf),
+});
+```
+
+⚠️ **Replayed handlers must be idempotent.** Assign absolute values the server sent, never deltas — `commentsCount: payload.comments_count`, not `record.commentsCount + 1`. A relative write double-counts on replay, and cannot be reconciled against a cutoff at all. Absolute writes also stop a *missed* notification from causing permanent drift.
+
+Only notifications tied to a record (`obj_class` + `event`) are replayed. Transient ones — a chat message, `ws_only: true` — are not state, so re-delivering one would duplicate it.
+
 # 👩🏽‍🔬 Tests
 
 ```bash
@@ -349,6 +397,7 @@ bin/rails test
 
 - **Breaking:** `Loco::Config#silence_logger` removed — use `c.log_level = :error` (or higher) to silence
 - **Breaking:** `GET /sync-time` removed — the sync time comes back with every notification fetch. **Requires loco-js >= 7.0.** Keep both libraries on the same major version: loco-js <= 6.3.0 calls this endpoint on init and after every WS disconnection, and treats a 404 as neither success nor failure, so it silently stops polling (WebSocket traffic still flows, which makes it easy to miss). During the upgrade deploy, tabs still running an old bundle lose polling until the page is reloaded
+- Added `loco_model_records` view helper — renders a `<script type="application/json" data-model="...">` snapshot stamped with `data-as-of`, so a client can replay the notifications the snapshot predates. **Breaking:** the notification wire tuple gains a trailing `sync_time` — `[obj_class, obj_id, event, data, sync_time]` — on both delivery paths. **Requires loco-js >= 7.0**
 - Added `c.log_level` config option (default `:info`)
 - `:subject` now accepts `[Class, id]` tuple — avoids `Klass.new(id: x)` allocation when only metadata is needed
 - Added `Loco::Permissions::Controller` and `Loco::Permissions::Connection` mixins. Both consume `c.resources = ->(ctx) { [...] }` config (declared once, used in both contexts). Connection mixin auto-runs `identified_by :loco_permissions` and assigns `[SecureRandom.uuid, *resources]` before `connect`. Older manual `loco_permissions` definitions still work; mixins are opt-in for cleaner setup
