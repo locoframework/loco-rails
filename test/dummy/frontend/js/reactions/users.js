@@ -1,15 +1,13 @@
-import store from "store";
 import User from "models/User";
 import { adminNamespace } from "services/namespace";
 
 export const created = async ({ id }) => {
-  const user = await User.find(id);
-  store.dispatch({ type: "USERS.ADD", users: [user] });
+  User.add(await User.find(id));
 };
 
 export const confirmed = ({ id }) => {
   if (adminNamespace()) {
-    store.dispatch({ type: "USERS.UPDATE", user: { id, confirmed: true } });
+    User.byId(id)?.update({ confirmed: true });
   } else {
     window.location.href = "/user/sessions/new?event=confirmed";
   }

@@ -2,14 +2,15 @@ import "scaffold.css";
 import "global.css";
 
 import "initializers/turbo-rails";
-import "initializers/loco-core";
-import loco from "initializers/loco";
-import "initializers/loco-ui";
+import "initializers/simplicit";
+import "initializers/loco";
 import "validators/Vulgarity";
 import "locales";
 
+import { getLoco } from "services/loco";
+
 // for testing purposes only
 window.test = {
-  getLine: () => loco.getLine(),
-  getWire: () => loco.getWire(),
+  getLine: () => getLoco().getLine(),
+  getWire: () => getLoco().getWire(),
 };

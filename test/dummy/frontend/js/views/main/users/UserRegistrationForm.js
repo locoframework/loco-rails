@@ -1,8 +1,7 @@
 import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
-import loco from "initializers/loco";
-
+import { getLoco } from "services/loco";
 import User from "models/User";
 import renderFlash from "views/shared/Flash";
 
@@ -26,7 +25,7 @@ const receivedMessage = (type) => {
 };
 
 const created = (data) => {
-  loco.getWire().token = data.access_token;
+  getLoco().getWire().token = data.access_token;
   subscribe({ to: new User({ id: data.id }), with: receivedMessage });
   document.querySelector("form").style.display = "none";
   document.getElementById("sign_in_paragraph").classList.remove("none");

@@ -24,14 +24,16 @@ module CommonHelpers
     author = opts[:author] || 'Ryan'
     text = opts[:text] || 'Some nice thoughts dude'
     comment = articles(name).comments.create!(author:, text:)
-    Loco.emit({ event: :created, article_id: comment.article_id }, subject: comment)
+    Loco.emit({ event: :created, article_id: comment.article_id,
+                comments_count: comment.article.comments.count }, subject: comment)
     perform_enqueued_jobs
     comment
   end
 
   def destroy_comment(comment)
     comment.destroy
-    Loco.emit({ event: :destroyed, article_id: comment.article_id }, subject: comment)
+    Loco.emit({ event: :destroyed, article_id: comment.article_id,
+                comments_count: comment.article.comments.count }, subject: comment)
     perform_enqueued_jobs
   end
 

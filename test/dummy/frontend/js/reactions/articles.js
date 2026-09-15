@@ -1,42 +1,35 @@
-import store from "store";
-import { findArticle } from "selectors";
 import Article from "models/Article";
 import { adminNamespace, userNamespace } from "services/namespace";
 
+const findParams = (id) => {
+  const params = { id, abbr: true };
+  if (adminNamespace()) params.resource = "admin";
+  return params;
+};
+
 export const created = async ({ id }) => {
   if (!userNamespace()) return;
-  const article = await Article.find({ id, abbr: true });
-  store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
+  Article.add(await Article.find({ id, abbr: true }));
 };
 
 export const published = async ({ id }) => {
-  if (adminNamespace()) {
-    const article = await Article.find({ id, abbr: true, resource: "admin" });
-    store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
-  } else {
-    const article = await Article.find({ id, abbr: true });
-    store.dispatch({ type: "ARTICLES.ADD", articles: [article] });
-  }
+  Article.add(await Article.find(findParams(id)));
 };
 
 export const destroyed = ({ id }) => {
-  store.dispatch({ type: "ARTICLES.REMOVE", id });
+  Article.byId(id)?.del();
 };
 
 export const updated = async ({ id }) => {
-  const findParams = { id, abbr: true };
-  if (adminNamespace()) findParams.resource = "admin";
-  const existing = findArticle(store.getState(), id);
-  if (!existing) return;
-  const article = await Article.find(findParams);
-  store.dispatch({ type: "ARTICLES.UPDATE", article });
+  const record = Article.byId(id);
+  if (!record) return;
+  record.update(await Article.find(findParams(id)));
 };
 
-export const commentsUpdated = ({ article_id: articleId }, diff) => {
-  const article = findArticle(store.getState(), articleId);
-  if (!article) return;
-  store.dispatch({
-    type: "ARTICLES.UPDATE",
-    article: { id: articleId, commentsCount: article.commentsCount + diff },
-  });
+export const commentsUpdated = ({
+  article_id: articleId,
+  comments_count: count,
+}) => {
+  if (count == null) return;
+  Article.byId(articleId)?.update({ commentsCount: count });
 };

@@ -1,41 +1,29 @@
-import React from "react";
-import PropTypes from "prop-types";
+import { Component } from "simplicit";
 
-import loco from "initializers/loco";
-import UserModel from "models/User";
+import { getLoco } from "services/loco";
 
-const User = ({ user }) => {
-  const ping = (e, userId) => {
-    e.preventDefault();
-    loco.emit({ type: "PING", user_id: userId });
-  };
+class User extends Component {
+  static name = "admin-user";
 
-  return (
-    <tr id={`user_${user.id}`}>
-      <td>{user.email}</td>
-      <td>{user.username}</td>
-      <td className="confirmed">{user.confirmed ? "Yes" : "No"}</td>
+  static template = ({ id, email, username, confirmed }) => `
+    <tr id="user_${id}" data-component="admin-user" data-key="${id}">
+      <td>${email}</td>
+      <td>${username}</td>
+      <td class="confirmed">${confirmed ? "Yes" : "No"}</td>
       <td>
-        <a href={`/admin/users/${user.id}`}>Show</a> |{" "}
-        <a href={`/admin/users/${user.id}/edit`}>Edit</a> |{" "}
-        <a
-          href={`/admin/users/${user.id}`}
-          data-method="delete"
-          data-confirm="Are you sure?"
-        >
-          Delete
-        </a>{" "}
-        |{" "}
-        <a href="#" onClick={(e) => ping(e, user.id)}>
-          Ping
-        </a>
+        <a href="/admin/users/${id}">Show</a> |
+        <a href="/admin/users/${id}/edit">Edit</a> |
+        <a href="/admin/users/${id}" data-method="delete" data-confirm="Are you sure?">Delete</a> |
+        <a href="#" data-ref="ping">Ping</a>
       </td>
-    </tr>
-  );
-};
+    </tr>`;
 
-User.propTypes = {
-  user: PropTypes.instanceOf(UserModel).isRequired,
-};
+  connect() {
+    this.on("ping", "click", (e) => {
+      e.preventDefault();
+      getLoco().emit({ type: "PING", user_id: this.model.id });
+    });
+  }
+}
 
 export default User;

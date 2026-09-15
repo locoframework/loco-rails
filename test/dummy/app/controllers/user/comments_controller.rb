@@ -20,11 +20,12 @@ class User
     end
 
     def update
+      # TODO: HTML at a JSON req
       render(:edit) && return unless @comment.update comment_params
 
       Loco.emit({ event: :updated, article_id: @article.id }, subject: @comment)
       respond_to do |f|
-        f.json { render json: { ok: true, id: @comment.id } }
+        f.json { render json: { success: true, id: @comment.id } }
         f.html do
           redirect_to edit_user_article_url(@article),
                       notice: 'Comment has been updated.'
@@ -34,7 +35,8 @@ class User
 
     def destroy
       @comment.destroy
-      Loco.emit({ event: :destroyed, article_id: @article.id }, subject: @comment)
+      Loco.emit({ event: :destroyed, article_id: @article.id,
+                  comments_count: @article.comments.count }, subject: @comment)
       redirect_to edit_user_article_url(@article), notice: 'Comment has been deleted.'
     end
 

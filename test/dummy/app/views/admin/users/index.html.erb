@@ -10,17 +10,15 @@
     </tr>
   </thead>
 
-  <tbody>
+  <tbody data-container-component="admin-user">
   </tbody>
 </table>
 
-<script type="application/json" id="users-data">
-  <%= raw @users.map { |u|
+<%= loco_model_records "User", @users.map { |u|
     {
       id:        u.id,
       email:     u.email,
       username:  u.username,
       confirmed: u.confirmed?
     }
-  }.to_json %>
-</script>
+  } %>

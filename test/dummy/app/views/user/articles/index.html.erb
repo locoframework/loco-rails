@@ -11,7 +11,7 @@
     </tr>
   </thead>
 
-  <tbody id='article_list'>
+  <tbody id='article_list' data-container-component="user-article">
   </tbody>
 </table>
 
@@ -19,8 +19,7 @@
 
 <%= link_to 'New Article', new_user_article_path %>
 
-<script type="application/json" id="articles-data">
-  <%= raw @articles.map { |a|
+<%= loco_model_records "Article", @articles.map { |a|
     {
       id:             a.id,
       title:          a.title,
@@ -28,5 +27,4 @@
       comments_count: a.comments.count,
       published_at:   a.published_at
     }
-  }.to_json %>
-</script>
+  } %>

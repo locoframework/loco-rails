@@ -1,4 +1,4 @@
-import getEnv from "initializers/loco-core";
+import getEnv from "initializers/simplicit";
 
 import {
   created as articleCreated,

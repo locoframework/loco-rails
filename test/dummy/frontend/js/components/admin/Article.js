@@ -1,34 +1,31 @@
-import React from "react";
-import PropTypes from "prop-types";
+import { Component } from "simplicit";
+
 import DateService from "services/Date";
 
-import ArticleModel from "models/Article";
+class Article extends Component {
+  static name = "admin-article";
 
-function Article({ article }) {
-  const date = new DateService(article.publishedAt).toString("short");
-
-  return (
-    <article id={`article_${article.id}`}>
-      <h2>{article.title}</h2>
+  static template = ({
+    id,
+    title,
+    content,
+    author,
+    publishedAt,
+    commentsCount,
+  }) => `
+    <article id="article_${id}" data-component="admin-article" data-key="${id}">
+      <h2>${title}</h2>
       <p>
         <i>
-          {article.author} wrote this on {date} /{" "}
-          <span className="comments_quantity">
-            {article.commentsCount} comment
-            {article.commentsCount === 1 ? "" : "s"}
+          ${author} wrote this on ${new DateService(publishedAt).toString("short")} /
+          <span class="comments_quantity">
+            ${commentsCount} comment${commentsCount === 1 ? "" : "s"}
           </span>
         </i>
       </p>
-      <p>{article.content}</p>
-      <p>
-        <a href={`/admin/articles/${article.id}/edit`}>Review</a>
-      </p>
-    </article>
-  );
+      <p>${content}</p>
+      <p><a href="/admin/articles/${id}/edit">Review</a></p>
+    </article>`;
 }
-
-Article.propTypes = {
-  article: PropTypes.instanceOf(ArticleModel).isRequired,
-};
 
 export default Article;

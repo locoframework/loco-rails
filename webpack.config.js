@@ -14,7 +14,7 @@ module.exports = (env, argv) => {
       type: "filesystem",
     },
     resolve: {
-      extensions: [".js", ".jsx", ".json"],
+      extensions: [".js", ".json"],
       modules: [
         path.join(__dirname, "test/dummy/frontend/css"),
         path.join(__dirname, "test/dummy/frontend/js"),
@@ -27,7 +27,7 @@ module.exports = (env, argv) => {
     module: {
       rules: [
         {
-          test: /\.jsx?$/,
+          test: /\.js$/,
           exclude: /node_modules/,
           use: {
             loader: "babel-loader",

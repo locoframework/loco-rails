@@ -1,29 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
+import { Component } from "simplicit";
+
 import DateService from "services/Date";
 
-import CommentModel from "models/article/Comment";
+class Comment extends Component {
+  static name = "admin-comment";
 
-function Comment({ comment }) {
-  const createdAt = new DateService(comment.createdAt).strftime("%d %b %y");
-
-  return (
-    <p id={`comment_${comment.id}`}>
-      <b>{comment.author}</b> on <i>{createdAt}</i> (
-      <a
-        href={`/admin/articles/${comment.articleId}/comments/${comment.id}/edit`}
-      >
-        edit
-      </a>
-      )
+  static template = ({ id, articleId, author, text, createdAt }) => `
+    <p id="comment_${id}" data-component="admin-comment" data-key="${id}">
+      <b>${author}</b> on <i>${new DateService(createdAt).strftime("%d %b %y")}</i>
+      (<a href="/admin/articles/${articleId}/comments/${id}/edit">edit</a>)
       <br />
-      {comment.text}
-    </p>
-  );
+      ${text}
+    </p>`;
 }
-
-Comment.propTypes = {
-  comment: PropTypes.instanceOf(CommentModel).isRequired,
-};
 
 export default Comment;
