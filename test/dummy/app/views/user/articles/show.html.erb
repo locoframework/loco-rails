@@ -1,14 +1,4 @@
-<p>
-  <strong>Title:</strong>
-  <span id="article_title"></span>
-</p>
-
-<p>
-  <strong>Text:</strong>
-  <span id="article_text"></span>
-</p>
-
-<p><a href="#" id="publish_article" style="display:none;">Publish</a></p>
+<div data-container-component="user-article-show"></div>
 
 <section id="comments">
   <h4>Comments</h4>
@@ -16,18 +6,16 @@
   <div data-container-component="user-comment"></div>
 </section>
 
-<%= link_to 'Edit', edit_user_article_path(id: 0), id: "edit_link" %> |
+<%= link_to 'Edit', edit_user_article_path(@article), id: "edit_link" %> |
 <%= link_to 'Back', user_articles_path %>
 
-<script type="application/json" id="article-data">
-  <%= raw({
+<%= loco_model_records "Article", [{
     id: @article.id,
     title: @article.title,
     text: @article.text,
     published_at: @article.published_at,
     comments_count: @article.comments.count
-  }.to_json) %>
-</script>
+  }] %>
 
 <%= loco_model_records "Article.Comment", @article.comments.map { |c|
     { id: c.id, article_id: c.article_id, author: c.author, text: c.text,

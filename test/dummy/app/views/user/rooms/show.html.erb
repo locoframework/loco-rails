@@ -2,23 +2,25 @@
 
 <p><b>Members</b></p>
 
-<ul id='members' class='bottom-space'></ul>
+<ul id='members' class='bottom-space' data-component="room-members"></ul>
 
-<p><b>Messages</b></p>
+<div data-component="room-chat">
+  <p><b>Messages</b></p>
 
-<section id='messages' class='bottom-space'>
-  <% @messages.each do |message| %>
-    <p class="msg"><b><%= message.user.username %></b>: <%= message.content %></p>
-  <% end %>
-</section>
+  <section id='messages' class='bottom-space' data-ref="messages">
+    <% @messages.each do |message| %>
+      <p class="msg"><b><%= message.user.username %></b>: <%= message.content %></p>
+    <% end %>
+  </section>
 
-<p>
-  <%= text_area_tag :message, nil, placeholder: "Type your thoughts here...",
-    data: {behavior: 'room-speaker'} %>
-</p>
-<p>
-  <%= radio_button_tag :message_type, 'ephemeral', checked: true %> <label for="message_type_ephemeral">Ephemeral</label>
-  <%= radio_button_tag :message_type, 'persistent' %> <label for="message_type_persistent">Persistent</label>
-</p>
+  <p>
+    <%= text_area_tag :message, nil, placeholder: "Type your thoughts here...",
+      data: { behavior: 'room-speaker', ref: 'speaker' } %>
+  </p>
+  <p>
+    <%= radio_button_tag :message_type, 'ephemeral', checked: true %> <label for="message_type_ephemeral">Ephemeral</label>
+    <%= radio_button_tag :message_type, 'persistent' %> <label for="message_type_persistent">Persistent</label>
+  </p>
+</div>
 
 <p><%= link_to 'Leave', leave_user_room_path(@room), data: { turbo_method: :patch } %></p>

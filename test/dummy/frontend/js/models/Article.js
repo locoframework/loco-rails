@@ -1,11 +1,21 @@
 import LocoReactive from "models/LocoReactive";
 import AdminArticle from "components/admin/Article";
+import AdminArticleReview from "components/admin/ArticleReview";
 import MainArticle from "components/main/Article";
+import MainArticleFull from "components/main/ArticleFull";
 import UserArticle from "components/user/Article";
+import UserArticleShow from "components/user/ArticleShow";
 
 class Article extends LocoReactive {
   static name = "Article";
-  static components = [AdminArticle, MainArticle, UserArticle];
+  static components = [
+    AdminArticle,
+    AdminArticleReview,
+    MainArticle,
+    MainArticleFull,
+    UserArticle,
+    UserArticleShow,
+  ];
 
   static resources = {
     url: "/user/articles",

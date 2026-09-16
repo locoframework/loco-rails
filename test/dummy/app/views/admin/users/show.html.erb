@@ -1,26 +1,11 @@
-<p>
-  <strong>Email:</strong>
-  <span id="user_email"></span>
-</p>
+<div data-container-component="admin-user-show"></div>
 
-<p>
-  <strong>Username:</strong>
-  <span id="user_username"></span>
-</p>
-
-<p>
-  <strong>Confirmed:</strong>
-  <span id="user_confirmed"></span>
-</p>
-
-<%= link_to 'Edit', edit_admin_user_path(id: 0), id: "edit_link" %> |
+<%= link_to 'Edit', edit_admin_user_path(@user), id: "edit_link" %> |
 <%= link_to 'Back', admin_users_path %>
 
-<script type="application/json" id="user-data">
-  <%= raw({
+<%= loco_model_records "User", [{
     id: @user.id,
     email: @user.email,
     username: @user.username,
     confirmed: @user.confirmed?
-  }.to_json) %>
-</script>
+  }] %>

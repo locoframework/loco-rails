@@ -1,6 +1,5 @@
 import LocoReactive from "models/LocoReactive";
 import AdminComment from "components/admin/Comment";
-import CommentsCount from "components/main/CommentsCount";
 import MainComment from "components/main/Comment";
 import NoComments from "components/main/NoComments";
 import UserComment from "components/user/Comment";
@@ -11,7 +10,6 @@ class Comment extends LocoReactive {
 
   static components = [
     AdminComment,
-    CommentsCount,
     MainComment,
     NoComments,
     UserComment,

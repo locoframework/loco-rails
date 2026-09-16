@@ -1,12 +1,4 @@
-<article>
-  <h1 id='title'></h1>
-  <p><i>
-    <span id='author'></span> wrote this on
-    <span id='pub_date'></span> /
-    <a id='comments_count' href='#comments' data-component="comments-count"></a>
-  </i></p>
-  <section id='text'></section>
-</article>
+<div data-container-component="main-article-full"></div>
 
 <h3>Comments</h3>
 
@@ -36,16 +28,14 @@
   <%= link_to "Go back", root_url %>
 </p>
 
-<script type="application/json" id="article-data">
-  <%= raw({
+<%= loco_model_records "Article", [{
     id: @article.id,
     title: @article.title,
     text: @article.text,
     author: @article.user&.username,
     published_at: @article.published_at,
     comments_count: @article.comments.count
-  }.to_json) %>
-</script>
+  }] %>
 
 <%= loco_model_records "Article.Comment", @article.comments.map { |c|
     { id: c.id, article_id: c.article_id, author: c.author, text: c.text,

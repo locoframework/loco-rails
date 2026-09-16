@@ -1,18 +1,6 @@
 <h1>RealSnapChat rooms</h1>
 
-<% if @rooms.any? %>
-<table id='rooms_list'>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Members</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
-<% end %>
+<table id='rooms_list' data-component="room-list"></table>
 
 <%= will_paginate @rooms %>
 

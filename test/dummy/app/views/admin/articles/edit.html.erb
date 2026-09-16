@@ -1,19 +1,6 @@
 <h1>Review Article</h1>
 
-<p>
-  <strong>Author:</strong>
-  <span id="article_author"></span>
-</p>
-
-<p>
-  <strong>Title:</strong>
-  <span id="article_title"></span>
-</p>
-
-<p>
-  <strong>Text:</strong>
-  <span id="article_text"></span>
-</p>
+<div data-container-component="admin-article-review"></div>
 
 <section id="comments">
   <h4>Comments</h4>
@@ -60,8 +47,7 @@
 
 <%= link_to 'Back', published_admin_articles_path %>
 
-<script type="application/json" id="article-data">
-  <%= raw({
+<%= loco_model_records "Article", [{
     id: @article.id,
     title: @article.title,
     text: @article.text,
@@ -70,8 +56,7 @@
     admin_review: @article.admin_review,
     admin_rate: @article.admin_rate,
     category_id: @article.category_id
-  }.to_json) %>
-</script>
+  }] %>
 
 <%= loco_model_records "Article.Comment", @article.comments.map { |c|
     { id: c.id, article_id: c.article_id, author: c.author, text: c.text,

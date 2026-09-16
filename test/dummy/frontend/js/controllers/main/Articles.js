@@ -1,21 +1,11 @@
 import { helpers } from "simplicit";
 
-import { inlineOne } from "utils/inline";
-
-import Article from "models/Article";
 import Comment from "models/article/Comment";
-import ShowView from "views/main/articles/Show";
-
-const renderArticle = () => {
-  const article = inlineOne("article-data", Article);
-  ShowView.renderArticle(article);
-};
+import renderForm from "views/main/articles/Form";
 
 class Articles {
   show() {
-    const newComment = new Comment({ articleId: helpers.params.id });
-    ShowView.renderForm(newComment);
-    renderArticle();
+    renderForm(new Comment({ articleId: helpers.params.id }));
   }
 }
 

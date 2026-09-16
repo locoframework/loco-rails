@@ -5,15 +5,13 @@
 <%= link_to 'Show', [:user, @article] %> |
 <%= link_to 'Back', user_articles_path %>
 
-<script type="application/json" id="article-data">
-  <%= raw({
+<%= loco_model_records "Article", [{
     id: @article.id,
     title: @article.title,
     text: @article.text,
     published_at: @article.published_at,
     comments_count: @article.comments.count
-  }.to_json) %>
-</script>
+  }] %>
 
 <%= loco_model_records "Article.Comment", @article.comments.map { |c|
     { id: c.id, article_id: c.article_id, author: c.author, text: c.text,

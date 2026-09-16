@@ -94,15 +94,15 @@ module Main
     end
 
     test "should auto update article's title and content" do
-      within '#title' do
+      within '#article_title' do
         assert_not page.has_content? '(edited)'
       end
       update_article :one
       sleep 0.1
-      within '#title' do
+      within '#article_title' do
         assert page.has_content? '(edited)'
       end
-      within '#text' do
+      within '#article_text' do
         assert page.has_content? '(edited)'
       end
     end
