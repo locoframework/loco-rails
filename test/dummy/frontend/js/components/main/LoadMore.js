@@ -14,17 +14,17 @@ class LoadMore extends Component {
       }
     </p>`;
 
-  page = 1;
+  #page = 1;
 
   connect() {
-    this.on("link", "click", (e) => this.loadMore(e));
+    this.on("link", "click", (e) => this.#loadMore(e));
     this.update({ noMorePosts: false });
   }
 
-  async loadMore(e) {
+  async #loadMore(e) {
     e.preventDefault();
-    this.page += 1;
-    const resp = await ArticleModel.get("all", { page: this.page });
+    this.#page += 1;
+    const resp = await ArticleModel.get("all", { page: this.#page });
     if (resp.resources.length === 0) return this.update({ noMorePosts: true });
     resp.resources.forEach((article) => ArticleModel.add(article));
   }

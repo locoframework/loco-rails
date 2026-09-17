@@ -80,8 +80,9 @@ end
 class IT < ActionDispatch::IntegrationTest
   include Capybara::DSL
 
-  def after_teardown
+  def before_teardown
     Capybara.reset_session!
+    super
   end
 end
 
