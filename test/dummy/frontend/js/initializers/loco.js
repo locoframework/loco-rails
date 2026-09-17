@@ -3,7 +3,7 @@ import { Config, connector, I18n } from "loco-js-model";
 import { connect } from "loco-js-ui";
 import { createConsumer } from "@rails/actioncable";
 
-import { setLoco } from "services/loco";
+import { setLoco } from "services/app";
 import NotificationCenter from "services/NotificationCenter";
 
 import Article from "models/Article";

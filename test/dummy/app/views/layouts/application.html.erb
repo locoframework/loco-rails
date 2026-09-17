@@ -2,10 +2,7 @@
 <html>
 <%= render 'layouts/head' %>
 <%= content_tag :body, simplicit_body_attrs.merge(style: body_styles, 'data-rails-env' => Rails.env) do %>
-  <%= render 'layouts/flash', name: '', msg: '' %>
-  <% flash.each do |name, msg| %>
-    <%= render 'layouts/flash', name: name, msg: msg %>
-  <% end %>
+  <%= render 'layouts/flash' %>
 
   <div id="container">
     <%= yield %>

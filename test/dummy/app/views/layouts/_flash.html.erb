@@ -1,3 +1,7 @@
-<%= content_tag :div, class: ['flash', name, name.blank? ? 'none' : nil].join(' ') do %>
-  <%= content_tag :p, msg %>
+<div class="flash none" data-component="flash"><p></p></div>
+
+<% flash.each do |name, msg| %>
+  <%= content_tag :div, class: "flash #{name}" do %>
+    <%= content_tag :p, msg %>
+  <% end %>
 <% end %>

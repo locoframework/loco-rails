@@ -1,6 +1,6 @@
 import { Component } from "simplicit";
 
-import { getLoco } from "services/loco";
+import { getLoco } from "services/app";
 
 class User extends Component {
   static name = "admin-user";

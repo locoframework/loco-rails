@@ -1,10 +1,11 @@
-import getEnv from "initializers/simplicit";
+import { getChat } from "services/app";
 
 import {
   created as articleCreated,
   destroyed as articleDestroyed,
   published as articlePublished,
   updated as articleUpdated,
+  updating as articleUpdating,
 } from "reactions/articles";
 
 import {
@@ -14,43 +15,44 @@ import {
 } from "reactions/comments";
 
 import {
+  created as roomCreated,
+  destroyed as roomDestroyed,
+  memberJoined as roomMemberJoined,
+  memberLeft as roomMemberLeft,
+} from "reactions/rooms";
+
+import {
   created as userCreated,
   confirmed as userConfirmed,
 } from "reactions/users";
 
-import { inChatRoom, userNamespace } from "services/namespace";
+import { userNamespace } from "services/namespace";
 
 const ping = () => {
   if (!userNamespace()) return;
   alert("Ping!");
 };
 
-const getCallbackForNewMessage = () => {
-  if (!inChatRoom()) return () => {};
-  return getEnv().controller.view.receivedMessage;
-};
-
-const wsDisconnected = () => {
-  if (inChatRoom()) getEnv().controller.view.disconnected();
-};
-
 export default async (data) => {
   const { type, payload, loco } = data;
 
-  if (loco === "disconnected") return wsDisconnected();
+  if (loco === "disconnected") return getChat()?.disconnected();
 
   switch (type) {
     case "PING":
       ping();
       break;
     case "NEW_MESSAGE":
-      getCallbackForNewMessage()(payload.message, payload.author);
+      getChat()?.receivedMessage(payload.message, payload.author);
       break;
     case "Article created":
       articleCreated(payload);
       break;
     case "Article published":
       articlePublished(payload);
+      break;
+    case "Article updating":
+      articleUpdating(payload);
       break;
     case "Article updated":
       articleUpdated(payload);
@@ -66,6 +68,18 @@ export default async (data) => {
       break;
     case "Article.Comment updated":
       commentUpdated(payload);
+      break;
+    case "Room created":
+      roomCreated(payload);
+      break;
+    case "Room destroyed":
+      roomDestroyed(payload);
+      break;
+    case "Room member_joined":
+      roomMemberJoined(payload);
+      break;
+    case "Room member_left":
+      roomMemberLeft(payload);
       break;
     case "User created":
       userCreated(payload);

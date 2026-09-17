@@ -1,6 +1,6 @@
 import { Component } from "simplicit";
 
-import renderFlash from "views/shared/Flash";
+import { renderFlash } from "services/app";
 
 class Article extends Component {
   static name = "user-article";

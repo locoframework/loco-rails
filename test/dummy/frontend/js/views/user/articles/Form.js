@@ -1,7 +1,7 @@
 import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
-import renderFlash from "views/shared/Flash";
+import { renderFlash } from "services/app";
 
 const displayChanges = (article) => {
   for (const [attrib] of Object.entries(article.changes())) {
@@ -28,9 +28,6 @@ const createReceivedMessage = (article) => {
       case "updated":
         await article.reload();
         displayChanges(article);
-        break;
-      case "destroyed":
-        window.location.href = "/user/articles?message=deleted";
     }
   };
 };

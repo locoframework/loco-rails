@@ -1,9 +1,8 @@
 import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
-import { getLoco } from "services/loco";
+import { getLoco, renderFlash } from "services/app";
 import User from "models/User";
-import renderFlash from "views/shared/Flash";
 
 const confirming = () => {
   document.getElementById("verification_info").textContent =

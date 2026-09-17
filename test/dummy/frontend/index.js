@@ -7,7 +7,7 @@ import "initializers/loco";
 import "validators/Vulgarity";
 import "locales";
 
-import { getLoco } from "services/loco";
+import { getLoco } from "services/app";
 
 // for testing purposes only
 window.test = {
