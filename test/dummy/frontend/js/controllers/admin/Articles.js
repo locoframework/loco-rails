@@ -1,17 +1,11 @@
-import { inlineOne } from "utils/inline";
-import Article from "models/Article";
-import EditView from "views/admin/articles/Edit";
-import renderForm from "views/admin/articles/Form";
+import { helpers } from "simplicit";
 
-const renderArticle = () => {
-  const article = inlineOne("article-data", Article);
-  EditView.render(article);
-  renderForm(article);
-};
+import Article from "models/Article";
+import renderForm from "views/admin/articles/Form";
 
 class Articles {
   edit() {
-    renderArticle();
+    renderForm(Article.byId(helpers.params.id));
   }
 }
 

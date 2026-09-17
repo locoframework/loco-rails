@@ -1,11 +1,16 @@
+import { UI } from "loco-js-ui";
 import { helpers } from "simplicit";
 
 import User from "models/User";
-import renderForm from "views/admin/users/Form";
 
 class Users {
   edit() {
-    renderForm(new User({ id: helpers.params.id }));
+    const form = new UI.Form({
+      for: new User({ id: helpers.params.id }),
+      initObj: true,
+      id: "admin_user_form",
+    });
+    form.render();
   }
 }
 

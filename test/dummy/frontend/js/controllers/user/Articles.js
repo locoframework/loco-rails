@@ -1,16 +1,9 @@
 import { helpers } from "simplicit";
 
-import { inlineOne } from "utils/inline";
-import renderFlash from "views/shared/Flash";
-import ShowView from "views/user/articles/Show";
+import { renderFlash } from "services/app";
 import FormView from "views/user/articles/Form";
 
 import Article from "models/Article";
-
-const renderArticle = () => {
-  const article = inlineOne("article-data", Article);
-  ShowView(article);
-};
 
 class Articles {
   initialize() {
@@ -30,16 +23,16 @@ class Articles {
     }
   }
 
-  show() {
-    renderArticle();
-  }
-
   new() {
     this.unsubscribe = FormView.render(new Article());
   }
 
+  // A detached copy, because this form offers "apply changes": `changes()`
+  // diffs the object against the server's copy, so the two have to be able to
+  // drift apart. Sharing the collection record — which reactions/articles
+  // refreshes in place — makes that diff permanently empty.
   edit() {
-    this.unsubscribe = FormView.render(inlineOne("article-data", Article));
+    this.unsubscribe = FormView.render(Article.byId(helpers.params.id).clone());
   }
 }
 
