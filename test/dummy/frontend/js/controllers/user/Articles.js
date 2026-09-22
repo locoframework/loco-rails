@@ -27,10 +27,6 @@ class Articles {
     this.unsubscribe = FormView.render(new Article());
   }
 
-  // A detached copy, because this form offers "apply changes": `changes()`
-  // diffs the object against the server's copy, so the two have to be able to
-  // drift apart. Sharing the collection record — which reactions/articles
-  // refreshes in place — makes that diff permanently empty.
   edit() {
     this.unsubscribe = FormView.render(Article.byId(helpers.params.id).clone());
   }

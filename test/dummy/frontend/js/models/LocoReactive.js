@@ -57,6 +57,10 @@ class LocoReactive extends Reactive(Base) {
     return this.rerender();
   }
 
+  changes() {
+    return super.changes(this.constructor.byId(this.id));
+  }
+
   applyChanges(...args) {
     super.applyChanges(...args);
     return this.rerender();
