@@ -4,7 +4,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 const postcssOptions = require("./postcss.config.js");
 
-module.exports = (env, argv) => {
+module.exports = (_env, argv) => {
   const production = argv.mode === "production";
 
   return {
@@ -26,14 +26,6 @@ module.exports = (env, argv) => {
     },
     module: {
       rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-            options: { cacheDirectory: true },
-          },
-        },
         {
           test: /\.css$/,
           use: [
