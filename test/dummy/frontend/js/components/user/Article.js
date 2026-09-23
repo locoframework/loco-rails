@@ -23,9 +23,7 @@ export default class Article extends Component {
       e.preventDefault();
       if (!confirm("Are you sure?")) return;
       const data = await this.model.delete();
-      renderFlash(
-        data.success ? { notice: data.notice } : { alert: data.alert },
-      );
+      renderFlash(data.ok ? { notice: data.notice } : { alert: data.alert });
     });
   }
 }

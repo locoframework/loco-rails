@@ -23,12 +23,12 @@ module Admin
       if @comment.update comment_params
         Loco.emit({ event: :updated, article_id: @article.id }, subject: @comment)
         render json: {
-          success: true,
+          ok: true,
           status: 200,
           flash: { success: 'Comment updated!' }, data: {}
         }
       else
-        render json: { success: false, status: 400, errors: @comment.errors }
+        render json: { ok: false, status: 400, errors: @comment.errors }
       end
     end
 

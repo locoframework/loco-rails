@@ -18,10 +18,10 @@ export default class LocoReactive extends Reactive(Base) {
     const target = isCreate ? this : this.clone();
     for (const [key, val] of Object.entries(partial))
       target.assignAttr(key, val);
-    if (target.isInvalid()) return { success: false, errors: target.errors };
+    if (target.isInvalid()) return { ok: false, errors: target.errors };
 
     const resp = await Base.prototype.save.call(target);
-    if (!resp.success) return resp;
+    if (!resp.ok) return resp;
 
     if (isCreate) {
       // The create response carries the record the server actually built —
@@ -36,7 +36,7 @@ export default class LocoReactive extends Reactive(Base) {
 
   async delete(...args) {
     const resp = await super.delete(...args);
-    if (resp.success) this.del();
+    if (resp.ok) this.del();
     return resp;
   }
 
@@ -44,7 +44,7 @@ export default class LocoReactive extends Reactive(Base) {
     const previous = this[attr];
     this.assignAttr(attr, value);
     const resp = await super.updateAttribute(attr);
-    if (resp.success) this.rerender();
+    if (resp.ok) this.rerender();
     else this.assignAttr(attr, previous);
     return resp;
   }

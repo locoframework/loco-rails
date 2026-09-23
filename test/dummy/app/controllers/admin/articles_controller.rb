@@ -24,13 +24,13 @@ module Admin
       article = Article.find params[:id]
       if article.update article_params
         render json: {
-          success: true,
+          ok: true,
           status: 200,
           flash: { success: 'Article updated!' },
           data: {}
         }
       else
-        render json: { success: false, status: 400, errors: article.errors }
+        render json: { ok: false, status: 400, errors: article.errors }
       end
     end
 

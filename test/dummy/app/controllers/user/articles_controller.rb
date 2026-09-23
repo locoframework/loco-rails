@@ -50,9 +50,9 @@ class User
       if @article.publish
         Loco.emit({ event: :published }, subject: @article)
         Loco.emit({ event: :updated }, subject: @article, to: current_user)
-        render json: { success: true, status: 200 }
+        render json: { ok: true, status: 200 }
       else
-        render json: { success: false, status: 400, errors: @article.errors }
+        render json: { ok: false, status: 400, errors: @article.errors }
       end
     end
 

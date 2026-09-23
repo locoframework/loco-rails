@@ -26,7 +26,7 @@ module Admin
       cookies.signed[:admin_id] = admin.id
       flash[:notice] = 'Successfully signed in.'
       respond_to do |f|
-        f.json { render json: { success: true } }
+        f.json { render json: { ok: true } }
         f.html { redirect_to admin_root_url }
       end
     end

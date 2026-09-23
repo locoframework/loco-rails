@@ -25,7 +25,7 @@ class User
 
       Loco.emit({ event: :updated, article_id: @article.id }, subject: @comment)
       respond_to do |f|
-        f.json { render json: { success: true, id: @comment.id } }
+        f.json { render json: { ok: true, id: @comment.id } }
         f.html do
           redirect_to edit_user_article_url(@article),
                       notice: 'Comment has been updated.'
