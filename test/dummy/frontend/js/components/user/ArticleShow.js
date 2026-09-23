@@ -1,6 +1,6 @@
 import { Component } from "simplicit";
 
-class ArticleShow extends Component {
+export default class ArticleShow extends Component {
   static name = "user-article-show";
 
   static #publishLink = (publishedAt, publishState) => {
@@ -36,5 +36,3 @@ class ArticleShow extends Component {
     this.update({ publishState: "published" });
   }
 }
-
-export default ArticleShow;

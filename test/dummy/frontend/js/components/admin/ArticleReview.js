@@ -1,6 +1,6 @@
 import { Component } from "simplicit";
 
-class ArticleReview extends Component {
+export default class ArticleReview extends Component {
   static name = "admin-article-review";
 
   static template = ({ id, author, title, content }) => `
@@ -21,5 +21,3 @@ class ArticleReview extends Component {
       </p>
     </div>`;
 }
-
-export default ArticleReview;

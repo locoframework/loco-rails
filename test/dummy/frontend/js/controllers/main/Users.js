@@ -1,9 +1,7 @@
 import renderUserRegistrationForm from "views/main/users/UserRegistrationForm";
 
-class Users {
+export default class Users {
   new() {
     renderUserRegistrationForm();
   }
 }
-
-export default Users;

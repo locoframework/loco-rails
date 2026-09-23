@@ -5,7 +5,7 @@ import { getLoco, renderFlash } from "services/app";
 const DISCONNECTED =
   "You have been disconnected from the server. You might have lost some ephemeral messages.";
 
-class RoomChat extends Component {
+export default class RoomChat extends Component {
   static name = "room-chat";
 
   connect() {
@@ -41,5 +41,3 @@ class RoomChat extends Component {
     renderFlash({ alert: DISCONNECTED });
   }
 }
-
-export default RoomChat;

@@ -3,7 +3,7 @@ import { Component } from "simplicit";
 import { simpleFormat } from "helpers/text";
 import DateService from "services/Date";
 
-class ArticleFull extends Component {
+export default class ArticleFull extends Component {
   static name = "main-article-full";
 
   static template = ({
@@ -28,5 +28,3 @@ class ArticleFull extends Component {
       <section id="article_text">${simpleFormat(content)}</section>
     </article>`;
 }
-
-export default ArticleFull;

@@ -3,7 +3,7 @@ import { helpers } from "simplicit";
 
 import User from "models/User";
 
-class Users {
+export default class Users {
   edit() {
     const form = new UI.Form({
       for: new User({ id: helpers.params.id }),
@@ -13,5 +13,3 @@ class Users {
     form.render();
   }
 }
-
-export default Users;

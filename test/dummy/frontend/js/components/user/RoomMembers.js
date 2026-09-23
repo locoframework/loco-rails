@@ -4,7 +4,7 @@ import { Component, helpers } from "simplicit";
 import Member from "models/room/Member";
 import Room from "models/Room";
 
-class RoomMembers extends Component {
+export default class RoomMembers extends Component {
   static name = "room-members";
 
   static template = ({ members }) => `
@@ -51,5 +51,3 @@ class RoomMembers extends Component {
     this.update({ members: [...this.props.members, member] });
   }
 }
-
-export default RoomMembers;

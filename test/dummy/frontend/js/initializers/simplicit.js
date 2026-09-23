@@ -35,6 +35,4 @@ document.addEventListener("turbo:load", () => {
   env = init(Controllers);
 });
 
-const getEnv = () => env;
-
-export default getEnv;
+export default () => env;

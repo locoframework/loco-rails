@@ -2,7 +2,7 @@ import { Component } from "simplicit";
 
 import { renderFlash } from "services/app";
 
-class Article extends Component {
+export default class Article extends Component {
   static name = "user-article";
 
   static template = ({ id, title, content, commentsCount, publishedAt }) => `
@@ -29,5 +29,3 @@ class Article extends Component {
     });
   }
 }
-
-export default Article;

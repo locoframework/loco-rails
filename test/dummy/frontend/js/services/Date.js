@@ -1,6 +1,6 @@
 import { Config, I18n } from "loco-js-model";
 
-class Date {
+export default class Date {
   constructor(date, locale = Config.locale) {
     this.date = date;
     this.skope = I18n[locale].date;
@@ -54,5 +54,3 @@ class Date {
     );
   }
 }
-
-export default Date;

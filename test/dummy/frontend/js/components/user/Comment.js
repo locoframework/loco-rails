@@ -2,7 +2,7 @@ import { Component } from "simplicit";
 
 import DateService from "services/Date";
 
-class Comment extends Component {
+export default class Comment extends Component {
   static name = "user-comment";
 
   static template = ({ id, author, text, createdAt }) => `
@@ -12,5 +12,3 @@ class Comment extends Component {
       ${text}
     </p>`;
 }
-
-export default Comment;

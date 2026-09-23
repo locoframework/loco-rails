@@ -2,7 +2,7 @@ import { Component } from "simplicit";
 
 import { getLoco } from "services/app";
 
-class User extends Component {
+export default class User extends Component {
   static name = "admin-user";
 
   static template = ({ id, email, username, confirmed }) => `
@@ -25,5 +25,3 @@ class User extends Component {
     });
   }
 }
-
-export default User;

@@ -2,7 +2,7 @@ import LocoReactive from "models/LocoReactive";
 import AdminUser from "components/admin/User";
 import AdminUserShow from "components/admin/UserShow";
 
-class User extends LocoReactive {
+export default class User extends LocoReactive {
   static name = "User";
 
   static components = [AdminUser, AdminUserShow];
@@ -49,5 +49,3 @@ class User extends LocoReactive {
     },
   };
 }
-
-export default User;

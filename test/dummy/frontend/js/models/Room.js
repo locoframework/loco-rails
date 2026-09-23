@@ -1,7 +1,7 @@
 import LocoReactive from "models/LocoReactive";
 import RoomRow from "components/user/RoomRow";
 
-class Room extends LocoReactive {
+export default class Room extends LocoReactive {
   static name = "Room";
 
   static components = [RoomRow];
@@ -17,5 +17,3 @@ class Room extends LocoReactive {
     },
   };
 }
-
-export default Room;

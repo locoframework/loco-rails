@@ -1,9 +1,7 @@
 import { Config } from "loco-js-model";
 
-class Base {
+export default class Base {
   setScope(name) {
     Config.scope = name;
   }
 }
-
-export default Base;

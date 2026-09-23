@@ -5,7 +5,7 @@ import FormView from "views/user/articles/Form";
 
 import Article from "models/Article";
 
-class Articles {
+export default class Articles {
   initialize() {
     this.unsubscribe = null;
   }
@@ -31,5 +31,3 @@ class Articles {
     this.unsubscribe = FormView.render(Article.byId(helpers.params.id).clone());
   }
 }
-
-export default Articles;

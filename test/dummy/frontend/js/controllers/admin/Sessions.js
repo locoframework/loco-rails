@@ -1,9 +1,7 @@
 import renderForm from "views/admin/sessions/Form";
 
-class Sessions {
+export default class Sessions {
   new() {
     renderForm();
   }
 }
-
-export default Sessions;

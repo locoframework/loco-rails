@@ -1,6 +1,6 @@
 import { Models } from "loco-js-model";
 
-class Member extends Models.Base {
+export default class Member extends Models.Base {
   static identity = "Room.Member";
 
   static resources = {
@@ -8,5 +8,3 @@ class Member extends Models.Base {
     paginate: { per: 100 },
   };
 }
-
-export default Member;

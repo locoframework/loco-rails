@@ -2,7 +2,7 @@ import { Component } from "simplicit";
 
 import ArticleModel from "models/Article";
 
-class LoadMore extends Component {
+export default class LoadMore extends Component {
   static name = "load-more";
 
   static template = ({ noMorePosts }) => `
@@ -29,5 +29,3 @@ class LoadMore extends Component {
     resp.resources.forEach((article) => ArticleModel.add(article));
   }
 }
-
-export default LoadMore;

@@ -3,7 +3,7 @@ import { Reactive } from "simplicit";
 
 const { Base } = Models;
 
-class LocoReactive extends Reactive(Base) {
+export default class LocoReactive extends Reactive(Base) {
   static get identity() {
     return this.name;
   }
@@ -66,5 +66,3 @@ class LocoReactive extends Reactive(Base) {
     return this.rerender();
   }
 }
-
-export default LocoReactive;

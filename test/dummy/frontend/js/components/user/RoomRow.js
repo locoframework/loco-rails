@@ -1,6 +1,6 @@
 import { Component } from "simplicit";
 
-class RoomRow extends Component {
+export default class RoomRow extends Component {
   static name = "room-row";
 
   static template = ({ id, name, membersCount, joined }) => `
@@ -20,5 +20,3 @@ class RoomRow extends Component {
       </td>
     </tr>`;
 }
-
-export default RoomRow;

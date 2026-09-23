@@ -2,7 +2,7 @@ import { Component } from "simplicit";
 
 import DateService from "services/Date";
 
-class CommentAdmin extends Component {
+export default class CommentAdmin extends Component {
   static name = "user-comment-admin";
 
   static approveLink = ({ approved, approving, url }) => {
@@ -40,5 +40,3 @@ class CommentAdmin extends Component {
     });
   }
 }
-
-export default CommentAdmin;

@@ -1,6 +1,6 @@
 import { Component } from "simplicit";
 
-class UserShow extends Component {
+export default class UserShow extends Component {
   static name = "admin-user-show";
 
   static template = ({ id, email, username, confirmed }) => `
@@ -21,5 +21,3 @@ class UserShow extends Component {
       </p>
     </div>`;
 }
-
-export default UserShow;

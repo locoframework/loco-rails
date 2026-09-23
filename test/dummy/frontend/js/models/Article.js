@@ -6,7 +6,7 @@ import MainArticleFull from "components/main/ArticleFull";
 import UserArticle from "components/user/Article";
 import UserArticleShow from "components/user/ArticleShow";
 
-class Article extends LocoReactive {
+export default class Article extends LocoReactive {
   static name = "Article";
   static components = [
     AdminArticle,
@@ -100,5 +100,3 @@ class Article extends LocoReactive {
     this.adminReviewStartedAt = Date.now();
   }
 }
-
-export default Article;

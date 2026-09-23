@@ -1,6 +1,6 @@
 import { Component } from "simplicit";
 
-class Flash extends Component {
+export default class Flash extends Component {
   static name = "flash";
 
   static template = ({ type, msg }) => `
@@ -8,5 +8,3 @@ class Flash extends Component {
       <p>${msg}</p>
     </div>`;
 }
-
-export default Flash;

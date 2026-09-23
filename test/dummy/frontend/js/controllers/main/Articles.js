@@ -3,7 +3,7 @@ import { helpers } from "simplicit";
 
 import Comment from "models/article/Comment";
 
-class Articles {
+export default class Articles {
   show() {
     const form = new UI.Form({
       for: new Comment({ articleId: helpers.params.id }),
@@ -13,5 +13,3 @@ class Articles {
     form.render();
   }
 }
-
-export default Articles;

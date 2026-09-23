@@ -2,7 +2,7 @@ import { Component } from "simplicit";
 
 import DateService from "services/Date";
 
-class Article extends Component {
+export default class Article extends Component {
   static name = "admin-article";
 
   static template = ({
@@ -27,5 +27,3 @@ class Article extends Component {
       <p><a href="/admin/articles/${id}/edit">Review</a></p>
     </article>`;
 }
-
-export default Article;

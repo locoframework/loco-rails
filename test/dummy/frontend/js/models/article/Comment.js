@@ -5,7 +5,7 @@ import NoComments from "components/main/NoComments";
 import UserComment from "components/user/Comment";
 import UserCommentAdmin from "components/user/CommentAdmin";
 
-class Comment extends LocoReactive {
+export default class Comment extends LocoReactive {
   static name = "Article.Comment";
 
   static components = [
@@ -73,5 +73,3 @@ class Comment extends LocoReactive {
     },
   };
 }
-
-export default Comment;
