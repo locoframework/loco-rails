@@ -22,8 +22,8 @@ export default class Article extends Component {
     this.on("delete", "click", async (e) => {
       e.preventDefault();
       if (!confirm("Are you sure?")) return;
-      const data = await this.model.delete();
-      renderFlash(data.ok ? { notice: data.notice } : { alert: data.alert });
+      const res = await this.model.delete();
+      renderFlash(res.ok ? { notice: res.notice } : { alert: res.alert });
     });
   }
 }
