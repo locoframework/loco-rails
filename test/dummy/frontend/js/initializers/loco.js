@@ -25,16 +25,12 @@ const loco = init({
     log: true,
     size: 10,
   },
-  postInit: () => {
-    if (
-      document.querySelector("body").getAttribute("data-rails-env") !== "test"
-    )
-      return;
-    loco.getWire().setPollingTime(1000);
-  },
 });
 
 setLoco(loco);
+
+if (document.body.getAttribute("data-rails-env") === "test")
+  loco.getWire().setPollingTime(1000);
 
 // loco-js-ui reads the Wire off the instance the moment it connects, so it has
 // to run here rather than in an initializer of its own whose ordering against
