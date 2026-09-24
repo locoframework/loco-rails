@@ -11,7 +11,7 @@ class User
     end
 
     def update
-      res = perform_on_comment(action: Comment::Update, comment: comment_params)
+      res = perform_on_comment(Comment::Update, comment: comment_params)
       @article, @comment = res.val.values_at(:article, :comment)
       return render_update_failure unless res.ok
 
@@ -25,7 +25,7 @@ class User
     end
 
     def destroy
-      res = perform_on_comment(action: Comment::Destroy)
+      res = perform_on_comment(Comment::Destroy)
       redirect_to edit_user_article_url(res.val[:article]), notice: t('flash.comment_deleted')
     end
 
@@ -44,13 +44,14 @@ class User
       params.expect(comment: [*permitted_params])
     end
 
-    def perform_on_comment(action: nil, query: nil, **payload)
-      perform(action:, query:, payload: { article_id: params[:article_id], id: params[:id], **payload },
-              opts: user_opts)
+    def perform_on_comment(action, **payload)
+      perform(action:, payload: { article_id: params[:article_id], id: params[:id], **payload }, opts: user_opts)
     end
 
     def find_comment
-      @article, @comment = perform_on_comment(query: Comment::Find).val.values_at(:article, :comment)
+      res = perform(query: Comment::Find,
+                    payload: { user: current_user, article_id: params[:article_id], id: params[:id] })
+      @article, @comment = res.val.values_at(:article, :comment)
     end
   end
 end

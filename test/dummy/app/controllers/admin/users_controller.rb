@@ -3,11 +3,11 @@
 module Admin
   class UsersController < AdminController
     def index
-      @users = perform(query: User::List, payload: { page: params[:page] }).val[:users]
+      @users = User.order(created_at: :desc).paginate(page: params[:page], per_page: 10)
     end
 
     def show
-      @user = perform(query: User::Find, payload: { id: params[:id] }).val[:user]
+      @user = User.find(params[:id])
     end
 
     def edit

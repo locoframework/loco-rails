@@ -32,9 +32,10 @@ class ApplicationController < ActionController::Base
   end
 
   def perform(action: nil, query: nil, payload: {}, opts: {})
-    performer = action || query
+    return query.(payload) if query
+
     payload = payload.merge((opts[:ars] || {}).to_h { |k, v| [:"#{k}_id", v.id] })
-    performer.method(:call).arity == 1 ? performer.call(payload) : performer.call(payload, opts)
+    action.method(:call).arity == 1 ? action.(payload) : action.(payload, opts)
   end
 
   def success_response(status, flash:, data: nil, **other)

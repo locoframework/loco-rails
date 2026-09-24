@@ -8,7 +8,7 @@ class User
     end
 
     def create
-      res = perform(query: User::Authenticate, payload: { email: params[:email], password: params[:password] })
+      res = perform(action: User::Authenticate, payload: { email: params[:email], password: params[:password] })
       res.ok ? auth_succeeded(res.val[:user]) : auth_failed(res.val[:error])
     end
 

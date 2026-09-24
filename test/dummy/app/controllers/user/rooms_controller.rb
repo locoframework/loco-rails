@@ -8,8 +8,8 @@ class User
     end
 
     def show
-      res = perform(query: Room::Find, payload: { id: params[:id] })
-      @room, @messages = res.val.values_at(:room, :messages)
+      @room = Room.find(params[:id])
+      @messages = @room.messages.includes(:user).order(created_at: :asc).last(50)
     end
 
     def new

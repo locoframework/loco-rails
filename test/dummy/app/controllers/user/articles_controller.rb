@@ -7,11 +7,11 @@ class User
     DESTROY_ALERT = "Article can't be destroyed because is published."
 
     def index
-      @articles = perform(query: Article::Owned, payload: { page: params[:page] }, opts: user_opts).val[:articles]
+      @articles = current_user.articles.order(:created_at).paginate(page: params[:page], per_page: 5)
     end
 
     def show
-      @article = perform(query: Article::Find, payload: { id: params[:id] }, opts: user_opts).val[:article]
+      @article = perform(query: Article::Find, payload: { user: current_user, id: params[:id] }).val[:article]
     end
 
     def new

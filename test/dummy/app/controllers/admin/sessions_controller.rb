@@ -7,7 +7,7 @@ module Admin
     end
 
     def create
-      res = perform(query: Admin::SupportMember::Authenticate,
+      res = perform(action: Admin::SupportMember::Authenticate,
                     payload: { email: params[:email], password: params[:password] })
       res.ok ? auth_succeeded(res.val[:admin]) : auth_failed
     end
