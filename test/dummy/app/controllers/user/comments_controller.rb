@@ -20,8 +20,7 @@ class User
     end
 
     def update
-      # TODO: HTML at a JSON req
-      render(:edit) && return unless @comment.update comment_params
+      return render_update_failure unless @comment.update(comment_params)
 
       Loco.emit({ event: :updated, article_id: @article.id }, subject: @comment)
       respond_to do |f|
@@ -41,6 +40,13 @@ class User
     end
 
     private
+
+    def render_update_failure
+      respond_to do |f|
+        f.json { render json: { ok: false, errors: @comment.errors }, status: :unprocessable_content }
+        f.html { render :edit, status: :unprocessable_content }
+      end
+    end
 
     def comment_params
       permitted_params = %i[author text]
