@@ -1,7 +1,10 @@
-import renderForm from "views/admin/sessions/Form";
+import { UI } from "loco-js-ui";
 
 export default class Sessions {
   new() {
-    renderForm();
+    new UI.Form({
+      id: "sign_in_admin",
+      callbackSuccess: () => (window.location.href = "/admin"),
+    }).render();
   }
 }
