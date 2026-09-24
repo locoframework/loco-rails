@@ -14,8 +14,6 @@ export default class User extends LocoReactive {
     },
   };
 
-  static paginate = { per: 10 };
-
   static attributes = {
     email: {
       validations: {

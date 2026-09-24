@@ -2,14 +2,8 @@
 
 module Admin
   class CommentsController < AdminController
-    before_action :set_article, only: %i[index show edit update]
+    before_action :set_article, only: %i[show edit update]
     before_action :set_comment, only: %i[show edit update]
-
-    def index
-      skope = Comment.where article_id: @article.id
-      @comments = skope.order(:created_at).paginate page: params[:page], per_page: 5
-      @count = skope.count
-    end
 
     def show
       render

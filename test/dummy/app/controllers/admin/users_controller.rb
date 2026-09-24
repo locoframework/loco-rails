@@ -6,7 +6,6 @@ module Admin
 
     def index
       @users = User.order(created_at: :desc).paginate page: params[:page], per_page: 10
-      @count = User.count
     end
 
     def show; end
@@ -34,11 +33,7 @@ module Admin
     private
 
     def set_user
-      @user = if params[:id].present?
-                User.find params[:id]
-              else
-                User.new
-              end
+      @user = User.find params[:id]
     end
 
     def user_params

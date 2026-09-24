@@ -11,7 +11,6 @@ class User
     def index
       @articles = current_user.articles.order(:created_at)
                               .paginate(page: params[:page], per_page: 5)
-      @count = current_user.articles.count
     end
 
     def show

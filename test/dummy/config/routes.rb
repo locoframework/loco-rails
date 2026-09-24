@@ -9,7 +9,7 @@ Rails.application.routes.draw do
       member do
         put :publish
       end
-      resources :comments, except: %i[new create]
+      resources :comments, except: %i[index new create]
     end
     resources :rooms, only: %i[index new create show destroy] do
       member do
@@ -18,29 +18,24 @@ Rails.application.routes.draw do
       end
       resources :members, only: [:index]
     end
-    get 'members/index'
     root 'articles#index'
   end
 
   scope module: 'main' do
     resources :users, only: %i[new create]
     resources :articles, only: %i[index show] do
-      resources :comments, only: %i[index create show] do
-        collection do
-          get :count
-        end
-      end
+      resources :comments, only: %i[create show]
     end
   end
 
   namespace :admin do
-    resources :users
+    resources :users, except: %i[new create]
     resources :sessions, only: %i[new create destroy]
     resources :articles, only: %i[show edit update] do
       collection do
         get :published
       end
-      resources :comments, only: %i[index show edit update]
+      resources :comments, only: %i[show edit update]
     end
     root 'users#index'
   end

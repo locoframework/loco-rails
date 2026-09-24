@@ -5,6 +5,5 @@ export default class Member extends Models.Base {
 
   static resources = {
     url: "/user/rooms/:roomId/members",
-    paginate: { per: 100 },
   };
 }

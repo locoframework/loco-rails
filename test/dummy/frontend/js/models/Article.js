@@ -19,15 +19,8 @@ export default class Article extends LocoReactive {
 
   static resources = {
     url: "/user/articles",
-    paginate: { per: 5 },
-    main: {
-      url: "/articles",
-      paginate: { per: 3 },
-    },
-    admin: {
-      url: "/admin/articles",
-      paginate: { per: 4 },
-    },
+    main: { url: "/articles" },
+    admin: { url: "/admin/articles" },
   };
 
   static attributes = {

@@ -2,23 +2,12 @@
 
 module Main
   class CommentsController < MainController
-    def count
-      render json: { total: skope.count }
-    end
-
-    def index
-      @comments = skope.paginate(
-        page: params['page-num'],
-        per_page: 5
-      )
-    end
-
     def show
-      @comment = Comment.where(article_id: params[:article_id]).find params[:id]
+      @comment = Comment.where(article_id: params[:article_id]).find(params[:id])
     end
 
     def create
-      comment = Comment.new comment_params
+      comment = Comment.new(comment_params)
       if comment.save
         Loco.emit({ article_id: comment.article_id, event: :created,
                     comments_count: comment.article.comments.count }, subject: comment)
@@ -36,11 +25,6 @@ module Main
 
     def comment_params
       params.expect comment: %i[author text article_id]
-    end
-
-    def skope
-      Comment.where(article_id: params[:article_id])
-             .order(:created_at)
     end
   end
 end

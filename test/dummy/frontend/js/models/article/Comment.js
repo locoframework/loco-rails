@@ -20,15 +20,8 @@ export default class Comment extends LocoReactive {
 
   static resources = {
     url: "/user/articles/:articleId/comments",
-    paginate: { per: 10 },
-    main: {
-      url: "/articles/:articleId/comments",
-      paginate: { per: 5, param: "page-num" },
-    },
-    admin: {
-      url: "/admin/articles/:articleId/comments",
-      paginate: { per: 5 },
-    },
+    main: { url: "/articles/:articleId/comments" },
+    admin: { url: "/admin/articles/:articleId/comments" },
   };
 
   static attributes = {
