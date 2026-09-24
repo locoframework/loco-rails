@@ -25,17 +25,23 @@ const receivedMessage = (type) => {
 
 const created = (data) => {
   getLoco().getWire().token = data.access_token;
-  subscribe({ to: new User({ id: data.id }), with: receivedMessage });
+  const unsubscribe = subscribe({
+    to: new User({ id: data.id }),
+    with: receivedMessage,
+  });
   document.querySelector("form").style.display = "none";
   document.getElementById("sign_in_paragraph").classList.remove("none");
   document.getElementById("verification_info").classList.remove("none");
   renderFlash({ notice: data.notice });
+  return unsubscribe;
 };
 
 export default () => {
+  let unsubscribe = null;
   const form = new UI.Form({
     for: new User(),
-    callbackSuccess: created,
+    callbackSuccess: (data) => (unsubscribe = created(data)),
   });
   form.render();
+  return () => unsubscribe?.();
 };

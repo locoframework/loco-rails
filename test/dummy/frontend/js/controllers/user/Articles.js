@@ -4,19 +4,9 @@ import { renderFlash } from "services/app";
 import FormView from "views/user/articles/Form";
 
 import Article from "models/Article";
+import Base from "controllers/Base";
 
-export default class Articles {
-  initialize() {
-    this.unsubscribe = null;
-  }
-
-  deinitialize() {
-    if (this.unsubscribe !== null) {
-      this.unsubscribe();
-      this.unsubscribe = null;
-    }
-  }
-
+export default class Articles extends Base {
   index() {
     if (helpers.params.message === "deleted") {
       renderFlash({ alert: "Article has been deleted." });
