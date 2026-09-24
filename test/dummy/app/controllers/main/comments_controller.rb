@@ -3,14 +3,14 @@
 module Main
   class CommentsController < MainController
     def show
-      @comment = Comment.where(article_id: params[:article_id]).find(params[:id])
+      res = perform(query: Comment::Find, payload: { article_id: params[:article_id], id: params[:id] })
+      @comment = res.val[:comment]
     end
 
     def create
-      comment = Comment.new(comment_params)
-      if comment.save
-        Loco.emit({ article_id: comment.article_id, event: :created,
-                    comments_count: comment.article.comments.count }, subject: comment)
+      res = perform(action: Comment::Create, payload: { comment: comment_params })
+      comment = res.val[:comment]
+      if res.ok
         success_response(
           201,
           flash: 'Your comment has been posted!',

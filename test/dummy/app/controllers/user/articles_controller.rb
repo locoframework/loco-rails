@@ -2,82 +2,69 @@
 
 class User
   class ArticlesController < UserController
-    before_action :set_article, only: %i[new edit update destroy publish]
-
     CREATE_NOTICE = 'Article was successfully created.'
     DESTROY_NOTICE = 'Article was successfully destroyed.'
     DESTROY_ALERT = "Article can't be destroyed because is published."
 
     def index
-      @articles = current_user.articles.order(:created_at)
-                              .paginate(page: params[:page], per_page: 5)
+      @articles = perform(query: Article::Owned, payload: { page: params[:page] }, opts: user_opts).val[:articles]
     end
 
     def show
-      @article = current_user.articles.find(params[:id])
+      @article = perform(query: Article::Find, payload: { id: params[:id] }, opts: user_opts).val[:article]
     end
 
     def new
-      render
+      @article = current_user.articles.new
     end
 
     def edit
-      @mark = Time.current.to_f.to_s
-      Loco.emit({ event: :updating, mark: @mark }, subject: @article, to: [@article.published? ? :all : current_user])
+      res = perform(action: Article::StartEditing, payload: { id: params[:id] }, opts: user_opts)
+      @article, @mark = res.val.values_at(:article, :mark)
     end
 
     def create
-      @article = current_user.articles.new article_params
-      success = @article.save
-      Loco.emit({ event: :created }, subject: @article, to: current_user) if success
-      html_json_response success, @article, flash: CREATE_NOTICE, redirect_to: @article
+      res = perform(action: Article::Create, payload: { article: article_params }, opts: user_opts)
+      @article = res.val[:article]
+      html_json_response res.ok, @article, flash: CREATE_NOTICE, redirect_to: @article
     end
 
     def update
-      success = @article.update article_params
-      Loco.emit({ event: :updated }, subject: @article, to: [@article.published? ? :all : current_user]) if success
-      html_json_response success, @article, flash: 'Article updated!', redirect_to: articles_url
+      res = perform(action: Article::Update,
+                    payload: { id: params[:id], article: article_params }, opts: user_opts)
+      @article = res.val[:article]
+      html_json_response res.ok, @article, flash: 'Article updated!', redirect_to: articles_url
     end
 
     def publish
-      if @article.publish
-        Loco.emit({ event: :published }, subject: @article)
-        Loco.emit({ event: :updated }, subject: @article, to: current_user)
+      res = perform(action: Article::Publish, payload: { id: params[:id] }, opts: user_opts)
+      if res.ok
         render json: { ok: true, status: 200 }
       else
-        render json: { ok: false, status: 400, errors: @article.errors }
+        failure_response(400, res.val[:article].errors)
       end
     end
 
     def destroy
-      success = @article.destroy
-      Loco.emit({ event: :destroyed }, subject: @article, to: current_user) if success
+      res = perform(action: Article::Destroy, payload: { id: params[:id] }, opts: user_opts)
       respond_to do |format|
         format.html do
-          flash[success ? :notice : :alert] = success ? DESTROY_NOTICE : DESTROY_ALERT
+          flash[res.ok ? :notice : :alert] = res.ok ? DESTROY_NOTICE : DESTROY_ALERT
           redirect_to user_articles_url
         end
-        format.json { json_response_for_destroy @article }
+        format.json { json_response_for_destroy res }
       end
     end
 
     private
 
-    def set_article
-      @article = if params[:id].present?
-                   current_user.articles.find params[:id]
-                 else
-                   current_user.articles.new
-                 end
-    end
-
     def article_params
       params.expect(article: %i[title text])
     end
 
-    def json_response_for_destroy(article)
-      if success
-        success_response 200, flash: DESTROY_NOTICE, data: { id: article.id }
+    def json_response_for_destroy(res)
+      if res.ok
+        success_response 200, flash: DESTROY_NOTICE, data: { id: res.val[:article].id }
       else
         failure_response 422, DESTROY_ALERT
       end

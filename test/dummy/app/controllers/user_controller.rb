@@ -7,6 +7,10 @@ class UserController < ApplicationController
 
   private
 
+  def user_opts
+    { ars: { user: current_user } }
+  end
+
   def authenticate
     redirect_to new_user_session_url unless current_user
   end

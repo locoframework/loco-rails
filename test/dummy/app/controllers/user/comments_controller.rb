@@ -2,21 +2,19 @@
 
 class User
   class CommentsController < UserController
-    before_action :set_article, only: %i[show edit update destroy]
-    before_action :set_comment, only: %i[show edit update destroy]
-
     def show
-      render
+      find_comment
     end
 
     def edit
-      render
+      find_comment
     end
 
     def update
-      return render_update_failure unless @comment.update(comment_params)
+      res = perform_on_comment(action: Comment::Update, comment: comment_params)
+      @article, @comment = res.val.values_at(:article, :comment)
+      return render_update_failure unless res.ok
 
-      Loco.emit({ event: :updated, article_id: @article.id }, subject: @comment)
       respond_to do |f|
         f.json { render json: { ok: true, id: @comment.id } }
         f.html do
@@ -27,10 +25,8 @@ class User
     end
 
     def destroy
-      @comment.destroy
-      Loco.emit({ event: :destroyed, article_id: @article.id,
-                  comments_count: @article.comments.count }, subject: @comment)
-      redirect_to edit_user_article_url(@article), notice: t('flash.comment_deleted')
+      res = perform_on_comment(action: Comment::Destroy)
+      redirect_to edit_user_article_url(res.val[:article]), notice: t('flash.comment_deleted')
     end
 
     private
@@ -48,13 +44,13 @@ class User
       params.expect(comment: [*permitted_params])
     end
 
-    def set_article
-      @article = current_user.articles.find params[:article_id]
+    def perform_on_comment(action: nil, query: nil, **payload)
+      perform(action:, query:, payload: { article_id: params[:article_id], id: params[:id], **payload },
+              opts: user_opts)
     end
 
-    def set_comment
-      @comment = @article.comments.find_by(id: params[:id])
-      head :not_found unless @comment
+    def find_comment
+      @article, @comment = perform_on_comment(query: Comment::Find).val.values_at(:article, :comment)
     end
   end
 end

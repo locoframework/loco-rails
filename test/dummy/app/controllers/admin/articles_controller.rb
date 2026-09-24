@@ -3,34 +3,25 @@
 module Admin
   class ArticlesController < AdminController
     def published
-      skope = Article.published
-      @articles = skope.order(published_at: :desc).includes(:user).paginate(
-        page: params[:page],
-        per_page: 4
-      )
-      @count = skope.count
+      res = perform(query: Article::Published, payload: { page: params[:page], per_page: 4 })
+      @articles, @count = res.val.values_at(:articles, :count)
     end
 
     def show
-      @article = Article.includes(:user).find params[:id]
+      @article = perform(query: Article::Find, payload: { id: params[:id] }).val[:article]
       @abbr = params[:abbr].present?
     end
 
     def edit
-      @article = Article.includes(:user, :comments).find params[:id]
+      @article = perform(query: Article::Find, payload: { id: params[:id] }).val[:article]
     end
 
     def update
-      article = Article.find params[:id]
-      if article.update article_params
-        render json: {
-          ok: true,
-          status: 200,
-          flash: { success: 'Article updated!' },
-          data: {}
-        }
+      res = perform(action: Article::Review, payload: { id: params[:id], article: article_params })
+      if res.ok
+        success_response(200, flash: 'Article updated!', data: {})
       else
-        render json: { ok: false, status: 400, errors: article.errors }
+        failure_response(400, res.val[:article].errors)
       end
     end
 

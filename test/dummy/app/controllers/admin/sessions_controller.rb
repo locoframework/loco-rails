@@ -7,12 +7,9 @@ module Admin
     end
 
     def create
-      admin = Admin::SupportMember.find_by email: params[:email]
-      auth_failed && return if admin.nil?
-
-      auth_failed && return unless admin.authenticate params[:password]
-
-      auth_succeeded(admin)
+      res = perform(query: Admin::SupportMember::Authenticate,
+                    payload: { email: params[:email], password: params[:password] })
+      res.ok ? auth_succeeded(res.val[:admin]) : auth_failed
     end
 
     def destroy

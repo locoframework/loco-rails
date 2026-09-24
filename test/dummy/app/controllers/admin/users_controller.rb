@@ -2,39 +2,33 @@
 
 module Admin
   class UsersController < AdminController
-    before_action :set_user, only: %i[show edit update destroy]
-
     def index
-      @users = User.order(created_at: :desc).paginate page: params[:page], per_page: 10
+      @users = perform(query: User::List, payload: { page: params[:page] }).val[:users]
     end
 
-    def show; end
+    def show
+      @user = perform(query: User::Find, payload: { id: params[:id] }).val[:user]
+    end
 
     def edit
-      return if @user.confirmed?
-
-      Loco.emit({ event: :confirming }, subject: @user, to: @user.token)
+      @user = perform(action: User::StartConfirmation, payload: { id: params[:id] }).val[:user]
     end
 
     def update
-      if @user.update user_params
-        Loco.emit({ event: :confirmed }, subject: @user, to: [@user.token, Admin::SupportMember]) if @user.confirmed?
-        render json: { ok: true, status: 200, flash: { success: 'User updated!' } }
+      res = perform(action: User::Update, payload: { id: params[:id], user: user_params })
+      if res.ok
+        success_response(200, flash: 'User updated!')
       else
-        render json: { ok: false, status: 400, errors: @user.errors }
+        failure_response(400, res.val[:user].errors)
       end
     end
 
     def destroy
-      @user.destroy
+      perform(action: User::Destroy, payload: { id: params[:id] })
       redirect_to admin_users_path, notice: t('flash.user_destroyed')
     end
 
     private
-
-    def set_user
-      @user = User.find params[:id]
-    end
 
     def user_params
       params.expect user: %i[email username password password_confirmation

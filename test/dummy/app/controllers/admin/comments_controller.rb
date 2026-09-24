@@ -2,27 +2,21 @@
 
 module Admin
   class CommentsController < AdminController
-    before_action :set_article, only: %i[show edit update]
-    before_action :set_comment, only: %i[show edit update]
-
     def show
-      render
+      find_comment
     end
 
     def edit
-      render
+      find_comment
     end
 
     def update
-      if @comment.update comment_params
-        Loco.emit({ event: :updated, article_id: @article.id }, subject: @comment)
-        render json: {
-          ok: true,
-          status: 200,
-          flash: { success: 'Comment updated!' }, data: {}
-        }
+      res = perform(action: Comment::Update,
+                    payload: { article_id: params[:article_id], id: params[:id], comment: comment_params })
+      if res.ok
+        success_response(200, flash: 'Comment updated!', data: {})
       else
-        render json: { ok: false, status: 400, errors: @comment.errors }
+        failure_response(400, res.val[:comment].errors)
       end
     end
 
@@ -32,12 +26,9 @@ module Admin
       params.expect comment: %i[author text emotion pinned admin_rate]
     end
 
-    def set_article
-      @article = Article.find params[:article_id]
-    end
-
-    def set_comment
-      @comment = @article.comments.find params[:id]
+    def find_comment
+      res = perform(query: Comment::Find, payload: { article_id: params[:article_id], id: params[:id] })
+      @article, @comment = res.val.values_at(:article, :comment)
     end
   end
 end

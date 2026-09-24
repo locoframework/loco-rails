@@ -3,15 +3,12 @@
 module Main
   class ArticlesController < MainController
     def index
-      skope = Article.published
-      @articles = skope.order(published_at: :desc)
-                       .includes(:user)
-                       .paginate page: params[:page], per_page: 3
-      @count = skope.count
+      res = perform(query: Article::Published, payload: { page: params[:page], per_page: 3 })
+      @articles, @count = res.val.values_at(:articles, :count)
     end
 
     def show
-      @article = Article.published.includes(:user, :comments).find params[:id]
+      @article = perform(query: Article::Find, payload: { id: params[:id], published: true }).val[:article]
     end
   end
 end

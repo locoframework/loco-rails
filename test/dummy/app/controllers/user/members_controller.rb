@@ -3,8 +3,7 @@
 class User
   class MembersController < ApplicationController
     def index
-      room = Room.find(params[:room_id])
-      @members = FindHub.(room_id: room.id).members
+      @members = perform(query: Room::Members, payload: { room_id: params[:room_id] }).val[:members]
     end
   end
 end

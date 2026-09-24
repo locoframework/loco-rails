@@ -2,20 +2,14 @@
 
 class User
   class RoomsController < UserController
-    RoomWithHub = Struct.new(:room, :hub)
-
-    before_action :find_room, only: %i[show join leave destroy]
-    before_action :find_hub, only: %i[join leave destroy]
-
     def index
-      @rooms = Room.paginate page: params[:page], per_page: 10
-      @rooms_with_hub = @rooms.map do |room|
-        RoomWithHub[room:, hub: FindHub.(room_id: room.id)]
-      end
+      res = perform(query: Room::List, payload: { page: params[:page] })
+      @rooms, @rooms_with_hub = res.val.values_at(:rooms, :rooms_with_hub)
     end
 
     def show
-      @messages = @room.messages.includes(:user).order(created_at: :asc).last(50)
+      res = perform(query: Room::Find, payload: { id: params[:id] })
+      @room, @messages = res.val.values_at(:room, :messages)
     end
 
     def new
@@ -23,54 +17,36 @@ class User
     end
 
     def create
-      @room = Room.new params_room
-      if @room.save
-        Loco.emit({ event: :created, room: { id: @room.id, name: @room.name } }, subject: @room, to: [User])
-        redirect_to user_rooms_path, notice: t('flash.room_created')
-      else
-        render :new, status: :unprocessable_content
-      end
+      res = perform(action: Room::Create, payload: { room: params_room })
+      return redirect_to user_rooms_path, notice: t('flash.room_created') if res.ok
+
+      @room = res.val[:room]
+      render :new, status: :unprocessable_content
     end
 
     def join
-      MaintainRoomMembers.rejoin(hub: @hub, user: current_user)
-      MaintainRoomMembersJob.set(wait: 5.seconds).perform_later(@room.id)
-      redirect_to user_room_url(@room)
+      res = perform(action: Room::Join, payload: { id: params[:id] }, opts: user_opts)
+      redirect_to user_room_url(res.val[:room])
     end
 
     def leave
-      @hub.del_member current_user
-      Loco.emit({
-                  event: :member_left,
-                  room_id: @room.id,
-                  member: { id: current_user.id }
-                }, subject: @room, to: [User])
+      perform(action: Room::Leave, payload: { id: params[:id] }, opts: user_opts)
       redirect_to user_rooms_path
     end
 
     def destroy
-      if @hub.raw_members.any?
+      res = perform(action: Room::Destroy, payload: { id: params[:id] })
+      if res.ok
+        redirect_to user_rooms_path, notice: t('flash.room_deleted')
+      else
         redirect_to user_rooms_path, alert: t('flash.room_not_empty')
-        return
       end
-      Loco.del_hub(@hub)
-      @room.destroy
-      Loco.emit({ event: :destroyed, room_id: @room.id }, subject: @room, to: [User])
-      redirect_to user_rooms_path, notice: t('flash.room_deleted')
     end
 
-    protected
+    private
 
     def params_room
       params.expect room: [:name]
-    end
-
-    def find_room
-      @room = Room.find params[:id]
-    end
-
-    def find_hub
-      @hub = FindHub.(room_id: @room.id)
     end
   end
 end

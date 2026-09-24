@@ -8,14 +8,8 @@ class User
     end
 
     def create
-      user = User.find_by(email: params[:email])
-      if user && !user.confirmed?
-        auth_failed 'Your account is waiting for confirmation.'
-      elsif user.nil? || !user.authenticate(params[:password])
-        auth_failed
-      else
-        auth_succeeded user
-      end
+      res = perform(query: User::Authenticate, payload: { email: params[:email], password: params[:password] })
+      res.ok ? auth_succeeded(res.val[:user]) : auth_failed(res.val[:error])
     end
 
     def destroy
@@ -25,7 +19,7 @@ class User
 
     private
 
-    def auth_failed(alert = 'Invalid email or password.')
+    def auth_failed(alert)
       redirect_to new_user_session_url, alert:
     end
 

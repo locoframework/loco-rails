@@ -31,6 +31,12 @@ class ApplicationController < ActionController::Base
     [current_user, current_admin]
   end
 
+  def perform(action: nil, query: nil, payload: {}, opts: {})
+    performer = action || query
+    payload = payload.merge((opts[:ars] || {}).to_h { |k, v| [:"#{k}_id", v.id] })
+    performer.method(:call).arity == 1 ? performer.call(payload) : performer.call(payload, opts)
+  end
+
   def success_response(status, flash:, data: nil, **other)
     resp = { ok: true, status:, flash: { success: flash } }
     resp[:data] = data unless data.nil?

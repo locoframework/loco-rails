@@ -7,13 +7,9 @@ module Main
     end
 
     def create
-      user = User.new(user_params)
-      if user.save
-        Loco.emit({ event: :created }, subject: user, to: Admin::SupportMember)
-        success_response_for_create(user)
-      else
-        failure_response(400, user.errors)
-      end
+      res = perform(action: User::Create, payload: { user: user_params })
+      user = res.val[:user]
+      res.ok ? success_response_for_create(user) : failure_response(400, user.errors)
     end
 
     private
