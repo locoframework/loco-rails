@@ -24,8 +24,8 @@ module Main
                     comments_count: comment.article.comments.count }, subject: comment)
         success_response(
           201,
-          'Your comment has been posted!',
-          comment.as_json(only: %i[id author text article_id created_at])
+          flash: 'Your comment has been posted!',
+          data: comment.as_json(only: %i[id author text article_id created_at])
         )
       else
         failure_response(400, comment.errors)

@@ -25,8 +25,8 @@ module Main
     def success_response_for_create(user)
       success_response(
         201,
-        'Signed up!',
-        {
+        flash: 'Signed up!',
+        data: {
           id: user.id,
           notice: 'Welcome! You have signed up successfully.',
           access_token: user.token

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception # For APIs, you may want to use :null_session instead.
+  protect_from_forgery with: :exception
 
   helper_method :current_admin, :current_user
 
@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
     if defined?(@current_admin)
       @current_admin
     else
-      @current_admin = Admin::SupportMember.find_by id: cookies.signed[:admin_id]
+      @current_admin = Admin::SupportMember.find_by(id: cookies.signed[:admin_id])
     end
   end
 
@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
     if defined?(@current_user)
       @current_user
     else
-      @current_user = User.find_by id: cookies.signed[:user_id]
+      @current_user = User.find_by(id: cookies.signed[:user_id])
     end
   end
 
@@ -31,14 +31,10 @@ class ApplicationController < ActionController::Base
     [current_user, current_admin]
   end
 
-  def success_response(status, msg, data = nil, other = {})
-    resp = { ok: true, status:, flash: { success: msg } }
-    unless data.nil?
-      resp[:data] = {}
-      data.each { |key, val| resp[:data][key] = val }
-    end
-    other.each { |key, val| resp[key] = val }
-    render json: resp
+  def success_response(status, flash:, data: nil, **other)
+    resp = { ok: true, status:, flash: { success: flash } }
+    resp[:data] = data unless data.nil?
+    render json: resp.merge(other)
   end
 
   def failure_response(status, errors)

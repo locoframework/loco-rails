@@ -10,12 +10,12 @@ class User
 
     def index
       @articles = current_user.articles.order(:created_at)
-                              .paginate page: params[:page], per_page: 5
+                              .paginate(page: params[:page], per_page: 5)
       @count = current_user.articles.count
     end
 
     def show
-      @article = current_user.articles.find params[:id]
+      @article = current_user.articles.find(params[:id])
     end
 
     def new
@@ -31,19 +31,13 @@ class User
       @article = current_user.articles.new article_params
       success = @article.save
       Loco.emit({ event: :created }, subject: @article, to: current_user) if success
-      html_json_response success, @article,
-                         notice_json: CREATE_NOTICE,
-                         notice_html: CREATE_NOTICE,
-                         redirect_to: @article
+      html_json_response success, @article, flash: CREATE_NOTICE, redirect_to: @article
     end
 
     def update
       success = @article.update article_params
       Loco.emit({ event: :updated }, subject: @article, to: [@article.published? ? :all : current_user]) if success
-      html_json_response success, @article,
-                         notice_json: 'Article updated!',
-                         notice_html: 'Article was successfully updated.',
-                         redirect_to: articles_url
+      html_json_response success, @article, flash: 'Article updated!', redirect_to: articles_url
     end
 
     def publish
@@ -84,17 +78,17 @@ class User
 
     def json_response_for_destroy(article)
       if success
-        success_response 200, DESTROY_NOTICE, id: article.id
+        success_response 200, flash: DESTROY_NOTICE, data: { id: article.id }
       else
         failure_response 422, DESTROY_ALERT
       end
     end
 
-    def html_json_response(success, article, data = {})
+    def html_json_response(success, article, flash:, redirect_to:)
       if success
         respond_to do |format|
-          format.json { success_response 200, data[:notice_json], {} }
-          format.html { redirect_to data[:redirect_to], notice: data[:notice_html] }
+          format.json { success_response 200, flash:, data: {} }
+          format.html { redirect_to redirect_to, notice: flash }
         end
       else
         respond_to do |format|
