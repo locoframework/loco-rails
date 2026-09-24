@@ -3,7 +3,7 @@
 class User
   class SessionsController < ApplicationController
     def new
-      flash.now[:notice] = 'Your account has been verified. You can sign in now.' if params[:event] == 'confirmed'
+      flash.now[:notice] = t('flash.account_verified') if params[:event] == 'confirmed'
       render
     end
 
@@ -20,7 +20,7 @@ class User
 
     def destroy
       cookies.signed[:user_id] = nil
-      redirect_to new_user_session_url, notice: 'Successfully signed out.'
+      redirect_to new_user_session_url, notice: t('flash.signed_out')
     end
 
     private
@@ -31,7 +31,7 @@ class User
 
     def auth_succeeded(user)
       cookies.signed[:user_id] = user.id
-      redirect_to user_root_url, notice: 'Successfully signed in.'
+      redirect_to user_root_url, notice: t('flash.signed_in')
     end
   end
 end

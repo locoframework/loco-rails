@@ -28,7 +28,7 @@ module Admin
 
     def destroy
       @user.destroy
-      redirect_to admin_users_path, notice: 'User was successfully destroyed.'
+      redirect_to admin_users_path, notice: t('flash.user_destroyed')
     end
 
     private

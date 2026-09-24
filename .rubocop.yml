@@ -53,15 +53,9 @@ Rails/ActionControllerFlashBeforeRender:
   Exclude:
     - test/dummy/app/controllers/admin/sessions_controller.rb
 
-Rails/I18nLocaleTexts:
-  Enabled: false
-
 Style/ArgumentsForwarding:
   Exclude:
     - lib/loco/ws_connection_finder.rb
-
-Style/ArrayCoercion:
-  Enabled: false
 
 Style/Documentation:
   Enabled: false

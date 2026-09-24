@@ -17,14 +17,14 @@ module Admin
 
     def destroy
       cookies.signed[:admin_id] = nil
-      redirect_to new_admin_session_url, notice: 'Successfully signed out.'
+      redirect_to new_admin_session_url, notice: t('flash.signed_out')
     end
 
     private
 
     def auth_succeeded(admin)
       cookies.signed[:admin_id] = admin.id
-      flash[:notice] = 'Successfully signed in.'
+      flash[:notice] = t('flash.signed_in')
       respond_to do |f|
         f.json { render json: { ok: true } }
         f.html { redirect_to admin_root_url }

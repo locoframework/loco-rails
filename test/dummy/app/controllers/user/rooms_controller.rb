@@ -26,7 +26,7 @@ class User
       @room = Room.new params_room
       if @room.save
         Loco.emit({ event: :created, room: { id: @room.id, name: @room.name } }, subject: @room, to: [User])
-        redirect_to user_rooms_path, notice: 'Room has been created'
+        redirect_to user_rooms_path, notice: t('flash.room_created')
       else
         render :new, status: :unprocessable_content
       end
@@ -50,13 +50,13 @@ class User
 
     def destroy
       if @hub.raw_members.any?
-        redirect_to user_rooms_path, alert: 'Only empty room can be deleted'
+        redirect_to user_rooms_path, alert: t('flash.room_not_empty')
         return
       end
       Loco.del_hub(@hub)
       @room.destroy
       Loco.emit({ event: :destroyed, room_id: @room.id }, subject: @room, to: [User])
-      redirect_to user_rooms_path, notice: 'Room has been deleted'
+      redirect_to user_rooms_path, notice: t('flash.room_deleted')
     end
 
     protected

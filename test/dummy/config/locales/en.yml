@@ -1,0 +1,11 @@
+en:
+  flash:
+    signed_in: Successfully signed in.
+    signed_out: Successfully signed out.
+    account_verified: Your account has been verified. You can sign in now.
+    user_destroyed: User was successfully destroyed.
+    comment_updated: Comment has been updated.
+    comment_deleted: Comment has been deleted.
+    room_created: Room has been created
+    room_not_empty: Only empty room can be deleted
+    room_deleted: Room has been deleted
