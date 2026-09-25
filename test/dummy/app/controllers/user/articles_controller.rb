@@ -11,7 +11,7 @@ class User
     end
 
     def show
-      @article = Query.new(user: current_user).articles.find(params[:id])
+      @article = Query.new(current_user).articles.find(params[:id])
     end
 
     def new

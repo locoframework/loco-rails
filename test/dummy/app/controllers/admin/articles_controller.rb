@@ -8,12 +8,12 @@ module Admin
     end
 
     def show
-      @article = Query.new.articles.find(params[:id])
+      @article = Query.new(current_admin).articles.find(params[:id])
       @abbr = params[:abbr].present?
     end
 
     def edit
-      @article = Query.new.articles.find(params[:id])
+      @article = Query.new(current_admin).articles.find(params[:id])
     end
 
     def update

@@ -49,7 +49,7 @@ class User
     end
 
     def find_comment
-      res = Query.new(user: current_user).comments.find(article_id: params[:article_id], id: params[:id])
+      res = Query.new(current_user).comments.find(article_id: params[:article_id], id: params[:id])
       @article, @comment = res.values_at(:article, :comment)
     end
   end

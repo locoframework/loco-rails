@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Query
-  def initialize(user: nil)
-    @user = user
+  def initialize(actor = nil)
+    @actor = actor
   end
 
   def articles = Article.new(articles_skope)
@@ -11,5 +11,11 @@ class Query
 
   private
 
-  def articles_skope = @user ? @user.articles : ::Article
+  def articles_skope
+    case @actor
+    when User then @actor.articles
+    when Admin::SupportMember then ::Article
+    else ::Article.published
+    end
+  end
 end

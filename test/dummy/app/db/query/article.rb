@@ -14,9 +14,8 @@ class Query
       @skope = skope
     end
 
-    def find(id, published: false)
-      skope = published ? @skope.published : @skope
-      skope.includes(:user, :comments).find(id)
+    def find(id)
+      @skope.includes(:user, :comments).find(id)
     end
   end
 end
