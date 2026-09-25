@@ -3,7 +3,7 @@
 class User
   class RoomsController < UserController
     def index
-      res = Query::Room.all(page: params[:page])
+      res = Query.new(current_user).rooms.all(page: params[:page])
       @rooms, @rooms_with_hub = res.values_at(:rooms, :rooms_with_hub)
     end
 

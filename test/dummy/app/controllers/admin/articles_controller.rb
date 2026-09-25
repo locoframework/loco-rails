@@ -3,7 +3,7 @@
 module Admin
   class ArticlesController < AdminController
     def published
-      res = Query::Article.published(page: params[:page], per_page: 4)
+      res = Query.new(current_admin).articles.published(page: params[:page], per_page: 4)
       @articles, @count = res.values_at(:articles, :count)
     end
 

@@ -9,6 +9,8 @@ class Query
 
   def comments = Comment.new(articles_skope)
 
+  def rooms = Room.new(::Room)
+
   private
 
   def articles_skope
