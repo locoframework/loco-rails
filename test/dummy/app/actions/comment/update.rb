@@ -4,13 +4,13 @@ class Comment
   module Update
     def self.call(payload, opts)
       user = opts.dig(:ars, :user) || (User.find(payload[:user_id]) if payload[:user_id])
-      res = Find.(payload.slice(:article_id, :id).merge(user:))
-      article, comment = res.val.values_at(:article, :comment)
+      val = Query.new(user:).comments.find(**payload.slice(:article_id, :id))
+      article, comment = val.values_at(:article, :comment)
       if comment.update(payload[:comment])
         Loco.emit({ event: :updated, article_id: article.id }, subject: comment)
-        res
+        Result[ok: true, val:]
       else
-        Result[ok: false, val: res.val]
+        Result[ok: false, val:]
       end
     end
   end

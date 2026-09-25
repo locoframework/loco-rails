@@ -3,7 +3,7 @@
 module Main
   class PagesController < MainController
     def index
-      @articles = perform(query: Article::Published, payload: { page: 1, per_page: 3 }).val[:articles]
+      @articles = Query::Article.published(page: 1, per_page: 3)[:articles]
     end
   end
 end

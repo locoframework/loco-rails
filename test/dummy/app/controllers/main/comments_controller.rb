@@ -3,8 +3,8 @@
 module Main
   class CommentsController < MainController
     def show
-      res = perform(query: Comment::Find, payload: { article_id: params[:article_id], id: params[:id] })
-      @comment = res.val[:comment]
+      res = Query.new.comments.find(article_id: params[:article_id], id: params[:id])
+      @comment = res[:comment]
     end
 
     def create

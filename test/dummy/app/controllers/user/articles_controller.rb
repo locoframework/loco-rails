@@ -11,7 +11,7 @@ class User
     end
 
     def show
-      @article = perform(query: Article::Find, payload: { user: current_user, id: params[:id] }).val[:article]
+      @article = Query.new(user: current_user).articles.find(params[:id])
     end
 
     def new

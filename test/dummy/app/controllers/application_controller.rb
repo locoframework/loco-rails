@@ -31,9 +31,7 @@ class ApplicationController < ActionController::Base
     [current_user, current_admin]
   end
 
-  def perform(action: nil, query: nil, payload: {}, opts: {})
-    return query.(payload) if query
-
+  def perform(action:, payload: {}, opts: {})
     payload = payload.merge((opts[:ars] || {}).to_h { |k, v| [:"#{k}_id", v.id] })
     action.method(:call).arity == 1 ? action.(payload) : action.(payload, opts)
   end

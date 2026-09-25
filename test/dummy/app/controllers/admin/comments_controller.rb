@@ -16,7 +16,7 @@ module Admin
       if res.ok
         success_response(200, flash: 'Comment updated!', data: {})
       else
-        failure_response(400, res.val[:comment].errors)
+        failure_response(400, res[:comment].errors)
       end
     end
 
@@ -27,8 +27,8 @@ module Admin
     end
 
     def find_comment
-      res = perform(query: Comment::Find, payload: { article_id: params[:article_id], id: params[:id] })
-      @article, @comment = res.val.values_at(:article, :comment)
+      res = Query.new.comments.find(article_id: params[:article_id], id: params[:id])
+      @article, @comment = res.values_at(:article, :comment)
     end
   end
 end

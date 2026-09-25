@@ -3,17 +3,17 @@
 module Admin
   class ArticlesController < AdminController
     def published
-      res = perform(query: Article::Published, payload: { page: params[:page], per_page: 4 })
-      @articles, @count = res.val.values_at(:articles, :count)
+      res = Query::Article.published(page: params[:page], per_page: 4)
+      @articles, @count = res.values_at(:articles, :count)
     end
 
     def show
-      @article = perform(query: Article::Find, payload: { id: params[:id] }).val[:article]
+      @article = Query.new.articles.find(params[:id])
       @abbr = params[:abbr].present?
     end
 
     def edit
-      @article = perform(query: Article::Find, payload: { id: params[:id] }).val[:article]
+      @article = Query.new.articles.find(params[:id])
     end
 
     def update

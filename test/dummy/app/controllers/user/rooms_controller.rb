@@ -3,8 +3,8 @@
 class User
   class RoomsController < UserController
     def index
-      res = perform(query: Room::List, payload: { page: params[:page] })
-      @rooms, @rooms_with_hub = res.val.values_at(:rooms, :rooms_with_hub)
+      res = Query::Room.all(page: params[:page])
+      @rooms, @rooms_with_hub = res.values_at(:rooms, :rooms_with_hub)
     end
 
     def show
