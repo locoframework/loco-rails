@@ -28,7 +28,7 @@ module Admin
     end
 
     def find_comment
-      res = Query.new(current_admin).comments.find(article_id: params[:article_id], id: params[:id])
+      res = Query.new(current_admin).comments.find(article_id: params.expect(:article_id), id: params.expect(:id))
       @article, @comment = res.values_at(:article, :comment)
     end
   end

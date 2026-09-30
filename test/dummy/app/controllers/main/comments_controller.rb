@@ -3,7 +3,7 @@
 module Main
   class CommentsController < MainController
     def show
-      res = Query.new.comments.find(article_id: params[:article_id], id: params[:id])
+      res = Query.new.comments.find(article_id: params.expect(:article_id), id: params.expect(:id))
       @comment = res[:comment]
     end
 

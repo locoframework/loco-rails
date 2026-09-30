@@ -8,7 +8,7 @@ module Main
     end
 
     def show
-      @article = Query.new.articles.find(params[:id])
+      @article = Query.new.articles.find(params.expect(:id))
     end
   end
 end

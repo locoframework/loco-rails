@@ -8,12 +8,12 @@ module Admin
     end
 
     def show
-      @article = scope.find(params[:id])
+      @article = scope.find(params.expect(:id))
       @abbr = params[:abbr].present?
     end
 
     def edit
-      @article = scope.find(params[:id])
+      @article = scope.find(params.expect(:id))
     end
 
     def update

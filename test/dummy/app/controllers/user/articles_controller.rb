@@ -11,7 +11,7 @@ class User
     end
 
     def show
-      @article = Query.new(current_user).articles.find(params[:id])
+      @article = Query.new(current_user).articles.find(params.expect(:id))
     end
 
     def new

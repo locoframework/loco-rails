@@ -11,7 +11,7 @@ module Loco
       get '/'
       assert_response :success
 
-      script = Nokogiri::HTML(response.body).at_css("script[data-model='Article']")
+      script = response.parsed_body.at_css("script[data-model='Article']")
       assert_not_nil script
 
       as_of = Time.zone.parse(script['data-as-of'])
@@ -22,7 +22,7 @@ module Loco
 
     test 'as_of precedes a notification emitted while the page renders' do
       get '/'
-      as_of = Time.zone.parse(Nokogiri::HTML(response.body)
+      as_of = Time.zone.parse(response.parsed_body
                                 .at_css("script[data-model='Article']")['data-as-of'])
 
       Loco.emit({ event: :published }, subject: articles(:one))
@@ -38,7 +38,7 @@ module Loco
 
       get '/'
       assert_not_includes response.body, '</script><script>alert(1)'
-      script = Nokogiri::HTML(response.body).at_css("script[data-model='Article']")
+      script = response.parsed_body.at_css("script[data-model='Article']")
       assert_includes JSON.parse(script.text).pluck('title'), article.title
     end
   end

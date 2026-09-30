@@ -8,7 +8,7 @@ class User
     end
 
     def show
-      @room = Room.find(params[:id])
+      @room = Room.find(params.expect(:id))
       @messages = @room.messages.includes(:user).order(created_at: :asc).last(50)
     end
 
