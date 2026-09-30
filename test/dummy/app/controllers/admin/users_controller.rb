@@ -3,7 +3,7 @@
 module Admin
   class UsersController < AdminController
     def index
-      @users = User.order(created_at: :desc).paginate(page: params[:page], per_page: 10)
+      @users = Query.new(current_admin).users.all(page: params[:page])
     end
 
     def show

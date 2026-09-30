@@ -9,7 +9,7 @@ module Admin
     def create
       res = perform(action: Admin::SupportMember::Authenticate,
                     payload: { email: params[:email], password: params[:password] })
-      res.ok ? auth_succeeded(res.val[:admin]) : auth_failed
+      res.ok ? authenticated(res.val[:admin]) : auth_failed
     end
 
     def destroy
@@ -19,7 +19,7 @@ module Admin
 
     private
 
-    def auth_succeeded(admin)
+    def authenticated(admin)
       cookies.signed[:admin_id] = admin.id
       flash[:notice] = t('flash.signed_in')
       respond_to do |f|

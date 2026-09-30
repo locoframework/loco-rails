@@ -11,11 +11,13 @@ class Query
 
   def rooms = Room.new(::Room)
 
+  def users = User.new(::User)
+
   private
 
   def articles_scope
     case @actor
-    when User then @actor.articles
+    when ::User then @actor.articles
     when Admin::SupportMember then ::Article
     else ::Article.published
     end
