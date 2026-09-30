@@ -3,29 +3,31 @@
 module Admin
   class ArticlesController < AdminController
     def published
-      res = Query.new(current_admin).articles.published(page: params[:page], per_page: 4)
+      res = scope.published(page: params[:page], per_page: 4)
       @articles, @count = res.values_at(:articles, :count)
     end
 
     def show
-      @article = Query.new(current_admin).articles.find(params[:id])
+      @article = scope.find(params[:id])
       @abbr = params[:abbr].present?
     end
 
     def edit
-      @article = Query.new(current_admin).articles.find(params[:id])
+      @article = scope.find(params[:id])
     end
 
     def update
       res = perform(action: Article::Review, payload: { id: params[:id], article: article_params })
       if res.ok
-        success_response(200, flash: 'Article updated!', data: {})
+        ok_resp(200, flash: 'Article updated!', data: {})
       else
-        failure_response(400, res.val[:article].errors)
+        err_resp(400, res.val[:article].errors)
       end
     end
 
     private
+
+    def scope = Query.new(current_admin).articles
 
     def article_params
       params.expect article: %i[admin_review category_id

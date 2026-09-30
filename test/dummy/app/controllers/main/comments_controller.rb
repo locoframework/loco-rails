@@ -11,13 +11,13 @@ module Main
       res = perform(action: Comment::Create, payload: { comment: comment_params })
       comment = res.val[:comment]
       if res.ok
-        success_response(
+        ok_resp(
           201,
           flash: 'Your comment has been posted!',
           data: comment.as_json(only: %i[id author text article_id created_at])
         )
       else
-        failure_response(400, comment.errors)
+        err_resp(400, comment.errors)
       end
     end
 

@@ -5,15 +5,15 @@ class Query
     @actor = actor
   end
 
-  def articles = Article.new(articles_skope)
+  def articles = Article.new(articles_scope)
 
-  def comments = Comment.new(articles_skope)
+  def comments = Comment.new(articles_scope)
 
   def rooms = Room.new(::Room)
 
   private
 
-  def articles_skope
+  def articles_scope
     case @actor
     when User then @actor.articles
     when Admin::SupportMember then ::Article

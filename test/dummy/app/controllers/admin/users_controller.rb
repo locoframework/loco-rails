@@ -17,9 +17,9 @@ module Admin
     def update
       res = perform(action: User::Update, payload: { id: params[:id], user: user_params })
       if res.ok
-        success_response(200, flash: 'User updated!')
+        ok_resp(200, flash: 'User updated!')
       else
-        failure_response(400, res.val[:user].errors)
+        err_resp(400, res.val[:user].errors)
       end
     end
 

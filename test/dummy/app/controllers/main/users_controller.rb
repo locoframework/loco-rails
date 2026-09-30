@@ -19,7 +19,7 @@ module Main
     end
 
     def success_response_for_create(user)
-      success_response(
+      ok_resp(
         201,
         flash: 'Signed up!',
         data: {
