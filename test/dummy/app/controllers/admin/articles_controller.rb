@@ -30,9 +30,9 @@ module Admin
     def scope = Query.new(current_admin).articles
 
     def article_params
-      params.expect article: %i[admin_review category_id
+      params.expect(article: %i[admin_review category_id
                                 admin_rate admin_review_started_at
-                                published]
+                                published])
     end
   end
 end

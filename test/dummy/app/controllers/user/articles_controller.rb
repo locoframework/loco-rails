@@ -41,7 +41,7 @@ class User
       if res.ok
         render json: { ok: true, status: 200 }
       else
-        failure_response(400, res.val[:article].errors)
+        err_resp(400, res.val[:article].errors)
       end
     end
 
@@ -64,21 +64,21 @@ class User
 
     def json_response_for_destroy(res)
       if res.ok
-        success_response 200, flash: DESTROY_NOTICE, data: { id: res.val[:article].id }
+        ok_resp(200, flash: DESTROY_NOTICE, data: { id: res.val[:article].id })
       else
-        failure_response 422, DESTROY_ALERT
+        err_resp(422, DESTROY_ALERT)
       end
     end
 
     def html_json_response(success, article, flash:, redirect_to:)
       if success
         respond_to do |format|
-          format.json { success_response 200, flash:, data: {} }
+          format.json { ok_resp(200, flash:, data: {}) }
           format.html { redirect_to redirect_to, notice: flash }
         end
       else
         respond_to do |format|
-          format.json { failure_response 400, article.errors }
+          format.json { err_resp(400, article.errors) }
           format.html { render :edit }
         end
       end

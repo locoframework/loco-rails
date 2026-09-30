@@ -9,7 +9,7 @@ module Main
     def create
       res = perform(action: User::Create, payload: { user: user_params })
       user = res.val[:user]
-      res.ok ? success_response_for_create(user) : failure_response(400, user.errors)
+      res.ok ? ok_resp_for_create(user) : err_resp(400, user.errors)
     end
 
     private
@@ -18,7 +18,7 @@ module Main
       params.expect(user: %i[email password password_confirmation username])
     end
 
-    def success_response_for_create(user)
+    def ok_resp_for_create(user)
       ok_resp(
         201,
         flash: 'Signed up!',
