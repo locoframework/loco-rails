@@ -7,7 +7,7 @@ class User
     DESTROY_ALERT = "Article can't be destroyed because is published."
 
     def index
-      @articles = current_user.articles.order(:created_at).paginate(page: params[:page], per_page: 5)
+      @articles = Query.new(current_user).articles.all(page: params[:page], per_page: 5)
     end
 
     def show

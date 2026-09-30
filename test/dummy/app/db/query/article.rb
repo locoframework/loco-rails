@@ -6,6 +6,10 @@ class Query
       @skope = skope
     end
 
+    def all(page:, per_page:)
+      @skope.order(:created_at).paginate(page:, per_page:)
+    end
+
     def published(page:, per_page:)
       skope = @skope.published
       articles = skope.order(published_at: :desc).includes(:user).paginate(page:, per_page:)
