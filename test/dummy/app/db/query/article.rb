@@ -11,9 +11,7 @@ class Query
     end
 
     def published(page:, per_page:)
-      scope = @scope.published
-      articles = scope.order(published_at: :desc).includes(:user).paginate(page:, per_page:)
-      { articles:, count: scope.count }
+      @scope.published.order(published_at: :desc).includes(:user).paginate(page:, per_page:)
     end
 
     def find(id)

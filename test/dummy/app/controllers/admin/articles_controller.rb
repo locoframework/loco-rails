@@ -3,8 +3,8 @@
 module Admin
   class ArticlesController < AdminController
     def published
-      res = scope.published(page: params[:page], per_page: 4)
-      @articles, @count = res.values_at(:articles, :count)
+      @articles = scope.published(page: params[:page], per_page: 4)
+      @count = @articles.total_entries
     end
 
     def show

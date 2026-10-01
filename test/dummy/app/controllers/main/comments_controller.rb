@@ -24,7 +24,7 @@ module Main
     private
 
     def comment_params
-      params.expect comment: %i[author text article_id]
+      params.expect(comment: %i[author text article_id])
     end
   end
 end
