@@ -1,7 +1,7 @@
 import { subscribe } from "loco-js";
 import { UI } from "loco-js-ui";
 
-import { getLoco, renderFlash } from "services/app";
+import { renderFlash } from "services/app";
 import User from "models/User";
 
 const confirming = () => {
@@ -24,7 +24,6 @@ const receivedMessage = (type) => {
 };
 
 const created = (data) => {
-  getLoco().getWire().token = data.access_token;
   const unsubscribe = subscribe({
     to: new User({ id: data.id }),
     with: receivedMessage,
