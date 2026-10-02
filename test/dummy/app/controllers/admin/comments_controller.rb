@@ -15,7 +15,7 @@ module Admin
                     payload: { article_id: params[:article_id], id: params[:id], comment: comment_params },
                     opts: { ars: { admin: current_admin } })
       if res.ok
-        ok_resp(200, flash: 'Comment updated!', data: {})
+        ok_resp(flash: 'Comment updated!')
       else
         err_resp(res.val[:comment].errors)
       end

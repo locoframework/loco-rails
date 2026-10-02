@@ -68,7 +68,7 @@ class User
     def resp(success, flash:, redirect_to:)
       if success
         respond_to do |f|
-          f.json { ok_resp(200, flash:, data: {}) }
+          f.json { ok_resp(flash:) }
           f.html { redirect_to(redirect_to, notice: flash) }
         end
       else

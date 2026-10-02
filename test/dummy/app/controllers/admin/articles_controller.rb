@@ -19,7 +19,7 @@ module Admin
     def update
       res = perform(action: Article::Review, payload: { id: params[:id], article: article_params })
       if res.ok
-        ok_resp(200, flash: 'Article updated!', data: {})
+        ok_resp(flash: 'Article updated!')
       else
         err_resp(res.val[:article].errors)
       end
