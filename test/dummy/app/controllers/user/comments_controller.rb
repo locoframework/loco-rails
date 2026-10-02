@@ -13,13 +13,13 @@ class User
     def update
       res = perform_on_comment(Comment::Update, comment: comment_params)
       @article, @comment = res.val.values_at(:article, :comment)
-      return render_update_failure unless res.ok
-
       respond_to do |f|
-        f.json { ok_resp(id: @comment.id) }
-        f.html do
-          redirect_to edit_user_article_url(@article),
-                      notice: t('flash.comment_updated')
+        if res.ok
+          f.json { ok_resp }
+          f.html { redirect_to [:edit, :user, @article], notice: t('flash.comment_updated') }
+        else
+          f.json { err_resp(@comment.errors) }
+          f.html { render :edit, status: :unprocessable_content }
         end
       end
     end
@@ -30,13 +30,6 @@ class User
     end
 
     private
-
-    def render_update_failure
-      respond_to do |f|
-        f.json { err_resp(@comment.errors) }
-        f.html { render :edit, status: :unprocessable_content }
-      end
-    end
 
     def comment_params
       permitted_params = %i[author text]
