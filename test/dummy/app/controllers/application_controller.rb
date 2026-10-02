@@ -36,13 +36,11 @@ class ApplicationController < ActionController::Base
     action.method(:call).arity == 1 ? action.(payload) : action.(payload, opts)
   end
 
-  def ok_resp(status, flash:, data: nil, **other)
-    resp = { ok: true, status:, flash: { success: flash } }
-    resp[:data] = data unless data.nil?
-    render json: resp.merge(other)
+  def ok_resp(flash: nil, data: nil, **other)
+    render json: { ok: true, flash: flash && { success: flash }, data: }.compact.merge(other)
   end
 
-  def err_resp(status, errors)
-    render json: { ok: false, status:, errors: }
+  def err_resp(errors)
+    render json: { ok: false, errors: }
   end
 end

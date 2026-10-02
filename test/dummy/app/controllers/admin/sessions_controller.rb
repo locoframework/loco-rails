@@ -23,7 +23,7 @@ module Admin
       cookies.signed[:admin_id] = admin.id
       flash[:notice] = t('flash.signed_in')
       respond_to do |f|
-        f.json { render json: { ok: true } }
+        f.json { ok_resp }
         f.html { redirect_to admin_root_url }
       end
     end
@@ -31,7 +31,7 @@ module Admin
     def auth_failed
       msg = 'Invalid email or password.'
       respond_to do |f|
-        f.json { render json: { errors: { base: [msg] } } }
+        f.json { err_resp({ base: [msg] }) }
         f.html { redirect_to new_admin_session_url, alert: msg }
       end
     end

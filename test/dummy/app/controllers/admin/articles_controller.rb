@@ -21,7 +21,7 @@ module Admin
       if res.ok
         ok_resp(200, flash: 'Article updated!', data: {})
       else
-        err_resp(400, res.val[:article].errors)
+        err_resp(res.val[:article].errors)
       end
     end
 

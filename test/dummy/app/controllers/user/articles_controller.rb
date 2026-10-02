@@ -39,9 +39,9 @@ class User
     def publish
       res = perform(action: Article::Publish, payload: { id: params[:id] }, opts: user_opts)
       if res.ok
-        render json: { ok: true, status: 200 }
+        ok_resp
       else
-        err_resp(400, res.val[:article].errors)
+        err_resp(res.val[:article].errors)
       end
     end
 
@@ -51,9 +51,9 @@ class User
         f.html { redirect_to user_articles_url, res.ok ? { notice: DESTROY_NOTICE } : { alert: DESTROY_ALERT } }
         f.json do
           if res.ok
-            ok_resp(200, flash: DESTROY_NOTICE, data: { id: res.val[:article].id })
+            ok_resp(flash: DESTROY_NOTICE, data: { id: res.val[:article].id })
           else
-            err_resp(422, DESTROY_ALERT)
+            err_resp(DESTROY_ALERT)
           end
         end
       end
@@ -73,7 +73,7 @@ class User
         end
       else
         respond_to do |f|
-          f.json { err_resp(400, @article.errors) }
+          f.json { err_resp(@article.errors) }
           f.html { render :edit }
         end
       end

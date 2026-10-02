@@ -12,12 +12,11 @@ module Main
       comment = res.val[:comment]
       if res.ok
         ok_resp(
-          201,
           flash: 'Your comment has been posted!',
           data: comment.as_json(only: %i[id author text article_id created_at])
         )
       else
-        err_resp(400, comment.errors)
+        err_resp(comment.errors)
       end
     end
 

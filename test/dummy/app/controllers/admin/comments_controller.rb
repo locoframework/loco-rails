@@ -17,7 +17,7 @@ module Admin
       if res.ok
         ok_resp(200, flash: 'Comment updated!', data: {})
       else
-        err_resp(400, res.val[:comment].errors)
+        err_resp(res.val[:comment].errors)
       end
     end
 
