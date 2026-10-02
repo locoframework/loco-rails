@@ -26,14 +26,14 @@ class User
     def create
       res = perform(action: Article::Create, payload: { article: article_params }, opts: user_opts)
       @article = res.val[:article]
-      html_json_response res.ok, @article, flash: CREATE_NOTICE, redirect_to: @article
+      resp(res.ok, flash: CREATE_NOTICE, redirect_to: @article)
     end
 
     def update
       res = perform(action: Article::Update,
                     payload: { id: params[:id], article: article_params }, opts: user_opts)
       @article = res.val[:article]
-      html_json_response res.ok, @article, flash: 'Article updated!', redirect_to: articles_url
+      resp(res.ok, flash: 'Article updated!', redirect_to: articles_url)
     end
 
     def publish
@@ -47,12 +47,15 @@ class User
 
     def destroy
       res = perform(action: Article::Destroy, payload: { id: params[:id] }, opts: user_opts)
-      respond_to do |format|
-        format.html do
-          flash[res.ok ? :notice : :alert] = res.ok ? DESTROY_NOTICE : DESTROY_ALERT
-          redirect_to user_articles_url
+      respond_to do |f|
+        f.html { redirect_to user_articles_url, res.ok ? { notice: DESTROY_NOTICE } : { alert: DESTROY_ALERT } }
+        f.json do
+          if res.ok
+            ok_resp(200, flash: DESTROY_NOTICE, data: { id: res.val[:article].id })
+          else
+            err_resp(422, DESTROY_ALERT)
+          end
         end
-        format.json { json_response_for_destroy res }
       end
     end
 
@@ -62,24 +65,16 @@ class User
       params.expect(article: %i[title text])
     end
 
-    def json_response_for_destroy(res)
-      if res.ok
-        ok_resp(200, flash: DESTROY_NOTICE, data: { id: res.val[:article].id })
-      else
-        err_resp(422, DESTROY_ALERT)
-      end
-    end
-
-    def html_json_response(success, article, flash:, redirect_to:)
+    def resp(success, flash:, redirect_to:)
       if success
-        respond_to do |format|
-          format.json { ok_resp(200, flash:, data: {}) }
-          format.html { redirect_to redirect_to, notice: flash }
+        respond_to do |f|
+          f.json { ok_resp(200, flash:, data: {}) }
+          f.html { redirect_to(redirect_to, notice: flash) }
         end
       else
-        respond_to do |format|
-          format.json { err_resp(400, article.errors) }
-          format.html { render :edit }
+        respond_to do |f|
+          f.json { err_resp(400, @article.errors) }
+          f.html { render :edit }
         end
       end
     end
