@@ -18,10 +18,12 @@ class User
 
     def create
       res = perform(action: Room::Create, payload: { room: params_room })
-      return redirect_to user_rooms_path, notice: t('flash.room_created') if res.ok
-
-      @room = res.val[:room]
-      render :new, status: :unprocessable_content
+      if res.ok
+        redirect_to user_rooms_path, notice: t('flash.room_created')
+      else
+        @room = res.val[:room]
+        render :new, status: :unprocessable_content
+      end
     end
 
     def join
@@ -46,7 +48,7 @@ class User
     private
 
     def params_room
-      params.expect room: [:name]
+      params.expect(room: [:name])
     end
   end
 end
