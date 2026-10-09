@@ -1,23 +1,14 @@
 import { helpers } from "simplicit";
 
 import Article from "models/Article";
-import {
-  adminNamespace,
-  mainNamespace,
-  userNamespace,
-} from "services/namespace";
+import { mainNamespace, userNamespace } from "services/namespace";
 import { renderFlash } from "services/app";
 
-const findParams = (id) => {
-  const params = { id };
-  if (helpers.params.id !== id) params.abbr = true;
-  if (adminNamespace()) params.resource = "admin";
-  return params;
-};
+const findParams = (id) => (helpers.params.id === id ? id : { id, abbr: true });
 
 export const created = async ({ id }) => {
   if (!userNamespace()) return;
-  Article.add(await Article.find(findParams(id)));
+  Article.add(await Article.find(id));
 };
 
 export const updating = ({ id }) => {
