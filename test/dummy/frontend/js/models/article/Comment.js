@@ -1,7 +1,7 @@
 import LocoReactive from "models/LocoReactive";
 import AdminComment from "components/admin/Comment";
 import MainComment from "components/main/Comment";
-import NoComments from "components/main/NoComments";
+import NoComments from "components/shared/NoComments";
 import UserComment from "components/user/Comment";
 import UserCommentAdmin from "components/user/CommentAdmin";
 
