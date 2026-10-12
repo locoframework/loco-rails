@@ -1,10 +1,20 @@
 import { helpers } from "simplicit";
 
+import AdminArticles from "controllers/admin/Articles";
+import MainArticles from "controllers/main/Articles";
+import UserArticles from "controllers/user/Articles";
+import getEnv from "initializers/simplicit";
 import Article from "models/Article";
-import { mainNamespace, userNamespace } from "services/namespace";
+import { userNamespace } from "services/namespace";
 import { renderFlash } from "services/app";
 
-const findParams = (id) => (helpers.params.id === id ? id : { id, abbr: true });
+const ARTICLES_CONTROLLERS = [AdminArticles, MainArticles, UserArticles];
+
+export const onArticlePage = (id) =>
+  ARTICLES_CONTROLLERS.some((c) => getEnv().controller instanceof c) &&
+  helpers.params.id === id;
+
+const findParams = (id) => (onArticlePage(id) ? id : { id, abbr: true });
 
 export const created = async ({ id }) => {
   if (!userNamespace()) return;
@@ -12,11 +22,11 @@ export const created = async ({ id }) => {
 };
 
 export const updating = ({ id }) => {
-  if (!mainNamespace() || helpers.params.id !== id) return;
-  renderFlash({
-    warning:
-      "Author is currently editing article. Be aware of possible changes.",
-  });
+  if (getEnv().controller instanceof MainArticles && helpers.params.id === id)
+    renderFlash({
+      warning:
+        "Author is currently editing article. Be aware of possible changes.",
+    });
 };
 
 export const published = async ({ id }) => {
@@ -25,7 +35,10 @@ export const published = async ({ id }) => {
 
 export const destroyed = ({ id }) => {
   Article.byId(id)?.del();
-  if (userNamespace() && helpers.params.id === id) {
+  const { controller, action } = getEnv();
+  const viewing =
+    controller instanceof UserArticles && ["show", "edit"].includes(action);
+  if (viewing && helpers.params.id === id) {
     window.location.href = "/user/articles?message=deleted";
   }
 };
@@ -40,6 +53,5 @@ export const commentsUpdated = ({
   article_id: articleId,
   comments_count: count,
 }) => {
-  if (count == null) return;
   Article.byId(articleId)?.update({ commentsCount: count });
 };

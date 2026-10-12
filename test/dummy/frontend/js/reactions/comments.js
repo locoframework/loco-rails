@@ -1,13 +1,6 @@
-import { helpers } from "simplicit";
-
 import Comment from "models/article/Comment";
 import { mainNamespace } from "services/namespace";
-import { commentsUpdated } from "reactions/articles";
-
-// Every page that lists comments is article-scoped, so the id in the URL is
-// the article whose comments are on screen. Without this, a comment on another
-// article would join the collection and render in the wrong list.
-const onArticlePage = (articleId) => helpers.params.id === articleId;
+import { commentsUpdated, onArticlePage } from "reactions/articles";
 
 export const created = async (payload) => {
   const { article_id: articleId, id } = payload;
