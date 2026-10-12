@@ -5,15 +5,20 @@ require 'test_helper'
 module Loco
   class Notification
     class FetcherTest < ActiveSupport::TestCase
-      test 'should set max_size via Loco::Config' do
-        Loco.configure { |c| c.notifications_size = 1000 }
-        assert_equal 1000, Notification::Fetcher.new(synced_at: 3.seconds.ago.iso8601(6))
-                                                .max_size
+      test 'should limit notifications to Loco::Config.notifications_size' do
+        size = Loco::Config.notifications_size
+        Loco.configure { |c| c.notifications_size = 2 }
+        fetcher = Notification::Fetcher.new synced_at: 3.seconds.ago.iso8601(6)
+        3.times { Loco.emit({ event: :published }, subject: articles(:one)) }
+        assert_equal 2, fetcher.formatted_notifications.size
+      ensure
+        Loco.configure { |c| c.notifications_size = size }
       end
 
-      test 'should set max_size on initialization' do
-        opts = { synced_at: 3.seconds.ago.iso8601(6), max_size: 101 }
-        assert_equal 101, Notification::Fetcher.new(opts).max_size
+      test 'should limit notifications to max_size' do
+        fetcher = Notification::Fetcher.new synced_at: 3.seconds.ago.iso8601(6), max_size: 2
+        3.times { Loco.emit({ event: :published }, subject: articles(:one)) }
+        assert_equal 2, fetcher.formatted_notifications.size
       end
 
       test 'should not return addressed notifications without passing correct permissions' do

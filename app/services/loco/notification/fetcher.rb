@@ -3,8 +3,6 @@
 module Loco
   class Notification
     class Fetcher
-      attr_reader :max_size
-
       def initialize(opts)
         @synced_at = opts[:synced_at]
         @permissions = (opts[:permissions] || []).compact
@@ -18,7 +16,7 @@ module Loco
       end
 
       def next_sync_time
-        if notifications.size == max_size
+        if notifications.size == @max_size
           notifications.last.created_at
         else
           Time.current
@@ -39,7 +37,7 @@ module Loco
       end
 
       def notifications
-        @notifications ||= scopes.reduce(:or).first(max_size)
+        @notifications ||= scopes.reduce(:or).first(@max_size)
       end
 
       def scopes
@@ -50,9 +48,11 @@ module Loco
       end
 
       def scope_for_resource(resource)
-        return default_scope.where(recipient_class: resource.to_s, recipient_id: nil) if resource.instance_of?(Class)
-
-        default_scope.where(recipient_class: resource.class.name, recipient_id: [resource.id, nil])
+        if resource.instance_of?(Class)
+          default_scope.where(recipient_class: resource.to_s, recipient_id: nil)
+        else
+          default_scope.where(recipient_class: resource.class.name, recipient_id: [resource.id, nil])
+        end
       end
     end
   end
