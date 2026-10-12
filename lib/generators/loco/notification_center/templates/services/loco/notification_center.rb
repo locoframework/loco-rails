@@ -2,8 +2,10 @@
 
 module Loco
   class NotificationCenter
-    def received_message(permissions, payload)
-      # handle messages here
+    class << self
+      def call(permissions, payload)
+        # handle messages here
+      end
     end
   end
 end

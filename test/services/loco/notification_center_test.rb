@@ -4,7 +4,7 @@ require 'test_helper'
 
 module Loco
   class NotificationCenterTest < TCWithMocks
-    describe '#received_message' do
+    describe '.call' do
       describe 'PING' do
         let(:zbig) { users(:zbig) }
         let(:admin) { admin_support_members(:one) }
@@ -16,17 +16,17 @@ module Loco
             to: have_attributes(id: zbig.id),
             ws_only: true
           )
-          NotificationCenter.new.received_message({ 'admin/support_member': admin }, payload)
+          NotificationCenter.call({ 'admin/support_member': admin }, payload)
         end
 
         it 'ignores PING when sender is not an admin' do
           expect(Loco).not_to receive(:emit)
-          NotificationCenter.new.received_message({ user: zbig }, payload)
+          NotificationCenter.call({ user: zbig }, payload)
         end
 
         it 'ignores PING when no permissions are present' do
           expect(Loco).not_to receive(:emit)
-          NotificationCenter.new.received_message({}, payload)
+          NotificationCenter.call({}, payload)
         end
       end
     end

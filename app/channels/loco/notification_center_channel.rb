@@ -27,7 +27,11 @@ module Loco
       return if payload.keys == ['loco']
 
       indexed_permissions = PermissionsPresenter.indexed(loco_permissions)
-      NotificationCenter.new.received_message(indexed_permissions, payload)
+      if NotificationCenter.respond_to?(:call)
+        NotificationCenter.call(indexed_permissions, payload)
+      else
+        NotificationCenter.new.received_message(indexed_permissions, payload)
+      end
     end
 
     protected

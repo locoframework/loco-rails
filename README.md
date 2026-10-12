@@ -17,7 +17,7 @@ Plain ActionCable gives you raw WebSockets. Everything else you build yourself. 
 | **Offline clients** | Broadcast is fire-and-forget. Messages sent while offline are lost | Notifications persisted in DB; fetched on reconnect |
 | **WebSocket unavailable** | No fallback — client sees nothing | Auto-switches to HTTP polling via `/notification-center` |
 | **Server → browser dispatch** | Wire each subscription/handler manually per channel | One `NotificationCenter` callback receives every message; switch on `payload.type` (e.g., `"Article created"`, `"USER_CONFIRMED"`) — all routing in one place |
-| **Browser → server messages** | Write channel `receive` per stream | One `NotificationCenter#received_message` hook for all incoming messages |
+| **Browser → server messages** | Write channel `receive` per stream | One `NotificationCenter.call` hook for all incoming messages |
 | **Permission-aware routing** | Auth per-channel; you gate every subscribe | `loco_permissions` array identifies connection; `to:` respects it |
 | **Group broadcasts** | Manage streams and membership manually | Communication Hubs — virtual rooms in Redis, add/remove members, broadcast with one call |
 | **Connection tracking** | ActionCable doesn't track individual tabs | Each connection gets a UUID; messages target the exact tab |
@@ -142,13 +142,15 @@ end
 
 ## 4. `app/services/loco/notification_center.rb`
 
-Handler for messages sent **from the browser to the server** over WebSocket. Fill in `received_message` to route incoming messages. See the [Receiving messages from the front-end](#-receiving-messages-from-the-front-end) section below.
+Handler for messages sent **from the browser to the server** over WebSocket. Fill in `call` to route incoming messages. See the [Receiving messages from the front-end](#-receiving-messages-from-the-front-end) section below.
 
 ```ruby
 module Loco
   class NotificationCenter
-    def received_message(permissions, payload)
-      # handle messages here
+    class << self
+      def call(permissions, payload)
+        # handle messages here
+      end
     end
   end
 end
@@ -304,7 +306,7 @@ Note: `members` performs DB queries to fetch full objects. Use `raw_members` for
 
 Messages sent from the browser via WebSocket are received by `Loco::NotificationCenter` (generated at `app/services/loco/notification_center.rb`).
 
-The `received_message` instance method is called for each message with 2 arguments:
+The `NotificationCenter.call` class method is called for each message with 2 arguments:
 
 1. **permissions** — a hash of signed-in resources (keys: lowercase class names, values: instances), as defined in `ApplicationCable::Connection#loco_permissions`
 2. **payload** — the sent payload
@@ -404,6 +406,7 @@ bin/rails test
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8
+- `NotificationCenter.call(permissions, payload)` replaces `NotificationCenter#received_message` as the hook for incoming messages. The instance method is still used as a fallback when `.call` isn't defined
 
 ### 6.1 _(2022-09-04)_
 
