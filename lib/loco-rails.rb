@@ -67,9 +67,11 @@ module Loco
         type: payload[:type],
         loco: { idempotency_key: payload[:idempotency_key] || SecureRandom.hex }
       }
-      return Sender.new(to).(data) if ws_only
-
-      Broadcaster.(subject, payload[:event], data:, recipients: to)
+      if ws_only
+        Sender.new(to).(data)
+      else
+        Broadcaster.(subject, payload[:event], data:, recipients: to)
+      end
     end
   end
 end
