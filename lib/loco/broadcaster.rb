@@ -5,24 +5,20 @@ module Loco
     class << self
       def call(obj, event, recipients:, data:)
         process_recipients(recipients).each do |recipient|
-          notification = Notification.create!(
-            obj:,
-            event:,
-            recipient:,
-            data:
-          )
-          sync_time = notification.created_at.iso8601(6)
-          send_notification(keify_recipient(recipient), notification, sync_time)
+          notification = Notification.create!(obj:, event:, recipient:, data:)
+          send_notification(keify_recipient(recipient), notification)
         end
       end
 
       private
 
       def process_recipients(recipients)
-        recipients = (recipients.is_a?(Array) ? recipients : [recipients]).map { |e| e.nil? ? :all : e }
-        return [:all] if recipients.include?(:all)
-
-        recipients.map { |e| e.is_a?(Hub) ? e.members(shallow: true) : e }.flatten
+        recipients = [recipients] unless recipients.is_a?(Array)
+        if recipients.any? { _1.nil? || _1 == :all }
+          [:all]
+        else
+          recipients.flat_map { _1.is_a?(Hub) ? _1.members(shallow: true) : _1 }
+        end
       end
 
       def keify_recipient(recipient)
@@ -33,12 +29,18 @@ module Loco
         end
       end
 
-      def send_notification(recipient, notification, sync_time)
-        payload = { loco: { sync_time:, notification: notification.compact } }
+      def send_notification(recipient, notification)
+        sync_time = notification.created_at.iso8601(6)
+        data = {
+          loco: {
+            sync_time:,
+            notification: notification.compact
+          }
+        }
         if notification.recipient_id
-          Sender.new(recipient).(payload)
+          Sender.new(recipient).(data)
         else
-          SenderJob.perform_later(recipient, payload)
+          SenderJob.perform_later(recipient, data)
         end
       end
     end

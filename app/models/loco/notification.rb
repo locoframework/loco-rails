@@ -27,8 +27,7 @@ module Loco
     end
 
     def recipient=(val)
-      return if val.nil?
-      return if val == :all
+      return if val.nil? || val == :all
 
       if val.is_a?(String)
         self.recipient_token = val
