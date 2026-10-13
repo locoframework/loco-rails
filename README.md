@@ -404,6 +404,7 @@ bin/rails test
 - `:subject` now accepts `[Class, id]` tuple — avoids `Klass.new(id: x)` allocation when only metadata is needed
 - Added `Loco::Permissions::Controller` and `Loco::Permissions::Connection` mixins. Both consume `c.resources = ->(ctx) { [...] }` config (declared once, used in both contexts). Connection mixin auto-runs `identified_by :loco_permissions` and assigns `[SecureRandom.uuid, *resources]` before `connect`. Older manual `loco_permissions` definitions still work; mixins are opt-in for cleaner setup
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
+- `ws_only: true` messages travel in the same `{ loco: { sync_time:, notification: [...] } }` envelope as persisted ones (an unsaved notification: `[nil, nil, nil, data, nil]` — no `sync_time`, so it never moves the client's sync point). `Loco.emit` returns the idempotency key in both modes. An untyped `ws_only` message now reaches `notificationCenter` as the bare payload, same as an untyped persisted one
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8
 - `NotificationCenter.call(permissions, payload)` replaces `NotificationCenter#received_message` as the hook for incoming messages. The instance method is still used as a fallback when `.call` isn't defined

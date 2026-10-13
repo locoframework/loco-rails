@@ -23,11 +23,6 @@ module Loco
         assert_equal({ loco: { idempotency_key: 'foobarbaz' } }, @data)
       end
 
-      it 'returns idempotency_key' do
-        key = SecureRandom.hex
-        assert_equal key, Sender.new(users(:zbig)).({ loco: { idempotency_key: key } })
-      end
-
       it 'sends a passed idempotency key' do
         uuid = SecureRandom.uuid
         expect(NotificationCenterChannel).to receive(:broadcast_to).with(uuid, @data)

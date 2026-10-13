@@ -49,8 +49,15 @@ module Loco
       end
     end
 
+    # an unsaved notification (`ws_only`) has no row on the clock — sync_time is nil,
+    # so it never moves the client's sync point past rows it hasn't received yet
     def compact
-      [obj_class, obj_id, event, data, created_at.iso8601(6)]
+      [obj_class, obj_id, event, data, created_at&.iso8601(6)]
+    end
+
+    def message
+      tuple = compact
+      { loco: { sync_time: tuple.last, notification: tuple } }
     end
 
     private

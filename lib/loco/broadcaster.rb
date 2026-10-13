@@ -30,17 +30,10 @@ module Loco
       end
 
       def send_notification(recipient, notification)
-        sync_time = notification.created_at.iso8601(6)
-        data = {
-          loco: {
-            sync_time:,
-            notification: notification.compact
-          }
-        }
         if notification.recipient_id
-          Sender.new(recipient).(data)
+          Sender.new(recipient).(notification.message)
         else
-          SenderJob.perform_later(recipient, data)
+          SenderJob.perform_later(recipient, notification.message)
         end
       end
     end

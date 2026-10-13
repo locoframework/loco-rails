@@ -3,7 +3,8 @@
 module Loco
   class Sender
     def initialize(recipient_s)
-      @recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
+      @recipients = recipient_s
+      @recipients = [recipient_s] unless recipient_s.is_a?(Array)
       @uuids = []
     end
 
@@ -15,7 +16,6 @@ module Loco
         else find_and_broadcast_to(recipient, data)
         end
       end
-      data[:loco][:idempotency_key]
     end
 
     private
