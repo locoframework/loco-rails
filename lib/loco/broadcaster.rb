@@ -3,9 +3,9 @@
 module Loco
   class Broadcaster
     class << self
-      def call(obj, event, recipients:, data:)
+      def call(obj, recipients:, event:, idempotency_key:, data:)
         process_recipients(recipients).each do |recipient|
-          notification = Notification.create!(obj:, event:, recipient:, data:)
+          notification = Notification.create!(obj:, event:, idempotency_key:, recipient:, data:)
           send_notification(keify_recipient(recipient), notification)
         end
       end
@@ -30,7 +30,7 @@ module Loco
       end
 
       def send_notification(recipient, notification)
-        if notification.recipient_id
+        if notification.recipient_id || notification.recipient_token
           Sender.new(recipient).(notification.message)
         else
           SenderJob.perform_later(recipient, notification.message)

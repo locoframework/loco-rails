@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_21_041826) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_14_033208) do
   create_table "admin_support_members", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
@@ -47,6 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_041826) do
     t.datetime "created_at", null: false
     t.json "data"
     t.string "event"
+    t.string "idempotency_key"
     t.string "obj_class"
     t.bigint "obj_id"
     t.string "recipient_class"

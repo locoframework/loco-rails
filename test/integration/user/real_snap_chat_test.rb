@@ -93,11 +93,10 @@ class User
       assert_not page.has_content? 'zbig: This is an ephemeral message'
 
       Loco::Hub.get("room_#{@room.id}").members.each do |member|
-        lt = Loco::Notification.find_by(obj_class: nil, obj_id: nil, event: nil, recipient_class: 'User',
-                                        recipient_id: member.id)
-        assert_equal 'NEW_MESSAGE', lt.data['type']
-        assert_equal 'This is a persistent message', lt.data['payload']['message']
-        assert_equal 'zbig', lt.data['payload']['author']
+        lt = Loco::Notification.find_by(obj_class: nil, obj_id: nil, recipient_class: 'User', recipient_id: member.id)
+        assert_equal 'NEW_MESSAGE', lt.event
+        assert_equal 'This is a persistent message', lt.data['message']
+        assert_equal 'zbig', lt.data['author']
       end
     end
 

@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 3.3.0'
 
-  s.add_dependency 'rails', '>= 7.2', '< 9.0'
+  s.add_dependency 'rails', '>= 8.0', '< 9.0'
 
   s.metadata['rubygems_mfa_required'] = 'true'
 end

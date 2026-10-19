@@ -14,14 +14,27 @@ class LocoTest < TCWithMocks
       expect(SecureRandom).to receive(:hex).and_return('generated')
       expect(Loco::NotificationCenterChannel).to receive(:broadcast_to).with(
         'uuid1',
-        ws_message('payload' => { 'foo' => 'bar' }, 'type' => nil, 'loco' => { 'idempotency_key' => 'generated' })
+        ws_message(type: 'PING', payload: { 'foo' => 'bar' }, key: 'generated')
       )
-      Loco.emit({ foo: 'bar' }, to: 'uuid1', ws_only: true)
+      assert_equal 'generated', Loco.emit({ type: 'PING', foo: 'bar' }, to: 'uuid1', ws_only: true)
+    end
+
+    # the client drops the copies one emit produces — every row must carry the same key
+    it 'shares one idempotency key across all rows of an emit' do
+      key = Loco.emit({ event: :created }, subject: articles(:one), to: [users(:zbig), User, 'tok'])
+      assert_equal [key], Loco::Notification.distinct.pluck(:idempotency_key)
+      assert_equal 3, Loco::Notification.count
+    end
+
+    it 'requires the message to be named' do
+      assert_raises(ArgumentError) { Loco.emit({ foo: 'bar' }, to: 'uuid1', ws_only: true) }
+      assert_raises(ArgumentError) { Loco.emit({ foo: 'bar' }, subject: articles(:one), to: 'tok') }
+      assert_raises(ArgumentError) { Loco.emit_to('uuid1', { foo: 'bar' }) }
     end
 
     it 'uses a passed idempotency key and returns it' do
       expect(Loco::NotificationCenterChannel).to receive(:broadcast_to).with(
-        'uuid1', ws_message('payload' => {}, 'type' => 'PING', 'loco' => { 'idempotency_key' => 'given' })
+        'uuid1', ws_message(type: 'PING', payload: {}, key: 'given')
       )
       key = Loco.emit({ type: 'PING', idempotency_key: 'given' }, to: 'uuid1', ws_only: true)
       assert_equal 'given', key
@@ -31,8 +44,8 @@ class LocoTest < TCWithMocks
       key = Loco.emit({ event: :created, foo: 'bar' }, subject: articles(:one), to: 'tok')
       notification = Loco::Notification.order(:created_at).last
       assert_equal 'created', notification.event
-      assert_equal({ 'foo' => 'bar' }, notification.data['payload'].except('id'))
-      assert_equal key, notification.data['loco']['idempotency_key']
+      assert_equal({ 'foo' => 'bar' }, notification.data)
+      assert_equal key, notification.idempotency_key
     end
 
     it 'does not mutate the passed payload' do
@@ -41,10 +54,10 @@ class LocoTest < TCWithMocks
       assert_equal({ type: 'PING', idempotency_key: 'given', foo: 'bar' }, payload)
     end
 
-    # ws_only rides the same envelope as a persisted notification — an unsaved
-    # one: no subject, no event, no place on the clock
-    def ws_message(data)
-      { loco: { sync_time: nil, notification: [nil, nil, nil, data, nil] } }
+    # ws_only has the same shape as a persisted notification — an unsaved one:
+    # no subject, no place on the clock
+    def ws_message(type:, payload:, key:)
+      { loco: { idempotency_key: key, created_at: nil }, type:, payload:, obj_class: nil, obj_id: nil }
     end
   end
 end

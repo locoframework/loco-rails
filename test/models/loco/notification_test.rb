@@ -8,17 +8,29 @@ module Loco
       @user = users(:zbig)
     end
 
-    describe '#compact' do
+    describe '#message' do
       it 'carries its own position on the notification clock' do
-        notification = Notification.create!(obj: [Article, 7], event: :updated,
-                                            data: { 'loco' => { 'idempotency_key' => 'abc' } })
-        obj_class, obj_id, event, data, sync_time = notification.compact
+        notification = Notification.create!(obj: [Article, 7], event: :updated, idempotency_key: 'abc', data: {})
+        expected = {
+          loco: { idempotency_key: 'abc', created_at: notification.created_at.iso8601(6) },
+          type: 'updated',
+          payload: {},
+          obj_class: 'Article',
+          obj_id: 7
+        }
+        assert_equal expected, notification.message
+      end
 
-        assert_equal ['Article', 7, 'updated'], [obj_class, obj_id, event]
-        assert_equal notification.created_at.iso8601(6), sync_time
-        # The stored payload rides through untouched — sync_time is derived,
-        # not part of what the caller emitted.
-        assert_equal notification.data, data
+      # key, type and payload all lived in `data` before the idempotency_key column
+      it 'reads a row stored before the idempotency_key column' do
+        wire = ->(n) { [n.message[:loco][:idempotency_key], n.message[:type], n.message[:payload]] }
+
+        v6 = Notification.new(event: 'created', data: { 'foo' => 1, 'loco' => { 'idempotency_key' => 'a' } })
+        assert_equal ['a', 'created', { 'foo' => 1 }], wire.(v6)
+
+        pre7 = Notification.new(data: { 'payload' => { 'foo' => 1 }, 'type' => 'PING',
+                                        'loco' => { 'idempotency_key' => 'b' } })
+        assert_equal ['b', 'PING', { 'foo' => 1 }], wire.(pre7)
       end
     end
 

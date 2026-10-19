@@ -6,14 +6,6 @@ module Loco
       'loco_'
     end
 
-    before_validation do
-      next unless obj_id
-
-      self.data = (data || {}).deep_stringify_keys.tap do |hash|
-        hash['payload'] = (hash['payload'] || {}).merge('id' => obj_id)
-      end
-    end
-
     def obj=(val)
       return if val.nil?
 
@@ -49,18 +41,24 @@ module Loco
       end
     end
 
-    # an unsaved notification (`ws_only`) has no row on the clock — sync_time is nil,
-    # so it never moves the client's sync point past rows it hasn't received yet
-    def compact
-      [obj_class, obj_id, event, data, created_at&.iso8601(6)]
-    end
-
     def message
-      tuple = compact
-      { loco: { sync_time: tuple.last, notification: tuple } }
+      key, type, payload = wire_fields
+      { loco: { idempotency_key: key, created_at: created_at&.iso8601(6) }, type:, payload:, obj_class:, obj_id: }
     end
 
     private
+
+    # ponytail: rows written before the idempotency_key column keep the key, the
+    # type and the payload inside `data` — drop the else branch once they're GC'd
+    def wire_fields
+      if idempotency_key
+        [idempotency_key, event, data || {}]
+      else
+        stored = data || {}
+        payload = stored.fetch('payload') { stored.except('loco') }
+        [stored.dig('loco', 'idempotency_key'), event || stored['type'], payload]
+      end
+    end
 
     def regular_recipient?
       !recipient_class.nil? && !recipient_id.nil?

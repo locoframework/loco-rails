@@ -12,6 +12,8 @@ module UserHelpers
     fill_in 'Email', with: email
     fill_in 'Password', with: pass
     click_button 'Sign In'
+    # wait for the redirect — a `visit` right after would abort the sign-in request
+    assert_no_selector :button, 'Sign In'
   end
 
   def update_article(name)

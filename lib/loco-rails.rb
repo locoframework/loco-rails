@@ -62,17 +62,24 @@ module Loco
     private
 
     def new_emit(payload, to:, ws_only:, subject: nil)
-      data = {
-        payload: payload.except(:event, :type, :idempotency_key),
-        type: payload[:type],
-        loco: { idempotency_key: payload[:idempotency_key] || SecureRandom.hex }
-      }
+      attrs = notification_attrs(payload)
       if ws_only
-        Sender.new(to).(Notification.new(data:).message)
+        Sender.new(to).(Notification.new(**attrs).message)
       else
-        Broadcaster.(subject, payload[:event], data:, recipients: to)
+        Broadcaster.(subject, recipients: to, **attrs)
       end
-      data[:loco][:idempotency_key]
+      attrs[:idempotency_key]
+    end
+
+    def notification_attrs(payload)
+      event = payload[:event] || payload[:type]
+      raise ArgumentError, 'Loco.emit payload needs an :event or a :type' if event.nil?
+
+      {
+        event:,
+        idempotency_key: payload[:idempotency_key] || SecureRandom.hex,
+        data: payload.except(:event, :type, :idempotency_key)
+      }
     end
   end
 end

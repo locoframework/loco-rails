@@ -26,15 +26,22 @@ module Loco
       end
       return if payload.keys == ['loco']
 
-      indexed_permissions = PermissionsPresenter.indexed(loco_permissions)
-      if NotificationCenter.respond_to?(:call)
-        NotificationCenter.call(indexed_permissions, payload)
-      else
-        NotificationCenter.new.received_message(indexed_permissions, payload)
-      end
+      notify(PermissionsPresenter.indexed(loco_permissions), payload)
     end
 
     protected
+
+    def notify(permissions, payload)
+      if NotificationCenter.respond_to?(:call)
+        NotificationCenter.call(permissions, payload)
+      else
+        DEPRECATOR.warn(
+          '`NotificationCenter#received_message` is deprecated. ' \
+          'Define `NotificationCenter.call(permissions, payload)` instead.'
+        )
+        NotificationCenter.new.received_message(permissions, payload)
+      end
+    end
 
     def update_connections
       PermissionsPresenter.indexed(loco_permissions, except: :uuid).each_value do |resource|

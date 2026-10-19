@@ -50,7 +50,7 @@ See [docs/EXAMPLES.md](docs/EXAMPLES.md) for a full chat room example showing ba
 # 🤝 Dependencies
 
 - Ruby >= 3.3.0
-- Rails >= 7.2
+- Rails >= 8.0
 - [Redis](http://redis.io) — stores WebSocket connection state and hub membership. Required for all real-time flows (`Loco.emit`, hubs).
 
 # 📥 Installation
@@ -182,7 +182,7 @@ Loco.emit(payload, to: [article.user, Admin, 'a54e1ef01cb9'], subject: article)
 
 Arguments:
 
-1. **payload** (required) — a Hash serialized to JSON. Two conventions for the message name:
+1. **payload** (required) — a Hash serialized to JSON. It must name the message — one of two conventions, or `ArgumentError` is raised:
     - `:event` — paired with `:subject` (ActiveRecord instance). Front-end receives `"{ModelName} {event}"` (e.g., `"User confirmed"`). Routed via `subscribe({ to: Model })` from [Loco-JS](https://github.com/locoframework/loco-js) using models defined with [Loco-JS-Model](https://github.com/locoframework/loco-js-model).
     - `:type` — convention when there is no model subject. Front-end receives the raw `type` string (e.g., `"USER_CONFIRMED"`). Typically dispatched in a central `NotificationCenter` switch.
 1. Keyword arguments:
@@ -348,7 +348,7 @@ It is captured in a `prepend_before_action`, **before the action queries anythin
 
 ### On the client
 
-Every notification carries its own `sync_time` as the last element of its wire tuple — `[obj_class, obj_id, event, data, sync_time]` — on both the polling and WebSocket paths. With [Loco-JS](https://github.com/locoframework/loco-js) and [Simplicit](https://github.com/locoframework/simplicit):
+Every notification carries its own position on the clock — `loco.created_at` — on both the polling and WebSocket paths. With [Loco-JS](https://github.com/locoframework/loco-js) and [Simplicit](https://github.com/locoframework/simplicit):
 
 ```js
 start({
@@ -360,6 +360,66 @@ start({
 ⚠️ **Replayed handlers must be idempotent.** Assign absolute values the server sent, never deltas — `commentsCount: payload.comments_count`, not `record.commentsCount + 1`. A relative write double-counts on replay, and cannot be reconciled against a cutoff at all. Absolute writes also stop a *missed* notification from causing permanent drift.
 
 Only notifications tied to a record (`obj_class` + `event`) are replayed. Transient ones — a chat message, `ws_only: true` — are not state, so re-delivering one would duplicate it.
+
+## 🔌 Wire format
+
+[Loco-JS](https://github.com/locoframework/loco-js) speaks this for you — it matters only if you write your own client or debug the traffic.
+
+### Notification
+
+Every notification has one shape — persisted or `ws_only`, over WebSocket or polling:
+
+```json
+{
+  "loco": { "idempotency_key": "3f9c…", "created_at": "2026-10-14T10:00:00.123456Z" },
+  "type": "created",
+  "payload": { "id": 42, "title": "Hello" },
+  "obj_class": "Article",
+  "obj_id": 42
+}
+```
+
+| field | meaning |
+| --- | --- |
+| `loco.idempotency_key` | shared by every copy of one emit (one row per recipient) — the client drops repeats. Yours if you passed `idempotency_key:`, generated otherwise |
+| `loco.created_at` | the notification's position on the clock — feeds `replaySince` and moves the client's sync point (to 5 s before it, see below). `null` for `ws_only`: no row, no position |
+| `type` | the payload's `:event` or `:type`, as given |
+| `payload` | what you emitted, minus `event` / `type` / `idempotency_key` |
+| `obj_class`, `obj_id` | the `subject:` — `null` without one; `obj_id` is `null` for a class subject |
+
+Loco-JS always hands it to `notificationCenter` as `{ type, payload }`.
+With a subject, `type` is prefixed with the model name — `"Article created"` — and the notification also reaches that model's subscribers.
+With a record subject, Loco-JS merges `obj_id` into `payload` as `id`.
+
+A persisted notification is stored as one `loco_notifications` row per recipient: `data` = `payload`, `event` = `type`, plus `idempotency_key`, `obj_class`, `obj_id` and the recipient columns.
+
+### WebSocket (`Loco::NotificationCenterChannel`)
+
+Every server message has a `loco` key. A notification also carries `type` / `payload`; control messages carry only `loco`:
+
+| direction | message | when |
+| --- | --- | --- |
+| server → client | `{ "loco": { "uuid": "…" } }` | on subscribe — the connection's id, sent back when polling |
+| client → server | `{ "loco": { "pong": true } }` | after connecting and after every ping — keeps the connection registered |
+| server → client | `{ "loco": { "ping": true } }` | in reply to a pong |
+| client → server | anything else | passed to `NotificationCenter.call(permissions, payload)` |
+
+### Polling (`GET /notification-center`)
+
+Used while the WebSocket is down, and on every (re)connect to catch up on what was missed.
+
+```http
+GET /notification-center?synced_at=2026-10-14T10:00:00.123456Z&token=…&uuid=…
+```
+
+```json
+{ "notifications": [ { …notification… } ], "sync_time": "2026-10-14T10:00:05.000000Z" }
+```
+
+- `synced_at` — the client's sync point; only notifications created after it are returned. `null` (no sync point yet) returns none, just a fresh `sync_time`
+- `sync_time` — the next sync point: the newest returned `created_at` (`synced_at` if none), but no later than 5 seconds ago. A full page (`c.notifications_size`) isn't held back — fetch again right away
+
+**Overlap.** `created_at` order isn't commit order — a row stamped earlier can commit after a newer one was already fetched. So the sync point trails by 5 seconds (`Loco::Notification::Fetcher::OVERLAP`; Loco-JS does the same when a notification arrives over WebSocket), the next fetch re-sends that window, and the client drops the repeats by `idempotency_key`. Not covered: a notification `to:` a class or `:all` — delivered from the `:loco` queue — that waits there longer than 5 seconds while a newer one moves the sync point. Keep the `:loco` queue fast
 
 # 👩🏽‍🔬 Tests
 
@@ -376,11 +436,12 @@ bin/rails test
 
 ### 7.0 _(2026-04)_
 
+- **Breaking:** requires Rails >= 8.0 — 7.2 reached end of life on 2026-08-09
 - **Breaking:** `Loco::Emitter` removed — use `Loco.emit`, `Loco.add_hub`, etc.
 - **Breaking:** `loco_notifications.data` column changed from `text` to native JSON (`jsonb` on PostgreSQL, `json` on MySQL/SQLite). Model-level `serialize :data, coder: JSON` removed — the adapter now (de)serializes natively. If upgrading, generate a migration to change the column type:
 
     ```ruby
-    class ChangeLocoNotificationsDataToJson < ActiveRecord::Migration[7.2]
+    class ChangeLocoNotificationsDataToJson < ActiveRecord::Migration[8.0]
       def up
         if connection.adapter_name == 'PostgreSQL'
           # `using:` tells PG how to cast existing TEXT values to jsonb.
@@ -399,15 +460,25 @@ bin/rails test
 
 - **Breaking:** `Loco::Config#silence_logger` removed — use `c.log_level = :error` (or higher) to silence
 - **Breaking:** `GET /sync-time` removed — the sync time comes back with every notification fetch. **Requires loco-js >= 7.0.** Keep both libraries on the same major version: loco-js <= 6.3.0 calls this endpoint on init and after every WS disconnection, and treats a 404 as neither success nor failure, so it silently stops polling (WebSocket traffic still flows, which makes it easy to miss). During the upgrade deploy, tabs still running an old bundle lose polling until the page is reloaded
-- Added `loco_model_records` view helper — renders a `<script type="application/json" data-model="...">` snapshot stamped with `data-as-of`, so a client can replay the notifications the snapshot predates. **Breaking:** the notification wire tuple gains a trailing `sync_time` — `[obj_class, obj_id, event, data, sync_time]` — on both delivery paths. **Requires loco-js >= 7.0**
+- Added `loco_model_records` view helper — renders a `<script type="application/json" data-model="...">` snapshot stamped with `data-as-of`, so a client can replay the notifications the snapshot predates. **Requires loco-js >= 7.0**
 - Added `c.log_level` config option (default `:info`)
 - `:subject` now accepts `[Class, id]` tuple — avoids `Klass.new(id: x)` allocation when only metadata is needed
 - Added `Loco::Permissions::Controller` and `Loco::Permissions::Connection` mixins. Both consume `c.resources = ->(ctx) { [...] }` config (declared once, used in both contexts). Connection mixin auto-runs `identified_by :loco_permissions` and assigns `[SecureRandom.uuid, *resources]` before `connect`. Older manual `loco_permissions` definitions still work; mixins are opt-in for cleaner setup
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
-- `ws_only: true` messages travel in the same `{ loco: { sync_time:, notification: [...] } }` envelope as persisted ones (an unsaved notification: `[nil, nil, nil, data, nil]` — no `sync_time`, so it never moves the client's sync point). `Loco.emit` returns the idempotency key in both modes. An untyped `ws_only` message now reaches `notificationCenter` as the bare payload, same as an untyped persisted one
+- **Breaking:** one wire format for every notification — persisted or `ws_only`, over WebSocket or polling:
+  `{ loco: { idempotency_key:, created_at: }, type:, payload:, obj_class:, obj_id: }`.
+  `type` is the payload's `:event` or `:type`; the client prefixes it with `obj_class` when there is one.
+  `created_at` is `nil` for `ws_only`, so it never moves the client's sync point.
+  `GET /notification-center` returns `{ notifications: [...], sync_time: }`.
+  **Requires loco-js >= 7.0**
+- **Breaking:** `loco_notifications.data` stores only the emitted payload; the message name goes to `event` (`:event` or `:type`) and the key to a new `idempotency_key` column. Run `bin/rails loco:install:migrations && bin/rails db:migrate`. Rows written before the migration are still read correctly
+- `Loco.emit` returns the idempotency key in both modes
+- Polling never moves the sync point past rows the client hasn't seen, and keeps it 5 seconds behind so rows committed out of `created_at` order are still fetched. **Requires loco-js >= 7.0**
+- **Breaking:** the payload must name the message — `:event` or `:type`. `Loco.emit` and `Loco.emit_to` raise `ArgumentError` otherwise, and `notificationCenter` always receives `{ type, payload }`
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8
 - `NotificationCenter.call(permissions, payload)` replaces `NotificationCenter#received_message` as the hook for incoming messages. The instance method is still used as a fallback when `.call` isn't defined
+- **Deprecation:** `NotificationCenter#received_message` will be removed in Loco-Rails 8
 
 ### 6.1 _(2022-09-04)_
 

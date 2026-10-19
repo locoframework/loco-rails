@@ -21,6 +21,33 @@ module Loco
         assert_equal 2, fetcher.formatted_notifications.size
       end
 
+      describe 'next_sync_time' do
+        before { freeze_time }
+
+        it 'is the newest notification returned' do
+          travel_to(10.seconds.ago) { Loco.emit({ event: :published }, subject: articles(:one)) }
+          fetcher = Notification::Fetcher.new synced_at: 20.seconds.ago.iso8601(6)
+          assert_equal Notification.maximum(:created_at), fetcher.next_sync_time
+        end
+
+        it 'stays put when nothing is returned' do
+          synced_at = 20.seconds.ago.iso8601(6)
+          assert_equal synced_at, Notification::Fetcher.new(synced_at:).next_sync_time.iso8601(6)
+        end
+
+        it 'stays OVERLAP behind now, so a row committed late is still fetched' do
+          Loco.emit({ event: :published }, subject: articles(:one))
+          fetcher = Notification::Fetcher.new synced_at: 1.second.ago.iso8601(6)
+          assert_equal Fetcher::OVERLAP.ago, fetcher.next_sync_time
+        end
+
+        it 'moves strictly forward on a full page' do
+          2.times { Loco.emit({ event: :published }, subject: articles(:one)) }
+          fetcher = Notification::Fetcher.new synced_at: 1.second.ago.iso8601(6), max_size: 2
+          assert_equal Notification.maximum(:created_at), fetcher.next_sync_time
+        end
+      end
+
       test 'should not return addressed notifications without passing correct permissions' do
         fetcher = Notification::Fetcher.new synced_at: 3.seconds.ago.iso8601(6)
         Loco.emit({ event: :published }, subject: articles(:one), to: admin_support_members(:one))
