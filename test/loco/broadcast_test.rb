@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Loco
-  class BroadcasterTest < TCWithMocks
+  class BroadcastTest < TCWithMocks
     include WsHelpers
 
     MESSAGE = { loco: { idempotency_key: 'abc', sync_time: '2026-10-13T10:00:00.000000Z' },
@@ -18,13 +18,13 @@ module Loco
       it 'can emit to all' do
         allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
         expect(SenderJob).to receive(:perform_later).with(:all, @payload)
-        Broadcaster.(articles(:two), event: :updated, idempotency_key: 'k', recipients: nil, data: nil)
+        Broadcast.(articles(:two), event: :updated, idempotency_key: 'k', recipients: nil, data: nil)
       end
 
       it 'can emit to a class of objects' do
         allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
         expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @payload)
-        Broadcaster.(
+        Broadcast.(
           articles(:one), event: :created, idempotency_key: 'k', recipients: [Admin::SupportMember], data: nil
         )
         assert_equal 1, Notification.where(recipient_class: 'Admin::SupportMember', recipient_id: nil).count
@@ -36,7 +36,7 @@ module Loco
         expect(Sender).to receive(:new).with(users(:jane)).and_return(sender)
         expect(sender).to receive(:call).with(@payload)
         expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @payload)
-        Broadcaster.(
+        Broadcast.(
           articles(:one), event: :created, idempotency_key: 'k', data: nil,
                           recipients: [Admin::SupportMember, users(:jane)]
         )
@@ -48,7 +48,7 @@ module Loco
         expect(Sender).to receive(:new).with({ 'token' => 'tok' }).and_return(sender)
         expect(sender).to receive(:call).with(@payload)
         expect(SenderJob).not_to receive(:perform_later)
-        Broadcaster.(articles(:one), event: :created, idempotency_key: 'k', data: nil, recipients: 'tok')
+        Broadcast.(articles(:one), event: :created, idempotency_key: 'k', data: nil, recipients: 'tok')
       end
     end
   end

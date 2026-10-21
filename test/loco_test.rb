@@ -40,7 +40,7 @@ class LocoTest < TCWithMocks
       assert_equal 'given', key
     end
 
-    it 'keeps the event out of the payload and passes it to the broadcaster' do
+    it 'keeps the event out of the payload and passes it to the broadcast' do
       key = Loco.emit({ event: :created, foo: 'bar' }, subject: articles(:one), to: 'tok')
       notification = Loco::Notification.order(:created_at).last
       assert_equal 'created', notification.event

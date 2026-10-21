@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'loco/broadcaster'
+require 'loco/broadcast'
 require 'loco/config'
 require 'loco/current'
 require 'loco/helpers'
@@ -67,7 +67,7 @@ module Loco
         if ws_only
           Sender.new(to).(Notification.new(**attrs).message)
         else
-          Broadcaster.(subject, recipients: to, **attrs)
+          Broadcast.(subject, recipients: to, **attrs)
         end
       end
       attrs[:idempotency_key]

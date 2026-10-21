@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Loco
-  class Broadcaster
+  class Broadcast
     class << self
       def call(obj, recipients:, event:, idempotency_key:, data:)
         process_recipients(recipients).each do |recipient|
