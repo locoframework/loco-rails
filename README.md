@@ -170,7 +170,11 @@ This endpoint is hit when WebSocket is unavailable — clients fetch missed pers
 
 ## 📡 Emitting messages — `Loco.emit`
 
-`Loco.emit` is the single entry point for sending messages. It supports two modes:
+`Loco.emit` is the single entry point for sending messages.
+Inside a transaction (e.g. an `after_save` callback), it waits until the transaction commits.
+If it rolls back, nothing is stored or sent.
+
+It supports two modes:
 
 ### Notification mode (persisted)
 
@@ -426,6 +430,7 @@ GET /notification-center?synced_at=2026-10-14T10:00:00.123456Z&token=…&uuid=�
 **Overlap.** `created_at` order isn't commit order — a row stamped earlier can commit after a newer one was already fetched.
 So the sync point trails by 5 seconds (`Loco::Notification::Fetcher::OVERLAP`) — in `sync_time` from a fetch and in `loco.sync_time` over WebSocket.
 The next fetch re-sends that window, and the client drops the repeats by `idempotency_key`.
+Because emits wait for the surrounding transaction to commit, the window is usually milliseconds; the 5 seconds also absorbs clock skew between app servers.
 Not covered: a notification `to:` a class or `:all` — delivered from the `:loco` queue — that waits there longer than 5 seconds while a newer one moves the sync point. Keep the `:loco` queue fast
 
 # 👩🏽‍🔬 Tests
@@ -481,6 +486,7 @@ bin/rails test
   **Requires loco-js >= 7.0**
 - **Breaking:** `loco_notifications.data` stores only the emitted payload; the message name goes to `event` (`:event` or `:type`) and the key to a new `idempotency_key` column. Run `bin/rails loco:install:migrations && bin/rails db:migrate`. Rows written before the migration are still read correctly
 - `Loco.emit` returns the idempotency key in both modes
+- Inside a transaction, `Loco.emit` delivers once it commits, and never for a rollback — before, a rolled-back `after_save` emit had already reached clients
 - Polling never moves the sync point past rows the client hasn't seen, and keeps it 5 seconds behind so rows committed out of `created_at` order are still fetched. **Requires loco-js >= 7.0**
 - **Breaking:** the payload must name the message — `:event` or `:type`. `Loco.emit` and `Loco.emit_to` raise `ArgumentError` otherwise, and `notificationCenter` always receives `{ type, payload }`
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8

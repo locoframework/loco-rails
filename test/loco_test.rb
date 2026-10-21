@@ -48,6 +48,24 @@ class LocoTest < TCWithMocks
       assert_equal key, notification.idempotency_key
     end
 
+    it 'delivers only once the surrounding transaction commits' do
+      ActiveRecord::Base.transaction do
+        Loco.emit({ event: :created }, subject: articles(:one), to: 'tok')
+        assert_equal 0, Loco::Notification.count
+      end
+      assert_equal 1, Loco::Notification.count
+    end
+
+    it 'never delivers an emit whose transaction rolls back' do
+      expect(Loco::NotificationCenterChannel).not_to receive(:broadcast_to)
+      ActiveRecord::Base.transaction do
+        Loco.emit({ type: 'PING' }, to: 'uuid1', ws_only: true)
+        Loco.emit({ event: :created }, subject: articles(:one), to: 'tok')
+        raise ActiveRecord::Rollback
+      end
+      assert_equal 0, Loco::Notification.count
+    end
+
     it 'does not mutate the passed payload' do
       payload = { type: 'PING', idempotency_key: 'given', foo: 'bar' }
       Loco.emit(payload, to: 'uuid1', ws_only: true)

@@ -63,10 +63,12 @@ module Loco
 
     def new_emit(payload, to:, ws_only:, subject: nil)
       attrs = notification_attrs(payload)
-      if ws_only
-        Sender.new(to).(Notification.new(**attrs).message)
-      else
-        Broadcaster.(subject, recipients: to, **attrs)
+      ActiveRecord.after_all_transactions_commit do
+        if ws_only
+          Sender.new(to).(Notification.new(**attrs).message)
+        else
+          Broadcaster.(subject, recipients: to, **attrs)
+        end
       end
       attrs[:idempotency_key]
     end
