@@ -65,7 +65,7 @@ module Loco
       attrs = notification_attrs(payload)
       ActiveRecord.after_all_transactions_commit do
         if ws_only
-          Broadcast.new(to).(Notification.new(**attrs).message)
+          Broadcast.new(to).(Notification::Presenter.(Notification.new(**attrs)))
         else
           Notify.(subject, recipients: to, **attrs)
         end

@@ -26,7 +26,7 @@ module Loco
                                 .at_css("script[data-model='Article']")['data-as-of'])
 
       Loco.emit({ event: :published }, subject: articles(:one))
-      sync_time = Notification.order(:created_at).last.message[:loco][:sync_time]
+      sync_time = Notification::Presenter.(Notification.order(:created_at).last)[:loco][:sync_time]
 
       assert Time.zone.parse(sync_time) >= as_of,
              'a notification created after the render must replay against the snapshot'

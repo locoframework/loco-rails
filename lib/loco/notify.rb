@@ -30,10 +30,11 @@ module Loco
       end
 
       def send_notification(recipient, notification)
+        presenter = Notification::Presenter.(notification)
         if notification.recipient_id || notification.recipient_token
-          Broadcast.new(recipient).(notification.message)
+          Broadcast.new(recipient).(presenter)
         else
-          BroadcastJob.perform_later(recipient, notification.message)
+          BroadcastJob.perform_later(recipient, presenter)
         end
       end
     end

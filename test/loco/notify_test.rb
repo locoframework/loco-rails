@@ -16,13 +16,13 @@ module Loco
       end
 
       it 'can emit to all' do
-        allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
+        allow(Notification::Presenter).to receive(:call).and_return(MESSAGE)
         expect(BroadcastJob).to receive(:perform_later).with(:all, @payload)
         Notify.(articles(:two), event: :updated, idempotency_key: 'k', recipients: nil, data: nil)
       end
 
       it 'can emit to a class of objects' do
-        allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
+        allow(Notification::Presenter).to receive(:call).and_return(MESSAGE)
         expect(BroadcastJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @payload)
         Notify.(
           articles(:one), event: :created, idempotency_key: 'k', recipients: [Admin::SupportMember], data: nil
@@ -31,7 +31,7 @@ module Loco
       end
 
       it 'can emit to a class of objects and a specific resource at the same time' do
-        allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
+        allow(Notification::Presenter).to receive(:call).and_return(MESSAGE)
         sender = instance_double(Broadcast)
         expect(Broadcast).to receive(:new).with(users(:jane)).and_return(sender)
         expect(sender).to receive(:call).with(@payload)
@@ -43,7 +43,7 @@ module Loco
       end
 
       it 'sends to a token inline — one lookup, no fan-out' do
-        allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
+        allow(Notification::Presenter).to receive(:call).and_return(MESSAGE)
         sender = instance_double(Broadcast)
         expect(Broadcast).to receive(:new).with({ 'token' => 'tok' }).and_return(sender)
         expect(sender).to receive(:call).with(@payload)
