@@ -42,11 +42,18 @@ module Loco
     end
 
     def message
-      key, type, payload = wire_fields
-      { loco: { idempotency_key: key, created_at: created_at&.iso8601(6) }, type:, payload:, obj_class:, obj_id: }
+      idempotency_key, type, payload = wire_fields
+      {
+        loco: { idempotency_key:, sync_time: sync_time&.iso8601(6) },
+        type:, payload:, obj_class:, obj_id:
+      }
     end
 
     private
+
+    def sync_time
+      created_at && (created_at - Fetcher::OVERLAP) # nil when `ws_only`
+    end
 
     # ponytail: rows written before the idempotency_key column keep the key, the
     # type and the payload inside `data` — drop the else branch once they're GC'd

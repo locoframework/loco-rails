@@ -342,13 +342,14 @@ T2  notification created     client applies it
 T3  page hydrates            snapshot replaces it — the T2 write is gone
 ```
 
-`data-as-of` is a position on the **same clock as `Notification#created_at`**, so the client can replay exactly the notifications the snapshot does not already contain — those stamped at or after it. Without a cutoff you must either replay nothing (the write stays lost) or replay everything (a round trip per handler, on every navigation).
+`data-as-of` is a position on the **same clock as a notification's `loco.sync_time`**, so the client can replay exactly the notifications the snapshot does not already contain — those stamped at or after it.
+Both trail the real moment by the same 5 seconds (see [Overlap](#polling-get-notification-center)), so the client compares them as-is. Without a cutoff you must either replay nothing (the write stays lost) or replay everything (a round trip per handler, on every navigation).
 
 It is captured in a `prepend_before_action`, **before the action queries anything** (`Loco::Current.as_of`), so it can never be later than the data it describes. Erring early costs a redundant replay; erring late loses the write.
 
 ### On the client
 
-Every notification carries its own position on the clock — `loco.created_at` — on both the polling and WebSocket paths. With [Loco-JS](https://github.com/locoframework/loco-js) and [Simplicit](https://github.com/locoframework/simplicit):
+Every notification carries its own position on the clock — `loco.sync_time` — on both the polling and WebSocket paths. With [Loco-JS](https://github.com/locoframework/loco-js) and [Simplicit](https://github.com/locoframework/simplicit):
 
 ```js
 start({
@@ -371,9 +372,12 @@ Every notification has one shape — persisted or `ws_only`, over WebSocket or p
 
 ```json
 {
-  "loco": { "idempotency_key": "3f9c…", "created_at": "2026-10-14T10:00:00.123456Z" },
+  "loco": {
+    "idempotency_key": "3f9c…",
+    "sync_time": "2026-10-14T09:59:55.123456Z"
+  },
   "type": "created",
-  "payload": { "id": 42, "title": "Hello" },
+  "payload": { "title": "Hello" },
   "obj_class": "Article",
   "obj_id": 42
 }
@@ -382,7 +386,7 @@ Every notification has one shape — persisted or `ws_only`, over WebSocket or p
 | field | meaning |
 | --- | --- |
 | `loco.idempotency_key` | shared by every copy of one emit (one row per recipient) — the client drops repeats. Yours if you passed `idempotency_key:`, generated otherwise |
-| `loco.created_at` | the notification's position on the clock — feeds `replaySince` and moves the client's sync point (to 5 s before it, see below). `null` for `ws_only`: no row, no position |
+| `loco.sync_time` | the notification's position on the clock — `created_at` minus the overlap (see below). The client resumes fetching from it and compares it with `data-as-of` for `replaySince`. `null` for `ws_only`: no row, no position |
 | `type` | the payload's `:event` or `:type`, as given |
 | `payload` | what you emitted, minus `event` / `type` / `idempotency_key` |
 | `obj_class`, `obj_id` | the `subject:` — `null` without one; `obj_id` is `null` for a class subject |
@@ -419,7 +423,10 @@ GET /notification-center?synced_at=2026-10-14T10:00:00.123456Z&token=…&uuid=�
 - `synced_at` — the client's sync point; only notifications created after it are returned. `null` (no sync point yet) returns none, just a fresh `sync_time`
 - `sync_time` — the next sync point: the newest returned `created_at` (`synced_at` if none), but no later than 5 seconds ago. A full page (`c.notifications_size`) isn't held back — fetch again right away
 
-**Overlap.** `created_at` order isn't commit order — a row stamped earlier can commit after a newer one was already fetched. So the sync point trails by 5 seconds (`Loco::Notification::Fetcher::OVERLAP`; Loco-JS does the same when a notification arrives over WebSocket), the next fetch re-sends that window, and the client drops the repeats by `idempotency_key`. Not covered: a notification `to:` a class or `:all` — delivered from the `:loco` queue — that waits there longer than 5 seconds while a newer one moves the sync point. Keep the `:loco` queue fast
+**Overlap.** `created_at` order isn't commit order — a row stamped earlier can commit after a newer one was already fetched.
+So the sync point trails by 5 seconds (`Loco::Notification::Fetcher::OVERLAP`) — in `sync_time` from a fetch and in `loco.sync_time` over WebSocket.
+The next fetch re-sends that window, and the client drops the repeats by `idempotency_key`.
+Not covered: a notification `to:` a class or `:all` — delivered from the `:loco` queue — that waits there longer than 5 seconds while a newer one moves the sync point. Keep the `:loco` queue fast
 
 # 👩🏽‍🔬 Tests
 
@@ -466,9 +473,10 @@ bin/rails test
 - Added `Loco::Permissions::Controller` and `Loco::Permissions::Connection` mixins. Both consume `c.resources = ->(ctx) { [...] }` config (declared once, used in both contexts). Connection mixin auto-runs `identified_by :loco_permissions` and assigns `[SecureRandom.uuid, *resources]` before `connect`. Older manual `loco_permissions` definitions still work; mixins are opt-in for cleaner setup
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 - **Breaking:** one wire format for every notification — persisted or `ws_only`, over WebSocket or polling:
-  `{ loco: { idempotency_key:, created_at: }, type:, payload:, obj_class:, obj_id: }`.
+  `{ loco: { idempotency_key:, sync_time: }, type:, payload:, obj_class:, obj_id: }`.
   `type` is the payload's `:event` or `:type`; the client prefixes it with `obj_class` when there is one.
-  `created_at` is `nil` for `ws_only`, so it never moves the client's sync point.
+  `loco.sync_time` is the notification's position, 5 seconds behind `created_at`; it's `nil` for `ws_only`, so that never moves the sync point.
+  `data-as-of` is shifted by the same 5 seconds, so the client compares the two without any time arithmetic.
   `GET /notification-center` returns `{ notifications: [...], sync_time: }`.
   **Requires loco-js >= 7.0**
 - **Breaking:** `loco_notifications.data` stores only the emitted payload; the message name goes to `event` (`:event` or `:type`) and the key to a new `idempotency_key` column. Run `bin/rails loco:install:migrations && bin/rails db:migrate`. Rows written before the migration are still read correctly

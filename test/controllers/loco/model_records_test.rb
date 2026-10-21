@@ -16,7 +16,7 @@ module Loco
 
       as_of = Time.zone.parse(script['data-as-of'])
       assert_not_nil as_of
-      assert_in_delta Time.current, as_of, 5
+      assert_in_delta Notification::Fetcher::OVERLAP.ago, as_of, 2
       assert_equal Article.published.count, JSON.parse(script.text).size
     end
 
@@ -26,7 +26,7 @@ module Loco
                                 .at_css("script[data-model='Article']")['data-as-of'])
 
       Loco.emit({ event: :published }, subject: articles(:one))
-      sync_time = Notification.order(:created_at).last.message[:loco][:created_at]
+      sync_time = Notification.order(:created_at).last.message[:loco][:sync_time]
 
       assert Time.zone.parse(sync_time) >= as_of,
              'a notification created after the render must replay against the snapshot'

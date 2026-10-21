@@ -11,8 +11,9 @@ module Loco
     describe '#message' do
       it 'carries its own position on the notification clock' do
         notification = Notification.create!(obj: [Article, 7], event: :updated, idempotency_key: 'abc', data: {})
+        sync_time = (notification.created_at - Notification::Fetcher::OVERLAP).iso8601(6)
         expected = {
-          loco: { idempotency_key: 'abc', created_at: notification.created_at.iso8601(6) },
+          loco: { idempotency_key: 'abc', sync_time: },
           type: 'updated',
           payload: {},
           obj_class: 'Article',

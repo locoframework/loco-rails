@@ -57,7 +57,7 @@ class LocoTest < TCWithMocks
     # ws_only has the same shape as a persisted notification — an unsaved one:
     # no subject, no place on the clock
     def ws_message(type:, payload:, key:)
-      { loco: { idempotency_key: key, created_at: nil }, type:, payload:, obj_class: nil, obj_id: nil }
+      { loco: { idempotency_key: key, sync_time: nil }, type:, payload:, obj_class: nil, obj_id: nil }
     end
   end
 end
