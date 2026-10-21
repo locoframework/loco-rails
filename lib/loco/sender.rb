@@ -3,8 +3,7 @@
 module Loco
   class Sender
     def initialize(recipient_s)
-      @recipients = recipient_s
-      @recipients = [recipient_s] unless recipient_s.is_a?(Array)
+      @recipients = recipient_s.is_a?(Array) ? recipient_s : [recipient_s]
       @uuids = []
     end
 
