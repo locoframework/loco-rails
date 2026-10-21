@@ -6,49 +6,46 @@ module Loco
   class BroadcastTest < TCWithMocks
     include WsHelpers
 
-    MESSAGE = { loco: { idempotency_key: 'abc', sync_time: '2026-10-13T10:00:00.000000Z' },
-                type: 'updated', payload: {}, obj_class: 'Article', obj_id: 666 }.freeze
-
-    describe '#emit' do
+    describe '.call' do
       before do
         setup_connections
-        @payload = MESSAGE
+        @data = { loco: { idempotency_key: 'foobarbaz' } }
       end
 
-      it 'can emit to all' do
-        allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
-        expect(SenderJob).to receive(:perform_later).with(:all, @payload)
-        Broadcast.(articles(:two), event: :updated, idempotency_key: 'k', recipients: nil, data: nil)
+      it 'sends data via WS to recipients' do
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('random_uuid', @data)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#1', @data)
+        Broadcast.new([users(:zbig), 'random_uuid']).(@data)
       end
 
-      it 'can emit to a class of objects' do
-        allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
-        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @payload)
-        Broadcast.(
-          articles(:one), event: :created, idempotency_key: 'k', recipients: [Admin::SupportMember], data: nil
-        )
-        assert_equal 1, Notification.where(recipient_class: 'Admin::SupportMember', recipient_id: nil).count
+      it 'does not mutate a passed data' do
+        Broadcast.new('foobarbaz').(@data)
+        assert_equal({ loco: { idempotency_key: 'foobarbaz' } }, @data)
       end
 
-      it 'can emit to a class of objects and a specific resource at the same time' do
-        allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
-        sender = instance_double(Sender)
-        expect(Sender).to receive(:new).with(users(:jane)).and_return(sender)
-        expect(sender).to receive(:call).with(@payload)
-        expect(SenderJob).to receive(:perform_later).with({ 'class' => 'Admin::SupportMember' }, @payload)
-        Broadcast.(
-          articles(:one), event: :created, idempotency_key: 'k', data: nil,
-                          recipients: [Admin::SupportMember, users(:jane)]
-        )
+      it 'sends a passed idempotency key' do
+        uuid = SecureRandom.uuid
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with(uuid, @data)
+        Broadcast.new(uuid).(@data)
       end
 
-      it 'sends to a token inline — one lookup, no fan-out' do
-        allow_any_instance_of(Loco::Notification).to receive(:message).and_return(MESSAGE)
-        sender = instance_double(Sender)
-        expect(Sender).to receive(:new).with({ 'token' => 'tok' }).and_return(sender)
-        expect(sender).to receive(:call).with(@payload)
-        expect(SenderJob).not_to receive(:perform_later)
-        Broadcast.(articles(:one), event: :created, idempotency_key: 'k', data: nil, recipients: 'tok')
+      it 'accepts a hash with token' do
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#6', @data)
+        Broadcast.new({ 'token' => 'random-token' }).(@data)
+      end
+
+      it 'accepts a hash with class' do
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#3', @data)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#3.1', @data)
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#4', @data)
+        Broadcast.new({ 'class' => 'Admin::SupportMember' }).(@data)
+      end
+
+      it 'sends to a given UUID only once' do
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#1', @data).once
+        expect(NotificationCenterChannel).to receive(:broadcast_to).with('UUID#2', @data).once
+
+        Broadcast.new([users(:zbig), User]).(@data)
       end
     end
   end

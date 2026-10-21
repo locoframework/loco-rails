@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'loco/broadcast'
+require 'loco/notify'
 require 'loco/config'
 require 'loco/current'
 require 'loco/helpers'
@@ -8,7 +9,6 @@ require 'loco/rails/engine'
 require 'loco/hub'
 require 'loco/permissions'
 require 'loco/permissions_presenter'
-require 'loco/sender'
 require 'loco/ws_connection_manager'
 require 'loco/ws_connection_finder'
 require 'loco/ws_connection_identifier'
@@ -65,9 +65,9 @@ module Loco
       attrs = notification_attrs(payload)
       ActiveRecord.after_all_transactions_commit do
         if ws_only
-          Sender.new(to).(Notification.new(**attrs).message)
+          Broadcast.new(to).(Notification.new(**attrs).message)
         else
-          Broadcast.(subject, recipients: to, **attrs)
+          Notify.(subject, recipients: to, **attrs)
         end
       end
       attrs[:idempotency_key]

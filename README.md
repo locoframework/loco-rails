@@ -493,6 +493,9 @@ bin/rails test
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8
 - `NotificationCenter.call(permissions, payload)` replaces `NotificationCenter#received_message` as the hook for incoming messages. The instance method is still used as a fallback when `.call` isn't defined
 - **Deprecation:** `NotificationCenter#received_message` will be removed in Loco-Rails 8
+- Internal classes renamed: `Loco::Broadcaster` → `Loco::Notify`, `Loco::Sender` → `Loco::Broadcast`
+- **Deprecation:** `Loco::SenderJob` is now `Loco::BroadcastJob`.
+  The old name still runs jobs queued before the upgrade, and will be removed in Loco-Rails 8
 
 ### 6.1 _(2022-09-04)_
 
