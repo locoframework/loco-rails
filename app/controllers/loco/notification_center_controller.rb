@@ -3,23 +3,11 @@
 module Loco
   class NotificationCenterController < ::ApplicationController
     def index
-      logger.silence(Loco::Config.log_level) { fetch_notifications }
-    end
-
-    private
-
-    def fetch_notifications
-      synced_at = params[:synced_at] || Time.current.iso8601(6)
-      fetcher = Notification::Fetcher.new({ synced_at:,
-                                            permissions:,
-                                            recipient_token: params[:token] })
-      render json: { notifications: fetcher.formatted_notifications, sync_time: fetcher.next_sync_time.iso8601(6) }
-    end
-
-    def permissions
-      return [] unless defined?(loco_permissions)
-
-      loco_permissions
+      logger.silence(Loco::Config.log_level) do
+        render json: Notification::Fetch.(synced_at: params[:synced_at],
+                                          permissions: (loco_permissions if defined?(loco_permissions)),
+                                          recipient_token: params[:token])
+      end
     end
   end
 end

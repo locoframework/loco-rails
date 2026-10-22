@@ -6,7 +6,7 @@ module Loco
   class NotifyTest < TCWithMocks
     include WsHelpers
 
-    MESSAGE = { loco: { idempotency_key: 'abc', sync_time: '2026-10-13T10:00:00.000000Z' },
+    MESSAGE = { loco: { idempotency_key: 'abc', synced_at: '2026-10-13T10:00:00.000000Z' },
                 type: 'updated', payload: {}, obj_class: 'Article', obj_id: 666 }.freeze
 
     describe '#emit' do

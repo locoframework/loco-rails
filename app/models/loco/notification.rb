@@ -6,6 +6,25 @@ module Loco
       'loco_'
     end
 
+    # index: index_loco_notifications_on_idempotency_key_and_recipient_class
+    scope :queued, lambda { |idempotency_key:, recipient_class:|
+      where(idempotency_key:, recipient_class:, recipient_id: nil, recipient_token: nil)
+    }
+
+    scope :updated_after, ->(time) { where('updated_at > ?', time) }
+
+    scope :to_all, -> { where(recipient_class: nil, recipient_id: nil, recipient_token: nil) }
+
+    scope :to_resource, lambda { |resource|
+      if resource.instance_of?(Class)
+        where(recipient_class: resource.to_s, recipient_id: nil)
+      else
+        where(recipient_class: resource.class.name, recipient_id: [resource.id, nil])
+      end
+    }
+
+    scope :to_token, ->(token) { where(recipient_token: token) }
+
     def obj=(val)
       return if val.nil?
 

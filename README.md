@@ -275,7 +275,7 @@ class GarbageCollectorJob < ApplicationJob
   end
 
   def perform
-    Loco::Notification.where('created_at < ?', 1.hour.ago).in_batches.delete_all
+    Loco::Notification.where('updated_at < ?', 1.hour.ago).in_batches.delete_all
   end
 end
 ```
@@ -346,14 +346,14 @@ T2  notification created     client applies it
 T3  page hydrates            snapshot replaces it — the T2 write is gone
 ```
 
-`data-as-of` is a position on the **same clock as a notification's `loco.sync_time`**, so the client can replay exactly the notifications the snapshot does not already contain — those stamped at or after it.
+`data-as-of` is a position on the **same clock as a notification's `loco.synced_at`**, so the client can replay exactly the notifications the snapshot does not already contain — those stamped at or after it.
 Both trail the real moment by the same 5 seconds (see [Overlap](#polling-get-notification-center)), so the client compares them as-is. Without a cutoff you must either replay nothing (the write stays lost) or replay everything (a round trip per handler, on every navigation).
 
 It is captured in a `prepend_before_action`, **before the action queries anything** (`Loco::Current.as_of`), so it can never be later than the data it describes. Erring early costs a redundant replay; erring late loses the write.
 
 ### On the client
 
-Every notification carries its own position on the clock — `loco.sync_time` — on both the polling and WebSocket paths. With [Loco-JS](https://github.com/locoframework/loco-js) and [Simplicit](https://github.com/locoframework/simplicit):
+Every notification carries its own position on the clock — `loco.synced_at` — on both the polling and WebSocket paths. With [Loco-JS](https://github.com/locoframework/loco-js) and [Simplicit](https://github.com/locoframework/simplicit):
 
 ```js
 start({
@@ -378,7 +378,7 @@ Every notification has one shape — persisted or `ws_only`, over WebSocket or p
 {
   "loco": {
     "idempotency_key": "3f9c…",
-    "sync_time": "2026-10-14T09:59:55.123456Z"
+    "synced_at": "2026-10-14T09:59:55.123456Z"
   },
   "type": "created",
   "payload": { "title": "Hello" },
@@ -390,7 +390,7 @@ Every notification has one shape — persisted or `ws_only`, over WebSocket or p
 | field | meaning |
 | --- | --- |
 | `loco.idempotency_key` | shared by every copy of one emit (one row per recipient) — the client drops repeats. Yours if you passed `idempotency_key:`, generated otherwise |
-| `loco.sync_time` | the notification's position on the clock — `created_at` minus the overlap (see below). The client resumes fetching from it and compares it with `data-as-of` for `replaySince`. `null` for `ws_only`: no row, no position |
+| `loco.synced_at` | the notification's position on the clock — `updated_at` (when it was broadcast) minus the overlap (see below). The client resumes fetching from it and compares it with `data-as-of` for `replaySince`. `null` for `ws_only`: no row, no position |
 | `type` | the payload's `:event` or `:type`, as given |
 | `payload` | what you emitted, minus `event` / `type` / `idempotency_key` |
 | `obj_class`, `obj_id` | the `subject:` — `null` without one; `obj_id` is `null` for a class subject |
@@ -421,17 +421,21 @@ GET /notification-center?synced_at=2026-10-14T10:00:00.123456Z&token=…&uuid=�
 ```
 
 ```json
-{ "notifications": [ { …notification… } ], "sync_time": "2026-10-14T10:00:05.000000Z" }
+{ "notifications": [ { …notification… } ], "synced_at": "2026-10-14T10:00:05.000000Z" }
 ```
 
-- `synced_at` — the client's sync point; only notifications created after it are returned. `null` (no sync point yet) returns none, just a fresh `sync_time`
-- `sync_time` — the next sync point: the newest returned `created_at` (`synced_at` if none), but no later than 5 seconds ago. A full page (`c.notifications_size`) isn't held back — fetch again right away
+- `synced_at` (request) — the client's sync point; only notifications with a newer `updated_at` are returned. `null` (no sync point yet) returns none, just a fresh `synced_at` to send next time
+- `synced_at` (response) — the next sync point: the newest returned `updated_at` (the request's `synced_at` if none), but no later than 5 seconds ago. A full page (`c.notifications_size`) isn't held back — fetch again right away
 
-**Overlap.** `created_at` order isn't commit order — a row stamped earlier can commit after a newer one was already fetched.
-So the sync point trails by 5 seconds (`Loco::Notification::Fetcher::OVERLAP`) — in `sync_time` from a fetch and in `loco.sync_time` over WebSocket.
+**Overlap.** `updated_at` order isn't commit order — a row stamped earlier can commit after a newer one was already fetched.
+So the sync point trails by 5 seconds (`Loco::Notification::Fetch::OVERLAP`) — in `synced_at` from a fetch and in `loco.synced_at` over WebSocket.
 The next fetch re-sends that window, and the client drops the repeats by `idempotency_key`.
 Because emits wait for the surrounding transaction to commit, the window is usually milliseconds; the 5 seconds also absorbs clock skew between app servers.
-Not covered: a notification `to:` a class or `:all` — delivered from the `:loco` queue — that waits there longer than 5 seconds while a newer one moves the sync point. Keep the `:loco` queue fast
+
+**Queued notifications.** A notification `to:` a class or `:all` is delivered from the `:loco` queue, so a newer one sent inline can reach clients first and move their sync point past it.
+That's why notifications are fetched by `updated_at`, not `created_at`: the job restamps the row's `updated_at` just before it broadcasts.
+Every sync point the server hands out is at least 5 seconds old, so a row broadcast later is always newer than it.
+A client that dropped off the WebSocket before the job ran fetches it on its next poll — on every device and tab, since nothing is tied to a connection.
 
 # 👩🏽‍🔬 Tests
 
@@ -478,16 +482,19 @@ bin/rails test
 - Added `Loco::Permissions::Controller` and `Loco::Permissions::Connection` mixins. Both consume `c.resources = ->(ctx) { [...] }` config (declared once, used in both contexts). Connection mixin auto-runs `identified_by :loco_permissions` and assigns `[SecureRandom.uuid, *resources]` before `connect`. Older manual `loco_permissions` definitions still work; mixins are opt-in for cleaner setup
 - New format: `Loco.emit(payload, to: recipients, ws_only: true, subject: target)`
 - **Breaking:** one wire format for every notification — persisted or `ws_only`, over WebSocket or polling:
-  `{ loco: { idempotency_key:, sync_time: }, type:, payload:, obj_class:, obj_id: }`.
+  `{ loco: { idempotency_key:, synced_at: }, type:, payload:, obj_class:, obj_id: }`.
   `type` is the payload's `:event` or `:type`; the client prefixes it with `obj_class` when there is one.
-  `loco.sync_time` is the notification's position, 5 seconds behind `created_at`; it's `nil` for `ws_only`, so that never moves the sync point.
+  `loco.synced_at` is the notification's position, 5 seconds behind `updated_at` — when it was broadcast; it's `nil` for `ws_only`, so that never moves the sync point.
   `data-as-of` is shifted by the same 5 seconds, so the client compares the two without any time arithmetic.
-  `GET /notification-center` returns `{ notifications: [...], sync_time: }`.
+  `GET /notification-center` returns `{ notifications: [...], synced_at: }`.
   **Requires loco-js >= 7.0**
 - **Breaking:** `loco_notifications.data` stores only the emitted payload; the message name goes to `event` (`:event` or `:type`) and the key to a new `idempotency_key` column. Run `bin/rails loco:install:migrations && bin/rails db:migrate`. Rows written before the migration are still read correctly
 - `Loco.emit` returns the idempotency key in both modes
 - Inside a transaction, `Loco.emit` delivers once it commits, and never for a rollback — before, a rolled-back `after_save` emit had already reached clients
-- Polling never moves the sync point past rows the client hasn't seen, and keeps it 5 seconds behind so rows committed out of `created_at` order are still fetched. **Requires loco-js >= 7.0**
+- Polling never moves the sync point past rows the client hasn't seen, and keeps it 5 seconds behind so rows committed out of order are still fetched. **Requires loco-js >= 7.0**
+- A notification `to:` a class or `:all` is no longer lost when it waits in the `:loco` queue longer than 5 seconds while the WebSocket drops.
+  Notifications are fetched by `updated_at`, which the job restamps just before it broadcasts.
+  The `created_at` indexes on `loco_notifications` move to `updated_at` — run `bin/rails loco:install:migrations && bin/rails db:migrate`, and delete old notifications by `updated_at` (see Garbage collection above)
 - **Breaking:** the payload must name the message — `:event` or `:type`. `Loco.emit` and `Loco.emit_to` raise `ArgumentError` otherwise, and `notificationCenter` always receives `{ type, payload }`
 - **Deprecation:** formats other than above will become unsupported in Loco-Rails 8
 - **Deprecation:** `Loco.emit_to` will be removed in Loco-Rails 8

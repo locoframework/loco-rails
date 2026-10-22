@@ -9,7 +9,7 @@ module Loco
           {
             loco: {
               idempotency_key:,
-              sync_time: sync_time(notification)&.iso8601(6)
+              synced_at: synced_at(notification.updated_at) # nil when `ws_only`
             },
             type:,
             payload:,
@@ -18,11 +18,11 @@ module Loco
           }
         end
 
-        private
-
-        def sync_time(notification)
-          notification.created_at && (notification.created_at - Fetcher::OVERLAP) # nil when `ws_only`
+        def synced_at(time)
+          time && (time - Fetch::OVERLAP).iso8601(6)
         end
+
+        private
 
         # ponytail: rows written before the idempotency_key column keep the key, the
         # type and the payload inside `data` — drop the else branch once they're GC'd

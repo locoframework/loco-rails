@@ -3,9 +3,6 @@
 require 'test_helper'
 
 module Loco
-  # `data-as-of` is the contract between a server-rendered snapshot and the
-  # notification stream: the client replays anything stamped at or after it, so
-  # it must never be later than the data the page was built from.
   class ModelRecordsTest < ActionDispatch::IntegrationTest
     test 'a seeded page declares its position on the notification clock' do
       get '/'
@@ -16,7 +13,7 @@ module Loco
 
       as_of = Time.zone.parse(script['data-as-of'])
       assert_not_nil as_of
-      assert_in_delta Notification::Fetcher::OVERLAP.ago, as_of, 2
+      assert_in_delta Notification::Fetch::OVERLAP.ago, as_of, 2
       assert_equal Article.published.count, JSON.parse(script.text).size
     end
 
@@ -26,9 +23,9 @@ module Loco
                                 .at_css("script[data-model='Article']")['data-as-of'])
 
       Loco.emit({ event: :published }, subject: articles(:one))
-      sync_time = Notification::Presenter.(Notification.order(:created_at).last)[:loco][:sync_time]
+      synced_at = Notification::Presenter.(Notification.order(:created_at).last)[:loco][:synced_at]
 
-      assert Time.zone.parse(sync_time) >= as_of,
+      assert Time.zone.parse(synced_at) >= as_of,
              'a notification created after the render must replay against the snapshot'
     end
 

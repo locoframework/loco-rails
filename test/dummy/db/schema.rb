@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_14_033208) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_040214) do
   create_table "admin_support_members", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
@@ -54,8 +54,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_14_033208) do
     t.bigint "recipient_id"
     t.string "recipient_token"
     t.datetime "updated_at", null: false
-    t.index ["created_at", "recipient_class", "recipient_id"], name: "index_loco_notifications_on_created_at_and_recipient"
-    t.index ["created_at", "recipient_token"], name: "index_loco_notifications_on_created_at_and_recipient_token"
+    t.index ["idempotency_key", "recipient_class"], name: "index_loco_notifications_on_idempotency_key_and_recipient_class"
+    t.index ["updated_at", "recipient_class", "recipient_id"], name: "index_loco_notifications_on_updated_at_and_recipient"
+    t.index ["updated_at", "recipient_token"], name: "index_loco_notifications_on_updated_at_and_recipient_token"
   end
 
   create_table "messages", force: :cascade do |t|

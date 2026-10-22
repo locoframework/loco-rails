@@ -5,7 +5,7 @@ module Loco
     queue_as :loco
 
     def perform(recipient, payload)
-      Broadcast.new(recipient).(payload)
+      Broadcast.new(recipient).(Notification::Restamp.(recipient, payload))
     end
   end
 end
