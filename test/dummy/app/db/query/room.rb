@@ -13,5 +13,10 @@ class Query
       rooms_with_hub = rooms.map { |room| RoomWithHub[room:, hub: FindHub.(room_id: room.id)] }
       { rooms:, rooms_with_hub: }
     end
+
+    def find(id)
+      room = @scope.find(id)
+      { room:, messages: room.messages.includes(:user).order(:created_at).last(50) }
+    end
   end
 end

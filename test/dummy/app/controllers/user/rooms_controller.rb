@@ -8,8 +8,8 @@ class User
     end
 
     def show
-      @room = Room.find(params.expect(:id))
-      @messages = @room.messages.includes(:user).order(created_at: :asc).last(50)
+      res = Query.new(current_user).rooms.find(params.expect(:id))
+      @room, @messages = res.values_at(:room, :messages)
     end
 
     def new

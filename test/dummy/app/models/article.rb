@@ -19,11 +19,7 @@ class Article < ApplicationRecord
   validate :vulgarity_level
   before_update :calculate_admin_review_time
 
-  class << self
-    def published
-      where.not(published_at: nil)
-    end
-  end
+  scope :published, -> { where.not(published_at: nil) }
 
   def published=(val)
     @published = case val.class.name

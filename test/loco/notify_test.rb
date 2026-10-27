@@ -27,7 +27,7 @@ module Loco
         Notify.(
           articles(:one), event: :created, idempotency_key: 'k', recipients: [Admin::SupportMember], data: nil
         )
-        assert_equal 1, Notification.where(recipient_class: 'Admin::SupportMember', recipient_id: nil).count
+        assert_equal 1, Notification.to_resource(Admin::SupportMember).count
       end
 
       it 'can emit to a class of objects and a specific resource at the same time' do
