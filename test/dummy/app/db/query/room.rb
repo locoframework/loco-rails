@@ -18,5 +18,9 @@ class Query
       room = @scope.find(id)
       { room:, messages: room.messages.includes(:user).order(:created_at).last(50) }
     end
+
+    def messages(id, after_id:)
+      @scope.find(id).messages.includes(:user).where('messages.id > ?', after_id).order(:id).limit(500)
+    end
   end
 end

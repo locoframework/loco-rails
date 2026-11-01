@@ -38,12 +38,12 @@ class User
         find('#message').native.send_keys :return
       end
       assert page.has_content? 'zbig: Hello Jane!'
-      payload = { type: 'NEW_MESSAGE', message: 'Hi zbig!', author: 'jane' }
+      payload = { type: 'NEW_MESSAGE', message: '<i>Hi</i> zbig!', author: 'jane' }
       idempotency_key = Loco.emit payload, to: FindHub.(room_id: @room.id), ws_only: true
       Loco.emit payload.merge(idempotency_key:), to: FindHub.(room_id: @room.id), ws_only: true
       sleep 0.1
       assert_equal 2, page.all('p.msg').count
-      assert page.has_content? 'jane: Hi zbig!'
+      assert page.has_content? 'jane: <i>Hi</i> zbig!' # escaped, not rendered as HTML
     end
 
     test 'should show info about joining room after returning from disconnection' do
@@ -59,14 +59,35 @@ class User
       assert_selector '#members li', count: 2, wait: 5
       sleep 1 # needs to stay so disconnection works
       page.evaluate_script 'window.test.getLine().disconnect({all: true});'
+      assert_text 'Disconnected from the server. Reconnecting…'
       persistent_message(user: users(:jane), room: @room, hub: @hub, message: "What's up!")
       ephemeral_message(user: users(:jane), hub: @hub, message: 'Ephemeral message')
       persistent_message(user: users(:jane), room: @room, hub: @hub, message: 'How are you?')
       page.evaluate_script 'window.test.getLine().connect();'
-      assert_no_text 'Ephemeral message', wait: 5
+      assert_no_text 'jane: Ephemeral message', wait: 5
       assert_text "What's up!", wait: 5
       assert_text 'How are you?', wait: 5
-      assert_text 'You might have lost some ephemeral messages.', wait: 5
+      assert_text "Reconnected. Ephemeral messages sent while you were offline weren't delivered.", wait: 5
+      assert_no_text 'Reconnecting…'
+    end
+
+    test 'showing persistent messages sent after being dropped from the room while disconnected' do
+      join_room users(:jane), @room
+      assert_selector '#members li', count: 2, wait: 5
+      sleep 1 # needs to stay so disconnection works
+      page.evaluate_script 'window.test.getLine().disconnect({all: true});'
+      # still a member - arrives both via replay and in the fetched room
+      persistent_message(user: users(:jane), room: @room, hub: @hub, message: 'Before drop')
+      sleep 1 # HEARTBEAT_TTL is 1 in test env
+      perform_enqueued_jobs { MaintainRoomMembers.clear(@room.id) }
+      join_room users(:jane), @room
+      persistent_message(user: users(:jane), room: @room, hub: @hub, message: 'Still there?')
+      fill_in 'message', with: 'my draft'
+      page.evaluate_script 'window.test.getLine().connect();'
+      assert_text 'jane: Still there?', wait: 5
+      assert_selector 'p.msg', text: 'Before drop', count: 1
+      assert_equal 'my draft', find('#message').value
+      assert_text "Reconnected. Ephemeral messages sent while you were offline weren't delivered."
     end
 
     test 'should create persistent message record when message_type is persistent' do

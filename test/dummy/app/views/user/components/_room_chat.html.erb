@@ -3,7 +3,7 @@
 
   <section id='messages' class='bottom-space' data-ref="messages">
     <% messages.each do |message| %>
-      <p class="msg"><b><%= message.user.username %></b>: <%= message.content %></p>
+      <p class="msg" data-id="<%= message.id %>"><b><%= message.user.username %></b>: <%= message.content %></p>
     <% end %>
   </section>
 

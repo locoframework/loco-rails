@@ -33,13 +33,17 @@ export default async (data) => {
   const { type, payload, loco } = data;
 
   if (loco === "disconnected") return getChat()?.disconnected();
+  if (loco === "connected") return getChat()?.reconnected();
 
   switch (type) {
     case "PING":
       ping();
       break;
     case "NEW_MESSAGE":
-      getChat()?.receivedMessage(payload.message, payload.author);
+      getChat()?.receivedMessage(payload.message, payload.author, payload.id);
+      break;
+    case "ROOM_REJOINED":
+      getChat()?.rejoined(payload.room_id);
       break;
     default:
       react(type, payload);

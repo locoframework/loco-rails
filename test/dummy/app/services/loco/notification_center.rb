@@ -20,16 +20,19 @@ module Loco
 
       def heartbeat(user, room_id)
         hub = FindHub.(room_id:)
+        member = hub.include?(user)
         MaintainRoomMembers.rejoin(hub:, user:)
-        MaintainRoomMembersJob.set(wait: 5.seconds).perform_later(room_id)
+        Loco.emit({ type: 'ROOM_REJOINED', room_id: }, to: user, ws_only: true) unless member
+        MaintainRoomMembers.schedule_clear(room_id)
       end
 
       def new_message(user, payload, hub)
         if payload['message_type'] == 'persistent'
-          Message.create!(room_id: payload['room_id'], user:, content: payload['txt'])
+          message = Message.create!(room_id: payload['room_id'], user:, content: payload['txt'])
         end
         Loco.emit({
                     type: 'NEW_MESSAGE',
+                    id: message&.id,
                     message: payload['txt'],
                     author: user.username
                   },

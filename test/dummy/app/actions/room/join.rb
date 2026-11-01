@@ -6,7 +6,7 @@ class Room
       room = Room.find(payload[:id])
       user = opts.dig(:ars, :user) || User.find(payload[:user_id])
       MaintainRoomMembers.rejoin(hub: FindHub.(room_id: room.id), user:)
-      MaintainRoomMembersJob.set(wait: 5.seconds).perform_later(room.id)
+      MaintainRoomMembers.schedule_clear(room.id)
       Result[ok: true, val: { room: }]
     end
   end

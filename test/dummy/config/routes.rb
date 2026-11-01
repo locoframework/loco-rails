@@ -17,6 +17,7 @@ Rails.application.routes.draw do
         patch :leave
       end
       resources :members, only: [:index]
+      resources :messages, only: [:index]
     end
     root 'articles#index'
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class MaintainRoomMembers
-  HEARTBEAT_TTL = Rails.env.test? ? 1 : 4
+  HEARTBEAT_TTL = Rails.env.test? ? 1 : 10 # survives ~3 missed heartbeats (sent every 3s)
 
   class << self
     def rejoin(hub:, user:)
@@ -12,6 +12,12 @@ class MaintainRoomMembers
 
       hub.add_member(user)
       emit_member_joined(room_id:, user:)
+    end
+
+    # after the key of the heartbeat that scheduled it expires - so a sender's last heartbeat can remove them,
+    # even when nobody else in the room is heartbeating
+    def schedule_clear(room_id)
+      MaintainRoomMembersJob.set(wait: (HEARTBEAT_TTL + 1).seconds).perform_later(room_id)
     end
 
     def clear(room_id)

@@ -38,9 +38,10 @@ module UserHelpers
   end
 
   def persistent_message(user:, room:, hub:, message:)
-    Message.create!(room_id: room.id, user:, content: message)
+    record = Message.create!(room_id: room.id, user:, content: message)
     Loco.emit({
                 type: 'NEW_MESSAGE',
+                id: record.id,
                 message:,
                 author: user.username
               },
