@@ -24,5 +24,13 @@ module Loco
       assert_empty notifications
       assert_in_delta Loco::Notification::Fetch::OVERLAP.ago, Time.zone.parse(next_synced_at), 1
     end
+
+    test 'index refuses params that would otherwise raise' do
+      [{ synced_at: %w[a b] }, { synced_at: { a: 1 } }, { synced_at: '2026' }, { synced_at: "2026-01-01\0" },
+       { token: %w[a b] }, { token: "a\0b" }].each do |params|
+        get('/notification-center', params:)
+        assert_response :bad_request, params.inspect
+      end
+    end
   end
 end
