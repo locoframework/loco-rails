@@ -327,7 +327,9 @@ Loco.emit(
 
 Hub instance methods: `name`, `members`, `raw_members`, `add_member(member)`, `del_member(member)`, `include?(member)`, `destroy`
 
-Note: `members` performs DB queries to fetch full objects. Use `raw_members` for the lightweight `"{class}:{id}"` form stored in Redis.
+Note: `members` performs DB queries to fetch full objects.
+`members(shallow: true)` skips them: it builds unsaved instances with only `id` set, and includes records that no longer exist (where `members` gives `nil`).
+Use `raw_members` for the lightweight `"{class}:{id}"` form stored in Redis.
 
 ## 🛰 Receiving messages from the front-end
 
