@@ -36,6 +36,20 @@ module Admin
       assert articles(:one).reload.admin_review_time.positive?
     end
 
+    test 'should show a published article as published' do
+      assert page.has_checked_field?('Published')
+    end
+
+    test 'should publish an article' do
+      visit "admin/articles/#{articles(:two).id}/edit"
+      assert_selector '#article_title', text: articles(:two).title
+      assert page.has_unchecked_field?('Published')
+      check 'Published'
+      click_button 'Update Article'
+      assert page.has_selector?("input[type=submit][value='Article updated!']")
+      assert articles(:two).reload.published?
+    end
+
     private
 
     def submit_review

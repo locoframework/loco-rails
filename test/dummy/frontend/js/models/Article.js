@@ -74,7 +74,8 @@ export default class Article extends LocoReactive {
 
   constructor(data) {
     super(data);
-    this.published = this.publishedAt == null ? false : true;
+    // keep an explicit value (page payload, form input carried by clone())
+    this.published ??= this.publishedAt != null;
   }
 
   vulgarityLevel() {
