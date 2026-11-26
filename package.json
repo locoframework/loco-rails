@@ -17,7 +17,7 @@
     "loco-js": "/Users/zbigniewhumeniuk/dev/libs/js/loco-js",
     "loco-js-model": "/Users/zbigniewhumeniuk/dev/libs/js/loco-js-model",
     "loco-js-ui": "file:../../js/loco-js-ui",
-    "simplicit": "/Users/zbigniewhumeniuk/dev/libs/js/simplicit"
+    "simplicit": "^0.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
