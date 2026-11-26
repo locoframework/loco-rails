@@ -119,6 +119,10 @@ Same idea for WebSockets. Each connection is identified by `[SecureRandom.uuid, 
 - route messages to the exact browser tab, not "all connections of user X"
 - clean up stale connections in Redis by UUID
 
+Why `SecureRandom`: the UUID is minted on the server, independently by every process, with no shared counter to coordinate.
+A counter or `object_id` repeats across processes and restarts, so a new connection could inherit a dead one's Redis entries and receive its messages.
+A random UUID never collides, can't be predicted, and is never derived from the user — two tabs of the same user always get different ones.
+
 The mixin auto-runs `identified_by :loco_permissions` and prepends a wrapper that assigns `self.loco_permissions = [SecureRandom.uuid, *Loco::Config.resources.call(self)]` before your `connect` body runs. Your `connect` only handles authentication. Connections without any signed-in resource are rejected via `reject_unauthorized_connection`.
 
 ```ruby
@@ -190,6 +194,9 @@ as long as the rows haven't been garbage-collected yet (see Garbage collection).
 Loco.emit(payload, to: [article.user, Admin, 'a54e1ef01cb9'], subject: article)
 ```
 
+With `subject:` it's similar to Turbo's [`broadcasts_to`](https://rubydoc.info/github/hotwired/turbo-rails/Turbo/Broadcastable/ClassMethods#broadcasts_to-instance_method): a record announces its own changes to whoever follows it.
+The differences: Loco sends data (`{ type, payload }`), not rendered HTML, you call it explicitly instead of declaring it on the model, and the notification is persisted, so offline clients catch up.
+
 Arguments:
 
 1. **payload** (required) — a Hash serialized to JSON. It must name the message — one of two conventions, or `ArgumentError` is raised:
@@ -235,6 +242,17 @@ const loco = init({
 
 export default loco;
 ```
+
+Loco-JS also passes its own lifecycle signals to `notificationCenter`, as `{ loco: "…" }` with no `type`:
+
+| signal | when |
+| --- | --- |
+| `{ loco: "connected" }` | the WebSocket connected (or reconnected) |
+| `{ loco: "disconnected" }` | the WebSocket dropped — Loco-JS falls back to polling |
+| `{ loco: "rejected" }` | the server rejected the connection (`reject_unauthorized_connection`) |
+| `{ loco: "gap" }` | the client was offline longer than `c.notifications_retention` (see Garbage collection) |
+
+Ignore the ones you don't need — a `switch (type)` skips them, since `type` is `undefined`.
 
 For model-specific subscriptions, you can also use `subscribe` from [Loco-JS](https://github.com/locoframework/loco-js) — useful when a view only cares about certain models. One callback can handle multiple models; the `type` string differentiates:
 
@@ -425,6 +443,7 @@ With a subject, `type` is prefixed with the model name — `"Article created"` �
 With a record subject, Loco-JS merges `obj_id` into `payload` as `id`.
 
 A persisted notification is stored as one `loco_notifications` row per recipient: `data` = `payload`, `event` = `type`, plus `idempotency_key`, `obj_class`, `obj_id` and the recipient columns.
+`data` is `jsonb` on PostgreSQL — binary, so it can be queried and indexed — and `json` on MySQL/SQLite.
 
 ### WebSocket (`Loco::NotificationCenterChannel`)
 
