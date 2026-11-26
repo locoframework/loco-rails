@@ -14,7 +14,7 @@ Plain ActionCable gives you raw WebSockets. Everything else you build yourself. 
 | --- | --- | --- |
 | **Channels** | Write a custom `Channel` class per stream; manage subscriptions | Built-in `NotificationCenterChannel` (internal to Loco — you never touch it) handles all streams. Zero channels to write. |
 | **Targeted delivery** | Broadcast to a named stream; you track who subscribed where | `Loco.emit(..., to: user)` / `to: [Admin]` / `to: 'token'` — routing by resource, class, or token |
-| **Offline clients** | Broadcast is fire-and-forget. Messages sent while offline are lost | Notifications persisted in DB; fetched on reconnect |
+| **Offline clients** | Broadcast is fire-and-forget. Messages sent while offline are lost | Notifications persisted in DB; fetched on reconnect — and told when it was offline longer than the DB keeps them |
 | **WebSocket unavailable** | No fallback — client sees nothing | Auto-switches to HTTP polling via `/notification-center` |
 | **Server → browser dispatch** | Wire each subscription/handler manually per channel | One `NotificationCenter` callback receives every message; switch on `payload.type` (e.g., `"Article created"`, `"USER_CONFIRMED"`) — all routing in one place |
 | **Browser → server messages** | Write channel `receive` per stream | One `NotificationCenter.call` hook for all incoming messages |
@@ -90,7 +90,8 @@ _Look inside `test/dummy/` for a reference setup._
 ```ruby
 Loco.configure do |c|
   c.log_level = :info               # Loco controller log level — set :error to silence noise (default: :info)
-  c.notifications_size = 100        # max notifications returned at once (default: 100)
+  c.notifications_size = 100        # max notifications returned at once — must equal Loco-JS `notifications.size` (default: 100)
+  c.notifications_retention = nil   # how long your garbage collector keeps notifications, e.g. 1.hour — a client offline longer is told about the gap (default: nil, never told)
   c.app_name = "loco_#{Rails.env}"  # Redis key prefix — keeps envs isolated (default: "loco_#{Rails.env}")
   c.redis_instance = nil            # reuse an existing Redis client instead of creating a new one (default: nil)
 
@@ -178,7 +179,12 @@ It supports two modes:
 
 ### Notification mode (persisted)
 
-Emits a notification about a resource event (e.g., _the post was updated_, _the ticket was validated). If a WebSocket connection is established — message is sent this way. If not — it's delivered via AJAX polling. Switching between available methods is done automatically. Notifications are persisted in the `loco_notifications` table, so **clients receive missed messages after reconnecting**.
+Emits a notification about a resource event (e.g., _the post was updated_, _the ticket was validated).
+If a WebSocket connection is established — message is sent this way.
+If not — it's delivered via AJAX polling.
+Switching between available methods is done automatically.
+Notifications are persisted in the `loco_notifications` table, so **clients receive missed messages after reconnecting** —
+as long as the rows haven't been garbage-collected yet (see Garbage collection).
 
 ```ruby
 Loco.emit(payload, to: [article.user, Admin, 'a54e1ef01cb9'], subject: article)
@@ -264,7 +270,8 @@ Loco.emit({ type: 'NEW_MESSAGE', message: 'Hi!' }, to: [hub, admin], ws_only: tr
 
 ## 🗑️ Garbage collection
 
-Periodically delete old notifications to keep the `loco_notifications` table manageable:
+Periodically delete old notifications to keep the `loco_notifications` table manageable.
+Set `c.notifications_retention` and delete by it:
 
 ```ruby
 class GarbageCollectorJob < ApplicationJob
@@ -275,10 +282,26 @@ class GarbageCollectorJob < ApplicationJob
   end
 
   def perform
-    Loco::Notification.where('updated_at < ?', 1.hour.ago).in_batches.delete_all
+    Loco::Notification.where('updated_at < ?', Loco::Config.notifications_retention.ago).in_batches.delete_all
   end
 end
 ```
+
+⚠️ **A client offline for longer than the retention can miss notifications** — they were deleted before it fetched them.
+Loco can't re-deliver those, but it tells the client.
+The fetch that catches it up returns `gap: true`.
+Once caught up, Loco-JS passes `{ loco: "gap" }` to `notificationCenter`.
+Reload whatever the page shows from the server then:
+
+```js
+notificationCenter: (notification) => {
+  if (notification.loco === "gap") location.reload();
+},
+```
+
+A client that's online but receives nothing doesn't count as offline.
+Pings and empty fetches keep its sync point fresh.
+Without `c.notifications_retention`, there is no gap signal.
 
 ## 🏘️ Communication Hubs
 
@@ -409,7 +432,7 @@ Every server message has a `loco` key. A notification also carries `type` / `pay
 | --- | --- | --- |
 | server → client | `{ "loco": { "uuid": "…" } }` | on subscribe — the connection's id, sent back when polling |
 | client → server | `{ "loco": { "pong": true } }` | after connecting and after every ping — keeps the connection registered |
-| server → client | `{ "loco": { "ping": true } }` | in reply to a pong |
+| server → client | `{ "loco": { "ping": true, "synced_at": "…" } }` | in reply to a pong — every notification broadcast before it has been delivered, so the client moves its sync point to `synced_at` |
 | client → server | anything else | passed to `NotificationCenter.call(permissions, payload)` |
 
 ### Polling (`GET /notification-center`)
@@ -421,11 +444,14 @@ GET /notification-center?synced_at=2026-10-14T10:00:00.123456Z&token=…&uuid=�
 ```
 
 ```json
-{ "notifications": [ { …notification… } ], "synced_at": "2026-10-14T10:00:05.000000Z" }
+{ "notifications": [ { …notification… } ], "synced_at": "2026-10-14T10:00:05.000000Z", "gap": false }
 ```
 
 - `synced_at` (request) — the client's sync point; only notifications with a newer `updated_at` are returned. `null` (no sync point yet) returns none, just a fresh `synced_at` to send next time
-- `synced_at` (response) — the next sync point: the newest returned `updated_at` (the request's `synced_at` if none), but no later than 5 seconds ago. A full page (`c.notifications_size`) isn't held back — fetch again right away
+- `synced_at` (response) — the next sync point: 5 seconds ago, since a short page holds every row up to now.
+  A full page (`c.notifications_size`) ends at its newest `updated_at` — fetch again right away
+- `gap` (response) — `true` when the request's `synced_at` is older than `c.notifications_retention`.
+  Rows after it may already be deleted, so the client should reload its data
 
 **Overlap.** `updated_at` order isn't commit order — a row stamped earlier can commit after a newer one was already fetched.
 So the sync point trails by 5 seconds (`Loco::Notification::Fetch::OVERLAP`) — in `synced_at` from a fetch and in `loco.synced_at` over WebSocket.
@@ -492,6 +518,12 @@ bin/rails test
 - `Loco.emit` returns the idempotency key in both modes
 - Inside a transaction, `Loco.emit` delivers once it commits, and never for a rollback — before, a rolled-back `after_save` emit had already reached clients
 - Polling never moves the sync point past rows the client hasn't seen, and keeps it 5 seconds behind so rows committed out of order are still fetched. **Requires loco-js >= 7.0**
+- Added `c.notifications_retention`.
+  A fetch whose `synced_at` is older returns `gap: true` — rows the client never saw may already be garbage-collected.
+  Loco-JS passes it to `notificationCenter` as `{ loco: "gap" }`.
+  To keep idle clients from looking offline, a ping carries `loco.synced_at`.
+  A short page moves the sync point to 5 seconds ago, even when it's empty.
+  **Requires loco-js >= 7.0**
 - A notification `to:` a class or `:all` is no longer lost when it waits in the `:loco` queue longer than 5 seconds while the WebSocket drops.
   Notifications are fetched by `updated_at`, which the job restamps just before it broadcasts.
   The `created_at` indexes on `loco_notifications` move to `updated_at` — run `bin/rails loco:install:migrations && bin/rails db:migrate`, and delete old notifications by `updated_at` (see Garbage collection above)

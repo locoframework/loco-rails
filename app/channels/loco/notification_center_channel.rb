@@ -22,7 +22,9 @@ module Loco
     def receive(payload)
       if payload.dig('loco', 'pong')
         update_connections
-        broadcast_to(@uuid, loco: { ping: true })
+        # the same stream as notifications, so every one broadcast before is already delivered:
+        # an idle client keeps its sync point fresh and isn't mistaken for one offline past retention
+        broadcast_to(@uuid, loco: { ping: true, synced_at: Notification::Presenter.synced_at(Time.current) })
       end
       return if payload.keys == ['loco']
 

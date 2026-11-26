@@ -22,15 +22,13 @@ module Loco
       describe 'synced_at' do
         before { freeze_time }
 
-        it 'is the newest notification returned' do
+        it 'moves to OVERLAP behind now on a short page' do
           travel_to(10.seconds.ago) { Loco.emit({ event: :published }, subject: articles(:one)) }
-          assert_equal Notification.maximum(:updated_at).iso8601(6),
-                       fetch(synced_at: 20.seconds.ago.iso8601(6))[:synced_at]
+          assert_equal Fetch::OVERLAP.ago.iso8601(6), fetch(synced_at: 20.seconds.ago.iso8601(6))[:synced_at]
         end
 
-        it 'stays put when nothing is returned' do
-          synced_at = 20.seconds.ago.iso8601(6)
-          assert_equal synced_at, fetch(synced_at:)[:synced_at]
+        it 'moves to OVERLAP behind now when nothing is returned, so an idle client stays fresh' do
+          assert_equal Fetch::OVERLAP.ago.iso8601(6), fetch(synced_at: 2.hours.ago.iso8601(6))[:synced_at]
         end
 
         it 'stays OVERLAP behind now, so a row committed late is still fetched' do
@@ -42,6 +40,28 @@ module Loco
           2.times { Loco.emit({ event: :published }, subject: articles(:one)) }
           assert_equal Notification.maximum(:updated_at).iso8601(6),
                        fetch(synced_at: 1.second.ago.iso8601(6), max_size: 2)[:synced_at]
+        end
+      end
+
+      describe 'gap' do
+        before { Loco.configure { |c| c.notifications_retention = 1.hour } }
+        after { Loco.configure { |c| c.notifications_retention = nil } }
+
+        it 'is flagged when the sync point is older than the retention' do
+          assert fetch(synced_at: 61.minutes.ago.iso8601(6))[:gap]
+        end
+
+        it 'is not flagged within the retention' do
+          assert_not fetch(synced_at: 59.minutes.ago.iso8601(6))[:gap]
+        end
+
+        it 'is not flagged without a sync point' do
+          assert_not fetch(synced_at: 'null')[:gap]
+        end
+
+        it 'is not flagged without a retention' do
+          Loco.configure { |c| c.notifications_retention = nil }
+          assert_not fetch(synced_at: 1.year.ago.iso8601(6))[:gap]
         end
       end
 
