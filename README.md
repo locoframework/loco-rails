@@ -331,6 +331,9 @@ hub = Loco.get_hub('room_1')                  # retrieve
 Loco.del_hub('room_1')                        # destroy
 ```
 
+Members can be records, classes or string tokens.
+A class member (e.g. `Loco.add_hub('staff', [Admin])`) stands for every signed-in instance of that class.
+
 Send a message to all hub members (plus any extra recipients):
 
 ```ruby

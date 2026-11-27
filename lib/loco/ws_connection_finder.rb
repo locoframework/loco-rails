@@ -9,20 +9,12 @@ module Loco
         resources.each do |resource|
           case resource
           when :all then storage.scan(all: true, &block)
-          when Hub then search_the_hub(resource, &block)
+          when Hub then call(resource.members(shallow: true), &block)
           when Class
             storage.scan(match: "#{WsConnectionIdentifier.(resource)}:*", &block)
           else
             storage.members(WsConnectionIdentifier.(resource)).each(&block)
           end
-        end
-      end
-
-      private
-
-      def search_the_hub(hub, &block)
-        WsConnectionStorage.instance.members(hub.full_name).map do |identifier|
-          WsConnectionStorage.instance.members(identifier).each(&block)
         end
       end
     end

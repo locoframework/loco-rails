@@ -56,7 +56,8 @@ module Loco
           klass = klass.classify.constantize
           shallow ? klass.new(id:) : klass.find_by(id:)
         else
-          identifier.classify.constantize
+          klass = identifier.camelize.safe_constantize
+          klass.is_a?(Class) ? klass : identifier
         end
       end
     end

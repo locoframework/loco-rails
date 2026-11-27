@@ -34,6 +34,11 @@ module Loco
         WsConnectionFinder.(Hub.get('foobar')) { |uuid| @res << uuid }
         assert_equal(['UUID#2', 'UUID#1'].sort, @res.sort)
       end
+
+      it 'finds connections for class and token members of a Hub' do
+        WsConnectionFinder.(Hub.set('mixed', [Admin::SupportMember, 'random-token'])) { |uuid| @res << uuid }
+        assert_equal(['UUID#3', 'UUID#3.1', 'UUID#4', 'UUID#6'], @res.sort)
+      end
     end
   end
 end

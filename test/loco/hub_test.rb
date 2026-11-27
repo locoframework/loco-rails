@@ -44,6 +44,22 @@ module Loco
         assert_equal 2, hub.members.size
         assert_equal [users(:jane), users(:zbig)].to_set, hub.members.to_set
       end
+
+      it 'returns a class member' do
+        hub = Hub.set('foobar', [User, users(:zbig)])
+        assert hub.include?(User)
+        assert_equal ['user', "user:#{users(:zbig).id}"].to_set, hub.raw_members.to_set
+        assert_equal [User, users(:zbig)].to_set, hub.members.to_set
+        assert_includes hub.members(shallow: true), User
+        hub.del_member(User)
+        assert_equal [users(:zbig)], hub.members
+      end
+
+      it 'returns a token member' do
+        hub = Hub.set('foobar', ['a54e1ef01cb9', users(:zbig)])
+        assert_equal ['a54e1ef01cb9', users(:zbig)].to_set, hub.members.to_set
+        assert_includes hub.members(shallow: true), 'a54e1ef01cb9'
+      end
     end
 
     describe '#name' do
